@@ -1,0 +1,1185 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Indicadores</title>
+<link rel="stylesheet" href="standard/menu.css" type="text/css" />
+
+
+
+
+
+
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<script src="js/highstock.js"></script>
+<!--script src="js/modules/exporting.js"></script-->
+<script language="JavaScript1.2" src="js/main.js"></script>
+<style>
+
+body{
+	background-color:#FFFFFF;
+	opacity:0.96;
+	filter:alpha(opacity=96);
+	margin-left: 0px;
+	margin-right: 0px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.menu {
+	color: #FFFFFF;
+	font-size: 16px;
+	font-weight: bold;
+	vertical-align:bottom;
+	cursor:pointer;
+	
+}
+
+.menu:hover {
+text-decoration:underline;
+
+}
+
+a{color:#FFFFFF; text-decoration:none;}
+
+a:hover {text-decoration:underline;
+
+}
+
+
+.bottom {
+	font-size: 16px;
+	color: #0072C6;
+	vertical-align:text-bottom;
+
+}
+
+.logo{
+width:150px;
+height:50px;
+margin:5px 0px 0px 0px;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+.style8 {
+	color: #666666;
+	font-weight: bold;
+	font-size: 18px;
+}
+</style>
+	
+   
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+//alert(getSession());
+
+	if( getSession() == "UNDEFINED")
+	self.location.href="/index.html";
+		
+if(getEmpresa()=="DESCONOCIDO")
+	this.location.href="/index.html";
+	
+	
+});
+
+function inicio(){
+
+if(getSession()=='UNDEFINED'){
+	parent.document.location.href="index.html";
+	salir();
+}
+
+//alert(getEmpresa());
+with (divWait.style){visibility = "visible";} 
+
+//listFaenas();
+
+
+	gr1();
+	gr3();
+	gr10();
+	gr11();
+	gr12();
+	//gr4();
+	//gr5();
+	//gr6();
+	//gr7();
+	//gr8();
+
+}
+
+function actualizar(){
+ 
+ with (divWait.style){visibility = "visible";} 
+ 
+	gr1();
+	//gr2();
+	gr3();
+	gr10();
+	gr11();
+	//gr6();
+	//gr7();
+	//gr8();
+}
+
+function chFaena(obj){
+
+var val = obj.options[obj.selectedIndex].text;
+//alert(val);
+
+crearSessionEmpresa(val);
+parent.document.location.href="indicadores.html";;
+}
+
+function listFaenas(){
+	
+	var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+		url += "&ID=" + getSession();
+	 	url += "&EMPRESA=" + getEmpresa();
+		url += "&USERNAME=" + getSession();
+		url += "&VTZ=" + Math.random();
+	//	window.open(url);
+	var i=0;
+	
+	opcion = new Option("--" ,"0");
+	document.getElementById("idFaena").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+					i=i+1;
+        	   		opcion = new Option(descripcion, codigo);
+					if(descripcion==getEmpresa()){opcion.selected = true;}	
+	          		document.getElementById("idFaena").options[i] = opcion;	
+					
+		}) //end each
+	})//end $get
+
+
+}	
+
+function verAvisos(equipo, valor, tipo){
+
+return true;
+
+var comp="";
+
+	if(tipo==2){
+			equipo = document.getElementById("idEquipos").value;
+		  }
+
+	if(tipo==3){
+			equipo = document.getElementById("idEquipos").value;
+		  }
+
+	if(document.getElementById("idEquipos").value.length==0&&tipo==4){
+			comp=equipo;
+			equipo = "";
+			
+		  }
+		  
+	var url =  "boxAvisosInd.html?EQUIPO=" + equipo;
+		url += "&CRI="+valor;
+		url += "&TIPO="+tipo;
+		url += "&COMP="+comp;
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&AREA=" + document.getElementById("selectTipos").value;
+		url += "&VTZ=" + Math.random();
+		
+	//alert(url);
+		
+		winCfg = "width=950px,height=530px,left=" + 120 + "px,top=" + 120 +"px,resize=1,scrolling=0";	
+	var inlinewin2= parent.dhtmlwindow.open("boxDetAvisos", "iframe", url , "DETALLE AVISOS", winCfg);
+
+
+}
+
+
+function listEquipos(){
+
+   var i=0;
+   
+   var url = "js/equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		url += "&AREA=" + document.getElementById("selectTipos").value;
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+ 		url += "&VTZ=" + Math.random();
+	  	
+	//window.open(url);
+				document.getElementById("idEquipos").length = 0;
+						  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+					var desc = codigo + ' ' + descripcion;
+					
+        	   	opcion = new Option(desc,codigo);
+	          	document.getElementById("idEquipos").options[i+1] = opcion;
+				
+			}), //end each
+			
+	           	opcion = new Option("TODOS","");
+				opcion.selected = true;
+	          	document.getElementById("idEquipos").options[0] = opcion;
+				inicio();
+		})//end $get
+		
+		
+	
+ } 
+ 
+function listAreas(){
+  var i=1;
+  var url = "js/equipos.asp?Recurso=explorer&CODIGO=NULL";
+	  url += "&UBICACION=" + getEmpresa();
+	  url += "&USUARIO=" + getSession();
+	  url += "&VTZ=" + Math.random();
+	  
+//window.open(url);	
+			  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	if(codigo==1)opcion.selected=true;
+				document.getElementById("selectTipos").options[i] = opcion;
+				i=i+1;
+			}) , listEquipos(); //end each
+		})//end $get
+		
+} 
+
+function salir(){
+parent.document.getElementById('boxIndicadores').close();
+}
+
+
+function gr1(){
+
+var options = {
+		chart: {renderTo: 'chart1', zoomtype: 'xy'}, //, inverted: true
+		title: { text: 'Criticidades por Equipos.' },
+		colors: ['#FF3300'],
+		plotOptions: {
+            series: {    dataLabels: {  enabled: false  }
+            },
+			
+			column: { events: { legendItemClick: function(){return false}}
+			},
+        },
+		
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+		
+		yAxis: [{ title: { text: 'Nro Avisos' } ,   min:0, dataLabels:{ enabled: true}   } ,
+			    { title: { text: 'Acumulado' }, min:0 , max:70 ,  opposite: true, dataLabels:{ enabled: false} }
+			
+			] ,
+			
+			 
+		
+			series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=nroAvisos';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+		//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var cri =$(series).find('cri').text();
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						yAxis: parseInt($(series).find('yAx').text()),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category, cri, 1);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				});  //end series
+
+			
+				
+			var chart1 = new Highcharts.Chart(options);
+					
+			});
+		
+	 //end get
+			
+}
+
+function gr2(){
+
+var options = {
+		chart: {renderTo: 'chart2', type: 'column'}, 
+		title: { text: 'Criticidad por Area' },colors: ['#FF3300', '#FF9900', '#FFFF00', '#5DC146'], 
+		xAxis: {  categories: [],  labels: { rotation: -75, align: 'right' } 
+				},
+				
+		yAxis: { title: { text: 'Nro Avisos' } },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=criticidadArea';
+				url += '&FAENA=' + getEmpresa();
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += "&VTZ=" + Math.random();
+				
+			//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 500;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						data: [] ,
+						point: {events: {click: function() {verAvisos(this.category , this.series.name, 2);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push(
+							parseInt($(point).text())
+						);
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}); //end series
+				
+					var chart2 = new Highcharts.Chart(options);
+					
+			}); //end get
+			
+}
+ 
+function gr3(){
+
+
+var options = {
+		chart: {renderTo: 'chart3', type: 'pie'}, 
+		title: { text: 'Criticidades por Avisos' },
+		 
+		xAxis: { categories: [] },
+		yAxis: { title: { text: 'Nro Avisos' } },
+		
+		colors: ['#FF3300', '#FF9900', '#FFFF00', '#5DC146'], 
+
+        tooltip: {
+            headerFormat: '<span >{series.name} </span><br>',
+            pointFormat: '<span style="font-size:11px;color:{point.color}">{point.name} <b>{point.y}%</b>.<br/>'
+        },
+		
+ 
+		
+		 plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                   
+					 formatter: function () {
+                    return this.y > 1 ? '<b>' + this.point.name + ':</b> ' + this.y + '%' : null;
+           			 }
+                    
+                },
+				showInLegend: false,
+				shadow: true,
+                center: ['50%', '50%']
+            }
+        },
+		 
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=grPie';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();	
+		 //window.open(url);
+			
+		$.get(url, function(xml) {
+            var $xml = $(xml);
+            
+            $xml.find('tags').each(function(i, series){
+			
+               var seriesOptions = {
+                  name: $(series).find('name').text(),
+				  color: $(series).find('color').text(),
+                  data: [],
+						point: {events: {click: function() {alert(  this.y );}}
+								}
+               },
+			   
+               name  = [];
+
+               $xml.find('cat tag').each(function(i, category) {
+                  name[i] = $(category).text();
+				  
+				  
+               });
+               
+               $(series).find('tgv point').each(function(i, point) {
+                  seriesOptions.data.push([name[i],	parseInt($(point).text())]);
+               });
+			   
+               options.series.push(seriesOptions);
+            });
+            var chart = new Highcharts.Chart(options);
+         }); 
+			
+}
+
+
+function gr4(){
+
+_this = document.getElementById("selectTipos")
+_area = _this.options[_this.selectedIndex].innerHTML;
+
+_this2 = document.getElementById("idEquipos")
+_equipo = _this2.options[_this2.selectedIndex].innerHTML;
+
+
+var options = {
+		chart: {renderTo: 'chart4', type: 'column'}, 
+		title: { text: 'Criticidad x Componente Area ' + _area + ' Equipo ' + _equipo},
+		xAxis: { categories: [] },
+		yAxis: { title: { text: 'Nro Avisos' }  },
+		colors: ['#FF3300', '#FF9900', '#FFFF00', '#5DC146'], 
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=criticidadComp';
+				url += '&FAENA=' + getEmpresa();
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += "&VTZ=" + Math.random();
+				
+			//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+			//	options.yAxis.max = 30;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category , this.series.name, 4);}}}
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push(
+							parseInt($(point).text())
+						);
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}); //end series
+				
+					var chart2 = new Highcharts.Chart(options);
+					
+			}); //end get
+			
+}
+
+
+
+function gr5(){
+
+var options = {
+		chart: {renderTo: 'chart5', type: 'column'}, //, inverted: true
+		title: { text: 'Avisos por Empalmes' },
+		yAxis: { title: { text: 'Nro Avisos' },
+		
+         
+			stackLabels: {enabled: true }
+		
+             
+			},
+		xAxis: {  categories: [],  labels: { rotation: -75, align: 'right' } 
+				},
+				
+			 plotOptions: {   column: {stacking: 'normal'}    },
+			
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=critComDet';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+			    url += '&FAENA=' + getEmpresa();
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&COMP=23';
+				url += "&VTZ=" + Math.random();
+		
+	//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category, this.series.name, 5);}}
+								}
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					
+					// add it to the options
+					options.series.push(seriesOptions);
+					
+				}, hideFrm()); //end series
+			
+				
+			var chart5 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+}
+
+function gr6(){
+
+var options = {
+		chart: {renderTo: 'chart6', type: 'column'}, //, inverted: true
+		title: { text: 'Avisos por Tramos' },
+		yAxis: { title: { text: 'Nro Avisos' }  },
+		xAxis: { categories: [],  labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                } },
+	    plotOptions: { column: {stacking: 'normal'}    },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=critComDet';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+			    url += '&FAENA=' + getEmpresa();
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&COMP=22,5';
+				url += "&VTZ=" + Math.random();
+		
+	//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category , this.y);}}
+								}
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}, hideFrm()); //end series
+			
+				
+			var chart6 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+}
+
+
+function gr7(){
+
+var options = {
+		chart: {renderTo: 'chart7', type: 'column'}, //, inverted: true
+		title: { text: 'Avisos por Poleas' },
+		yAxis: { title: { text: 'Nro Avisos' }  },
+		xAxis: { categories: [],  labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '9px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                } },
+	    plotOptions: { column: {stacking: 'normal'}    },
+		series: []
+			
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=critComDet';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+			    url += '&FAENA=' + getEmpresa();
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&COMP=9';
+				url += "&VTZ=" + Math.random();
+		
+		//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+				
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: [] ,
+						point: {events: {click: function() {verAvisos(this.category , this.y);}}
+								}
+						};
+						
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+						
+					});
+					
+				
+ 					// add it to the options
+					options.series.push(seriesOptions);
+				}, hideFrm()); //end series
+			
+				
+			var chart7 = new Highcharts.Chart(options);
+					
+			});
+		
+	 //end get
+			
+}
+
+function gr8(){
+
+
+var options = {
+		chart: {renderTo: 'chart8', type: 'column'}, //, inverted: true
+		title: { text: 'Avisos por Polines' },
+		yAxis: { title: { text: 'Nro Avisos' }  },
+		xAxis: { categories: [],  labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                } },
+		
+		plotOptions: { column: {stacking: 'normal'}    },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=critComDet';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+			    url += '&FAENA=' + getEmpresa();
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' + document.getElementById("idHistorial").checked;
+				url += '&COMP=8,14';
+				url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category , this.y);}}
+								}
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}, hideFrm()); //end series
+			
+				
+			var chart8 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+	 
+	 
+}
+
+function gr10(){
+
+var options = {
+		chart: {renderTo: 'chart10', zoomtype: 'xy'}, //, inverted: true
+		navigator: {
+                adaptToUpdatedData: false,
+                 
+            },
+
+            scrollbar: {
+                liveRedraw: false            },
+			
+		title: { text: 'Criticidades por Equipo' },
+		
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+				
+		yAxis: [{ title: { text: 'Nro Avisos' } , min:0  } ,
+			    { title: { text: 'Acumulado' }, min:0 , max:60 ,  opposite: true, dataLabels:{ enabled: false}}
+			
+			] ,
+			
+	    plotOptions: {
+		 column: {stacking: 'normal', allowPointSelect: false , events: { legendItemClick: function(){return false}}
+		  },
+		 
+		 series: {dataLabels: {enabled: false }, allowPointSelect: false }
+		   },
+		
+		legend: {
+        borderWidth: 1,
+        backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+        shadow: true,
+		allowPointSelect: false
+    },
+	
+	
+			  
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=critEquipos2';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+			    url += '&FAENA=' + getEmpresa();
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&COMP=22,5';
+				url += "&VTZ=" + Math.random();
+		//alert(url);
+		
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						yAxis: parseInt($(series).find('yAx').text()),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category , this.x);}}
+								}
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}, hideFrm()); //end series
+			
+				
+			var chart6 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+}
+
+function gr11(){
+
+
+var options = {
+		chart: {renderTo: 'chart11', type: 'pie'}, 
+		title: { text: 'Distribución de Avisos' },
+		plotOptions: {
+            series: {
+                dataLabels: {
+					enable:true
+					 }
+            }
+        },
+		xAxis: { categories: [] },
+		yAxis: { title: { text: 'Nro Avisos' } },
+		
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=grDistCri';
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();	
+		
+			 //window.open(url);
+			
+		$.get(url, function(xml) {
+            var $xml = $(xml);
+            
+            $xml.find('tags').each(function(i, series){
+			
+               var seriesOptions = {
+                  name: $(series).find('name').text(),
+				  color: $(series).find('color').text(),
+                  data: [],
+						point: {events: {click: function() {verAvisos("", this.name, 3 );}}
+								}
+               },
+			   
+               name  = [];
+
+               $xml.find('cat tag').each(function(i, category) {
+                  name[i] = $(category).text();
+				  
+				  
+               });
+               
+               $(series).find('tgv point').each(function(i, point) {
+                  seriesOptions.data.push([name[i],	parseInt($(point).text())]);
+               });
+			   
+               options.series.push(seriesOptions);
+            });
+            var chart = new Highcharts.Chart(options);
+         }); 
+		 
+		 
+}
+
+function gr12(){
+
+var options = {
+		chart: {renderTo: 'chart12', type: 'column'}, 
+		title: { text: 'Condicion de Solución por Criticidad' }, 
+		xAxis: {  categories: [],  labels: { rotation: -75, align: 'right' } 		},
+		yAxis: { title: { text: 'Nro Avisos' } },
+		plotOptions: {
+            series: {    dataLabels: {  enabled: false  }
+            },
+			
+			column: { events: { legendItemClick: function(){return false}}
+			},
+        },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = 'js/graphics.asp?RECURSO=criSolucion';
+				url += '&FAENA=' + getEmpresa();
+				url += '&AREA=' + document.getElementById("selectTipos").value;
+				url += '&HIST=' +getRadioVal(idHistorial);
+				url += '&EQUIPO=' + document.getElementById("idEquipos").value;
+				url += "&VTZ=" + Math.random();
+				
+		//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 500;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						//color: $(series).find('color').text(),
+						data: [] ,
+						point: {events: {click: function() {verAvisos(this.category , this.series.name, 2);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push(
+							parseInt($(point).text())
+						);
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				}); //end series
+				
+					var chart12 = new Highcharts.Chart(options);
+					
+			}); //end get
+			
+}
+
+function hideFrm(){
+	 with (divWait.style){visibility = "hidden";} 
+}
+
+jQuery(document).ready(function($){ 
+	listAreas();
+});
+
+
+function getRadioVal(obj) {
+    //var coffee = document.forms[0];
+//	alert(obj.tagName);
+    var txt = "";
+    var i;
+    for (i = 0; i < obj.length; i++) {
+        if (obj[i].checked) { return obj[i].value; }
+    }
+  
+}
+
+
+</script>		
+
+</head>
+<body onLoad="">
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+
+<table width="100%" height="128" border="0" align="center" cellpadding="0" cellspacing="7" >
+  <!--DWLayoutTable-->
+  <tr>
+    <td colspan="20">
+    <SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>    </td>
+  </tr>
+  <br/>  <br/>
+  
+  <tr>
+    <td width="1%" height="37">&nbsp;</td>
+    <td colspan="6" align="center"><div align="left"><span class="style8">
+    INDICADORES DE  INSPECCIÓN</span></div></td>
+    <td width="31%"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td width="8%"><!--DWLayoutEmptyCell-->&nbsp;</td>
+  </tr>
+  <tr>
+    <td height="10"></td>
+    <td width="1%"></td>
+    <td width="22%" align="right">Avisos por Solucionar&nbsp;&nbsp; </td>
+    <td width="4%"><input  type="radio" value="false" id="idHistorial" name="idHistorial" onChange="actualizar();" checked /></td>
+    <td width="9%" rowspan="2" align="right">Area :</td>
+  <td width="16%" rowspan="2">
+<select name="selectTipos" id="selectTipos" class="select" onChange="actualizar();">
+       	  <option value=""  selected="selected">TODAS</option>
+      </select></td>
+    <td width="8%" rowspan="2">Equipo :</td>
+    <td rowspan="2">&nbsp;
+      <select name="selectEquipos" id="idEquipos" class="select" onChange="actualizar();">
+      </select></td>
+    <td rowspan="2" align="center"><input type="button" value="Imprimir" onClick="print();" /></td>
+  </tr>
+  <tr>
+    <td height="20"></td>
+    <td colspan="2" align="right" valign="top">Avisos Solucionados&nbsp;&nbsp;</td>
+    <td  >
+   	  <input type="radio" id="idHistorial" name="idHistorial" value="true" onChange="actualizar();" /></td>
+  </tr>
+</table>
+
+<table width="100%" bgcolor="#999999">
+  <tr>
+    <td>	
+
+<table width="98%" border="0" align="center" cellspacing="0">
+  <tr>
+    <td align="center">
+      <table width="98%" align="center">
+      <!--DWLayoutTable-->
+      <tr>
+        <td height="252" colspan="2" valign="top">   		 
+   		  <div id="chart10" style="height: 250px; min-width: 300px;"></div></td>
+        <td colspan="2" align="center" valign="top">
+   		 <div id="chart1" style="height: 250px; min-width: 300px;"></div> </td>
+      </tr>
+      <tr>
+        <td height="16" colspan="4" valign="top"><hr/></td>
+      </tr>
+      <tr>
+        <td height="268" valign="top"><div id="chart3" style="height: 250px; min-width: 300px;"></div></td>
+        <td colspan="2"  valign="top"><div id="chart11" style="height: 250px; min-width: 300px;"></div></td>
+        <td width="276"  valign="top"><div id="chart12" style="height: 250px; min-width: 300px;"></div></td>
+      </tr>
+      <tr>
+        <td height="252" colspan="4" valign="top">
+        <!--div id="chart4" style="height: 250px; min-width: 750px;"></div--></td>
+      </tr>
+      <tr>
+        <td height="4" colspan="4" valign="top"><hr/></td>
+      </tr>
+      <tr>
+        <td width="284"   height="252" valign="top">
+        <!--div id="chart5" style="height: 250px; min-width: 400px;"></div--></td>
+        <td colspan="3">
+        	<!--div id="chart6" style="height: 250px; min-width: 400px;"></div--></td>
+      </tr>
+      <tr>
+        <td height="31" colspan="4" valign="top"><hr/></td>
+      </tr>
+     
+      <tr>
+        <td height="5"></td>
+        <td width="115"></td>
+        <td width="174"></td>
+        <td></td>
+      </tr>
+    </table> 
+      <!--chart-->
+    </td>
+  </tr>
+</table> <!-- main charts -->
+</td>
+    </tr>
+</table> <!-- backg charts -->
+</body>
+</html>

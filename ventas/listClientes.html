@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<XML id="XMLListProv"></XML>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var functionName;
+var strs;
+
+function popsearchbox(_servstr, _codeobj, _nameobj, _popbox, _function){
+  parent.event.cancelBubble=true;
+  strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  functionName = _function;
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 1;
+    visibility = "visible";
+  }
+  searchText.focus();
+
+
+}
+function setcodeandname(code, name){
+  codeobj.value = code;
+  nameobj.value = name;
+}
+function close(){
+  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function searchKey(_value){
+
+  XMLListProv.async = true;
+  var xmlDso =   XMLListProv.XMLDocument;
+//  if(_value.length>3){
+  var url = "xml/clientes.asp?RECURSO=listClientes&TXTXSRC="+_value;
+	  var res = xmlDso.load(url);
+	  //}
+     
+}
+
+function search(_value){
+
+  XMLListProv.async = false;
+  var xmlDso = XMLListProv.XMLDocument;
+  var cr = 0;
+  
+  var url = "xml/clientes.asp?RECURSO=listClientes&TXTSRC="+ _value;
+  var res = xmlDso.load(url);
+
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+}
+function set(itr){
+  if (itr){
+  	setcodeandname(itr.children[0].children[0].innerText, itr.children[0].children[1].innerText);
+	eval("parent." + functionName);
+	}
+  else setcodeandname("","");
+  close();
+}
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"  scroll="no"  
+onLoad="">
+
+<CENTER>
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda - Clientes</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="set();">
+    </TD>
+  </TR>
+</TABLE>
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR  class="HeaderLista">
+    <TD ALIGN="left" CLASS="text">
+	  &nbsp;<INPUT  name="searchText" TYPE="text" CLASS="input" SIZE="22"
+	  				 onKeyPress="if(event.keyCode==13)search(this.value);">
+	 	  &nbsp;<INPUT  type="button" CLASS="botonBlanco" 
+	  				  onClick="search(searchText.value);" VALUE="Buscar">
+					 </TD>
+    <TD ALIGN="left">&nbsp;</TD>
+  </TR>
+</TABLE>
+
+<SPAN ID="cont" STYLE="height:210px; overflow-y:auto; display:none; border:solid 1px #EAC0C0;">
+<TABLE WIDTH="100%" DATASRC="#XMLListProv" border=0 cellpadding=2 cellspacing=0 >
+  <THEAD>
+  <!--tr bgcolor="#c0ceda">
+    <td class="text" align="center" style="border-bottom:solid 1px #6587a3;">ID</td>
+  </tr-->
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:default;"
+  				onMouseOver="mOvr(this,'#ABCCE5')"
+				onMouseOut="mOut(this,'#ffffff')" HEIGHT="9">
+				
+    <TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="RUT" CLASS="text"></SPAN>&nbsp;
+      <SPAN DATAFLD="NOMBRE" CLASS="text"></SPAN>
+    </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+
+
+
+
+
+
+</BODY>
+
+</HTML>

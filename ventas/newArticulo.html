@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function){
+
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	  formulario.txtNombre.focus();
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+
+ function guardar(){
+
+	xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=existeArticulo&NOMBRE=" + formulario.txtNombre.value;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			}
+	else
+		window.open(url);
+	    
+				
+if (getChildNodeValue(node,"RETURN")=="NOT")
+			NewArticulo();
+else
+	alert("Nombre de Articulo existente!");
+		
+
+}
+
+
+function NewArticulo(){			
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=NewArticulo";
+		url += "&NOMBRE=" + formulario.txtNombre.value;
+		url += "&FAMILIA=" + formulario.listFamilias.value;
+		url += "&SUB_FAMILIA=" + formulario.listSubFamilias.value;
+//		url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&MODELO=13";
+		url += "&MARCA=SIN";
+		url += "&RUT_PROVEEDOR=1";
+			
+		xmlestado = xmlDso.load(url);
+		
+	//     window.open(url);
+		if (xmlestado){
+				var tree = xmlDso.documentElement;
+	    	    var node = tree.childNodes.item(0);
+				
+	   			codeobj.value = getChildNodeValue(node,"RETURN");
+				  alert("Articulo Ingresado.");
+  				  LimpiarForm();
+  				  divBox.style.visibility = 'hidden';
+				eval("parent." + functionName);
+				  }
+	   else 
+	     window.open(url);
+}
+
+function ListFamilias(){
+
+  xmlTemp.async = false;
+  var xmlDso =  xmlTemp.XMLDocument;
+  var url = "xml/familias.asp?RECURSO=ListFamilias";
+//  var url = "xml/equipos.asp?RECURSO=ListEquiposxUsuario";
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listFamilias.options[i] = opcion;
+				 }
+    	  }
+	else
+	  window.open(url);
+	
+} 
+
+
+function ListSubFamilias(){
+
+  xmlTemp.async = false;
+  var xmlDso =  xmlTemp.XMLDocument;
+  var url = "xml/familias.asp?RECURSO=ListSubFamilias";
+		url += "&FAMILIA=" + formulario.listFamilias.value;
+		
+		 
+  var res = xmlDso.load(url);
+  	
+  if (res){
+    	      var tree = xmlDso.documentElement;
+			  
+   			  formulario.listSubFamilias.length = tree.childNodes.length;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listSubFamilias.options[i] = opcion;
+				//if (opcion.value == selCode) opcion.selected = true;
+				//lert(getChildNodeValue(node,"DESCRIPCION"));
+				 }
+    	  }
+	else
+	  window.open(url);
+	
+} 
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body onLoad="ListFamilias();ListSubFamilias();">
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+
+		<form name="formulario">
+		<table><tr><td width="50"></td><td>
+			<input type="hidden" size="0" name="txtIni">
+		</td></tr></table>
+			
+			<table border="0">
+						  <tr class="titulo">
+						    <td width="84" height="26" align="center">Articulo</td>
+						    <td width="200" height="26" align="center"></td>
+						    <td width="16" height="26" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table>  
+			<table width="273" align="center" cellpadding="0" cellspacing="3"
+			 class="texto" id="tabPlanifica"  datasrc=#xmlIncidentesOT>
+			  <!--DWLayoutTable-->
+				<thead>
+				<tr class="HeaderLista">
+				  <td height="13" colspan="2" valign="top">Nombre</td>
+				  </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td height="27" colspan="2" align="center" valign="top">
+				    <input name="txtNombre" type="text" class="input" size="50"/></td>
+		      </tr>
+			    <tr bgcolor="#dee6eb">
+			      <td width="142" height="13"></td>
+			      <td width="116" align="center"></td>
+		      </tr>
+		        
+		        <tr bgcolor="#dee6eb" class="HeaderLista">
+		          <td onClick="return;">Familia </td>
+		          <td align="center">Sub Familia</td>
+	          </tr>
+	          <tr bgcolor="#dee6eb">
+				<td height="27" align="center" onClick="return;">
+					<select name="listFamilias" onChange="ListSubFamilias();" class="input" datafld="FAMILIA">
+		      	</select>
+				</td>
+				<td align="center">
+				<select name="listSubFamilias"  class="input" datafld="SUB_FAMILIA">
+		      	</select>
+	  </td>
+			  </tr>
+</table>
+	      </div><br>
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="guardar();" value="Guardar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

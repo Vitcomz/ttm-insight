@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<?xml-stylesheet type="text/xsl" href="prueba.xsl"?> 
+<fichero> 
+<cotizacion> 
+<nombre>Autentia</nombre> 
+<mercado>Madrid</mercado> 
+<precio>12</precio> 
+<fecha> 
+<dia>24</dia> 
+<mes>04</mes> 
+<anio>2003</anio> 
+</fecha> 
+</cotizacion> 
+
+<cotizacion> 
+<nombre>Acertia</nombre> 
+<mercado>Madrid</mercado> 
+<precio>21</precio> 
+<fecha> 
+<dia>23</dia> 
+<mes>04</mes> 
+<anio>2003</anio> 
+</fecha> 
+</cotizacion> 
+</fichero> 

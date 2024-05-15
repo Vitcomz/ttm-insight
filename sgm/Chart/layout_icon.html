@@ -1,0 +1,194 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="layout2.css" type="text/css">
+
+
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<script type="text/javascript" src="../standard/jquery-1.2.2.pack.js"></script>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+</head>
+<script>
+var _i;
+var t;
+
+<!--
+var layout = new Array();
+var layouts;
+/**********************************************************************/
+	var EQUIPO = getParametro("EQUIPO");
+	var Usuario = GetSession();
+				if (getEmpresa()=='CERRO COLORADO')
+					EQUIPO='010-FE-001';
+function getBitacora(){
+	layouts = listEquipos_images();
+	document.getElementById("idMap").style.background="url(ly/" + layouts + ") no-repeat";
+	//document.getElementById("idTitle").innerHTML= document.getElementById("listEquipos").value;
+	// remuevo todos los elementos del mapa
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+
+	xmlTemp2.async = false;
+		var xmlDso = xmlTemp2.XMLDocument;
+			
+		var url = "../xml/Bitacoras.asp?RECURSO=getLayout";
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&EQUIPO_PRIN=" + EQUIPO;
+		url += "&EQUIPO=TOD";
+		url += "&CRITICIDAD=TOD";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2020";
+		url += "&USUARIO=" + Usuario;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&VTZ=" + Math.random();
+		
+		
+		xmlestado = xmlDso.load(url);
+		//window.open(url);
+		 
+		if (xmlestado){
+    	     var tree = xmlDso.documentElement;	
+			 var _largo = tree.childNodes.length;
+			 //var _largo=1;
+	          for(var i = 0; i < _largo; i++){
+    	        var node = tree.childNodes.item(i);
+				equipo=getChildNodeValue(node,"EQUIPO");
+				imagen = getChildNodeValue(node,"COLOR")+'-'+getChildNodeValue(node,"LAYOUT");
+				folio = getChildNodeValue(node,"FOLIO")
+				//alert(folio);
+				
+				var miDt = new Element('dt', {'id': equipo+i+'dt'}).injectInside(idMap);
+				
+				if(getChildNodeValue(node,"LAYOUT")=="")
+								imagen = "null.png";
+				
+				var miIMG = new Element('img', {
+						'src' : "ly/"+imagen, 
+						'class': 'polLnk',
+						'title': getChildNodeValue(node,"GCODE") + " CRITICIDAD:" + getChildNodeValue(node,"COLOR"),
+						'id': equipo+i,
+						'alt': equipo,
+						//'width':'100', 
+						//'height':'100',
+						styles: {
+							left: getChildNodeValue(node,"X"),
+							top : getChildNodeValue(node,"Y"),
+							color: 'FFFF00'
+						},
+						events: {
+							click: function(){
+								//alert(this.id); 
+								//verBitacora(this.alt);
+							},
+							mouseover: function(){ 
+								//alert(this.tagName);
+								this.style.opacity=1;
+								this.filters.alpha.opacity=100;
+								
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								this.filters.alpha.opacity=65;
+								//dropdowncontent.hidediv('subcontent')
+								
+							}
+						}
+					}).injectInside(equipo+i+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+i+'Title',
+						html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+					}).injectInside(idMap);
+ 			 }//end for
+			 equipo=null;
+			//document.getElementById("para").value=document.getElementById("idMap").innerHTML;
+    	  }//end If
+	else
+	  window.open(url);
+}
+//-->
+function listEquipos_images(){		
+	xmlTemp.async = false;
+	var xmlDso =  xmlTemp.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+		url += "&FAENA="+getEmpresa()
+		url +="&VTZ="+Math.random();
+		
+	var res = xmlDso.load(url);
+//	alert(url);
+//	 window.open(url);
+	if (res){
+			var tree = xmlDso.documentElement;				
+			for(var i = 0; i < tree.childNodes.length; i++){
+				var node = tree.childNodes.item(i);
+				if (getChildNodeValue(node,"CODIGO") == EQUIPO){
+				return getChildNodeValue(node,"LAYOUT");
+				}
+			}
+		}
+	else
+		window.open(url);
+		
+//			if (getEmpresa()=='CERRO COLORADO')
+//					formulario.listEquipos.value='010-FE-001';
+			
+		
+					
+} 
+function getParametro(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  } 
+  //alert('Query Variable ' + variable + ' not found');
+  return false;
+}
+function inicio(){
+
+	getBitacora();
+
+}
+
+
+</script>
+<body onload="inicio();" >
+<form name="formulario">	
+<div id="holder" align="left">
+    <div>
+        <dl class="map" id="idMap">
+            <dt><a onclick="" class="polLnk" id="semilla" target="_blank"></a></dt>
+            <dd id="pol1Title"></dd>
+        </dl>
+    </div>
+</div>
+<!--Drop Down content element -->
+</form>
+</body>
+</html>

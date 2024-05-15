@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Ingreso de Horometros</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlGrupos></xml>
+		<xml id=xmlEquipos></xml>
+		<xml id=xmlListGrupos></xml>
+		<xml id=xmlListHorometros></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css">
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+</HEAD>
+
+<script>
+
+function ListGrupos(){
+
+  xmlListGrupos.async = false;
+  var xmlDso =  xmlListGrupos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListGrupos";
+  var res = xmlDso.load(url);
+
+ if (formulario.ListGrupo.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListGrupo.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"0");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.ListGrupo.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+	
+
+ } 
+
+
+ function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"SEL");
+				if (opcion.value == "SEL") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+  
+ function ListHorometros(){
+
+  xmlListHorometros.async = false;
+  var xmlDso = xmlListHorometros.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListHorometros";
+	  url += "&GRUPO=" + formulario.TxtGrupo.value
+  var res = xmlDso.load(url);
+
+  if (!res)
+		  window.open(url);
+
+ } 
+ 
+  function ListHorometrosxGrupo(){
+
+  xmlListHorometros.async = false;
+  var xmlDso = xmlListHorometros.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListValorHorometroxGrupo";
+	 	url += "&GRUPO=" + formulario.ListGrupo.value;
+	  	url += "&FECHA=" +  formulario.txtFecha.value;
+		
+  var res = xmlDso.load(url);
+
+  if (!res)
+		  window.open(url);
+
+ } 
+  
+
+function ListHorometrosxEquipo(){
+
+  xmlListHorometros.async = false;
+  var xmlDso = xmlListHorometros.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListValorHorometroxEquipo";
+	 	url += "&COD_EQUIPO=" + formulario.ListEquipos.value;
+	  	url += "&FECHA=" +  formulario.txtFecha.value;
+		
+  var res = xmlDso.load(url);
+
+  if (!res)
+		  window.open(url);
+
+ } 
+ 
+function GuardarHorometros(){
+
+var tabla = document.getElementById('tabHorometro');
+
+		for (i=1; i< tabla.rows.length; i++){
+			CodHorometro = tabla.rows[i].children[0].children[0].value;
+			Equipo = formulario.ListEquipos.value;
+			Fecha = formulario.txtFecha.value;
+			Valor = tabla.rows[i].children[2].children[0].value;
+			
+			if (Valor!="")
+					GuardarHorometro(CodHorometro, Equipo, Fecha, Valor);
+		}
+}
+
+function GuardarHorometro(CodHorometro, Equipo, Fecha, Valor){
+
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=UltimoValorHorometro";
+		url += "&HOROMETRO=" + CodHorometro;
+		url += "&COD_EQUIPO=" + Equipo;
+	   xmlestado = xmlDso.load(url);		
+	  if (xmlestado){
+			if (xmlDso.documentElement.childNodes.length>0){
+		   	        var node = xmlDso.documentElement.childNodes.item(0);
+					   fechaAnt = getChildNodeValue(node,"FECHA");
+		   			   valorAnt = getChildNodeValue(node,"VALOR");
+					   
+					   	if (parseFloat(Valor) < parseFloat(valorAnt)){
+					   		alert('Lectura incorrecta, ultimo valor ' + valorAnt);
+							return;}
+							
+					   if (obtenerPeriodo(formulario.txtFecha.value)<=obtenerPeriodo(fechaAnt)){
+					   		alert('Error, ya existe una lectura con fecha ' + fechaAnt
+								+ ' para ' + CodHorometro + ' equipo ' + Equipo + 
+									' Fecha Ingresada :' + formulario.txtFecha.value);
+							return;}
+							
+					   }
+			   }			
+		else
+			window.open(url);
+	
+						
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=InsertValorHorometro";
+		url += "&HOROMETRO=" + CodHorometro;
+		url += "&COD_EQUIPO=" + Equipo;
+		url += "&FECHA=" + Fecha;
+		url += "&VALOR=" + Valor;
+		url += "&USUARIO=" + GetSession();
+		
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+		
+		var url = "xml/Equipos.asp?RECURSO=UpdateValorHorometro";
+		url += "&HOROMETRO=" + CodHorometro;
+		url += "&COD_EQUIPO=" + Equipo;
+		url += "&FECHA=" + Fecha;
+		url += "&VALOR=" + Valor;
+		url += "&USUARIO=" + GetSession();
+
+
+
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+			else
+		  		alert("Horometro " + CodHorometro + " actualizado.");
+		
+}
+
+function inicio(){
+
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getYear();    
+  day       = mydate.getDay();  
+
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+formulario.txtFecha.value = day_month + "/" + month +"/"+ year;
+
+ListEquipos();
+
+}
+
+function verLecturas(Index){
+
+
+var horometro = document.getElementById('tabHorometro').rows[Index].children(0).children(0);
+
+
+document.ListFrameHorometro.popsearchbox(0,formulario.ListEquipos,horometro,DivHorometro,Index);
+
+}
+
+</script>
+
+	<body onLoad="inicio();" >
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>			
+	<DIV id="DivHorometro" style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 74px; top: 183px; height: 23; border-style: ridge; border-width: 2px" onClick="event.cancelBubble=true">
+<IFRAME name="ListFrameHorometro" src="ListHorometro.html" frameBorder="0" width="250" scrolling="no" height="200"></IFRAME>
+</DIV>
+	
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR><BR><BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+			<table>
+			<TR class="titulo">
+			  <TD colspan="2">Ingreso  de Horometros</TD>
+			</TR>
+			<TR  class="Campo">
+			  <TD width="92">Equipo Pincipal  :</TD>
+				<td width="36" ><select name="ListEquipos" onChange="ListHorometrosxEquipo();" class="Campo"></select></td>
+					  <TD width="146" colSpan="2" valign="middle"> Fecha :
+							  <input class="Campo" type="text" size="12" name="txtFecha"
+							   datafld="FECHA_EJECUCION" > 
+							  </input>
+						  	  <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+							  onclick="FrameCalendar.fPopCalendar(txtFecha,
+							  txtFecha,divCalendar,null,'ListHorometrosxEquipo();');">	
+		   	  </TD>
+			</TR>
+			</table>
+					  <table cellpadding="2" cellspacing="1" class="texto" 
+					  				id="tabHorometro"  datasrc=#xmlListHorometros >
+						<thead>
+						<tr class="HeaderLista">
+						  <td>Codigo</td>
+						  <td>Descripci�n</td>
+  						  <td>Lectura</td>
+  						  <td>Historial</td>
+						</th>
+						</thead>
+						<tr class="ItemLista" align="center">
+						  <td align="center"><input name="TxtCodigo" type="text" class="input" size="8" datafld="CODIGO"/></td>
+							<td align="center">
+								<input  name="TxtNombre" type="text" class="input"
+										size="30" datafld="DESCRIPCION"/></td>
+							<td align="center">
+								<input  name="TxtLecActual" type="text" class="input" size="8" datafld="VALOR"/>
+							</td>
+							
+							<td align="center">
+						<img src="images/table.png" style="CURSOR: hand"
+							onclick="verLecturas(this.parentElement.parentElement.rowIndex);">
+							</td>
+						</tr>
+
+				</table><br>
+			<input type="button"  class="botonBlancoLargo" value="Aceptar" onClick="GuardarHorometros();">
+			<input type="button"  class="botonBlancoLargo" value="Cancelar" onClick="document.location.href='manprev.html';">
+					
+				 
+				
+		</form>
+
+	</body>
+</HTML>

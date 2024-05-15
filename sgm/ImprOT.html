@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<title>Orden de Trabajo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOT"></xml>
+		<xml id="xmlActividades"></xml>
+		<xml id="xmlResponsables"></xml>
+		<xml id="xmlIncidente"></xml>
+		<xml id="xmlIncidentes"></xml>
+
+	<link rel="stylesheet" href="standard/menu.css" type="text/css">
+	<link rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+	<script src="standard/vitcomz.js"> </script>
+
+<script>
+//Funciones de Inicio de P�gina
+	
+function inicio()
+{
+  //Variables generales
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  
+  ListResponsables();
+}
+
+
+function nuevo()
+{
+  //Variables generales
+  window.location.href="OT.html";
+}
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+  
+function getOT(){
+
+	if (getParametro("FOLIO")){
+	    xmlOT.async = false;
+    	var xmlDso = xmlOT.XMLDocument;
+		var url = "xml/OT.asp?Recurso=GetOT&FOLIO_OT=" + getParametro("FOLIO");
+	    var res =xmlDso.load(url);
+	//	window.open(url);
+		document.getElementById('idFolio').innerText = getParametro("FOLIO");
+
+		}
+	else{
+		alert("Seleccione una OT");
+		window.close();
+		}
+	
+}
+	
+
+
+
+
+//Funciones generales
+ function limpiarTabla(tabla)
+ {
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(0);
+	 }
+ }
+ 
+  function limpiarTabla2(tabla)
+ {
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(1);
+	 }
+ }
+ 
+function GetEquipo(){
+
+}
+				</script>
+	<style type="text/css">
+<!--
+body {
+	margin-left: 0.5in;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	font-family:Arial, Helvetica, sans-serif;
+}
+-->
+</style></HEAD>
+	<body onload="getOT();">
+	
+
+		<form name="formulario">
+			<table height="19" cellSpacing="0" cellPadding="0" width="718" border="0">
+			  <!--DWLayoutTable-->
+				<tr>
+					<th vAlign="top" width="177" height="131">
+                    <img src="images/Logo1.jpg"> </th>
+<th vAlign="middle" align="center" width="541">
+						<span class="tituloImpr">ORDEN DE TRABAJO N�</span>
+						<span class="tituloImpr" id="idFolio"></span>					</th>
+			  </tr>
+		  </table>
+			<table height="610" cellSpacing="0" cellPadding="0" width="761" border="0" id="tabPrincipal">
+			  <!--DWLayoutTable-->
+				<tr>
+				  <th height="151" colspan="2" vAlign="middle"> <!-- CABECERA SOLICITUD -->
+						<table width="718" height="146" border="1" align="left" 
+                        	cellpadding="0" cellspacing="0" bordercolor="#000000" id="tabCabecera1" DATASRC="#xmlOT">
+						  <!--DWLayoutTable-->
+						<TR align="center" class="titulo">
+								<TD height="18" colspan="3" valign="top" >EQUIPO</TD>
+						  <TD colspan="2" valign="top" >ESTADO</TD>
+						  </TR>
+							<TR align="center" vAlign="middle" class="texto">
+							  <TD height="33" colSpan="3" valign="middle">
+						    <input  type="hidden" size="1" name="txtOT" datafld="FOLIO_OT">
+							<input type="hidden" id="idCodEquipo" name="txtCodEquipo" datafld="COD_EQUIPO">
+							<span id="idCodEquipo" name="txtCodEquipo" datafld="COD_EQUIPO"></span>&nbsp;
+							  <span id="idEquipo" datafld="DESC_EQUIPO">&nbsp;</span></TD>
+							  <TD colSpan="2" valign="middle">
+							    <select name="listEstados" class="texto" disabled="disabled" datafld="ESTADO">
+												<option value="PRO">PROGRAMADA</option>
+							  					<option value="PEN">PENDIENTE</option>
+							  					<option value="EJE">EJECUTADA</option>
+							  					<option value="NUL">ANULADA</option>
+							    </select></TD>
+						  </TR>
+							<TR align="left" class="titulo">
+								<td height="26" colspan="2" align="center">CLIENTE</td>
+								<td colSpan="2" align="center">FECHA REQUERIDA </td>
+								<td width="129" align="center" valign="top">TIPO&nbsp;REV.</td>
+							</TR>
+							<TR align="left" class="texto" valign="middle">
+								<td height="34" colspan="2" valign="top"><span datafld="CLIENTE"></span>								  </td>
+							  <td colSpan="2" align="center"><span datafld="FECHA_PROGRAMADA"></span></td>
+								<td align="center"><SELECT name="listTipoRev"  class="texto" datafld="TIPO_REV" disabled>
+                                  <OPTION value="SIN">NO APLICA</OPTION>
+                                  <OPTION value="Remaclave 60">Remaclave 60</OPTION>
+                                  <OPTION value="Remaclave 40 ISO">Remaclave 40 ISO</OPTION>
+                                  <OPTION value="PRIMER PR 500-1">PRIMER PR 500-1</OPTION>
+                                  <OPTION value="PRIMER S 500-2">PRIMER S 500-2</OPTION>
+                                  <OPTION value="SOLUCION REMACLEAVE">SOLUCION REMACLEAVE</OPTION>
+                                  <OPTION value="TTM-SOFT45">TTM-SOFT45</OPTION>
+                                  <OPTION value="TTM-MAX60">TTM-MAX60</OPTION>
+                                  <OPTION value="CERAMICA">CERAMICA</OPTION>
+                                </SELECT></td>
+							</TR>
+							
+							<tr class="titulo" >
+							  <td width="234" height="30" align="center">RESPONSABLE</td>
+							  <td width="146" align="center">PLANO</td>
+							  <td colspan="2" align="center">FECHA DESPACHO </td>
+							  <td align="center">N&ordm; GUIA</td>
+						  </tr>
+							<tr class="texto" >
+							  <td height="21"><span id="idResponsable" datafld="RESPONSABLE"/></td>
+							  <td valign="top"><span datafld="OBSERVACION"></span></td>
+							  <td colspan="2" valign="top"><span datafld="FECHA_DESPACHO"></span></td>
+							  <td><span datafld="DOCUMENTO"></span></td>
+						  </tr>
+			
+			      </table></th>
+			    </tr>
+			<tr>
+			  <th width="305" height="310" align="left" valign="top">
+			   <TABLE id="Table1" cellSpacing="0" cellPadding="0" border="0">
+				  <!--DWLayoutTable-->
+					<TR class="titulo" height="20">
+						<TH width="8" ></TH>
+				        <TH width="279" align="left" vAlign="middle">
+						ACTIVIDADES DE MANTENCION&nbsp;</TH>
+				    </TR>
+			    </TABLE>
+			  <TABLE id="tabActividades" border="0" cellpadding="4" cellspacing="4" align="left"></TABLE>	
+			  </th>
+			  <th align="left" valign="top" >
+                <!---- INCIDENTES--->
+						<TABLE  border="0" cellPadding="0" cellSpacing="0" >
+							<TBODY>
+								<TR valign="top" align="left" class="titulo" height="20">
+									<th vAlign="top" width="10"></th>
+									<th vAlign="middle" align="left" width="188">PERSONAL RESPONSABLE</th>
+									<th vAlign="top" width="1" ></th>
+								    <th width="20">&nbsp;</th>
+								</TR>
+						  </TBODY>
+			            </TABLE>					
+						<TABLE width="281" height="24"  border="0" id="tabIncidentes">
+						  <!--DWLayoutTable-->
+						  <TR class="titulo">
+						    <TH width="40">Nombre </TH>
+							  <TH width="40" height="18">
+								  Turno</TH>
+							  <TH width="51">
+								  Fecha</TH>
+						  </TR>
+			            </TABLE>
+			  </th>
+			  </tr>
+			
+
+			<tr>
+			  <th height="16" colspan="2" align="left" vAlign="top" scope="row">
+			  		
+		      <table width="716" border="1" align="left" cellpadding="0" cellspacing="0"
+			  			 bordercolor="#000000" DATASRC="#xmlOT">	
+			  <tr><td width="749" height="20"  class="titulo">Observaci�n</td>
+			  </tr>
+			  <tr height="100"><td class="texto">&nbsp;<span datafld="OBSERVACION"></span></td></tr>
+			  </table>
+			  <!---- INSUMOS >
+						<table cellSpacing="0" cellPadding="0" border="0">
+							<TBODY>
+								<TR vAlign="middle">
+									<th vAlign="top" width="15" background="images/tag_left.jpg" height="19">									</th>
+									<th class="Subtitulo" vAlign="bottom" align="left" width="210" background="images/tag_center.jpg">
+										INSUMOS/REPUESTOS/SERVICIOS</th>
+									<th vAlign="top" width="26" background="images/tag_right.jpg" height="19">									</th>
+									<th width="23" height="19">
+										<IMG src="images/lupa.jpg" width="19" height="19" style="CURSOR: hand" 
+											onclick="frameInstalacion.popsearchbox(getElementById('tabDistCosto'), divInstalacion); return false;">								  </th>
+								</TR>
+				</table>
+							<TABLE id="tabInsumos" border="0">
+							<TR class="Rotulo">
+								<TH width="40">
+									�tem</TH>
+								<TH width="148">
+									Tipo</TH>
+								<TH width="352">Descripci&oacute;n</TH>
+								<TH width="57">Cantidad</TH>
+								<TH width="1">&nbsp;</TH>
+							</TR>
+							</TABLE--->			  </th>
+			  </tr>
+			
+		  <tr>
+		    <td height="16" colspan="2" valign="top">
+              </TBODY>
+	      </TABLE><br><br><br>
+			<table height="19" cellSpacing="0" cellPadding="0" width="708" border="0">
+			  <!--DWLayoutTable-->
+				<TR>
+					<td width="220" height="19" align="center" class="titulo">
+							_________________________<br>
+							COORDINADOR MANTENCION
+					</td>
+					<td align="center"><!--input class="boton" onclick="alert('Esta funcion esta casi lista!');" type="button" value="Nueva"--></td>
+					<td width="378" align="center" class="titulo">
+						_______________________<br>
+						SUPERVISOR MANTENCION
+					</td>
+			  </TR>
+			</table>
+			</TR></TBODY></TABLE></form>
+	</body>
+</HTML>

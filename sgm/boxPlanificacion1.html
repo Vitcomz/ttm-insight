@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+
+var divBox = new Object();
+var recomen = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function showWin(_code,  _divBox){
+
+
+// alert(_code.value);
+ codeobj = _code;
+ divBox = _divBox;
+ divBox.style.visibility = 'visible'
+
+  getData();
+ 
+}
+
+function getData(){
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=getPlanData";
+		url += "&ID=" + codeobj.value;
+		url += "&VTZ=" + Math.random();
+		
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+				
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function guardar(){
+
+ xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=updatePlanData";
+		url += "&ID=" + codeobj.value;
+		url += "&OT=" + formulario.txtOT.value;
+		url += "&REPORT=" + formulario.txtReport.value;
+		url += "&FECHA_PROGRAMADA=" + formulario.txtFechaProgramada.value;
+		url += "&RECOMENDACION=" + formulario.txtRecomendacion.value;
+		url += "&ACCION=" + formulario.txtAccion.value;
+		url += "&CONDICION=" + formulario.listCondicion.value;
+		url += "&ESTATUS=" + formulario.listStatus.value;
+		url += "&VTZ=" + Math.random();
+		
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+ } 
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body>
+    <DIV ID="divCalendar" onClick="event.cancelBubble=true" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+<form name="formulario">
+<table width="100%" border="0" bgcolor="#7E95BD">
+<tr bgcolor="#7E95BD" >
+ <td width="756" height="17" align="left" class="titulo" >Planificaci&oacute;n </td>
+  <td width="140" height="17" align="center"></td>
+  <td width="70" height="17" align="right">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+    </tr>
+  </table><br/> 
+<table width="506" align="center"  class="CampoBold" DATASRC=#xmlTemp>
+  <!--DWLayoutTable-->
+    <tr bgcolor="#EEEEEE">
+      <td height="17" colspan="2" onClick="return;"></td>
+    </tr>
+				<tr>
+				  <td width="113" height="21" align="center">Fecha Programada</td>
+				  <TD align="left" valign="top">
+                  <input type="text" class="tinyInput" size="17" DATAFLD='FECHA_PROGRAMADA'  name="txtFechaProgramada"/>
+                  <IMG  src="images/calendar.jpg" alt="Calendar" ALIGN="top" STYLE="CURSOR: hand"
+					  onclick="FrameCalendar.fPopCalendar(txtFechaProgramada,txtFechaProgramada,divCalendar);return false">                  </td>
+				</tr>
+				<tr>
+				  <td align="center">Nro Aviso</td>
+				  <TD align="left"><input type="text" class="tinyInput" size="17" NAME="txtReport" DATAFLD="REPORT" /></td>
+    </tr>
+				<tr>
+				<td align="center">  Nro OT</td>
+    			<TD align="left">
+    			<input type="text" class="tinyInput" size="17" NAME="txtOT" DATAFLD="OT" /></td></tr>
+				<tr>
+				  <td align="center">Recomendaci&oacute;n</td>
+				  <TD align="center">
+                  <TEXTAREA NAME="txtRecomendacion"  ROWS="4"
+		  			COLS="60" CLASS="textArea" DATAFLD="RECOMENDACION"
+		   					onKeyPress="validaKeys(this,749, window.event);"></TEXTAREA></td>
+    </tr>
+				<tr>
+				  <td align="center">Acci&oacute;n Inmediata</td>
+				  <TD align="center"><TEXTAREA NAME="txtAccion"  ROWS="4"
+		  			COLS="60" CLASS="textArea" DATAFLD="ACCION"
+		   					onKeyPress="validaKeys(this,749, window.event);"></TEXTAREA></td>
+    </tr>
+				<tr>
+				  <td align="center">Condicion</td>
+				  <TD align="left">
+                    <SELECT NAME="listCondicion" CLASS="input" DATAFLD="CONDICION">
+                    <OPTION VALUE="B" style="background-color:#0033FF">(B) MONITOREAR </OPTION>
+                    <OPTION VALUE="C" style="background-color:#FFFF00">(C) PROGRAMADA 2 SEMANAS</OPTION>  
+                    <OPTION VALUE="D" style="background-color:#FF9900">(D) PROGRAMADA 1 SEMANA</OPTION>
+                    <OPTION VALUE="E" style="background-color:#FF0000">(E) ACCION INMEDIATA</OPTION>
+                    <OPTION VALUE="P" style="background-color:#990000">(P) PROGRAMADA PARADA PLANTA</OPTION>
+                  </SELECT></td>
+                
+    </tr>
+				<tr>
+				  <td align="center">Status</td>
+				  <TD align="left">
+                    <SELECT NAME="listStatus" CLASS="input" DATAFLD="STATUS">
+                    <OPTION VALUE="1">INFORMADO A MANTENIMIENTO</OPTION>
+                    <OPTION VALUE="2">MONITOREO</OPTION>
+                  </SELECT></td></tr>
+				
+				<tr bgcolor="#EEEEEE">
+				  <td height="7" colspan="2" onClick="return;"></td>
+    			</tr>
+				<tr bgcolor="#EEEEEE">
+		        <td height="13" colspan="2" onClick="return;"><input type="button" class="tinyInput" 
+		  	onClick="divBox.style.visibility = 'hidden';guardar();" value="Aceptar">&nbsp;</td>
+	          </tr>
+  </table>
+<br>
+</form>
+
+</body>
+</HTML>

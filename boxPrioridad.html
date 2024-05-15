@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  document.getElementById('txtCodEquipo').innerText = codeobj.value;
+  document.getElementById('txtDesEquipo').innerText = nameobj.value;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+300;
+//	top  = point.y-100;
+	} 
+mostrarPrioridad();
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+function mostrarPrioridad(){
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=getPrioridad";
+		url += "&CODIGO=" + document.getElementById('txtCodEquipo').innerText;
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+				
+}
+
+function guardarPrioridad(){
+
+	for (i=0;i<formulario.txtPrioridad.length;i++)
+			if(formulario.txtPrioridad[i].checked)
+					prioridad=formulario.txtPrioridad[i].value;
+					
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/EQUIPOS.asp?RECURSO=updatePrioridad";
+		url += "&CODIGO=" + document.getElementById('txtCodEquipo').innerText;
+		url += "&PRIORIDAD=" + prioridad;
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+
+//
+eval("parent." + functionName);
+//
+}
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body>
+<form name="formulario">
+<table border="0">
+						  <tr class="titulo">
+						    <td width="132" height="17" align="left">Prioridad</td>
+						    <td width="152" height="17" align="center"></td>
+						    <td width="16" height="17" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+  </table> 
+	<table><tr align="center"><td colspan="2">
+				<span class="texto" type="text" size="5" id="txtCodEquipo"></span>&nbsp;
+				<span class="texto" type="text" size="35" id="txtDesEquipo"></span>
+				</td></tr>
+	</table>
+		<table width="162" align="center"  class="CampoBold" DATASRC=#xmlTemp>
+			  <tr bgcolor="#EEEEEE">
+		          <td height="13" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+				<tr><td width="112" bgcolor="#FF0000">ALTA</td>
+				<TD width="28" align="center">
+					<input  type="radio" name="txtPrioridad" class="Campo" value="A" datafld="PRIORIDAD">
+				</td></tr>
+				<tr><td bgcolor="#FFCC00">BAJA</td>
+				<TD align="center">
+					<input  type="radio" name="txtPrioridad" class="Campo" value="B" datafld="PRIORIDAD">
+				</td></tr>
+				<tr><td>SIN PRIORIDAD</td>
+				<TD align="center">
+					<input  type="radio" name="txtPrioridad" class="Campo" value="S" datafld="PRIORIDAD" checked="checked">
+				</td></tr>
+				<tr bgcolor="#EEEEEE">
+		        <td height="13" onClick="return;">&nbsp;</td>
+		        <td align="center">&nbsp;</td>
+	          </tr>
+  </table>
+  <br>
+  	  <div align="center">
+	   <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="divBox.style.visibility = 'hidden';guardarPrioridad();" value="Aceptar">
+  	  </div>
+	</form>
+
+	</body>
+</HTML>

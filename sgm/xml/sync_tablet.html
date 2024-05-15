@@ -1,0 +1,1027 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Usuarios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="Scripts/jquery.min.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<!---->
+<SCRIPT language="JavaScript1.2" src="/Scripts/download.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT>
+<!--adding-->
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+var xmlestado;
+
+
+function GetDownloadXML(){
+	var my_list = jQuery('#ul_li');
+	my_list.find('li').each(function(index, element){
+		my_list.find('li:eq(' + index + ')').removeClass(); 
+		if (index < 1){
+			my_list.find('li:eq(' + index + ')').addClass('visited');			
+		} else if (index == 1) {	
+			my_list.find('li:eq(' + index + ')').addClass('active');
+		}
+	});
+	
+	var win = window.open("http://www.ttminsight.cl/sgm/down_xml.html?FAENA="+ emp , "mywindow", "location=0,status=0,scrollbars=0,width=1,height=1");
+
+	setTimeout(function(){ GetEnd(); }, 8000);
+	
+}
+
+function GetEnd(){
+	
+	
+	
+	var my_list = jQuery('#ul_li');
+	my_list.find('li').each(function(index, element){
+		my_list.find('li:eq(' + index + ')').removeClass(); 
+		if (index < 4){
+			my_list.find('li:eq(' + index + ')').addClass('visited');			
+		} else if (index == 4) {	
+			my_list.find('li:eq(' + index + ')').addClass('active');
+		}
+	});
+
+
+	
+	
+}
+
+
+
+//function GetUsuarios(){
+//	var my_list = jQuery('#ul_li');
+//	my_list.find('li').each(function(index, element){
+//		my_list.find('li:eq(' + index + ')').removeClass(); 
+//		if (index < 1){
+//			my_list.find('li:eq(' + index + ')').addClass('visited');			
+//		} else if (index == 1) {	
+//			my_list.find('li:eq(' + index + ')').addClass('active');
+//		}
+//	});
+//	
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sci/xml/sync_Usuarios.asp?RECURSO=GetUsuario";
+//	url += "&VTZ=" + Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "usuarios.xml", "text/xml");
+//		}
+//}
+//
+//
+//function GetLayoutFaena(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Bitacoras.asp?RECURSO=LayoutFaena";
+//	 	url += "&FAENA=" + emp;
+//		url += "&VTZ=" + Math.random();
+//
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		if (!xmlestado){
+//				window.open(url);
+////		}else{
+////			download(xmlDoc, "layout_gral.xml", "text/xml");
+//		}
+//}
+//
+//function GetList_Equipos(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "List_Equipos.xml", "text/xml");
+//		}
+//}
+//
+//function GetListBitacora(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Bitacoras.asp?RECURSO=ListBitacora&RESPONSABLE=TOD&EQUIPO=TOD&EQUIPO_PRIN=TOD&IND_DANO=TOD&IND_SOLUCION=TOD&CRITICIDAD=TOD";
+//	 	url += "&FAENA=" + emp;
+//		url += "&VTZ=" + Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "List_bitacoras.xml", "text/xml");
+//		}
+//}
+//
+//
+//function GetTipo(){
+//	var my_list = jQuery('#ul_li');
+//	my_list.find('li').each(function(index, element){
+//		my_list.find('li:eq(' + index + ')').removeClass(); 
+//		if (index < 1){
+//			my_list.find('li:eq(' + index + ')').addClass('visited');			
+//		} else if (index == 1) {	
+//			my_list.find('li:eq(' + index + ')').addClass('active');
+//		}
+//	});
+//
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Equipos.asp?RECURSO=GetTipo&CODIGO=NULL";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "List_Equipos_gettipo.xml", "text/xml");
+//		}
+//}
+//
+//function GetHistorial(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Historial.asp?RECURSO=listHisBit";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "List_historial.xml", "text/xml");
+//		}
+//}
+//
+//function GetListCheckDesc(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/Checklist_bkp.asp?RECURSO=ListCheckDesc";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "list_Checklist.xml", "text/xml");
+//		}
+//}
+//
+//function GetcheckFallas(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/Checklist_bkp.asp?RECURSO=ListCheck";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "list_Checklist_fallas.xml", "text/xml");
+//		}
+//}
+//
+//function GetPlanData(){
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "www.ttminsight.cl/sgm/xml/sync_Bitacoras.asp?RECURSO=getPlanData";
+//		url += "&FAENA=" + emp;
+//		url +="&VTZ="+Math.random();
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			download(xmlDoc, "list_plandata.xml", "text/xml");
+//		}
+//}
+//
+//function GetMovefiles(){
+//	var my_list = jQuery('#ul_li');
+//	my_list.find('li').each(function(index, element){
+//		my_list.find('li:eq(' + index + ')').removeClass(); 
+//		if (index < 2){
+//			my_list.find('li:eq(' + index + ')').addClass('visited');			
+//		} else if (index == 2) {	
+//			my_list.find('li:eq(' + index + ')').addClass('active');
+//		}
+//	});
+//	
+//	var xmlDso = xmlDoc.XMLDocument;
+//	var url = "GetMovefiles.php";
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//					xmlhttp.send();	
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			xmlestado = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//		if (!xmlestado){
+//				window.open(url);
+//		}else{
+//			var my_list = jQuery('#ul_li');
+//			my_list.find('li').each(function(index, element){
+//				my_list.find('li:eq(' + index + ')').removeClass(); 
+//				if (index < 3){
+//					my_list.find('li:eq(' + index + ')').addClass('visited');			
+//				} else if (index == 3) {	
+//					my_list.find('li:eq(' + index + ')').addClass('active');
+//				}
+//			});
+//			
+//		}
+//
+//				
+//}
+
+function UploadAllXML(){
+	var my_list = jQuery('#ul_li');
+	my_list.find('li').each(function(index, element){
+		if (index == 0){
+			my_list.find('li:eq(' + index + ')').addClass('active');
+		} else if (index == 1){
+			my_list.find('li:eq(' + index + ')').addClass('next');				
+		} else {
+			my_list.find('li:eq(' + index + ')').removeClass();          
+		}
+	});
+	
+	
+}
+function UploadBitacoras(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/List_bitacoras.xml";
+		url += "?VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var keysw = 0;
+							switch (x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue) {
+								case "DISMINUYE CRITICIDAD":
+									keysw = 1;
+									break;
+								case "SE MANTIENE CONDICION":
+									keysw = 2;
+									break;
+								case "AUMENTA CRITICIDAD":
+									keysw = 3;
+									break;
+								case "NO SE REALIZA INSPECCION":
+									keysw = 4;
+									break;
+							} 
+
+							var url = "http://www.ttminsight.cl/sgm/xml/historial_bkp.asp?RECURSO=newHisBit";
+							url += "&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue; // codeobj.value;
+							url += "&INSPECTOR=" + x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue;
+							url += "&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							url += "&ESTATUS=" + keysw;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//------------------------------------------------------------------------------------------------	
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				
+				for (i=0; i<x.length; i++) {
+//					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+//						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+//							var url = "http://www.ttminsight.cl/sgm/xml/Bitacoras_bkp.asp?RECURSO=NewBitacora";
+//							url +="&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+//							if (x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0]  != null){
+//								url += "&ULT_INSPECCION=" + x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&ULT_INSPECCION=";
+//							}							
+//							url += "&EQUIPO=" + x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue;
+//							url += "&USERNAME=" + x[i].getElementsByTagName("RESPONSABLE")[0].childNodes[0].nodeValue;
+//							url += "&DESCRIPCION=" + x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0].nodeValue;
+//							if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0]  != null){
+//								url += "&RECOMENDACION=" + x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&RECOMENDACION=";
+//							}
+//							if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0]  != null){
+//								url += "&CAUSA=" + x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&CAUSA=";
+//							}							
+//							url += "&IND_INCIDENTE=" + x[i].getElementsByTagName("IND_INCIDENTE")[0].childNodes[0].nodeValue;
+//							url += "&IND_SOLUCION=" + x[i].getElementsByTagName("IND_SOLUCION")[0].childNodes[0].nodeValue;
+//							url += "&FAENA=" + x[i].getElementsByTagName("FAENA")[0].childNodes[0].nodeValue;
+//							if (x[i].getElementsByTagName("REPORT")[0].childNodes[0]  != null){
+//								url += "&REPORT=" + x[i].getElementsByTagName("REPORT")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&REPORT=";
+//							}							
+//							url += "&COLOR=" + x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue;
+//							url += "&CRITICIDAD=" + x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue;
+//							if (x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0]  != null){
+//								url += "&FECHA_PROGRAMADA=" + x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&FECHA_PROGRAMADA=";
+//							}							
+//							if (x[i].getElementsByTagName("OT")[0].childNodes[0]  != null){
+//								url += "&OT=" + x[i].getElementsByTagName("OT")[0].childNodes[0].nodeValue;
+//							}else{
+//								url += "&OT=";
+//							}
+//							url += "&CONDICION=" + x[i].getElementsByTagName("CONDICION")[0].childNodes[0].nodeValue;
+//							url += "&ESTATUS=" + x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue;	
+//							url += "&WIN=OK&VTZ=" + Math.random();
+//							alert(url)
+//							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+														
+//							var url = "http://www.ttminsight.cl/sgm/xml/Checklist_bkp.asp?RECURSO=NewCheckBitacora";
+//							url += "&ID=" + document.getElementById("formulario").listFallas.value;
+//							url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+//							url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+//							url += "&VTZ=" + Math.random();
+
+							
+//							var url = "http://www.ttminsight.cl/sgm/xml/Bitacoras_bkp?RECURSO=updateMod_Obs";
+//							url += "&ID=" +  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+//							url += "&ULT_MOD_OBS=" + x[i].getElementsByTagName("ULT_MOD_OBS")[0].childNodes[0].nodeValue;
+//							url +="&VTZ=" + Math.random();
+
+//						}else if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "UPD"){
+							var url = "http://www.ttminsight.cl/sgm/xml/Bitacoras_bkp.asp?RECURSO=UpdateBitacora";
+							url +="&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+							url +="&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							if (x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0]  != null){
+								url += "&ULT_INSPECCION=" + x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&ULT_INSPECCION=";
+							}							
+							url += "&EQUIPO=" + x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue;
+							//url += "&USERNAME=" + x[i].getElementsByTagName("RESPONSABLE")[0].childNodes[0].nodeValue;
+							url += "&DESC_EQUIPO=" + x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0].nodeValue;
+							if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0]  != null){
+								url += "&RECOMENDACION=" + x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&RECOMENDACION=";
+							}
+							if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0]  != null){
+								url += "&CAUSA=" + x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&CAUSA=";
+							}							
+							url += "&IND_INCIDENTE=" + x[i].getElementsByTagName("IND_INCIDENTE")[0].childNodes[0].nodeValue;
+							url += "&IND_SOLUCION=" + x[i].getElementsByTagName("IND_SOLUCION")[0].childNodes[0].nodeValue;
+							url += "&FAENA=" + x[i].getElementsByTagName("FAENA")[0].childNodes[0].nodeValue;
+							if (x[i].getElementsByTagName("REPORT")[0].childNodes[0]  != null){
+								url += "&REPORT=" + x[i].getElementsByTagName("REPORT")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&REPORT=";
+							}							
+							url += "&COLOR=" + x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue;
+							url += "&CRITICIDAD=" + x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue;
+							if (x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0]  != null){
+								url += "&FECHA_PROGRAMADA=" + x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&FECHA_PROGRAMADA=";
+							}							
+							if (x[i].getElementsByTagName("OT")[0].childNodes[0]  != null){
+								url += "&OT=" + x[i].getElementsByTagName("OT")[0].childNodes[0].nodeValue;
+							}else{
+								url += "&OT=";
+							}
+							url += "&CONDICION=" + x[i].getElementsByTagName("CONDICION")[0].childNodes[0].nodeValue;
+							url += "&ESTATUS=" + x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue;	
+							url += "&WIN=OK&VTZ=" + Math.random();
+							alert(url)
+//							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");			
+
+							var url = "http://www.ttminsight.cl/sgm/xml/Bitacoras_bkp.asp?RECURSO=updateMod_Obs";
+							url += "&ID=" +  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+							url += "&ULT_MOD_OBS=" + x[i].getElementsByTagName("ULT_MOD_OBS")[0].childNodes[0].nodeValue;
+							url +="&VTZ=" + Math.random();
+							
+							var url = "xml/Checklist.asp?RECURSO=UpdCheckBitacora";
+							url += "&ID=" + document.getElementById("formulario").listFallas.value;
+							url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+							url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+							url += "&VTZ=" + Math.random();
+
+
+							var url = "xml/Bitacoras.asp?RECURSO=updatePlanData";
+							url += "&ID=" + ID;
+							url += "&OT=" + document.getElementById("formulario").txtOT.value;
+							url += "&REPORT=" + document.getElementById("formulario").txtReport.value;
+							url += "&FECHA_PROGRAMADA=" + document.getElementById("formulario").txtFechProg.value;
+							url += "&RECOMENDACION=" + document.getElementById("formulario").TxtRecomendacion.value;
+							url += "&CONDICION=" + document.getElementById("formulario").listCondicion.value;
+							url += "&ESTATUS=" + document.getElementById("formulario").listStatus3.value;
+							url += "&VTZ=" + Math.random();
+
+			
+//						}
+//					}
+				}
+			}
+//-------------------------------------------------------------------------------------------------				
+				
+		}
+		
+		var url = "xml/list_check_bitacora.xml";
+		url += "?VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var url = "http://www.ttminsight.cl/sgm/xml/Checklist.asp?RECURSO=NewCheckBitacora";
+							url += "&ID=" + document.getElementById("formulario").listFallas.value;
+							url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+							url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//------------------------------------------------------------------------------------------------	
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var url = "http://www.ttminsight.cl/sgm/xml/Checklist.asp?RECURSO=NewCheckBitacora";
+							url += "&ID=" + document.getElementById("formulario").listFallas.value;
+							url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+							url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+				
+		}
+//-------------------------------------------------------------------------------------------------				
+		
+		
+		
+}
+
+function UploadHistorial(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/List_historial.xml";
+		url += "?VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var keysw = 0;
+							switch (x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue) {
+								case "DISMINUYE CRITICIDAD":
+									keysw = 1;
+									break;
+								case "SE MANTIENE CONDICION":
+									keysw = 2;
+									break;
+								case "AUMENTA CRITICIDAD":
+									keysw = 3;
+									break;
+								case "NO SE REALIZA INSPECCION":
+									keysw = 4;
+									break;
+							} 
+
+							var url = "http://www.ttminsight.cl/sgm/xml/historial_bkp.asp?RECURSO=newHisBit";
+							url += "&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue; // codeobj.value;
+							url += "&INSPECTOR=" + x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue;
+							url += "&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							url += "&ESTATUS=" + keysw;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//------------------------------------------------------------------------------------------------	
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				var context = "";
+				
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var keysw = 0;
+							switch (x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue) {
+								case "DISMINUYE CRITICIDAD":
+									keysw = 1;
+									break;
+								case "SE MANTIENE CONDICION":
+									keysw = 2;
+									break;
+								case "AUMENTA CRITICIDAD":
+									keysw = 3;
+									break;
+								case "NO SE REALIZA INSPECCION":
+									keysw = 4;
+									break;
+							} 
+
+							var url = "http://www.ttminsight.cl/sgm/xml/historial_bkp.asp?RECURSO=newHisBit";
+							url += "&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue; // codeobj.value;
+							url += "&INSPECTOR=" + x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue;
+							url += "&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							url += "&ESTATUS=" + keysw;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+//-------------------------------------------------------------------------------------------------				
+				
+		}
+}
+
+function GetValueFromChild(myVal)
+{
+	alert(myVal);
+	document.getElementById('hddvalueid').value = myVal;
+}
+	
+function UploadArchivos(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/List_archivos.xml";
+		url += "?VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var url = "http://www.ttminsight.cl/sgm/xml/historial_bkp.asp?RECURSO=newHisBit";
+							url += "&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue; // codeobj.value;
+							url += "&INSPECTOR=" + x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue;
+							url += "&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							url += "&ESTATUS=" + keysw;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							//alert(url);
+							var winHistorial = window.open(url , "myXmk", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//------------------------------------------------------------------------------------------------	
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				
+				for (i=0; i<x.length; i++) {
+					if (x[i].getElementsByTagName("OP")[0].childNodes[0]  != null){
+						if (x[i].getElementsByTagName("OP")[0].childNodes[0].nodeValue  == "ING"){
+							var url = "http://www.ttminsight.cl/sgm/xml/archivos_bkp.asp?RECURSO=NewArchivo";
+							url += "&ID=" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue; // codeobj.value;
+							url += "&NOMBRE=" + x[i].getElementsByTagName("NOMBRE")[0].childNodes[0].nodeValue;
+							url += "&TIPO=" + x[i].getElementsByTagName("TIPO")[0].childNodes[0].nodeValue;
+							url += "&FECHA=" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+							url += "&PATH=" + x[i].getElementsByTagName("RUTA")[0].childNodes[0].nodeValue;
+							url += "&FAMILIA=" + x[i].getElementsByTagName("FAMILIA")[0].childNodes[0].nodeValue;
+							url += "&IDENTIFICADOR=" + x[i].getElementsByTagName("IDENTIFICADOR")[0].childNodes[0].nodeValue;
+							url += "&SIZE=" + x[i].getElementsByTagName("SIZE")[0].childNodes[0].nodeValue;
+							url += "&FILEIMAGE=" + x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue;
+							url += "&WIN=OK&VTZ=" + Math.random();
+							var file = x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue;
+							 
+							var winArchivo = window.open(url , "myXml", "location=0,status=0,scrollbars=0,width=1,height=1");
+							
+							
+							setTimeout(function(){alert(document.getElementById('hddvalueid').value); }, 700);
+							//var winFTP = window.open("../ftp_transfer.php?FILE=" + file.substring(6,file.length) , "myXml", "location=0,status=0,scrollbars=0,width=1,height=1");
+							 //var t=setTimeout(function() {winHistorial.close();}, 10000);
+						}
+					}
+				}
+			}
+//-------------------------------------------------------------------------------------------------				
+				
+		}
+}
+
+
+ 
+</SCRIPT>
+
+<BODY>
+<link rel="stylesheet" href="standard/progress_bar.css">
+<h1>TTM Insight Sincronizacion Datos</h1>
+<div class="checkout-wrap">
+  <ul id="ul_li" class="checkout-bar">
+    <li class="">Subir Datos</li>
+    <li class="">Bajar Datos</li>
+    <li class="">Restructurar Datos</li>
+    <li class="">Sincronizar Datos</li>
+    <li class="">Listo</li>
+  </ul>
+</div>
+<input name="hddvalueid" type="hidden" id="hddvalueid">
+<SCRIPT>
+// ----------------es para la subida -------------------------------------
+//	var my_list = jQuery('#ul_li');
+//	my_list.find('li').each(function(index, element){
+//		if (index == 0){
+//			my_list.find('li:eq(' + index + ')').addClass('active');
+//		} else if (index == 1){
+//			my_list.find('li:eq(' + index + ')').addClass('next');			
+//		} else {
+//			my_list.find('li:eq(' + index + ')').removeClass();          
+//		}
+//	});
+//---------------------------------------------------------------------------
+	
+	
+	
+	UploadAllXML();
+	//UploadBitacoras(); 
+	//UploadHistorial(); // ok funcionando
+	//UploadPlandata(); 
+	//UploadCheckBitacoras(); 
+	UploadArchivos();
+	//UploadMediciones(); 
+	//UploadMedicionesValor();  
+	setTimeout(function(){ GetDownloadXML(); }, 1000); // ok funcionando
+</SCRIPT>
+</BODY>
+</HTML>

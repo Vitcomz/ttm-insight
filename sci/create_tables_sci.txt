@@ -1,0 +1,52 @@
+CREATE TABLE [dbo].[Menu](
+	[CODIGO] [varchar](15) NOT NULL,
+	[COD_MENU_PADRE] [varchar](15) NULL,
+	[NOMBRE] [varchar](30) NULL,
+	[LINK] [varchar](50) NULL,
+	[TARGET] [varchar](50) NULL,
+	[ORDEN] [int] NULL,
+	[SISTEMA] [varchar](15) NOT NULL,
+	[USERNAME] [varchar](15) NULL,
+	[USERDATE] [datetime] NULL,
+ CONSTRAINT [PK_Menu] PRIMARY KEY CLUSTERED 
+(
+	[CODIGO] ASC,
+	[SISTEMA] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF,
+ IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[MenuRol](
+	[COD_MENU] [varchar](15) NOT NULL,
+	[COD_ROL] [nvarchar](10) NOT NULL,
+	[SISTEMA] [varchar](15) NOT NULL
+) ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[Usuarios](
+	[ID] [varchar](50) NOT NULL,
+	[RUT] [int] NULL,
+	[DV] [varchar](50) NULL,
+	[NOMBRES] [varchar](50) NULL,
+	[APELLIDOS] [varchar](50) NULL,
+	[SEXO] [varchar](1) NULL,
+	[FECHA_NAC] [varchar](15) NULL,
+	[ESTADO] [varchar](50) NULL,
+	[CARGO] [varchar](50) NULL,
+	[ROL] [varchar](50) NULL,
+	[E_MAIL] [varchar](50) NULL,
+	[IP] [varchar](50) NULL,
+	[USERNAME] [varchar](50) NULL,
+	[USERDATE] [datetime] NULL,
+	[FONO] [varchar](50) NULL,
+	[CELULAR] [varchar](50) NULL,
+	[AREA] [float] NULL,
+	[PASSWORD] [varchar](50) NULL,
+	[UBICACION] [varchar](50) NULL,
+	[EMPRESA] [varchar](20) NULL,
+ CONSTRAINT [PK_Usuarios] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]

@@ -1,0 +1,252 @@
+
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+        
+<LINK href="sci.css" type=text/css rel=stylesheet>
+<XML id=XMLListProv></XML>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var tbl = new Object();
+var nameobj = new Object();
+var functionName;
+var strs;
+
+function popsearchbox(_tbl, _popbox, _function){
+
+  parent.event.cancelBubble=true;
+  tbl = _tbl;
+  popbox = _popbox;
+  functionName = _function;
+  with (popbox.style){
+//    left = point.x + 2;
+//    top  = point.y + nameobj.offsetHeight + 1;
+    visibility = "visible";
+  }
+  getArticulos();
+  searchText.value="";
+    document.getElementById("rutProveedor").innerText = "";
+  	document.getElementById("Proveedor").innerText = "";
+  searchText.focus();
+}
+
+function getArticulos(){
+var lastRow = tbl.rows.length;
+var tblArtProv = document.getElementById('tblArtProv');
+limpiarTabla('tblArtProv');
+
+
+for (i=1; i< lastRow -1 ; i++){
+  	  
+        var row = tblArtProv.insertRow(-1);
+        
+		if(tbl.children(1).children(i).children(5).children(0).value)
+					row.style.backgroundColor="#dde3eb";
+					
+  		var cell = row.insertCell(0);
+ 			cell.innerHTML = tbl.children(1).children(i).children(0).children(0).value;
+
+  		var cell = row.insertCell(1);
+			cell.innerHTML = tbl.children(1).children(i).children(1).children(0).value;
+
+			
+										
+		var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT onclick='' class=text" + 
+					" TYPE='CHECKBOX' align='middle' style='CURSOR:hand' />";
+			         }//FOR
+}
+
+function setcodeandname(code, name){
+  codeobj.value = code;
+  nameobj.value = name;
+}
+
+function close(){
+  //nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function searchKey(_value){
+
+  XMLListProv.async = true;
+  var xmlDso =   XMLListProv.XMLDocument;
+//  if(_value.length>3){
+  var url = "xml/Proveedores.asp?RECURSO=ListProv&TXTSRC="+_value;
+	  var res = xmlDso.load(url);
+	  //}
+     
+}
+
+function search(_value){
+
+  XMLListProv.async = false;
+  var xmlDso = XMLListProv.XMLDocument;
+  var cr = 0;
+  
+  var url = "xml/Proveedores.asp?RECURSO=ListProv&TXTSRC="+ _value;
+  var res = xmlDso.load(url);
+
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      spnProv.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      spnProv.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    spnProv.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+}
+
+function set(itr){
+  if (itr){
+   	document.getElementById("rutProveedor").innerText = itr.children[0].children[0].innerText;
+  	document.getElementById("Proveedor").innerText = itr.children[0].children[1].innerText;
+	}
+  else setcodeandname("","");
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function guardar(){
+
+	var rutProveedor = document.getElementById("rutProveedor").innerText;
+	var Proveedor = document.getElementById("Proveedor").innerText;
+	var tblArtProv = document.getElementById('tblArtProv');
+	
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow-1; i++){
+	 if(tblArtProv.children(0).children(i-1).children(2).children(0).checked){
+		tbl.children(1).children(i).children(6).children(0).value = rutProveedor; 
+		tbl.children(1).children(i).children(6).children(2).innerText = Proveedor;
+		//alert(tbl.children(1).children(i).children(5).children(1).tagName);
+		}  
+	}
+ }
+ 
+function limpiarTabla(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++)
+	  var row = tbl.deleteRow(0);
+ }
+ 
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>.input0 {
+	FONT-SIZE: 75%; WIDTH: 140px; HEIGHT: 18px
+}
+.input1 {
+	FONT-SIZE: 75%; WIDTH: 50px; HEIGHT: 18px
+}
+.buttom {
+	FONT-SIZE: 75%; HEIGHT: 18px
+}
+.text {
+	FONT-SIZE: 75%
+}
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<BODY style="FONT: 100% tahoma" leftMargin=0 topMargin=0 scroll=no onLoad="">
+<CENTER>
+<SPAN class=text id=msg style="DISPLAY: none"></SPAN>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TR bgColor=#3399cc>
+    <TD class=text style="FONT-WEIGHT: bold; COLOR: #ffffff">&nbsp;B�squeda - Proveedores </TD>
+    	<TD align=right>
+			<IMG onClick="popbox.style.visibility = 'hidden';" 
+      			 src="images/close.gif"></TD>
+  </TR>
+</TABLE>
+  
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TR class=HeaderLista>
+    <TD class=text align=center>
+	TEXTO A BUSCAR :<INPUT class=input onKeyPress="if(event.keyCode==13)search(this.value);"
+		 size=22 name=searchText></TD>
+    <TD align=right>
+		<INPUT class=botonBlanco onClick="search(searchText.value);" type=button value=Buscar> 
+    </TD>
+    <TD align=left>&nbsp;</TD></TR>
+  	<TR class=text>
+    <TD align=left>Proveedor :
+		<strong>
+			<SPAN id=RutProveedor></SPAN>&nbsp;
+			<SPAN id=Proveedor></SPAN>
+		</strong>
+ 	</TD>
+    <TD align=right>
+		<INPUT class="littleButton" 
+			onclick="spnProv.style.display = 'block';spnArticulos.style.display='none';"
+				 type=button value=">>"> 
+    </TD>
+    <TD align=left>&nbsp;</TD></TR>
+  </TABLE>
+	<SPAN id=spnProv
+	style="BORDER-RIGHT: #eac0c0 1px solid; BORDER-TOP: #eac0c0 1px solid; OVERFLOW-Y: auto;
+	 DISPLAY: none; BORDER-LEFT: #eac0c0 1px solid; BORDER-BOTTOM: #eac0c0 1px solid; HEIGHT: 200px">
+	<TABLE dataSrc=#XMLListProv cellSpacing=0 cellPadding=2 width="100%" border=0>
+ 	  <TR onMouseOver="mOvr(this,'#ABCCE5')" style="CURSOR: default"
+	  	 onClick="spnProv.style.display = 'none';spnArticulos.style.display='block';set(this);"
+  			 onmouseout="mOut(this,'#ffffff')" height=9>
+      <TD style="BORDER-BOTTOM: #6587a3 1px solid">
+	  <SPAN dataFld=RUT class=text></SPAN>&nbsp;
+	  <SPAN dataFld=NOMBRE class=text></SPAN>
+	  </TD></TR>
+	</TABLE>
+	</SPAN>
+	   <SPAN id=spnArticulos 
+	   style="BORDER-RIGHT: #eac0c0 1px solid; BORDER-TOP: #eac0c0 1px solid; OVERFLOW-Y: auto;
+	    DISPLAY: none; BORDER-LEFT: #eac0c0 1px solid; BORDER-BOTTOM: #eac0c0 1px solid; HEIGHT: 280px">
+	 <TABLE class=text id=tblArtProv cellSpacing=0 
+	 	cellPadding=2 width="100%" border=0>
+	</TABLE>
+	<DIV align=center>
+	<INPUT class=botonBlanco onClick="guardar();popbox.style.visibility = 'hidden';" type=button value=Guardar>
+	</DIV>
+	</SPAN>
+</CENTER>
+	</BODY></HTML>

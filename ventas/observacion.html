@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+body {
+ color : #000000;
+ margin-left: 0px;
+ margin-top: 0px;
+ margin-right: 0px;
+ margin-bottom: 0px;
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 10px;
+ margin-left: 0px;
+ margin-top: 0px;
+ margin-right: 0px;
+ margin-bottom: 0px;
+ scrollbar-face-color:#dde3eb; 
+ scrollbar-shadow-color: #000000;
+ scrollbar-highlight-color: #000000; 
+ scrollbar-3dlight-color: #999999;
+ scrollbar-darkshadow-color: #333333; 
+ scrollbar-track-color: #282828;
+ scrollbar-arrow-color: #000000;
+}
+
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  formulario.TxtObservacion.value = nameobj.value;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function aceptar(){
+nameobj.value = formulario.TxtObservacion.value;
+divBox.style.visibility = 'hidden';
+ 
+ }
+
+
+//window.onLoad = _inicio();
+
+</script>
+<body>
+	<form name="formulario">
+		<table><tr><td width="50"></td><td>
+			<input type="hidden" size="0" name="txtIni">
+		</td></tr></table>
+			
+		<table border="0">
+						  <tr class="titulo">
+						    <td width="84" height="26" align="center">Observaci&oacute;n</td>
+						    <td width="200" height="26" align="center"></td>
+						    <td width="100%" height="26"  align="right">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table>  
+		  <table align="center">
+		  <tr><td>
+		  <textarea name="TxtObservacion" type="text" 
+		  			class="textArea" rows="10" cols="70" onKeyPress="validaKeys(this,249, window.event);">
+		  </textarea>
+		  </td></tr>
+		  <tr><td>
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="aceptar();" value="Aceptar" />
+  		  </td></tr>
+		  </table>
+		</form>
+
+	</body>
+</HTML>

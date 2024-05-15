@@ -1,0 +1,730 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Bitacora de Inspecciones</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+
+-->
+
+  div.loading-invisible{
+    display:none;
+  }
+  div.loading-visible{
+    /*make visible*/
+    display:block;
+
+    position:absolute;
+    top:100px;
+    left:0;
+    width:80%;
+	height:100%;
+    text-align:center;
+
+    background:#fff;
+	filter: alpha(opacity=89); /* internet explorer */
+	-khtml-opacity: 0.89;      /* khtml, old safari */
+	-moz-opacity: 0.89;       /* mozilla, netscape */
+	opacity: 0.89;           /* fx, safari, opera */
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+  }
+
+</STYLE>
+<link rel="stylesheet" href="../standard/style.css" />
+<xml id = xmlDoc></xml>
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<SCRIPT>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+function ListReporte(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	
+	var xmlDso = xmlDoc.XMLDocument;
+	var sorter = "";
+	document.getElementById("loading").className = "loading-visible";
+	var url = "../xml/Informes.asp?RECURSO=ListReportCorreas";
+		url += "&FECHA=" + document.getElementById("txtFechaCorte").value;
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		//alert(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	    //window.open(url);
+		if(xmlestado){
+			if (id_br == "IE")
+			{
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+//				document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+//				bloque_listado = 1;
+//				total_bloque_listado = Math.ceil(total_registros_lista/9);
+//				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+//				objLabelReg.innerText = "1/" + total_bloque_listado;
+				var tbody = document.getElementById("tabReporte").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {				
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						if (x[i].getElementsByTagName("AREA")[0].childNodes[0] != null){
+							cell1.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("AREA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell1.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell2 = document.createElement("TD");
+						if (x[i].getElementsByTagName("TAG_EQUIP")[0].childNodes[0] != null){
+							cell2.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("TAG_EQUIP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell2.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell3 = document.createElement("TD");
+						if (x[i].getElementsByTagName("LARGO_TOTAL")[0].childNodes[0] != null){
+							cell3.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("LARGO_TOTAL")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell3.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell4 = document.createElement("TD");
+						if (x[i].getElementsByTagName("TRA")[0].childNodes[0] != null){
+							cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("TRA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell5 = document.createElement("TD");
+						if (x[i].getElementsByTagName("STATUS_TRA")[0].childNodes[0] != null){
+							cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("STATUS_TRA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell6 = document.createElement("TD");
+						 if (x[i].getElementsByTagName("OBS_TRA")[0].childNodes[0] != null){
+							cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBS_TRA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						 }
+						var cell7 = document.createElement("TD");
+						if (x[i].getElementsByTagName("MARCA")[0].childNodes[0] != null){
+							cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("MARCA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell8 = document.createElement("TD");
+						if (x[i].getElementsByTagName("MODELO")[0].childNodes[0] != null){
+							cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("MODELO")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell9 = document.createElement("TD");
+						if (x[i].getElementsByTagName("LARGO_TRA")[0].childNodes[0] != null){
+							cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("LARGO_TRA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell10 = document.createElement("TD");
+						if (x[i].getElementsByTagName("ESP_MAS_BAJO")[0].childNodes[0] != null){
+							cell10.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("ESP_MAS_BAJO")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell10.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell11 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FECHA_ULT_MEDICION")[0].childNodes[0] != null){
+							cell11.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_ULT_MEDICION")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell11.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+//						var cell12 = document.createElement("TD");
+//						if (x[i].getElementsByTagName("FECHA_PROX_MEDICION_ESP")[0].childNodes[0] != null){
+//							cell12.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_PROX_MEDICION_ESP")[0].childNodes[0].nodeValue + "</div></center>"
+//						}else{
+//							cell12.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+//						}
+						var cell13 = document.createElement("TD");
+						if (x[i].getElementsByTagName("EMP")[0].childNodes[0] != null){
+							cell13.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("EMP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell13.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell14 = document.createElement("TD");
+						if (x[i].getElementsByTagName("STATUS_EMP")[0].childNodes[0] != null){
+							cell14.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("STATUS_EMP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell14.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell15 = document.createElement("TD");
+						if (x[i].getElementsByTagName("OBS_EMP")[0].childNodes[0] != null){
+							cell15.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBS_EMP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell15.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell16 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FECH_CREAC_EMP")[0].childNodes[0] != null){
+							cell16.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECH_CREAC_EMP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell16.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell17 = document.createElement("TD");
+						if (x[i].getElementsByTagName("LARGO_EMP")[0].childNodes[0] != null){
+							cell17.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("LARGO_EMP")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+							cell17.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						row.appendChild(cell9);
+						row.appendChild(cell10);
+						row.appendChild(cell11);
+//						row.appendChild(cell12);
+						row.appendChild(cell13);
+						row.appendChild(cell14);
+						row.appendChild(cell15);
+						row.appendChild(cell16);
+						row.appendChild(cell17);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						var cell5 = document.createElement("TD");
+						cell5.innerHTML = "<center>&nbsp;</center>";
+						var cell6 = document.createElement("TD");
+						cell6.innerHTML = "<center>&nbsp;</center>";
+						var cell7 = document.createElement("TD");
+						cell7.innerHTML = "<center>&nbsp;</center>";
+						var cell8 = document.createElement("TD");
+						cell8.innerHTML = "<center>&nbsp;</center>";
+						var cell9 = document.createElement("TD");
+						cell9.innerHTML = "<center>&nbsp;</center>";
+						var cell10 = document.createElement("TD");
+						cell10.innerHTML = "<center>&nbsp;</center>";
+						var cell11 = document.createElement("TD");
+						cell11.innerHTML = "<center>&nbsp;</center>";
+//						var cell12 = document.createElement("TD");
+//						cell12.innerHTML = "<center>&nbsp;</center>";
+						var cell13 = document.createElement("TD");
+						cell13.innerHTML = "<center>&nbsp;</center>";
+						var cell14 = document.createElement("TD");
+						cell14.innerHTML = "<center>&nbsp;</center>";
+						var cell15 = document.createElement("TD");
+						cell15.innerHTML = "<center>&nbsp;</center>";
+						var cell16 = document.createElement("TD");
+						cell16.innerHTML = "<center>&nbsp;</center>";
+						var cell17 = document.createElement("TD");
+						cell17.innerHTML = "<center>&nbsp;</center>";
+						
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						row.appendChild(cell9);
+						row.appendChild(cell10);
+						row.appendChild(cell11);
+//						row.appendChild(cell12);
+						row.appendChild(cell13);
+						row.appendChild(cell14);
+						row.appendChild(cell15);
+						row.appendChild(cell16);
+						row.appendChild(cell17);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  if (x[i].getElementsByTagName("AREA")[0].childNodes[0] != null){
+				  	context = context +  "<td>"+  x[i].getElementsByTagName("AREA")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("TAG_EQUIP")[0].childNodes[0] != null){
+				  context = context +  "<td>"+  x[i].getElementsByTagName("TAG_EQUIP")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("LARGO_TOTAL")[0].childNodes[0] != null){
+					  context = context +  "<td  >"+  x[i].getElementsByTagName("LARGO_TOTAL")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("TRA")[0].childNodes[0] != null){
+				 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("TRA")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("STATUS_TRA")[0].childNodes[0] != null){
+				 context = context +  "<td >"+  x[i].getElementsByTagName("STATUS_TRA")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("OBS_TRA")[0].childNodes[0] != null){
+				 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBS_TRA")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  
+				  if (x[i].getElementsByTagName("MARCA")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("MARCA")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				 
+				  if (x[i].getElementsByTagName("MODELO")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("MODELO")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("LARGO_TRA")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("LARGO_TRA")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("ESP_MAS_BAJO")[0].childNodes[0] != null){
+				 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("ESP_MAS_BAJO")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  if (x[i].getElementsByTagName("FECHA_ULT_MEDICION")[0].childNodes[0] != null){
+				 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_ULT_MEDICION")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				  
+//				  if (x[i].getElementsByTagName("FECHA_PROX_MEDICION_ESP")[0].childNodes[0] != null){
+//				 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_PROX_MEDICION_ESP")[0].childNodes[0].nodeValue + "</div></td>";
+//				  }else{
+//					context = context +  "<td>&nbsp;</td>";  
+//				  }
+				 
+				  if (x[i].getElementsByTagName("EMP")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("EMP")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				 
+				  if (x[i].getElementsByTagName("STATUS_EMP")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("STATUS_EMP")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				 
+				  if (x[i].getElementsByTagName("OBS_EMP")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBS_EMP")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				 
+				  if (x[i].getElementsByTagName("FECH_CREAC_EMP")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECH_CREAC_EMP")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+				 
+ 				  if (x[i].getElementsByTagName("LARGO_EMP")[0].childNodes[0] != null){
+					 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("LARGO_EMP")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+					context = context +  "<td>&nbsp;</td>";  
+				  }
+
+
+				  //context = context +  "<td>&nbsp;&nbsp;</td>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+				
+			}
+			else
+				window.open(url);
+				
+		//setTimeout("color();",600);
+		if (total_registros_lista > 0){
+			setTimeout("pagining();",700);
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);
+		}else{
+			var sorter = "";
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);	
+
+		}
+		
+		
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay();  
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+
+if ((month+"").length==1) month ='0' + month;
+
+//alert("01/01/"+ year);
+//document.getElementById("txtFechaFin").value = day_month + "/" + month + "/" + year;
+var fech_end = day_month + "/" + month + "/" + year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+// day_month=dateIni.getDate();
+// month=dateIni.getMonth()+1;
+ year=dateIni.getFullYear()-1;
+ 
+
+//if ((day_month+"").length==1) day_month ='0'+day_month;
+//if ((month+"").length==1) month ='0' + month;
+
+//document.getElementById("txtFechaIni").value = "01/01/"+ year;
+var fech_ini =  "01/01/"+ year;
+
+document.getElementById("txtFechaCorte").value = fech_end;
+
+ListReporte();
+//setTimeout("color();",200);
+
+}
+
+
+
+function pagining(){
+	var sorter = new TINY.table.sorter('sorter','tabReporte',{
+		headclass:'head',
+		ascclass:'asc',
+		descclass:'desc',
+		evenclass:'evenrow',
+		oddclass:'oddrow',
+		evenselclass:'evenselected',
+		oddselclass:'oddselected',
+		paginate:true,
+		size:10,
+		colddid:'columns',
+		currentid:'currentpage',
+		totalid:'totalpages',
+		startingrecid:'startrecord',
+		endingrecid:'endrecord',
+		totalrecid:'totalrecords',
+		hoverid:'selectedrow',
+		pageddid:'pagedropdown',
+		navid:'tablenav',
+		sortcolumn:1,
+		sortdir:1,
+//		sum:[8],
+//		avg:[6,7,8,9],
+//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+		init:true
+	});
+	var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+	hideDiv.call(this);	
+}
+
+function excel(){
+
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		
+		var xmlDso = xmlDoc.XMLDocument;
+		var sorter = "";
+		//document.getElementById("loading").className = "loading-visible";
+		var url = "../xml/Informes.asp?RECURSO=ListReportCorreas";
+		url += "&FECHA=" + document.getElementById("txtFechaCorte").value;
+		url += "&FAENA=" + emp;
+		url += "&EXCEL=YES";
+		url += "&VTZ=" + Math.random();
+		window.open(url);
+
+}
+
+
+function pdf(){
+
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	
+		var xmlDso = xmlDoc.XMLDocument;
+		var sorter = "";
+		//document.getElementById("loading").className = "loading-visible";
+		var url = "reporte_correas.asp?RECURSO=ListReportCorreas";
+		url += "&FECHA=" + document.getElementById("txtFechaCorte").value;
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		var w = 840;
+		var h = 650;		
+		LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+		TopPosition = (screen.height) ? (screen.height-h)/2 : 0;			
+		var winHandle = window.open(url, "window_bit", "modal,toolbar=false,location=false,directories=false,status=false,menubar=false,scrollbars=yes,resizable=no,top="+TopPosition+",left="+LeftPosition+",width=840px,height=650px");
+		winHandle.focus();
+		
+}
+
+
+</SCRIPT>
+<BODY>
+<FORM name="formulario" id="formulario">
+<INPUT type="hidden" value="" name="IdUsuario">
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+<BR><BR><BR>
+<div id="loading" class="loading-invisible">
+<br><br><br><br><br><br><br><br><img src="../images/cargando.png" alt="Cargando..." id="cargando" align="middle"/>
+</div>
+<div id="tablewrapper">
+<TABLE WIDTH="950" id="tableTitulo">
+  <!--DWLayoutTable-->
+<tr>
+  <td WIDTH="349" height="29" class="titulo">REPORTE CORREAS</td>
+  <td width="585" colspan="2" valign="top" class="titulo"></td>
+</tr>
+</TABLE>
+		<div id="tableheader">
+        	<div class="search">
+            <table width="100%" border="0" cellspacing="5" cellpadding="3">
+              <tr>
+                <td width="24%" align="center"><select name="columns" class="tableheader_select2" id="columns" onChange="sorter.search('query')">
+                </select></td>
+                <td width="21%"><input type="text" class="tableheader_input1" id="query" onKeyUp="sorter.search('query')" /></td>
+                <td width="23%"><span class="titulo">FECHA CORTE :
+                    <input type="text" class="input" name="txtFechaCorte" id="txtFechaCorte" size="12">
+                </span></td>
+                <td width="32%" align="left" valign="middle"><input type="button" class="botonBlanco" value="Buscar" onClick="ListReporte();">
+                  <input type="button" class="botonBlanco" value="Excel" onclick="excel();" />
+                <input type="button" class="botonBlanco" value="Pdf"     onclick="pdf()" /></td>
+              </tr>
+            </table>
+		  </div>
+          <span class="details">
+				<div>Registros <span id="startrecord"></span>-<span id="endrecord"></span> de <span id="totalrecords"></span></div>
+        		<div><a href="javascript:sorter.reset()">Reinicio</a></div>
+        	</span>
+    </div></br>
+	<TABLE cellpadding="1" cellspacing="1" class="tinytable" id="tabReporte">
+            <thead>
+                <tr>
+                    <th><h3>AREA</h3></th>
+                    <th><h3>TAG EQUIPO</h3></th>
+                    <th><h3>LARGO TOTAL [m]</h3></th>
+                    <th><h3>TRAMOS</h3></th>
+                    <th><h3>STATUS TRAMO</h3></th>
+                    <th><h3>OBSERVACION TRAMO</h3></th>
+                    <th><h3>MARCA</h3></th>
+                    <th><h3>MODELO</h3></th>
+                    <th><h3>LARGO TRAMO [m]</h3></th>
+                    <th><h3>ESPESOR MAS BAJO [mm]</h3></th>
+                    <th><h3>FECHA ULTIMA MEDICION ESPESOR</h3></th>
+                    <th><h3>EMP</h3></th>
+                    <th><h3>STATUS EMPALME</h3></th>
+                    <th><h3>OBSERVACIONES EMPALME</h3></th>
+                    <th><h3>FECHA CREACION EMPALME</h3></th>
+                    <th><h3>LARGO EMPALME [mm]</h3></th>
+
+                </tr>
+				<tr>
+				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+  				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+				</tr>
+           </thead>                
+      <tbody>
+      </tbody>
+    </table>
+        <div id="tablefooter">
+          <div id="tablenav">
+            	<div>
+                    <img src="../images/first.gif" width="16" height="16" alt="primera Pag" onclick="sorter.move(-1,true)" />
+                    <img src="../images/previous.gif" width="16" height="16" alt="Pag Anterior" onclick="sorter.move(-1)" />
+                    <img src="../images/next.gif" width="16" height="16" alt="Pag Siguiente" onclick="sorter.move(1)" />
+                    <img src="../images/last.gif" width="16" height="16" alt="Ultima Pag" onclick="sorter.move(1,true)" />
+                </div>
+                <div>
+                	<select id="pagedropdown"></select>
+				</div>
+                <div>
+                	<a href="javascript:sorter.showall()">Ver Todo</a>
+                </div>
+          </div>
+			<div id="tablelocation">
+            	<div>
+                    <select onchange="sorter.size(this.value)">
+                    <option value="5">5</option>
+                        <option value="10" selected="selected">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>Registro por pag.</span>
+                </div>
+                <div class="page">Pag. <span id="currentpage"></span> de <span id="totalpages"></span></div>
+            </div>
+        </div>
+
+	<script type="text/javascript" src="../Scripts/script.js"></script>
+	<script type="text/javascript">
+	Inicio();
+	var sorter = new TINY.table.sorter('sorter','tabReporte',{
+		headclass:'head',
+		ascclass:'asc',
+		descclass:'desc',
+		evenclass:'evenrow',
+		oddclass:'oddrow',
+		evenselclass:'evenselected',
+		oddselclass:'oddselected',
+		paginate:true,
+		size:10,
+		colddid:'columns',
+		currentid:'currentpage',
+		totalid:'totalpages',
+		startingrecid:'startrecord',
+		endingrecid:'endrecord',
+		totalrecid:'totalrecords',
+		hoverid:'selectedrow',
+		pageddid:'pagedropdown',
+		navid:'tablenav',
+		sortcolumn:1,
+		sortdir:1,
+//		sum:[8],
+//		avg:[6,7,8,9],
+//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+		init:true
+	});
+	var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+	hideDiv.call(this);
+  </script>
+</div>
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaCorte"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+</FORM>
+</BODY>
+</HTML>

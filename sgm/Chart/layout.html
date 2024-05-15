@@ -1,0 +1,455 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//ES" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="X-UA-Compatible" content="IE=8" >
+
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="layout2.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+<style>
+#myImg {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10000; /* Sit on top */
+    padding-top: 20px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 98%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.modal-content {
+    margin: auto;
+    display: block;
+    width: 85%;
+	height:85%;
+    max-width: 700px;
+}
+
+/* Caption of Modal Image */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px;
+    height: 150px;
+}
+
+/* Add Animation */
+.modal-content, #caption {    
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)} 
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 155px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
+}
+</style>
+
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+<script type="text/javascript" src="/Scripts/stayontop.js"></script>
+
+
+<script type="text/javascript" src="../standard/jquery.min.js"></script>
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+
+
+</head>
+<script>
+var _i;
+var t;
+var layout = new Array();
+/**********************************************************************/
+
+
+/**********************************************************************/
+function boxOT(_folio){
+
+//alert(_folio);
+var url = "boxOT.html";
+	url += "?FOLIO=" + _folio;
+	url += "&VTZ=" + Math.random();
+
+winCfg = "width=380px,height=150px,left=" + 150 + "px,top=" + 150 +"px,resize=1,scrolling=0";	
+showModalDialog(url,window,"status:no;help:no;dialogWidth:450px;dialogHeight:150px;scroll:yes");
+
+}
+
+/**********************************************************************/
+function verBitacora(subEquipo){
+
+var url ="../detalleInspecciones.html?EQUIPO=" + document.getElementById("listEquipos").value;
+    url += "&DT=1&SUB_EQUIPO=" + subEquipo;
+	url += "&VTZ=" + Math.random();
+//	alert(url);
+	//window.open(url);
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:830px;dialogHeight:450px;scroll:yes");
+}
+
+function listEquipos(){
+
+ 
+				
+	var EQUIPO = getParametro("EQUIPO");
+	
+	var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+		url += "&FAENA="+getEmpresa();
+		url +="&VTZ="+Math.random();
+		
+		//window.open(url);
+  	opcion = new Option("SELECCIONAR" ,"");
+				document.getElementById("idListEquipos").options[0] = opcion;
+		var i=1;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("CODIGO").text() + " " + $(this).find("DESCRIPCION").text();
+					var ly = $(this).find("LAYOUT").text();
+					
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idListEquipos").options[i] = opcion;
+				layout[i]=ly;
+
+				if (codigo==EQUIPO){
+					document.getElementById("idListEquipos").options[i].selected=true;
+					}
+				i=i+1;	
+			})			,checkPage();
+				
+		})//end $get
+	
+ 
+					
+} 
+
+/**********************************************************************/
+function getBitacora(){
+
+	var EMPRESA = getEmpresa();
+	var _i = document.getElementById("idListEquipos").selectedIndex;
+	var eq = document.getElementById("idListEquipos").value;
+	
+	
+
+	document.getElementById("idMap").style.background="url(ly/" + layout[_i] + ") no-repeat";
+	
+	//document.getElementById("idTitle").innerHTML= document.getElementById("listEquipos").value;
+
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+		
+		var url = "../xml/Bitacoras.asp?RECURSO=getLayout";
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&EQUIPO_PRIN=" + document.getElementById("idListEquipos").value;
+		url += "&EQUIPO=TOD";
+		url += "&CRITICIDAD=TOD";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2020";
+		url += "&USUARIO=" + Usuario;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+		
+		 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			
+		 
+				var equipo_p = $(this).find("EQUIPO_PRIN").text();
+				var equipo = $(this).find("EQUIPO").text();
+				var gcode = $(this).find("GCODE").text();
+				var color = $(this).find("COLOR").text();
+				var x = $(this).find("X").text();
+				 var y=$(this).find("Y").text();
+				
+				//if(_color == 'NORMAL')	var color = "BAJA";
+				//if(_color == 'BAJA')	var color = "NORMAL";
+							
+				var imagen = color +'-'+$(this).find("LAYOUT").text();
+
+				folio = $(this).find("FOLIO").text();
+				NIVEL = $(this).find("NIVEL").text();
+				//alert(imagen);
+				var idMap = document.getElementById("idMap");
+				
+				var miDt = new Element('dt', {'id': equipo+i+'dt'}).injectInside(idMap);
+				
+				if($(this).find("LAYOUT").text()=="")		imagen = "/sgm/images/null.png";
+				
+				var miIMG = new Element('img', {
+						'src' : "ly/"+imagen, 
+						'class': 'polLnk',
+						'name': NIVEL,
+						'title': equipo_p + gcode + " CRITICIDAD:" + color,
+						'id': equipo+i,
+						'alt': gcode,
+						//'width':'100', 
+						//'height':'100',
+						styles: {
+							left: x + 'px',
+							top : y + 'px',
+							color: 'FFFF00'
+						},
+						events: {
+							click: function(){
+								//alert(this.id); 
+								if (this.name == 1){
+									loadrisk(this.alt,this.name,this.style.left,0);
+								}else{
+									loadrisk(this.alt);
+								}
+								
+							},
+							mouseover: function(){ 
+								//alert(this.tagName);
+								this.style.opacity=1;
+								//this.filters.alpha.opacity=130;
+								//	this.filters = 'alpha(opacity=130)';
+						
+							 
+								
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								//	this.filters.alpha.opacity=65;
+								//	this.filters = 'alpha(opacity=65)';
+							
+								
+							}
+						}
+					}).injectInside(equipo+i+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+i+'Title',
+						html: equipo +"    CRITICIDAD :" + color
+					}).injectInside(idMap);
+					
+					
+ 		
+			 }) //End each
+		  //document.getElementById('btnGuardar').disabled=false;
+	});//end $.get
+			 
+			 equipo=null;
+	
+}
+
+
+function checkPage(){
+
+if (getParametro("CHECK")=='true'){
+	
+	formulario.chkAuto.checked = true;
+	
+	_i = parseInt(getParametro("INDEX"));
+	_i=_i+1;
+ 
+	document.getElementById("idListEquipos").value = document.getElementById("idListEquipos").options[_i].value;
+	//alert(document.getElementById("listEquipos").options.length);
+	getBitacora();
+	t=setTimeout("loadPage(" + _i + ")",10000);
+	
+	}
+else{ getBitacora();}
+	
+}
+
+
+function autoPlay(){
+
+if (formulario.chkAuto.checked){
+	_i = document.getElementById("idListEquipos").selectedIndex;
+	
+	//alert(document.getElementById("listEquipos").options.length);
+	getBitacora();
+	setTimeout("loadPage(" + _i + ")",10000);
+	}
+else{clearTimeout(t);}
+
+}
+
+
+function loadPage(i){
+
+window.document.location = 'layout.html?INDEX='+ i + "&CHECK=" + formulario.chkAuto.checked;
+
+}
+
+function inicio(){
+
+listEquipos();
+}
+
+
+function salir(){
+window.location.href='newindexV2.html';
+}
+
+
+function loadrisk(subEquipo){
+
+ 
+
+		var url ="detalleInspecciones2.asp?EQUIPO='" + document.getElementById("idListEquipos").value + "'&DT=1&SUB_EQUIPO='" + subEquipo + "'&VTZ=" + Math.random();
+	 
+		
+	//alert(url);
+		
+		winCfg = "width=800px,height=430px,left=" + 60 + "px,top=" + 70 +"px,resize=1,scrolling=0";	
+	var inlinewin2= parent.dhtmlwindow.open("boxAvisos", "iframe", url , "AVISOS", winCfg);
+	 	//window.open(url);
+	 
+	  
+
+}
+
+function loadrisk2(subEquipo,NIVEL,valX, valZ){
+
+//alert(NIVEL);
+
+	if(NIVEL == 1){
+		var url ="layoutSec.asp?EQUIPO=" + subEquipo + "&Z="+ valZ + "&X="+ valX.substring(0,valX.length-2) +  "&VTZ=" + Math.random();}
+	else 
+		var url ="detalleInspecciones2.asp?EQUIPO='" + document.getElementById("listEquipos").value + "'&DT=1&SUB_EQUIPO='" + subEquipo + "'&VTZ=" + Math.random();
+		
+		//alert(url);
+		
+		//window.open(url);
+	
+}
+
+$(document).ready(function() { 	inicio(); });
+ 
+
+</script>
+<body onLoad="" >
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <span id='idClose' class="close">&times;</span>
+  <img class="modal-content" id="img01">
+  <div id="caption"></div>
+</div>
+
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br/><br/>
+<form name="formulario">	
+<br/>
+<h1>DIAGRAMA LAYOUT DE CRITICIDADES&nbsp;&nbsp;&nbsp;</h1>
+<table width="95%">
+<tr><td width="68%" align="center" >EQUIPO: 
+<select id="idListEquipos"   class="Campo" onChange="getBitacora();"></select></td>
+<td width="19%"><input type="checkbox" name="chkAuto" onClick="autoPlay();" />
+<span class="texto">Reproducci&oacute;n Autom&aacute;tica</span></td>
+<td width="13%" align="right">
+	<img src="/sgm/images/atras.png" alt="Volver" width="68" height="68"  style="cursor:pointer;" onclick="salir();"  /></td>
+</tr>
+</table>
+
+
+
+
+
+<br/><br/><br/>
+<table align="center">
+<tr><td>
+<div id="holder">
+<div>
+<dl class="map" id="idMap">
+	<dt><a onClick="verBitacora('semilla');" class="polLnk" id="semilla" target="_blank"></a></dt>
+	<dd id="pol1Title"></dd>
+</dl>
+</div>
+</div>
+
+</td></tr>
+</table>
+
+
+
+</form>
+</body>
+</html>

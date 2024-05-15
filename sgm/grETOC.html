@@ -1,0 +1,222 @@
+<HTML XMLNS="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+<xml id=xmlListFaenas></xml>
+<xml id=xmlTemp></xml>
+<TITLE>SGI - TTM CHILE</TITLE>
+<LINK REL="stylesheet" HREF="Chart/Style.css" TYPE="text/css" />
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript" SRC="Chart/FusionCharts.js"></SCRIPT>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style3 {
+	color:#666666;
+	font-weight: bold;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:16px;
+}
+-->
+</STYLE>
+</STYLE>
+</HEAD>
+<SCRIPT>
+function inicio(){
+ 	
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay();  
+
+//alert(day_month);
+monthFin = month +1;
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((monthFin+"").length==1) monthFin ='0' + monthFin;
+
+getObjetivos();
+
+
+}
+
+function getObjetivos(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/observaciones.asp?RECURSO=listComp";
+		url +="&ANHO=" + document.getElementById("listAnho").value;
+		url +="&SUCURSAL=" + document.getElementById("listSucursal").value;
+		url +="&MES=" + document.getElementById("listMes").value;
+		url +="&HSA=" + Math.random();
+
+//	window.open(url);
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			window.open(url);
+buscar();
+  		
+}
+
+
+function listSecciones(){
+        xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			
+			
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            if (opcion.value == "AGLOAPI") opcion.selected = true;
+          	formulario.listSecciones.options[i] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+}
+
+function buscar(){
+	
+	    xmlTemp.async = false;
+        var xmlDso =  xmlTemp.XMLDocument;
+			
+		  url = "xml/observaciones.asp?RECURSO=grComp"
+		 // url += "SUCURSAL=" +  formulario.listSucursal.value;
+		  url += "%26ANHO=" + document.getElementById("listAnho").value;
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "850", "380", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv1");
+		   
+		
+}
+
+function _close(){
+	this.location.href="formETOC.html";		
+}
+
+</SCRIPT>
+<BODY onLoad="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 10; z-index: 100; 
+    left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" 
+                scrolling="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+    
+<BR/>
+<FORM NAME="formulario">
+<TABLE><TR><TD>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="3" ALIGN="LEFT" >
+  <!--DWLayoutTable-->
+<TR>
+  <TD WIDTH="206" HEIGHT="118"><IMG SRC="images/Logo1.jpg" ALT="" WIDTH="206" HEIGHT="112"></TD>
+  <TD COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="calibri_16"><STRONG CLASS="style3">ETOC EVALUACI&Oacute;N DE COMPORTAMIENTOS </STRONG></TD>
+</TR>
+<TR>
+  <TD HEIGHT="33"  COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="calibri">
+     Sucursal :
+        <SELECT CLASS="input" id="listSucursal" NAME="listSucursal" onChange="getObjetivos()" >
+          <OPTION VALUE="ANTOFAGASTA">ANTOFAGASTA</OPTION>
+          <OPTION VALUE="CALAMA" >CALAMA</OPTION>
+          <OPTION VALUE="IQUIQUE">IQUIQUE</OPTION>
+          <OPTION VALUE="SANTIAGO">SANTIAGO</OPTION>
+          <OPTION VALUE="EMPRESA" SELECTED>TOTAL EMPRESA</OPTION>
+        </SELECT>
+Mes :
+<SELECT CLASS="input" id="listMes" NAME="listMes" DATAFLD="MES" onChange="getObjetivos()">
+            <OPTION VALUE="00" SELECTED>Anual</OPTION>
+            <OPTION VALUE="01">01</OPTION>
+            <OPTION VALUE="02">02</OPTION>
+            <OPTION VALUE="03">03</OPTION>
+            <OPTION VALUE="04">04</OPTION>
+            <OPTION VALUE="05">05</OPTION>
+            <OPTION VALUE="06">06</OPTION>
+            <OPTION VALUE="07">07</OPTION>
+            <OPTION VALUE="08">08</OPTION>
+            <OPTION VALUE="09">09</OPTION>  
+            <OPTION VALUE="10">10</OPTION>  
+            <OPTION VALUE="11">11</OPTION>
+            <OPTION VALUE="12">12</OPTION>          
+        </SELECT>
+A&ntilde;o :
+<SELECT CLASS="input" id="listAnho" NAME="listAnho" DATAFLD="ANHO" onChange="getObjetivos()">
+  <OPTION VALUE="2010">2010</OPTION>
+  <OPTION VALUE="2011">2011</OPTION>
+  <OPTION VALUE="2012">2012</OPTION>
+  <OPTION VALUE="2013">2013</OPTION>
+  <OPTION VALUE="2014">2014</OPTION>
+  <OPTION VALUE="2015" SELECTED>2015</OPTION>
+</SELECT>
+  </TD>
+<TD WIDTH="86"><SPAN CLASS="calibri">
+  <INPUT  TYPE="button" CLASS="botonBlanco" onClick="_close();" VALUE="Volver" >
+</SPAN></TD>
+</TR>
+
+<TR>
+  <TD HEIGHT="7"></TD>
+  <TD WIDTH="303"></TD>
+  <TD></TD>
+</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" DATASRC="#xmlTemp" BORDER="1"  BORDERCOLORDARK="#000000" CELLSPACING="0" CLASS="TBL_1">
+  <THEAD>
+  	<TR  class="blueTr">
+  	  <TD WIDTH="200">Categoria de Comportamiento</TD>
+  	  <TD WIDTH="150">Comportamientos Seguros</TD>
+  	  <TD WIDTH="150">Comportamientos Riegosos</TD>
+  	  <TD WIDTH="50">Nunca</TD>
+  	  <TD WIDTH="50">No Aplica</TD>
+  	  <TD WIDTH="50">Total</TD>
+    </TR>
+   </THEAD>
+  	<TR CLASS="texto" >
+  	  <TD><SPAN DATAFLD="CATEGORIA"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="SEGURO"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="RIESGOSO"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="NUNCA"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="NOAPLICA"></SPAN></TD>
+  	  <TD  ALIGN="CENTER"><SPAN DATAFLD="TOTAL"></SPAN></TD>
+  	</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" CELLSPACING="10" >
+  <TR>
+    <TD VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv1" ALIGN="center"> 
+      Indicadores . </DIV>
+    </TD>
+  </TR>
+ 
+</TABLE>
+</TD></TR></TABLE>
+</FORM>
+</BODY>
+</HTML>

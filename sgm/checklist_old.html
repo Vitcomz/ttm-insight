@@ -1,0 +1,460 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+<head><TITLE>Modos de Fallas</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<STYLE TYPE="text/css">
+
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+</STYLE>
+
+</HEAD>
+<xml id = xmlGrupos></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT>
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+
+
+function creaCheck(){
+	
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlTemp.XMLDocument;
+	
+		var nomGrupo = prompt("Descripción ","");
+		var url = "xml/Checklist.asp?RECURSO=NewCheck";
+			url += "&DESCRIPCION=" + nomGrupo
+			url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+			url += "&VTZ=" + Math.random();
+			if(!nomGrupo){
+						 alert("Debe ingresar un nombre de falla.");
+						 return;
+						 }
+						
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+		if(!res)
+				window.open(url);
+		
+		
+	ListCheck();	
+}
+
+
+ 
+function ListCheck(){
+
+		if (id_br == "IE")
+		{
+			var xmlGrupos = document.getElementById("xmlGrupos");
+			xmlGrupos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlGrupos = document.implementation.createDocument("", "", null);
+		}
+	  var xmlDso =  xmlGrupos.XMLDocument;
+	  var url = "xml/Checklist.asp?RECURSO=Listafallas";
+		  url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+		  url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+
+		if (res){
+			if (id_br == "IE")
+			{
+				
+				var tbody = document.getElementById("tabCheck").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 0){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}		
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				var tbody = document.getElementById("tabCheck").getElementsByTagName("tbody")[0];
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						var row = document.createElement("TR");
+						row.innerHTML =   "  bgcolor='#dde3eb'";
+						var cell1 = document.createElement("TD");
+						cell1.setAttribute("bgColor","#dde3eb");
+						cell1.innerHTML =   x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+						var cell2 = document.createElement("TD");
+  					    cell2.setAttribute("bgColor","#dde3eb");
+						if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+							cell2.innerHTML =   x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+						}else{
+							cell2.innerHTML = "&nbsp;";
+						}										
+						var cell3 = document.createElement("TD");
+						cell3.setAttribute("bgColor","#dde3eb");
+						cell3.onclick=function(){EliminarCheck(this.parentElement.rowIndex);};
+						cell3.innerHTML =  "<IMG SRC='images/trash.jpg' STYLE='cursor:hand;'>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr bgcolor='#dde3eb'>";
+				  context = context +  "<td>"+  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</td>";
+				  context = context +  "<td>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</td>";
+				  context = context +  "<TD ALIGN='center' onClick='EliminarCheck(this.parentElement.rowIndex);'><IMG SRC='images/trash.jpg' STYLE='cursor:hand;'></TD>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><tr>";
+				}
+			}
+		}
+		else
+	  window.open(url);
+	
+ } 
+
+function ListTipos(){
+
+		if (id_br == "IE")
+		{
+			var xmlEquipos = document.getElementById("xmlEquipos");
+			xmlEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipos = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListTipos";
+	  	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+
+  if (res){
+					  opcion = new Option("TODOS" ,"TOD");
+						if (opcion.value == "TOD") opcion.selected = true;
+						document.getElementById("ListEquipos").options[0] = opcion; 
+						
+					  var tree = xmlDso.documentElement;
+					  //alert(tree.childNodes.length);
+					  for(var i = 1; i < tree.childNodes.length+1; i++){
+						var node = tree.childNodes.item(i-1);
+						opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+						document.getElementById("ListEquipos").options[i] = opcion;
+						 }
+  
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+//function ListCheck(CodEquipo){
+//
+//	var tbl = document.getElementById('tabCheck');
+//	//limpiarTabla(tbl);
+//		if (id_br == "IE")
+//		{
+//			var xmlHorometros = document.getElementById("xmlHorometros");
+//			xmlHorometros.async = false;
+//		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//			var xmlHorometros = document.implementation.createDocument("", "", null);
+//		}
+//	var xmlDso = xmlHorometros.XMLDocument;
+//	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+//		url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+//		url += "&VTZ=" + Math.random();
+//		
+//		
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.send();
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					res = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			res = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//	if (!res)
+//			window.open(url);
+//}
+
+
+
+function EliminarCheck(Index){
+
+	var tabla = document.getElementById('tabCheck');
+	var Codigo = tabla.rows[Index].children[0].innerHTML;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=DelCheck&ID=" + Codigo;
+		url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+		url += "&VTZ=" + Math.random();
+		
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar CheckList Codigo " + Codigo)){
+					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+					{
+								if (window.XMLHttpRequest)
+								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+								  xmlhttp=new XMLHttpRequest();
+								  }
+								else
+								  {// code for IE6, IE5
+								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+								  }
+								xmlhttp.open("GET",url,false);
+								xmlhttp.send();
+								xmlDoc=xmlhttp.responseText;
+								parser = new DOMParser();
+								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+								res = parser.parseFromString(xmlDoc, "text/xml"); 
+								//alert(xmlDso);
+								//window.open(url);
+					}
+					else if (id_br == "IE")
+					{
+						res = xmlDso.load(url);
+					}
+					if(!res)
+							window.open(url);
+	//ListCheck(document.getElementById("ListEquipos").value);
+	}
+	ListCheck();	
+}
+
+function selGrupo(Index){
+	var tabla = document.getElementById('tabGrupos');
+	var CodGrupo =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodGrupo.value = CodGrupo;
+	document.getElementById('idNombreGrupo').innerText = Nombre;
+	ListHorometros(CodGrupo);
+	//getDescripcionActividad(Actividad);
+	
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+	
+	if(!res)
+			window.open(url);
+
+
+}
+
+function inicio(){
+ListTipos();
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM NAME="formulario">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE WIDTH="493">
+<TR>
+  <TD HEIGHT="31" COLSPAN="2" CLASS="titulo">MODOS DE FALLAS</TD>
+</TR>
+<TR CLASS="titulo">
+<TD WIDTH="116">Tipo de Equipo  :</TD>
+<TD WIDTH="365"><SELECT NAME="ListEquipos" ID="ListEquipos" onChange="ListCheck(this.value);" CLASS="Campo"></SELECT></TD>
+</TR>
+</TABLE>
+
+<TABLE WIDTH="371" BORDER="0" CELLPADDING="5" CELLSPACING="5">
+  <TR><TD WIDTH="8">&nbsp;&nbsp;</TD>
+	<TD WIDTH="328" ALIGN="center" VALIGN="top" CLASS="td">
+	  <TABLE WIDTH="270" CELLPADDING="3" CELLSPACING="2"
+	  			class="texto" ID="tabCheck" DATASRC="#xmlHorometros">
+		<THEAD>
+			<TR CLASS="HeaderLista">
+			  <TD WIDTH="53">ID</TD>
+			  <TD WIDTH="183">DESCRIPCION</TD>
+			  <TD WIDTH="16" HEIGHT="20">
+			  <IMG STYLE="CURSOR: hand" onClick="creaCheck();" 
+								src="images/add.gif"></TD>
+			</TR>
+		<THEAD>
+		<TBODY>
+		<TR BGCOLOR="#dde3eb">
+			<TD><SPAN NAME="TxtCodigo" DATAFLD="ID"/></TD>
+			<TD><SPAN NAME="TxtNombre" DATAFLD="DESCRIPCION"/></TD>
+			<TD ALIGN="center" onClick="EliminarCheck(this.parentElement.rowIndex);">
+				<IMG SRC="images/trash.jpg" STYLE="cursor:hand;"></TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+</TD></TR></TABLE>
+</FORM>
+
+<!--<DIV ALIGN="left" >
+  <INPUT TYPE="button"  onClick="document.location.href='index.html'" VALUE="Salir" CLASS="botonBlanco">
+</DIV>
+--></BODY>
+</HTML>

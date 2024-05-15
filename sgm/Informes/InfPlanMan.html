@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Plan de Mantenci�n</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id="xmlTemp"></xml>
+		<xml id="xmlGrupos"></xml>
+		<xml id="xmlEquipos"></xml>
+		<LINK REL="stylesheet" HREF="../standard/menu.css" TYPE="text/css">
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/coolmenus4.js"></SCRIPT>
+		<LINK HREF="../AW/grid.css" TYPE="text/css" REL="stylesheet">
+		<LINK REL="stylesheet" HREF="../sci.css" TYPE="text/css">
+		<SCRIPT LANG="es-cl" SRC="../AW/grid.js"></SCRIPT>
+		<SCRIPT LANG="es-cl" SRC="../AW/paging1.js"></SCRIPT>
+		<SCRIPT SRC="../standard/vitcomz.js"></SCRIPT>
+		
+		
+	<STYLE> 
+	.active-controls-grid {height: 100%; font: menu;}
+	.active-column-0 {width: 400px;}
+	.active-column-1 {width: 100px;}
+	.active-column-2 {width: 150px;}
+	.active-column-3 {width: 200px;}
+	.active-column-4 {width: 90px;}
+	.active-column-5 {width: 90px;}
+	.active-column-6 {width: 70px;}
+	.active-grid-column {border-right: 1px solid threedshadow;}
+	.active-grid-row {border-bottom: 1px solid threedlightshadow;}
+	.active-alternate-even {background: #efe}
+	.active-alternate-odd {background: #def} 
+	</STYLE>
+
+<SCRIPT>
+	
+	  var  grid = new Active.Controls.Grid;
+	  var  table = new Active.XML.Table;
+
+	  
+function setXmlGrid(xmlTemp, url){
+
+       xmlTemp.async = false;
+       var res = xmlTemp.load(url);
+	 //  window.open(url);
+       var xml, node = xmlTemp; 
+
+       if (window.ActiveXObject)
+       {//	IE
+		xml = node;
+	   }
+	  else 
+	   {//	Mozilla
+	    xml = document.implementation.createDocument("","", null);
+	    xml.appendChild(node.selectSingleNode("*"));
+	   }
+	   //	provide data XML
+       var nRows = xml.childNodes.item(1).childNodes.length;
+       //alert(nRows);
+       table.setXML(xml);
+	   grid.setModel("row", new Active.Rows.Page);
+	   grid.setProperty("row/count", nRows);
+	   grid.setProperty("column/count",3);
+	   grid.setProperty("row/pageSize", 20);
+	   grid.setDataModel(table);
+     }
+
+     function setGrid()
+     {
+      //	create data formats
+	  var string = new Active.Formats.String;
+	  var number1 = new Active.Formats.Number;
+	  var number2 = new Active.Formats.Number;
+	  var date = new Active.Formats.Date;
+
+      // define formatting rule for text output
+	  // number1.setTextFormat("#.###,##");
+	  // number2.setTextFormat("");
+
+    	xmlTemp.async = false;
+	  var xmlDso = xmlTemp.XMLDocument;
+	  var Url = "../xml/Equipos.asp?RECURSO=ListPlanMan&CODIGO=35-CV-001";
+	
+	//window.open(Url);
+   	  setXmlGrid(xmlDso, Url);
+      //define column labels
+	  var columns = ["Equipo","Mantenci�n", "Horometro"];
+	  
+	  grid.setColumnProperty("texts", columns);
+      grid.setAction("click", function(src)
+       {
+        var row = src.getRowProperty("index");
+        var count = this.getColumnProperty("count");
+        var column, result;
+        result = this.getDataProperty("text", row, 0);
+        result1 = this.getDataProperty("text", row, 1);
+        
+	   }
+	  );
+
+      //row.setEvent("ondblclick", function(){this.action("dblClickAction")});
+      grid.setAction("dblClickAction", function(src){
+      var i = src.getProperty("item/index");
+      alert(this.getDataText(i,0) + ' ' + this.getItemProperty("text"));
+      });
+
+      //grid.getColumnTemplate(4).setStyle("color", myColor);
+	  document.write(grid);
+     }
+      
+      function ActualizaGrid()
+      {
+       xmlTemp.async = false;
+	  var xmlDso = xmlTemp.XMLDocument;
+	  var Url = "../xml/Equipos.asp?RECURSO=ListPlanMan&CODIGO="+ formulario.ListEquipos.value;
+	 // alert(Url);
+	// window.open(Url);
+	   setXmlGrid(xmlDso, Url);
+	   grid.refresh();
+	   goToPage(0);
+      }
+     
+function toExcel2(){
+
+	  var Url = "../xml/Equipos.asp?RECURSO=ListPlanMan&EXCEL=YES&CODIGO="+ formulario.ListEquipos.value;
+	// alert(Url);
+	window.open(Url);
+      }
+	 
+function ListEquipos(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"DESCRIPCION"));
+	            formulario.ListEquipos.options[i] = opcion;
+				if (opcion.value == "GRUA GOTTWALD G1") opcion.selected = true;
+				 }
+	            opcion = new Option("Seleccionar" ,"0");
+
+	            formulario.ListEquipos.options[i] = opcion; 
+    	     }
+	else
+	  window.open(url);
+	
+ } 
+  
+
+	
+function limpiarTablaCabecera(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++){
+	  var row = tbl.deleteRow(1);
+	 }
+ }
+ 
+function mostrarPlan(){
+
+
+	var tbl = document.getElementById('tabActividades');
+	var lastRow = tbl.rows.length;
+	
+    xmlEquipos.async = false;
+    var xmlDso = xmlEquipos.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=ListPlanMan&CODIGO="+formulario.ListEquipos.value;
+
+    var res =xmlDso.load(url);
+//	window.open(url);
+	limpiarTablaCabecera('tabActividades');
+ 	var EquipoAnterior = "";
+     if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+	      for (i=0; i< tree.childNodes.length; i++){
+    	    var node = tree.childNodes.item(i);          
+        
+			if (getChildNodeValue(node,"CODIGO") != EquipoAnterior){
+          	var row = tbl.insertRow(-1); 		
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<span class='Campo' >" 
+						+ getChildNodeValue(node,"CODIGO")
+						+ "&nbsp;" + getChildNodeValue(node,"DESCRIPCION")
+						 "</span>";   
+			}//if
+			
+			EquipoAnterior = getChildNodeValue(node,"CODIGO");		
+			var row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "&nbsp;&nbsp;&nbsp;&nbsp;<span class='texto'>" + 
+						getChildNodeValue(node,"CODIGO_SUB") + "</span>&nbsp;&nbsp;&nbsp;" + 
+						 "<span class='texto'>" + getChildNodeValue(node,"DESCRIPCION_SUB") + "</span>";
+  			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='texto'>" + getChildNodeValue(node,"HOROMETRO_MAN") + "</span>";	
+  			var cell = row.insertCell(2);
+			cell.innerHTML =  "<span class='texto'>" + getChildNodeValue(node,"HOROMETRO_PADRE") + "</span>";						
+         }//for
+        }//if
+	 }//if xml
+	else
+		window.open(url);
+ 
+}
+
+
+function toExcel(){
+
+	  var Url = "../xml/Equipos.asp?RECURSO=ListPlanMan&EQUIPO=" + formulario.ListEquipos.value;
+	  	  Url += "&EXCEL=YES";
+	 // alert(Url);
+		window.open(Url);
+      }
+	 
+function ListEquipos(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+  	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+     // url += "&TIPO_HOR=SEC";	
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+				if (opcion.value == "35-CV-001") opcion.selected = true;
+				 }
+	            opcion = new Option("Seleccionar" ,"0");
+
+	            formulario.ListEquipos.options[i] = opcion; 
+    	     }
+	else
+	  window.open(url);
+	
+ } 
+  
+		</SCRIPT>
+	</HEAD>
+	<BODY  onLoad="ListEquipos();">
+			<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/menudata.js"></SCRIPT>
+		<BR><BR>
+		<FORM NAME="formulario" >
+			<TABLE HEIGHT="46" cellSpacing="0" cellPadding="0" WIDTH="750" BORDER="0">		
+				<TR>
+				  <TH vAlign="top" BACKGROUND="images/tag_left.jpg" HEIGHT="23"><!--DWLayoutEmptyCell-->&nbsp;</TH>
+				  <TH  class="titulo" vAlign="bottom" ALIGN="left" BACKGROUND="images/tag_center.jpg">INFORME PLAN DE MANTENCI�N</TH>
+				  <TH vAlign="top" BACKGROUND="images/tag_right.jpg" HEIGHT="23"><!--DWLayoutEmptyCell-->&nbsp;</TH>
+			  </TR>
+				<TR>
+					<TH vAlign="top" WIDTH="15" BACKGROUND="images/tag_left.jpg" HEIGHT="23"><!--DWLayoutEmptyCell-->&nbsp;  </TH>
+					<TH  class="titulo" vAlign="bottom" ALIGN="left" WIDTH="750" BACKGROUND="images/tag_center.jpg">&nbsp;</TH>
+					<TH vAlign="top" WIDTH="26" BACKGROUND="images/tag_right.jpg" HEIGHT="23"><!--DWLayoutEmptyCell-->&nbsp;  </TH></TR>
+			</TABLE>
+			<TABLE>
+			<TR  class="Campo">
+			  <TD>EQUIPO PRINCIPAL  :</TD>
+				<TD ><SELECT NAME="ListEquipos"  class="Campo"  onChange="ActualizaGrid();"></SELECT></TD>
+				<TD><INPUT TYPE="button" VALUE="Excel" onClick="toExcel2();"/></TD>
+			</TR>
+			</TABLE>
+			<TABLE ID="tabSolicitud" HEIGHT="427" cellSpacing="0" cellPadding="0" WIDTH="953" BORDER="0">
+							<TR>
+								<TD HEIGHT="427">
+									<SCRIPT>
+											setGrid();
+									</SCRIPT>
+							  </TD>
+							</TR>
+		  </TABLE>
+							<!--//botonera para avanzar por paginas-->
+						<TABLE>
+							<TR HEIGHT="20">
+								<TD WIDTH="1" BACKGROUND="images/BorderTable.jpg"></TD>
+								<TD CLASS="controlButon" ALIGN="right">
+									<INPUT CLASS="littleButton" onClick="goToPage(-Infinity)" TYPE="button" VALUE="<<">
+									<INPUT CLASS="littleButton" onClick="goToPage(-1)" TYPE="button" VALUE="<"> <SPAN ID="pageLabel">
+									</SPAN><INPUT CLASS="littleButton" onClick="goToPage(1);" TYPE="button" VALUE=">">
+									<INPUT CLASS="littleButton" onClick="goToPage(Infinity);" TYPE="button" VALUE=">>">
+								</TD>
+								<TD WIDTH="1" BACKGROUND="images/BorderTable.jpg"></TD>
+							</TR>
+						</TABLE>
+					<!--******************************************-->
+		
+	</FORM>
+				<SCRIPT>
+		
+	function goToPage(delta){
+		var count = grid.getProperty("row/pageCount");
+		var number = grid.getProperty("row/pageNumber");
+		number += delta;
+		if (number < 0) {number = 0}
+		if (number > count-1) {number = count-1}
+		document.getElementById('pageLabel').innerHTML = "P�gina " + (number + 1) + " de " + count + " ";
+
+		grid.setProperty("row/pageNumber", number);
+		grid.refresh();
+	}
+	goToPage(0);
+		</SCRIPT>
+	</BODY>
+
+</HTML>

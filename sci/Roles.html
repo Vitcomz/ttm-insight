@@ -1,0 +1,251 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Documento sin t&iacute;tulo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlRoles></xml>
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<script>
+
+xmlDoc.async = false;
+
+function Get()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Roles.asp?ID=" + formulario.TxtID.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+
+function existe()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Roles.asp?RECURSO=GetRol&ID=" + formulario.TxtID.value;
+	//window.open(url);
+	var res = xmlDso.load(url);
+	if (res){
+            var tree = xmlDso.documentElement;
+            if (tree.childNodes.length == 1){
+				return true;
+				}
+			else
+				return false;
+	  }
+}
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function cargarRoles(){
+ 
+        //xmlRoles.async = false;
+        //var xmlDso =  xmlRoles.XMLDocument;
+		url = "xml/Roles.asp?RECURSO=ListRol";
+		if (id_br == "IE")
+		{
+			var xmlRoles = document.getElementById("xmlRoles");
+			xmlRoles.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlRoles = document.implementation.createDocument("", "", null);
+		}
+	 //window.open(url);
+		var xmlDso = xmlRoles.XMLDocument;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}	
+
+        //var res = xmlDso.load(url);
+        if (!res)
+		window.open(url);
+ }
+ 
+
+function Eliminar(Index)
+{
+
+	var tabla = document.getElementById('MenuRol');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Roles.asp?RECURSO=DelRol&ID=" + Codigo;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Rol Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	}
+	
+	cargarRoles();
+}
+
+function Nuevo(){
+	LimpiarForm();
+	formulario.TxtID.readOnly = false;
+	formulario.TxtID.focus();
+}
+
+function Guardar(){
+if (existe()){
+	UpdateRol();
+	formulario.TxtID.readOnly = true;
+	}
+else{
+	NewRol();
+	formulario.TxtID.readOnly = true;
+	}
+}
+
+function NewRol(){
+
+		var id = prompt("Codigo del Rol","");
+		var nombre = prompt("Nombre del Rol","");
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Roles.asp?RECURSO=InsertRol";
+			url += "&NOMBRE=" + nombre;
+			url += "&ID=" + id;
+
+		xmlestado = xmlDso.load(url);
+		if (xmlestado)
+			alert("Se agreg� un nuevo Rol.");
+		else
+			window.open(url);
+			
+	cargarRoles();
+}
+
+function UpdateRol()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Roles.asp?RECURSO=UpdateRol";
+			url += "&ID=" + formulario.TxtID.value;
+			url += "&NOMBRE=" + formulario.TxtNombre.value
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+	return false;
+}
+
+function ListMenuRol()
+{
+	var id=formulario.TxtID.value;
+	var xmlDso = xmlMenuRol.XMLDocument;
+		var url = "xml/Roles.asp?RECURSO=ListMenuRol";
+			url += "&COD_ROL=" + formulario.TxtID.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+
+function NewMenuRol()
+{
+	var url="MenuRol.html?COD_ROL=" + formulario.TxtID.value;
+	//window.open(url,'','width=600,height=300,toolbar=no,statusbar=no,align=middle');
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:350px;dialogHeight:450px;scroll:no");	
+	ListMenuRol();
+}
+
+
+</script>
+
+<body onLoad="cargarRoles();">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<form name="formulario" method="post" action="">
+
+<DIV id="DivRoles" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListRoles.html" frameBorder="0" width="250" scrolling="no"	height="180"></IFRAME>
+</DIV>
+
+  <p>&nbsp;</p>
+  <p class="titulo">&nbsp;</p>
+  <table width="292" border="0" class="texto">
+    <tr>
+      <td width="67" class="titulo">ROLES</td>
+      <td width="209">&nbsp;</td>
+    </tr>
+</table>
+  <table width="292" border="0" class="texto" datasrc="#xmlRoles" id="MenuRol">
+    <thead>
+      <tr class="HeaderLista">
+        <td>Codigo </td>
+        <td>Nombre</td>
+		<td><img src="images/add.gif" onClick="NewRol();"
+				style="cursor:hand" alt="Nuevo Rol"/></td>
+      </tr>
+    </thead>
+    <tr>
+      <td><input type="text" class="input" id="TxtRol" size="15" datafld="ID"/></td>
+      <td><input type="text" class="input" id="TxtMenu" size="25" datafld="NOMBRE"/></td>
+	  <td onClick="Eliminar(this.parentElement.rowIndex);"><img src="images/trash.jpg" style="cursor:hand;"></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+  <table border="0">
+    <tr>
+      <td colspan="2">
+	  	<div align="center"></div>
+	</td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

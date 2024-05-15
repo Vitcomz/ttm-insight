@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="initial-scale = 1.0, user-scalable = no">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+		
+		<title>Bitacora Tren Moviles</title>
+
+
+
+
+
+
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+	if (id_br == 'IE'){
+				var emp = getEmpresa();
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+				var emp = getEmpresaMoz();
+	}
+
+</script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script language="JavaScript1.2" src="/standard/vitcomz.js"></script>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+        <script src="Scripts/jquery.msgBox.js" type="text/javascript"></script>
+         <link href="Scripts/msgBoxLight.css" rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" type="text/css" href="Scripts/template.css" />
+		<link rel="stylesheet" type="text/css" href="Scripts/style.css">
+		<!-- SLIDING TABS JS -->
+		<script type="text/javascript" src="Scripts/jquery.flashblue-plugins.js"></script>
+		<script type="text/javascript" src="Scripts/jquery.sliding-tabs.js"></script>
+		<script type="text/javascript" src="Scripts/jquery.sliding-tabs-touch.js"></script>
+		<script type="text/javascript" src="Scripts/jquery.scrollto.js"></script>	
+        <script type="text/javascript" src="Scripts/jquery.print-preview.js"></script>	
+		<style type="text/css">
+		.modal-backdrop
+		{
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1040;
+			background-color: #000000;
+			opacity: 0.3;
+			filter: alpha(opacity=30);
+		}
+		.modal
+		{
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			z-index: 9999999;
+			overflow: auto;
+			/* this width is your loading img's width */
+			width: 300px;
+			/* please change the margin-top and margin-left here 
+			 * make sure the margin-top equals 1/2 loading img's height 
+			 * and the margin-left equals 1/2 loading img's width */
+			margin: -50px 0 0 -50px; 
+		}		
+		.tooltipx {
+			border-bottom: 1px dotted #000000; color: #000000; outline: none;
+			cursor: pointer; text-decoration: none;
+			position: relative;
+		}
+		.tooltipx span {
+			margin-left: -999em;
+			position: absolute;
+		}
+		.tooltipx:hover span {
+			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			font-family: Calibri, Tahoma, Geneva, sans-serif;
+			position: absolute; left: 150px; top: 0px; z-index: 99;
+			margin-left: 0; width: 200px;
+		}
+		.tooltipx:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltipx:hover em {
+			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+			display: block; padding: 0.2em 0 0.6em 0;
+		}
+		.tooltipx2 {
+			border-bottom: 1px dotted #000000; color: #000000; outline: none;
+			cursor: pointer; text-decoration: none;
+			position: relative;
+		}
+		.tooltipx2 span {
+			margin-left: -999em;
+			position: absolute;
+		}
+		.tooltipx2:hover span {
+			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			font-family: Calibri, Tahoma, Geneva, sans-serif;
+			position:absolute; left: 100px; top: -50px; z-index: 999999;
+			margin-left: 0; width: 200px;
+		}
+		.tooltipx2:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltipx2:hover em {
+			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+			display: block; padding: 0.2em 0 0.6em 0;
+		}
+		
+		.classic { padding: 0.8em 1em; }
+		.customx { padding: 0.5em 0.8em 0.8em 2em; }
+		* html a:hover { background: transparent; }
+		.classic {background: #FFFFAA; border: 1px solid #FFAD33; }
+		.critical { background: #FFCCAA; border: 1px solid #FF3334;	}
+		.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.infox { background: #F4F4F4; border: 1px solid #2BB0D7;	opacity:0.8; filter:alpha(opacity=80);}
+		.warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+		
+		#print-modal {
+			background: #FFF;
+			position: absolute;
+			left: 50%;
+			margin: 0 0 0 -465px;
+			padding: 0 18px;
+			width: 890px;
+			box-shadow: 0 0 20px #000;
+				-moz-box-shadow: 0 0 20px #000;
+				-webkit-box-shadow: 0 0 10px #000;
+		}
+		
+		#print-modal-content {
+			margin: 68px 0;
+			border: none;
+			height: 100%;
+			overflow: hidden;
+			width: 100%;
+		}
+		
+		#print-modal-controls {
+			border: 1px solid #ccc;
+			border-radius: 8px;
+				-webkit-border-radius: 8px;
+				-moz-border-radius: 8px;
+			top: 15px;
+			left: 50%;
+			margin: 0 0 0 -81px;
+			position: fixed;
+			padding: 5px 0;
+			background: rgba(250, 250, 250, 0.75);
+		}
+	
+		#print-modal-controls a {
+			color: #FFF;
+			display: block;
+			float: left;
+			height: 32px;
+			text-decoration: none;
+			text-indent: -999em;
+			width: 80px;
+		}
+		
+		#print-modal-controls a:hover {
+			opacity: 0.75;
+		}
+		
+		#print-modal-controls a.print {
+			background: url(images/icon-print.png) no-repeat 50% 50%;
+		}
+		#print-modal-controls a.close {
+			background: url(images/icon-close.png) no-repeat 50% 50%;
+		}		
+		</style>        
+		<script type="text/javascript">
+		var username=GetSession();
+		var faena = getEmpresa();
+			function Loadmoviles_UM(lin,pil){
+					var ASP = "xml/eq_moviles.asp?recurso=listMoviles_UM";
+					if (lin != '' && pil != ''){
+						ASP = ASP + "&LINEA=" + lin + "&PILA1=" + pil;
+					}
+					ASP = ASP + "&Z=" +  Math.random()
+					$.post( 
+						 ASP,
+						 function(data) {
+								$('#list1').children('ul').html(data);
+								if (data == '' && lin != '' && pil != ''){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No hay resultado, por lo tanto se visualiza los datos sin filtro !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false,
+											afterShow: function (result) { Loadmoviles_UM('','');}
+										});
+										$("#txtflinea").val('');
+										$("#txtfpila").val('');
+										setTimeout(function(){LoadslidingTabs();},2500);	
+										setTimeout(function(){$("select#cblcriterios").val("all");},200);
+								}
+						 },'html'
+			
+					  );	
+					var ASP = "xml/eq_moviles.asp?recurso=listMoviles_UM_MOD&Z=" +  Math.random();
+					$.post( 
+						 ASP,
+						 function(data) {
+								$('#list_mod').html(data);
+						 },'html'
+			
+					  );	
+					
+			}
+			function LoadslidingTabs(){
+					$(document).ready(function() {
+						$("#slidingtabs").slidingTabs({ 
+							tabActive:0, 
+							useWebKit:true, 
+							responsive:true, 
+							touchSupport:false, 
+							ajaxCache:true, 
+							ajaxSpinner:true, 
+							ajaxError:"Failed to load content", 
+							autoplayInterval:5000, 
+							tabsAlignment:"align_left", 
+							tabsToSlide:10, 
+							tabsAnimSpeed:200, 
+							buttonsFunction:"slide", 
+							tabsEasing:"", 
+							tabsScroll:true, 
+							contentAnimSpeed:200, 
+							contentAnim:"slideH", 
+							autoHeight:false, 
+							autoHeightSpeed:300, 
+							textConversion:"pb", 
+							contentEasing:"easeInOutExpo", 
+							autoplay:false, 
+							orientation:"vertical"
+							
+						});
+						$("div.st_tabs").height($(window).height()/100 * 75);
+						$(".st_views").height($(window).height()/100 * 90);
+						var id = $('#list1 ul li:first a').attr('href');
+						$('#hero-slider ul li:first a').addClass('post1');	
+						$('#hero-slider ul li:nth-child(2) a').addClass('post2');	
+						$('#hero-slider ul li:nth-child(3) a').addClass('post3');	
+						$('#hero-slider ul li:last a').addClass('post4');	
+						$('#hero-slider ul li:first a').removeClass('activate');	
+
+						$('#hero-slider ul li:nth-child(1) a').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Componentes Cinta</em>Manejo y Control de Cinta Transportadora</span>");
+						$('#hero-slider ul li:nth-child(1) a').addClass('tooltipx');	
+						$('#hero-slider ul li:nth-child(2) a').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Componentes Electricos</em>Manejo y Control de Componentes Eléctricos y de Instrumentación tales como Motores eléctricos, Tendido Eléctrico, Sensores y Luminarias</span>");
+						$('#hero-slider ul li:nth-child(2) a').addClass('tooltipx');	
+						$('#hero-slider ul li:nth-child(3) a').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Componentes Mecanicos</em>Manejo y Control de Componentes mecánicos tales como: Polea, Raspadores, Chute, Polines y  Gualdera</span>");
+						$('#hero-slider ul li:nth-child(3) a').addClass('tooltipx');	
+						$('#hero-slider ul li:nth-child(4) a').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Instrumentacion</em>Manejo y Control de Instrumentacion tales como: Sensores</span>");
+						$('#hero-slider ul li:nth-child(4) a').addClass('tooltipx');	
+						
+						$('#link_btnTrenes').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Generador Trenes Apilamientos</em>Ir al Sistema de Manejo y Control de Formacion de Equipos Moviles en Trenes de Apilamientos</span>");
+						$('#link_btnTrenes').addClass('tooltipx2');	
+
+						$('#link_btnLayout').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Layout General</em>Ir al Layout General de Faena</span>");
+						$('#link_btnLayout').addClass('tooltipx2');	
+						
+						
+						$('#link_btnfiltros').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Busqueda</em>Busca Tren de Apilamiento Operativo, Seleccionando Liena y Pila y Luego click aca.</span>");
+						$('#link_btnfiltros').addClass('tooltipx2');	
+						$('#link_btnPrinter').html("<span class='customx infox'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Impresion</em>Genera Reporte de Tren de Apilamiento Operativo e Imprime</span>");
+						$('#link_btnPrinter').addClass('tooltipx2');	
+
+
+						var btn = id.replace('#','');
+						var num = id.replace('#tab-','');
+						$('#hddlist').val('#tab-'+num);
+						var EQ = $('#list1 ul li:first a').find('#hd_cod').val();
+						$("#formIngMtto").find("#txt_equipo").val(EQ);
+						//$('#img1').attr('src','Scripts/Info.png');
+						clean();
+						// carga primer eq
+//						var ASP = "xml/eq_moviles.asp?recurso=GetBitacora";
+//						if (EQ != ''){
+//							ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=UCC";
+//						}
+//						//window.open(ASP);
+//						$.post( 
+//							 ASP,
+//							 function(data) {
+//											if (data == ''){
+												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Mantenimiento de Equipos moviles</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td align='center' valign='middle'><img src='Scripts/MOV-DAV.png'/></td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+//											}else{
+//												xmlDoc = $.parseXML( data );
+//												$xml = $( xmlDoc );
+//												ID = $xml.find("ID").text();
+//												COMP = $xml.find("EQUIPO").text();
+//												ACC = $xml.find("ACCION").text();
+//												TIP = $xml.find("RECOMENDACION").text();
+//												COND = $xml.find("CONDICION").text();
+//												FING = $xml.find("FECHA").text();
+//												FPROG = $xml.find("FECHA_PROGRAMADA").text();
+//												FEJEC = $xml.find("ULT_INSPECCION").text();
+//												FUPD = $xml.find("ULT_MOD_OBS").text();
+//												FUSER = $xml.find("USERDATE").text();
+//												OBS = $xml.find("DESCRIPCION").text();
+//												STATUS = $xml.find("STATUS").text();
+//												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered'><tr><td width='30%'>Id : " + ID + "<input type='hidden' name='hddid' id='hddid' value='" + ID + "'/></td><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Componente : " + COMP + "<input type='hidden' name='hddcomp' id='hddcomp' value='" + COMP + "'/></td></tr><tr><td>Accion : " + ACC + "<input type='hidden' name='hddaccion' id='hddaccion' value='" + ACC + "'/></td><td>Tipo : " + TIP + "<input type='hidden' name='hddtipo' id='hddtipo' value='" + TIP + "'/></td><td>Condicion : " + COND + "<input type='hidden' name='hddcond' id='hddcond' value='" + COND + "'/></td></tr><tr><td>Fecha Ingreso : " + FING + "<input type='hidden' name='hddfing' id='hddfing' value='" + FING + "'/></td><td>Fecha Programacion : " + FPROG + "<input type='hidden' name='hddfprog' id='hddfprog' value='" + FPROG + "'/></td><td>Fecha ejecuccion : " + FEJEC + "<input type='hidden' name='hddfejec' id='hddfejec' value='" + FEJEC + "'/></td></tr><tr><td height='182px' colspan='3' valign='top'>Observaciones <input type='hidden' name='hddobs' id='hddobs' value='" + OBS + "'/><br /><br /><p>" + OBS + "</p></td></tr></table></div></div><div class='post-footer'><p class='posted-by'>UCC: 15-12-2012</a></p><p class='date'>Fecha Act: " + FUSER +"&nbsp;&nbsp;&nbsp;&nbsp;<a href='#' id='#btnModing" + btn + "' class='formeqmov'>Editar</a></p></div></div>");
+//												$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+//											}
+//							 },'html'
+//				
+//						  );							
+						$("#formIngMtto").find("#cblsisting").val('');
+//						$('.formeqmov').click(function(){			
+//							$("#formIngMtto").find("#txtiding").val($(id+'-body').find('#panel-1').find('#hddid').val()); //carga la id desde sistema cinta al formulario
+//							$('#hddact').val('UPD');
+//							$('#extruderLeft2').openMbExtruder(true);
+//						});
+						$('#list1 ul a').click(function () {
+							var id = $(this).attr('href');
+							var btn = id.replace('#','');
+							var num = id.replace('#tab-','');
+							$('#hddlist').val('#tab-'+num);
+							var EQ = $(this).find('#hd_cod').val();
+							$('#hero-slider ul li:nth-child(1) a').addClass('post1');	
+							$('#hero-slider ul li:nth-child(2) a').addClass('post2');	
+							$('#hero-slider ul li:nth-child(3) a').addClass('post3');	
+							$('#hero-slider ul li:nth-child(4) a').addClass('post4');	
+							$('#extruderLeft2').closeMbExtruder(true);
+							$('#hddact').val('ING');
+							clean();
+							// carga eq seleccionado de la lista de eq
+							var ASP = "xml/eq_moviles.asp?recurso=GetBitacoraUlt&Z=" +  Math.random();
+							if (EQ != ''){
+								ASP = ASP + "&EQUIPO=" + EQ + "&FAENA=CERRO COLORADO";
+							}
+							//window.open(ASP);
+							$.post( 
+								 ASP,
+								 function(data) {
+											xmlDoc = $.parseXML( data );
+											$xml = $( xmlDoc );
+											var count=$($xml).find("EQUIPO").size();
+											if (count == 0){
+												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Resumen General</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered'><tr><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Status : <span id='sp-1'></span></td></tr><tr><td>UCC : </td><td>UME : </td></tr><tr><td>UMM : </td><td>UMI : </td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+												$('#hddact').val('ING');
+												clean();
+											}else{
+												EQ = $xml.find("EQUIPO").text();
+												UCC = $xml.find("UCC").text();
+												UME = $xml.find("UME").text();
+												UMM = $xml.find("UMM").text();
+												UMI = $xml.find("UMI").text();
+												STATUS = $xml.find("STATUS").text();
+												IDSTATUS = $xml.find("IDSTATUS").text();
+												$('#hddact').val('ING');
+												
+												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Resumen General</h1><a href='#' class='post-comments'></a></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered'><tr><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Status : <span id='sp-1'></span></td></tr><tr><td>UCC : " + UCC + "</td><td>UME : " + UME + "</td></tr><tr><td>UMM : " + UMM + "</td><td>UMI : " + UMI + "</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></p></div></div>");
+												$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+											}
+								 },'html'
+					
+							  );	
+							
+//							$('.formeqmov').click(function(){			
+//								var target = $(this).attr("id");
+//								$("#formIngMtto").find("#txtiding").val($(id+'-body').find('#panel-1').find('#hddid').val()); //carga la id desde sistema cinta al formulario
+//								$('#hddact').val('UPD');
+//								$('#extruderLeft2').openMbExtruder(true);
+//							});							
+							$('#hero-slider ul a').removeClass('activate');
+	
+							$('.mask').scrollTo($('#hero-slider ul li:first a').attr('rel'), 150);
+							$("#formIngMtto").find("#txt_equipo").val($(this).find('#hd_cod').val());
+							$("#formIngMtto").find("#cblsisting").val('');
+						});
+						$('#hero-slider ul a').click(function () {
+							$('#hero-slider ul a').removeClass('activate');
+							$(this).addClass('activate');	
+							$('.mask').scrollTo($(this).attr('rel'), 150);
+							var id = $('#hddlist').val();
+							var btn = id.replace('#','');
+							$('#extruderLeft2').closeMbExtruder(true);
+							EQ = $("#formIngMtto").find("#txt_equipo").val();
+							if ($(this).attr('rel') == '#panel-1'){
+								//$("#formIngMtto").find("#cblsisting").val('UCC');
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+								if (EQ != ''){
+									ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=UCC";
+								}
+								//window.open(ASP);
+								var rows = '';
+								$.post( 
+									 ASP,
+									 function(data) {
+											xmlDoc = $.parseXML( data );
+											$xml = $( xmlDoc );
+											var count=$($xml).find("ROW").size();
+									 		if (count == 0){
+												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td height='200' align='center' valign='middle'><img src='images/sin_datos.png'/></td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+												$('#hddact').val('ING');
+												clean();
+											}else{
+												$($xml).find("ROW").each(function(){
+													ID = $(this).find("ID").text();
+													COMP = $(this).find("EQUIPO").text();
+													ACC = $(this).find("ACCION").text();
+													FING = $(this).find("FECHA").text();
+													FPROG = $(this).find("FECHA_PROGRAMADA").text();
+													FEJEC = $(this).find("ULT_INSPECCION").text();
+													FUPD = $(this).find("ULT_MOD_OBS").text();
+													FUSER = $(this).find("USERDATE").text();
+													OBS = $(this).find("DESCRIPCION").text();
+													STATUS = $(this).find("STATUS").text();
+													IDSTATUS = $(this).find("IDSTATUS").text();
+													IND_SOL = $(this).find("IND_SOLUCION").text();
+													$('#hddact').val('ING');
+	//												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered'><tr><td width='30%'>Id : " + ID + "<input type='hidden' name='hddid' id='hddid' value='" + ID + "'/></td><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Componente : " + COMP + "<input type='hidden' name='hddcomp' id='hddcomp' value='" + COMP + "'/></td></tr><tr><td>Accion : " + ACC + "<input type='hidden' name='hddaccion' id='hddaccion' value='" + ACC + "'/></td><td>Tipo : " + TIPx + "<input type='hidden' name='hddtipo' id='hddtipo' value='" + TIP + "'/></td><td>Condicion : " + CONDx + "<input type='hidden' name='hddcond' id='hddcond' value='" + COND + "'/></td></tr><tr><td>Fecha Ingreso : " + FING + "<input type='hidden' name='hddfing' id='hddfing' value='" + FING + "'/></td><td>Fecha Programacion : " + FPROG + "<input type='hidden' name='hddfprog' id='hddfprog' value='" + FPROG + "'/></td><td>Fecha ejecuccion : " + FEJEC + "<input type='hidden' name='hddfejec' id='hddfejec' value='" + FEJEC + "'/></td></tr><tr><td height='182px' colspan='3' valign='top'>Observaciones <input type='hidden' name='hddobs' id='hddobs' value='" + OBS + "'/><br /><br /><p>" + OBS + "</p></td></tr></table></div></div><div class='post-footer'><p class='posted-by'>UCC: " + FUPD +"</a></p><p class='date'>Fecha Act: " + FUSER +"&nbsp;&nbsp;&nbsp;&nbsp;<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + id+'-body&panel-1' + "');></p></div></div>");
+													var css = "";
+													if (IND_SOL == 'TRUE') {
+														css = "style='background-color:#CCFFCC'"
+													}else{
+														css = ""
+													}
+													rows = rows + "<tr " + css + "><td width='30'>" + ID + "</td><td width='100'>" + COMP + "</td><td>" + OBS + "</td><td width='50'>" + FEJEC + "</td><td width='50'>" + FPROG + "</td><td width='15'><img src='Scripts/" + STATUS + "'></td><td width='15'>"
+													if (IND_SOL != 'TRUE') {
+														rows = rows + "<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + ID + "','" + COMP + "','UCC','" + id+"-body&#panel-1');>"
+													}													
+													rows = rows + "</td></tr>"
+												});
+												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' border='0' cellspacing='1' cellpadding='1'  class='bordered2'><tr><th width='30' align='center'><strong>ID</strong></th><th width='100' align='center'><strong>COMPONENTE</strong></th><th align='center'><strong>OBS</strong></th><th width='50' align='center'><strong>F. MTTO</strong></th><th width='50' align='center'><strong>F. PROG</strong></th><th width='15' align='center' colspan='2'>&nbsp;</th></tr>" + rows + "</table></div></div><div class='post-footer'><p class='posted-by'></p><p class='date'></p></div></div>");
+												//$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+											}
+									 },'html'
+						
+								  );	
+								
+//								$('#btnModing').click(function(){			
+//									var target = $(this).attr("id");
+//									$('#hddact').val('UPD');									
+//									$('#extruderLeft2').openMbExtruder(true);
+//								});
+
+								//carga el sistema de cinta
+								//alert('UCC');
+							}
+							if ($(this).attr('rel') == '#panel-2'){
+								//$("#formIngMtto").find("#cblsisting").val('UME');
+								//carga el sistema de cinta
+								// carga eq seleccionado de la lista de eq
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+								if (EQ != ''){
+									ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=UME";
+								}
+								//window.open(ASP);
+								var rows = '';
+								$.post( 
+									 ASP,
+									 function(data) {
+											xmlDoc = $.parseXML( data );
+											$xml = $( xmlDoc );
+											var count=$($xml).find("ROW").size();
+									 		if (count == 0){
+												$(id+'-body').find('#panel-2').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Electrico</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td height='200' align='center' valign='middle'><img src='images/sin_datos.png'/></td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+												$('#hddact').val('ING');
+												clean();
+											}else{
+												$($xml).find("ROW").each(function(){
+													ID = $(this).find("ID").text();
+													COMP = $(this).find("EQUIPO").text();
+													ACC = $(this).find("ACCION").text();
+													FING = $(this).find("FECHA").text();
+													FPROG = $(this).find("FECHA_PROGRAMADA").text();
+													FEJEC = $(this).find("ULT_INSPECCION").text();
+													FUPD = $(this).find("ULT_MOD_OBS").text();
+													FUSER = $(this).find("USERDATE").text();
+													OBS = $(this).find("DESCRIPCION").text();
+													STATUS = $(this).find("STATUS").text();
+													IDSTATUS = $(this).find("IDSTATUS").text();
+													IND_SOL = $(this).find("IND_SOLUCION").text();
+													$('#hddact').val('ING');
+	//												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered2'><tr><td width='30%'>Id : " + ID + "<input type='hidden' name='hddid' id='hddid' value='" + ID + "'/></td><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Componente : " + COMP + "<input type='hidden' name='hddcomp' id='hddcomp' value='" + COMP + "'/></td></tr><tr><td>Accion : " + ACC + "<input type='hidden' name='hddaccion' id='hddaccion' value='" + ACC + "'/></td><td>Tipo : " + TIPx + "<input type='hidden' name='hddtipo' id='hddtipo' value='" + TIP + "'/></td><td>Condicion : " + CONDx + "<input type='hidden' name='hddcond' id='hddcond' value='" + COND + "'/></td></tr><tr><td>Fecha Ingreso : " + FING + "<input type='hidden' name='hddfing' id='hddfing' value='" + FING + "'/></td><td>Fecha Programacion : " + FPROG + "<input type='hidden' name='hddfprog' id='hddfprog' value='" + FPROG + "'/></td><td>Fecha ejecuccion : " + FEJEC + "<input type='hidden' name='hddfejec' id='hddfejec' value='" + FEJEC + "'/></td></tr><tr><td height='182px' colspan='3' valign='top'>Observaciones <input type='hidden' name='hddobs' id='hddobs' value='" + OBS + "'/><br /><br /><p>" + OBS + "</p></td></tr></table></div></div><div class='post-footer'><p class='posted-by'>UCC: " + FUPD +"</a></p><p class='date'>Fecha Act: " + FUSER +"&nbsp;&nbsp;&nbsp;&nbsp;<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + id+'-body&panel-1' + "');></p></div></div>");
+													var css = "";
+													if (IND_SOL == 'TRUE') {
+														css = "style='background-color:#CCFFCC'"
+													}else{
+														css = ""
+													}
+													rows = rows + "<tr " + css + "><td width='30'>" + ID + "</td><td width='100'>" + COMP + "</td><td>" + OBS + "</td><td width='50'>" + FEJEC + "</td><td width='50'>" + FPROG + "</td><td width='15'><img src='Scripts/" + STATUS + "'></td><td width='15'>"
+													if (IND_SOL != 'TRUE') {
+														rows = rows + "<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + ID + "','" + COMP + "','UME','" + id+"-body&#panel-1');>"
+													}													
+													rows = rows + "</td></tr>"
+												});
+												$(id+'-body').find('#panel-2').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Electrico</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' border='0' cellspacing='1' cellpadding='1'  class='bordered2'><tr><th width='30' align='center'><strong>ID</strong></th><th width='100' align='center'><strong>COMPONENTE</strong></th><th align='center'><strong>OBS</strong></th><th width='50' align='center'><strong>F. MTTO</strong></th><th width='50' align='center'><strong>F. PROG</strong></th><th width='15' align='center' colspan='2'>&nbsp;</th></tr>" + rows + "</table></div></div><div class='post-footer'><p class='posted-by'></p><p class='date'></p></div></div>");
+												//$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+											}
+									 },'html'
+						
+								  );	
+								
+								
+//								$('.formeqmov').click(function(){			
+//									var target = $(this).attr("id");
+//									$('#hddact').val('UPD');									
+//									$('#extruderLeft2').openMbExtruder(true);
+//								});
+
+							}
+							if ($(this).attr('rel') == '#panel-3'){
+								//$("#formIngMtto").find("#cblsisting").val('UMM');
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+								if (EQ != ''){
+									ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=UMM";
+								}
+								var rows = '';
+								$.post( 
+									 ASP,
+									 function(data) {
+											xmlDoc = $.parseXML( data );
+											$xml = $( xmlDoc );
+											var count=$($xml).find("ROW").size();
+									 		if (count == 0){
+												$(id+'-body').find('#panel-3').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Mecanico</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td height='200' align='center' valign='middle'><img src='images/sin_datos.png'/></td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+												$('#hddact').val('ING');
+												clean();
+											}else{
+												$($xml).find("ROW").each(function(){
+													ID = $(this).find("ID").text();
+													COMP = $(this).find("EQUIPO").text();
+													ACC = $(this).find("ACCION").text();
+													FING = $(this).find("FECHA").text();
+													FPROG = $(this).find("FECHA_PROGRAMADA").text();
+													FEJEC = $(this).find("ULT_INSPECCION").text();
+													FUPD = $(this).find("ULT_MOD_OBS").text();
+													FUSER = $(this).find("USERDATE").text();
+													OBS = $(this).find("DESCRIPCION").text();
+													STATUS = $(this).find("STATUS").text();
+													IDSTATUS = $(this).find("IDSTATUS").text();
+													IND_SOL = $(this).find("IND_SOLUCION").text();
+													$('#hddact').val('ING');
+	//												$(id+'-body').find('#panel-1').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered2'><tr><td width='30%'>Id : " + ID + "<input type='hidden' name='hddid' id='hddid' value='" + ID + "'/></td><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Componente : " + COMP + "<input type='hidden' name='hddcomp' id='hddcomp' value='" + COMP + "'/></td></tr><tr><td>Accion : " + ACC + "<input type='hidden' name='hddaccion' id='hddaccion' value='" + ACC + "'/></td><td>Tipo : " + TIPx + "<input type='hidden' name='hddtipo' id='hddtipo' value='" + TIP + "'/></td><td>Condicion : " + CONDx + "<input type='hidden' name='hddcond' id='hddcond' value='" + COND + "'/></td></tr><tr><td>Fecha Ingreso : " + FING + "<input type='hidden' name='hddfing' id='hddfing' value='" + FING + "'/></td><td>Fecha Programacion : " + FPROG + "<input type='hidden' name='hddfprog' id='hddfprog' value='" + FPROG + "'/></td><td>Fecha ejecuccion : " + FEJEC + "<input type='hidden' name='hddfejec' id='hddfejec' value='" + FEJEC + "'/></td></tr><tr><td height='182px' colspan='3' valign='top'>Observaciones <input type='hidden' name='hddobs' id='hddobs' value='" + OBS + "'/><br /><br /><p>" + OBS + "</p></td></tr></table></div></div><div class='post-footer'><p class='posted-by'>UCC: " + FUPD +"</a></p><p class='date'>Fecha Act: " + FUSER +"&nbsp;&nbsp;&nbsp;&nbsp;<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + id+'-body&panel-1' + "');></p></div></div>");
+													var css = "";
+													if (IND_SOL == 'TRUE') {
+														css = "style='background-color:#CCFFCC'"
+													}else{
+														css = ""
+													}
+													rows = rows + "<tr " + css + "><td width='30'>" + ID + "</td><td width='100'>" + COMP + "</td><td>" + OBS + "</td><td width='50'>" + FEJEC + "</td><td width='50'>" + FPROG + "</td><td width='15'><img src='Scripts/" + STATUS + "'></td><td width='15'>"
+													if (IND_SOL != 'TRUE') {
+														rows = rows + "<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + ID + "','" + COMP + "','UMM','" + id+"-body&#panel-1');>"
+													}													
+													rows = rows + "</td></tr>"
+												});
+												$(id+'-body').find('#panel-3').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Mecanico</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' border='0' cellspacing='1' cellpadding='1'  class='bordered2'><tr><th width='30' align='center'><strong>ID</strong></th><th width='100' align='center'><strong>COMPONENTE</strong></th><th align='center'><strong>OBS</strong></th><th width='50' align='center'><strong>F. MTTO</strong></th><th width='50' align='center'><strong>F. PROG</strong></th><th width='15' align='center' colspan='2'>&nbsp;</th></tr>" + rows + "</table></div></div><div class='post-footer'><p class='posted-by'></p><p class='date'></p></div></div>");
+												//$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+											}
+									 },'html'
+						
+								  );	
+//								$('.formeqmov').click(function(){			
+//									var target = $(this).attr("id");
+//									$('#hddact').val('UPD');									
+//									$('#extruderLeft2').openMbExtruder(true);
+//								});
+
+							}
+							if ($(this).attr('rel') == '#panel-4'){
+								//$("#formIngMtto").find("#cblsisting").val('UCC');
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+								if (EQ != ''){
+									ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=UMI";
+								}
+								//window.open(ASP);
+								var rows = '';
+								$.post( 
+									 ASP,
+									 function(data) {
+											xmlDoc = $.parseXML( data );
+											$xml = $( xmlDoc );
+											var count=$($xml).find("ROW").size();
+									 		if (count == 0){
+												$(id+'-body').find('#panel-4').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Instrumentacion</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td height='200' align='center' valign='middle'><img src='images/sin_datos.png'/></td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+												$('#hddact').val('ING');
+												clean();
+											}else{
+												$($xml).find("ROW").each(function(){
+													ID = $(this).find("ID").text();
+													COMP = $(this).find("EQUIPO").text();
+													ACC = $(this).find("ACCION").text();
+													FING = $(this).find("FECHA").text();
+													FPROG = $(this).find("FECHA_PROGRAMADA").text();
+													FEJEC = $(this).find("ULT_INSPECCION").text();
+													FUPD = $(this).find("ULT_MOD_OBS").text();
+													FUSER = $(this).find("USERDATE").text();
+													OBS = $(this).find("DESCRIPCION").text();
+													STATUS = $(this).find("STATUS").text();
+													IDSTATUS = $(this).find("IDSTATUS").text();
+													IND_SOL = $(this).find("IND_SOLUCION").text();
+													$('#hddact').val('ING');
+	//												$(id+'-body').find('#panel-4').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' class='bordered'><tr><td width='30%'>Id : " + ID + "<input type='hidden' name='hddid' id='hddid' value='" + ID + "'/></td><td width='30%'>Equipo : " + EQ + "</td><td width='30%'>Componente : " + COMP + "<input type='hidden' name='hddcomp' id='hddcomp' value='" + COMP + "'/></td></tr><tr><td>Accion : " + ACC + "<input type='hidden' name='hddaccion' id='hddaccion' value='" + ACC + "'/></td><td>Tipo : " + TIPx + "<input type='hidden' name='hddtipo' id='hddtipo' value='" + TIP + "'/></td><td>Condicion : " + CONDx + "<input type='hidden' name='hddcond' id='hddcond' value='" + COND + "'/></td></tr><tr><td>Fecha Ingreso : " + FING + "<input type='hidden' name='hddfing' id='hddfing' value='" + FING + "'/></td><td>Fecha Programacion : " + FPROG + "<input type='hidden' name='hddfprog' id='hddfprog' value='" + FPROG + "'/></td><td>Fecha ejecuccion : " + FEJEC + "<input type='hidden' name='hddfejec' id='hddfejec' value='" + FEJEC + "'/></td></tr><tr><td height='182px' colspan='3' valign='top'>Observaciones <input type='hidden' name='hddobs' id='hddobs' value='" + OBS + "'/><br /><br /><p>" + OBS + "</p></td></tr></table></div></div><div class='post-footer'><p class='posted-by'>UCC: " + FUPD +"</a></p><p class='date'>Fecha Act: " + FUSER +"&nbsp;&nbsp;&nbsp;&nbsp;<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + id+'-body&panel-1' + "');></p></div></div>");
+													var css = "";
+													if (IND_SOL == 'TRUE') {
+														css = "style='background-color:#CCFFCC'"
+													}else{
+														css = ""
+													}
+													rows = rows + "<tr " + css + "><td width='30'>" + ID + "</td><td width='100'>" + COMP + "</td><td>" + OBS + "</td><td width='50'>" + FEJEC + "</td><td width='50'>" + FPROG + "</td><td width='15'><img src='Scripts/" + STATUS + "'></td><td width='15'>"
+													if (IND_SOL != 'TRUE') {
+														rows = rows + "<input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + ID + "','" + COMP + "','UMI','" + id+"-body&#panel-1');>"
+													}													
+													rows = rows + "</td></tr>"
+												});
+												$(id+'-body').find('#panel-4').html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Instrumentacion</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' border='0' cellspacing='1' cellpadding='1'  class='bordered2'><tr><th width='30' align='center'><strong>ID</strong></th><th width='100' align='center'><strong>COMPONENTE</strong></th><th align='center'><strong>OBS</strong></th><th width='50' align='center'><strong>F. MTTO</strong></th><th width='50' align='center'><strong>F. PROG</strong></th><th width='15' align='center' colspan='2'>&nbsp;</th></tr>" + rows + "</table></div></div><div class='post-footer'><p class='posted-by'></p><p class='date'></p></div></div>");
+												//$(id+'-body').find('#panel-4').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+											}
+									 },'html'
+						
+								  );	
+								
+//								$('#btnModing').click(function(){			
+//									var target = $(this).attr("id");
+//									$('#hddact').val('UPD');									
+//									$('#extruderLeft2').openMbExtruder(true);
+//								});
+
+								//carga el sistema de cinta
+								//alert('UCC');
+							}
+							
+							return false;		
+						});
+
+					});
+			}
+			
+			function edit_bit(ideq, compeq, idsist, idpa){
+					$('#extruderLeft2').openMbExtruder(true);
+					$('#hddact').val('UPD');
+					var datx = idpa.split('&');
+					var datx2 = datx[0].split('-');
+					$('#hddN').val(datx2[1]);
+					var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+					if (compeq != ''){
+						ASP = ASP + "&EQUIPO=" + compeq + "&SISTEMA=" + idsist;
+					}
+					if (ideq != ''){
+						ASP = ASP + "&ID=" + ideq;
+					}
+					//window.open (ASP);
+					$.post( 
+						 ASP,
+						 function(data) {
+								xmlDoc = $.parseXML( data );
+								$xml = $( xmlDoc );
+								var count=$($xml).find("ROW").size();
+						 		if (count == 0){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No hay resultado !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+								}else{
+										$($xml).find("ROW").each(function(){
+											ID = $(this).find("ID").text();
+											COMP = $(this).find("EQUIPO").text();
+											ACC = $(this).find("ACCION").text();
+											FING = $(this).find("FECHA").text();
+											FPROG = $(this).find("FECHA_PROGRAMADA").text();
+											FEJEC = $(this).find("ULT_INSPECCION").text();
+											FUPD = $(this).find("ULT_MOD_OBS").text();
+											FUSER = $(this).find("USERDATE").text();
+											OBS = $(this).find("DESCRIPCION").text();
+											STATUS = $(this).find("STATUS").text();
+											IDSTATUS = $(this).find("IDSTATUS").text();
+											TIPO = $(this).find("RECOMENDACION").text();
+											COND = $(this).find("CONDICION").text();											
+										});
+									
+										$('#hddact').val('UPD');
+										//$("#formIngMtto").find("#hddpanel").val(ideq);
+										$("#formIngMtto").find("#txtiding").val(ID);
+										//$("#formIngMtto").find("#cblstatusing").val($(data[0]).find('#'+data[1]).find('#hddstatus').val());
+										$("#formIngMtto").find("#txtfeching").val(FING);
+										$("#formIngMtto").find("#cblaccing").val(ACC);
+										$("#formIngMtto").find("#cbltipoing").val(TIPO);
+										$("#formIngMtto").find("#cblconding").val(COND);
+										$("#formIngMtto").find("#txtfechprog").val(FPROG);
+										$("#formIngMtto").find("#txtfechejec").val(FEJEC);
+										$("#formIngMtto").find("#txtobsing").val(OBS);
+										
+										var selectedIndex;
+										if (IDSTATUS == '7'){
+											selectedIndex = 1;
+										}else if (IDSTATUS == '5'){
+											selectedIndex = 2;
+										}else if (IDSTATUS == '4'){
+											selectedIndex = 3;
+										}else if (IDSTATUS == '3'){
+											selectedIndex = 4;
+										}else if (IDSTATUS == '1'){
+											selectedIndex = 5;
+										}
+										$("#formIngMtto").find('#cblstatusing').ddslick('select', {index: selectedIndex });
+										$("#formIngMtto").find("#cblsisting").val(idsist);
+										$("#formIngMtto").find("#cblsisting").change();
+										$('#hddpanel').val(idpa);
+										$("#formIngMtto").find("#chk_solucion").removeAttr("checked");
+
+										
+										var t1=setTimeout(function(){$("#formIngMtto").find("#cblcomping").val(COMP);},300);
+	
+								}
+						 },'html'
+			
+					  );	
+					
+					//var target = $(this).attr("id");
+					// id+'-body&panel-2
+			}
+
+			var mes = "";
+			var tmpStr1 = "";
+			var tmpStr2 = "";
+			
+			 mydate = new Date();
+			  hour      = mydate.getHours();
+			  minute    = mydate.getMinutes();
+			  day_month = mydate.getDate();
+			  month     = mydate.getMonth()+1;
+			  year      = mydate.getFullYear();    
+			  day       = mydate.getDay();  
+			
+			if ((day_month+"").length==1) day_month ='0'+day_month;
+			
+			if ((month+"").length==1) month ='0' + month;
+			
+			//alert("01/01/"+ year);
+			//document.getElementById("txtFechaFin").value = day_month + "/" + month + "/" + year;
+			var fech_end = day_month + "/" + month + "/" + year;
+			
+
+			
+		</script>
+        <style type="text/css">#hero-slider{text-align:left;background-color:#efefef;border:1px solid #ccc;width:100%;-moz-border-radius:10px;-webkit-border-radius:10px;margin:0 auto;font-family:arial;}#hero-slider .mask{float:left;width:780px;height:490px;margin:15px 0 0 10px;overflow:hidden;}#hero-slider .panel{width:100%;height:495px;text-align:left;  top:35%;}#hero-slider ul{margin:0;padding:15px 15px 0 15px;list-style:none;float:left;border-right:1px solid #dedede;height:490px;}#hero-slider ul li{margin:65px 0 -55px; }#hero-slider ul a{outline:none;text-decoration:underline;display:block;width:75px;height:74px;}#hero-slider a.post1{background:url(images/buttonhero2.png) no-repeat 0 0;}#hero-slider a.post2{background:url(images/buttonhero4.png) no-repeat 0 0;}#hero-slider a.post3{background:url(images/buttonhero3.png) no-repeat 0 0;}#hero-slider a.post4{background:url(images/buttonhero5.png) no-repeat 0 0;}#hero-slider ul a.activate{background-position:-75px;}.panel h2{padding:15px 0 0 0;color:#0058a9;}.panel p{color:#666;}.clear{clear:both}
+        #link_btnTrenes.post5{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_movil.png) no-repeat 0 0;}
+		#link_btnfiltros.post6{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_find_movil.png) no-repeat 0 0;}
+		#link_btnPrinter.post7{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_print_movil.png) no-repeat 0 0;}
+		#link_btnLayout.post8{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_layout_movil.png) no-repeat 0 0;}
+
+        </style>
+	<!--<script src="http://tab-slide-out.googlecode.com/files/jquery.tabSlideOut.v1.3.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        $('.slide-out-div').tabSlideOut({
+            tabHandle: '.handle',                     //class of the element that will become your tab
+            pathToTabImage: 'images/contact_tab.gif', //path to the image for the tab //Optionally can be set using css
+            imageHeight: '122px',                     //height of tab image           //Optionally can be set using css
+            imageWidth: '40px',                       //width of tab image            //Optionally can be set using css
+            tabLocation: 'right',                      //side of screen where tab lives, top, right, bottom, or left
+            speed: 150,                               //speed of animation
+            action: 'click',                          //options: 'click' or 'hover', action to trigger animation
+            topPos: '38px',                          //position from the top/ use if tabLocation is left or right
+            leftPos: '20px',                          //position from left/ use if tabLocation is bottom or top
+            fixedPosition: false                      //options: true makes it stick(fixed position) on scroll
+        });
+
+    });
+
+    </script>	
+    <style type="text/css">
+		.slide-out-div {
+				  width: 60%;
+				  height: 330px;
+				  background: #ccc;
+				  border: 1px solid #29216d;
+				  z-index: 99999;
+			  }
+    </style>-->
+	<style type="text/css">
+		.wrapper{
+			position:relative;
+			font-family:Arial, Helvetica, sans-serif;
+			padding-top:90px;
+			padding-left:50px;
+			width:80%;
+			margin:auto
+		}
+		.wrapper .text{
+			font-family:Arial, Helvetica, sans-serif;
+			padding-top:50px;
+		}
+		.wrapper h1{
+			font-family:Arial, Helvetica, sans-serif;
+			font-size:26px;
+		}
+		.longText{
+			margin-top:20px;
+			width:600px;
+			font:18px/24px Arial, Helvetica, sans-serif;
+			color:gray;
+		}
+		span.btn{
+			padding:10px;
+			display:inline-block;
+			cursor:pointer;
+			font:12px/14px Arial, Helvetica, sans-serif;
+			color:#aaa;
+			background-color:#eee;
+			-moz-border-radius:10px;
+			-webkit-border-radius:10px;
+			-moz-box-shadow:#999 2px 0px 3px;
+			-webkit-box-shadow:#999 2px 0px 3px;
+		}
+		span.btn:hover{
+			background-color:#000;
+		}
+
+			/*
+		input{
+			padding:10px;
+			border:none;
+			-moz-box-shadow:#999 2px 0px 3px;
+			-webkit-box-shadow:#999 2px 0px 3px;
+		}
+									custom style for extruder
+									*/
+
+		.extruder.left.a .flap{
+			font-size:18px;
+			color:white;
+			top:0;
+			padding:10px 0 10px 10px;
+			background:#772B14;
+			width:30px;
+			position:absolute;
+			right:0;
+			-moz-border-radius:0 10px 10px 0;
+			-webkit-border-top-right-radius:10px;
+			-webkit-border-bottom-right-radius:10px;
+			-moz-box-shadow:#666 2px 0px 3px;
+			-webkit-box-shadow:#666 2px 0px 3px;
+		}
+
+		.extruder.left.a .content{
+			border-right:3px solid #772B14;
+			background:rgba(255,255,255,.95);
+		}
+
+		.extruder.left.a .flap .flapLabel{
+			background:#772B14;
+		}
+		#extruderLeft2{
+			font-family:Arial, Helvetica, sans-serif;
+			top:30;
+			padding:5px 0 0px 5px;
+			height:280px;
+			z-index:5;
+		}
+		.contactForm {
+			background-color: rgb(51, 51, 51);
+			border: 1px solid rgb(255, 255, 255);
+			color: rgb(255, 255, 255);			
+			font-family:Arial, Helvetica, sans-serif;
+			font-size: 1em;
+		}
+		.contactForm textarea  {
+			background-color:#FFF;
+			border: 1px solid #CCCCCC;
+			scrollbar-arrow-color: #000066;
+			scrollbar-base-color: #000033;
+			scrollbar-dark-shadow-color: #336699;
+			scrollbar-track-color: #666633;
+			scrollbar-face-color: #cc9933;
+			scrollbar-shadow-color: #DDDDDD;
+			scrollbar-highlight-color: #CCCCCC;
+		}
+		
+		.formeqmov {
+			-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+			box-shadow:inset 0px 1px 0px 0px #ffffff;
+			background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a8a8a8), color-stop(1, #ededed) );
+			background:-moz-linear-gradient( center top, #a8a8a8 5%, #ededed 100% );
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#a8a8a8');
+			background-color:#a8a8a8;
+			-moz-border-radius:4px;
+			-webkit-border-radius:4px;
+			border-radius:4px;
+			border:1px solid #dcdcdc;
+			display:inline-block;
+			color:#ffffff;
+			font-family:Verdana;
+			font-size:11px;
+			font-weight:bold;
+			padding:1px 12px;
+			text-decoration:none;
+			text-shadow:0px 0px 0px #ffffff;
+		}.formeqmov:hover {
+			background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #a8a8a8) );
+			background:-moz-linear-gradient( center top, #ededed 5%, #a8a8a8 100% );
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#a8a8a8');
+			background-color:#ededed;
+		}.formeqmov:active {
+			position:relative;
+			top:1px;
+		}
+		.loading {position:relative; height:20px; width:40px; z-index: 9999999; opacity: 0.7;
+                filter: alpha(opacity=70); -moz-opacity: 0.7; display:none;}
+		
+	</style>
+	<style id="css-ddslick" type="text/css">
+		.dd-select{ 
+			border-radius:2px; border:solid 1px #ccc; position:relative; cursor:pointer; font-size:11px;
+		}
+		.dd-desc { 
+			color:#aaa; display:block; overflow: hidden; font-weight:normal; line-height: 1.4em; 
+		}
+		.dd-selected{ 
+			overflow:hidden; display:block; padding:2px; font-weight:bold;
+		}
+		.dd-pointer{ 
+			width:0; height:0; position:absolute; right:5px; top:50%; margin-top:-3px;
+		}
+		.dd-pointer-down{ 
+			border:solid 3px transparent; border-top:solid 3px #000; 
+		}
+		.dd-pointer-up{
+				border:solid 3px transparent !important; border-bottom:solid 5px #000 !important; margin-top:-8px;
+		}
+		.dd-options{ 
+			border:solid 1px #ccc; border-top:none; list-style:none; box-shadow:0px 1px 3px #ddd; display:none; position:absolute; z-index:5000; margin:0; padding:0;background:#fff; overflow:auto;
+		}
+		.dd-option{ 
+			padding:1px; display:block; border-bottom:solid 1px #ddd; overflow:hidden; text-decoration:none; color:#333; cursor:pointer;-webkit-transition: all 0.25s ease-in-out; -moz-transition: all 0.25s ease-in-out;-o-transition: all 0.25s ease-in-out;-ms-transition: all 0.25s ease-in-out; font-size:11px;
+		}
+		.dd-options > li:last-child > 
+		.dd-option{ 
+			border-bottom:none;
+		}
+		.dd-option:hover{ 
+			background:#f3f3f3; color:#000;
+		}
+		.dd-selected-description-truncated { 
+			text-overflow: ellipsis; white-space:nowrap; 
+		}
+		.dd-option-selected { 
+			background:#f6f6f6; 
+		}
+		.dd-option-image, .dd-selected-image { 
+			vertical-align:middle; float:left; margin-right:5px; max-width:64px;
+		}
+		.dd-image-right { 
+			float:right; margin-right:15px; margin-left:3px;
+		}
+		.dd-container{ 
+			position:relative;
+		}​ 
+		.dd-selected-text { 
+			font-weight:bold;
+		}
+		.selcbl {
+				font-family:Arial, Helvetica, sans-serif;
+                font-size: 12px;
+        }
+	​</style>
+    
+	<link href="Scripts/mbExtruder.css" media="all" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="Scripts/jquery.hoverIntent.min.js"></script>
+	<script type="text/javascript" src="Scripts/jquery.mb.flipText.js"></script>
+	<script type="text/javascript" src="Scripts/mbExtruder.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.ddslick.min.js"></script>
+	<script type="text/javascript">
+
+		$(function(){
+
+			$("#extruderLeft2").buildMbExtruder({
+				position:"right",
+				width:800,
+				positionFixed:true,
+				top:30,
+				extruderOpacity:.8,
+				autoCloseTime:3000,
+				autoOpenTime:1000,
+				hidePanelsOnClose:true,
+				onExtOpen:function(){},
+				onExtContentLoad:function(){},
+				onExtClose:function(){}
+			});
+			$("#btnnuevoing").click(function(){
+				//$('#txt_equipo').val('');
+				$('#txtiding').val('');
+				$('#txtfeching').val(fech_end);
+				$('#hddstatus').val('');
+				$('#txtfechprog').val('');
+				$('#txtfechejec').val('');
+				$('#txtobsing').val('');
+				$('#hddact').val('ING');
+				$('select#cblsisting').val('');
+				$('select#cblcomping').val('');
+				$('select#cblaccing').val('');
+				$('select#cbltipoing').val('');
+				$('select#cblconding').val('');
+				$('#chk_solucion').removeAttr("checked");
+				$('#cblstatusing').ddslick('select', {index: '0' });
+				
+			});
+			$("#btngrabaring").click(function(){
+				var estado = "";
+				if ($('#hddact').val() == "UPD" && $('#txtiding').val() == ''){
+						estado = estado + " ID, ";
+					}
+				if ($('#hddstatus').val() == '-1'){
+						estado = estado + " Status Operativo, ";
+					}
+				if ($('#txtfeching').val() == ''){
+						estado = estado + " Fecha Ingreso, ";
+					}
+				if ($('select#cblcomping').val() == '-1'){
+						estado = estado + " Componente, ";
+					}
+				if ($('select#cblaccing').val() == '-1'){
+						estado = estado + " Accion, ";
+					}
+				if ($('select#cbltipoing').val() == '-1'){
+						estado = estado + " Tipo, ";
+					}
+				if ($('select#cblconding').val() != '-1'){
+					if ($('select#cblconding').val() == 'reprog'){
+						if ($('#txtfechprog').val() == ''){
+							estado = estado + " Fecha Programacion, ";
+						}
+					}else if ($('select#cblconding').val() == 'ejec'){
+						if ($('#txtfechejec').val() == ''){
+							estado = estado + " Fecha Ejecuccion, ";
+						}
+					}
+				}else{
+					estado = estado + " Condicion, ";
+				}
+
+				var emp = 'CERRO COLORADO';
+				if ($('#hddact').val() == 'ING'){
+					var url = "xml/eq_moviles.asp?recurso=SaveBitacoraMovil&Z=" +  Math.random();
+				}else if ($('#hddact').val() == 'UPD'){
+					var url = "xml/eq_moviles.asp?recurso=UpdateBitacoraMovil&Z=" +  Math.random();
+				}
+				if ($('#chk_solucion').is(":checked")){
+					var sol = 'TRUE'
+				}else{
+					var sol = 'FALSE'
+				}
+				url +="&FECHA=" + $('#txtfeching').val();
+				url += "&EQUIPO=" + $('select#cblcomping').val();
+				url += "&USERNAME=DG"; //+ GetSession();
+				url += "&RECOMENDACION=" + $('select#cbltipoing').val();
+				url += "&DESCRIPCION=" + $('#txtobsing').val();
+				url += "&FECHA_PROGRAMADA=" + $('#txtfechprog').val();
+				url += "&ULT_INSPECCION=" + $('#txtfechejec').val();
+				url += "&FAENA=" + emp;
+				url += "&ACCION=" + $('select#cblaccing').val();
+				url += "&CONDICION=" + $('select#cblconding').val();
+				url += "&IND_SOLUCION=" + sol;
+				if (sol == 'TRUE'){
+					url += "&ESTATUS=7";
+				}else{
+					url += "&ESTATUS=" + $('#hddstatus').val();
+				}
+				url += "&ACT=" + $('#hddact').val();
+				if ($('#hddact').val() == "UPD") {
+					url += "&ID=" + $('#txtiding').val()
+				}
+				url += "&Z=" +  Math.random();
+				//window.open(url);
+				//alert($('#hddact').val());
+				if (estado == ""){
+					$.post( 
+		             	url,
+		             	function(data) {
+									if (data == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo la grabacion !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+									}else if (data != "ERR"){
+										if ($('#hddact').val() != "UPD") {
+											$('#txtiding').val(data);
+										}
+										$.msgBox({
+											title: "Aviso",
+											content: "Se realizo la grabacion !!!",
+											type: "info",
+											showButtons: false,
+											autoClose:true
+										});
+										var EQ = $('#txt_equipo').val();
+										var ASP = "xml/eq_moviles.asp?recurso=GetBitacora&Z=" +  Math.random();
+										if (EQ != ''){
+											ASP = ASP + "&EQUIPO=" + EQ + "&SISTEMA=" + $('select#cblsisting').val();
+										}
+										//window.open(ASP);
+										if ($('select#cblsisting').val() == 'UCC'){
+											tit = 'Sistema Cinta'
+										}else if ($('select#cblsisting').val() == 'UME'){
+											tit = 'Sistema Electrico'
+										}else if ($('select#cblsisting').val() == 'UMM'){
+											tit = 'Sistema Mecanico'
+										}else if ($('select#cblsisting').val() == 'UMI'){
+											tit = 'Sistema Instrumentacion'
+										}
+										$.post( 
+											 ASP,
+											 function(data) {
+													xmlDoc2 = $.parseXML( data );
+													$xml2 = $( xmlDoc2 );
+													var count=$($xml2).find("ROW").size();
+													var rows = '';
+													if (count == 0){
+														$(arrs[0]).find(arrs[1]).html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a></div><div class='post-content'><div class='inner-space'><table width='98%' border='0' cellspacing='1' cellpadding='1'><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td height='200' align='center' valign='middle'><img src='images/sin_datos.png'/></td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div></div><div class='post-footer'><p class='posted-by'></a></p><p class='date'></p></div></div>");
+														$('#hddact').val('ING');
+														clean();
+													}else{
+														var arrs = $('#hddpanel').val().split('&');
+														var btn = arrs[0].replace('#','');
+														$($xml2).find("ROW").each(function(){
+															ID = $(this).find("ID").text();
+															COMP = $(this).find("EQUIPO").text();
+															ACC = $(this).find("ACCION").text();
+															FING = $(this).find("FECHA").text();
+															FPROG = $(this).find("FECHA_PROGRAMADA").text();
+															FEJEC = $(this).find("ULT_INSPECCION").text();
+															FUPD = $(this).find("ULT_MOD_OBS").text();
+															FUSER = $(this).find("USERDATE").text();
+															OBS = $(this).find("DESCRIPCION").text();
+															STATUS = $(this).find("STATUS").text();
+															IDSTATUS = $(this).find("IDSTATUS").text();
+															rows = rows + "<tr><td width='30'>" + ID + "</td><td width='100'>" + COMP + "</td><td>" + OBS + "</td><td width='50'>" + FEJEC + "</td><td width='50'>" + FPROG + "</td><td width='15'><img src='Scripts/" + STATUS + "'></td><td width='15'><input name='#btnModing" + btn + "' type='button' class='formeqmov' id='#btnModing" + btn + "' value='Editar'  onclick=edit_bit('" + ID + "','" + COMP + "','UCC','" + ID+"-body&#panel-1');></td></tr>"
+														});
+														//alert(arrs[0]);
+														//$(arrs[0]).find(arrs[1]).html("<div class='post-holder separator'><div class='post-title'><h1>Sistema Cinta</h1><a href='#' class='post-comments'><span id='sp-1'></span></a><input type='hidden' name='hddstatus' id='hddstatus' value='" + IDSTATUS + "'/><input type='hidden' name='hddsist' id='hddsist' value='UCC'/></div><div class='post-content'><div class='inner-space'><table width='100%' border='0' cellspacing='1' cellpadding='1'  class='bordered2'><tr><th width='30' align='center'><strong>ID</strong></th><th width='100' align='center'><strong>COMPONENTE</strong></th><th align='center'><strong>OBS</strong></th><th width='50' align='center'><strong>F. MTTO</strong></th><th width='50' align='center'><strong>F. PROG</strong></th><th width='15' align='center' colspan='2'>&nbsp;</th></tr>" + rows + "</table></div></div><div class='post-footer'><p class='posted-by'></p><p class='date'></p></div></div>");
+		//												//$(id+'-body').find('#panel-1').find('#sp-1').html("<img src='Scripts/" + STATUS + "'>");
+													}
+											 },'html'
+								
+										  );	
+										  
+										//var t1=setTimeout(function(){$('#extruderLeft2').closeMbExtruder(true);},2500);
+										var x1 = $('#hddN').val(); 
+										$("#pnl-" + x1).find('.activate').click();
+										//alert(.html());
+										
+									}
+
+		            	 },'html'
+		          	   );
+								
+
+//						}else if ($('select#cblsisting').val() == 'UME'){
+//							var t11=setTimeout(function(){$('#hero-slider ul li:nth-child(2) a').click();},2000);
+//						}else if ($('select#cblsisting').val() == 'UMM'){
+//							var t11=setTimeout(function(){$('#hero-slider ul li:nth-child(3) a').click();},2000);
+						//}
+//						var t1=setTimeout(function(){clean();},2500);
+				}else{
+							$('#extruderLeft2').closeMbExtruder(true);
+							$.msgBox({
+								title: "Advertencia",
+								content: "Por Favor corriga en sgtes campos : " + estado +  " del Formulario de Mantenciones y Reparaciones en Correas Moviles!!!",
+								type: "alert",
+								showButtons: false,
+								autoClose:true
+							});				
+				}
+			});
+			$("#link_btnfiltros").click(function(){
+				if ($("select#cblcriterios").val() != '-1'){
+					var lnk = $(window.location).attr('href');
+					var arr = lnk.split('?');
+					//alert(arr[0]);
+					$(window.location).attr('href', arr[0] + '?lst=' + $("select#cblcriterios").val());
+//					$('#load1').show();
+//					if ($("select#cblcriterios").val() != 'all'){
+//						var data = $("select#cblcriterios").val().split('&');
+//					}
+//					//$('#list1').scrollTo($('#list1 ul li:first a').attr('rel'), 150);
+//					var ASP = "xml/eq_moviles.asp?recurso=listMoviles_UM";
+//					if ($("select#cblcriterios").val() != 'all'){
+//						ASP = ASP + "&LINEA=" + data[0] + "&PILA1=" + data[1];
+//					}
+//					$.post( 
+//						 ASP,
+//						 function(data) {
+//								if (data == ''){
+//										$.msgBox({
+//											title: "Advertencia",
+//											content: "Sin resultado con ese criterio !!!",
+//											type: "error",
+//											showButtons: true,
+//											autoClose:false//,
+//											//afterShow: function (result) { Loadmoviles_UM('','');}
+//										});
+//										$("#txtflinea").val('');
+//										$("#txtfpila").val('');
+//										//setTimeout(function(){LoadslidingTabs();},50);	
+//								}else{
+//									$('#list1').children('ul').html('');
+//									$('#list1').children('ul').html(data);
+//									
+//									setTimeout(function(){LoadslidingTabs();},100);	
+//									$('.mask').scrollTo($('#hero-slider ul li:first a').attr('rel'), 150);  //problema scroll
+//								}
+//						 },'html'
+//			
+//					  );	
+//					
+//					//Loadmoviles_UM($("#txtflinea").val(),$("#txtfpila").val());		
+//					//setTimeout(function(){LoadslidingTabs();},50);	
+//					$('.st_tabs').scrollTop(0);
+//					var t1=setTimeout(function(){$("#load1").hide();},800);
+				}else{
+					$.msgBox({
+						title: "Advertencia",
+						content: "Seleccione criterios a filtrar!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+				}
+			});	
+			$("#cblcriterios").change(function(){
+				if ($("select#cblcriterios").val() != '-1'){
+					var lnk = $(window.location).attr('href');
+					var arr = lnk.split('?');
+					$(window.location).attr('href', arr[0] + '?lst=' + $("select#cblcriterios").val());
+				}else{
+					$.msgBox({
+						title: "Advertencia",
+						content: "Seleccione criterios a filtrar!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+				}
+			});				
+			$("#link_btnTrenes").click(function(){
+					$(window.location).attr('href', "Tools_UM_Tren.html");
+			});	
+			$("#link_btnLayout").click(function(){
+					$(window.location).attr('href', "Chart/NewIndexV4.html");
+			});	
+			$("#link_btnPrinter").click(function(){
+				if ($("select#cblcriterios").val() != '-1' && $("select#cblcriterios").val() != 'all'){
+					var lnk = $(window.location).attr('href');
+					var arr = lnk.split('?');
+					//alert('generar documento a imprimir');
+					//$('a.print-preview').printPreview();
+					var par = arr[1].split('=');
+					var param = par[1].split('|');
+					$.printPreview.loadPrintPreview();
+					$('#print-modal-content').contents().find('body').append("<style type='text/css'>body {cursor: auto; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;}.page-break	{ display: block; page-break-before: always; }.linegrid {font-size: 10px;font-family: Arial, Helvetica, sans-serif;font-weight: bold;font-variant: normal; background-color: #FFF; border: thin solid #333; padding: 2px;margin: 1px;}.linetitle {font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #FFF;font-style: normal;font-weight: bolder;font-variant: normal;text-transform: capitalize;border: thin solid #333;}.basegrid {font-family: Arial, Helvetica, sans-serif;font-size: 11px;font-style: normal;font-weight: bolder;text-transform: uppercase;color: #FFF;border: thin solid #333;}.topgrid {font-family: Arial, Helvetica, sans-serif;font-size: 11px;font-weight: bolder;text-transform: uppercase;color: #000;border: thin solid #333;}</style>");
+					$('#print-modal-content').contents().find('body').append("<table width='900' cellspacing='1' cellpadding='1' style='border-collapse: collapse;'><tr><td align='center' valign='top'><img src='Images/tit_tren.png'/></td></tr><tr><td><table border='0' cellspacing='1' cellpadding='1'><tr><td width='499' bgcolor='#333333'><table width='100%' border='0' cellpadding='1' cellspacing='1'><tr><td width='35%' align='center' valign='top' bgcolor='#FFFFFF' class='linegrid'>Tren de Apilamiento </td><td id='data_tren' width='65%' align='center' valign='top' bgcolor='#FFFFFF' class='linegrid'>&nbsp;</td></tr></table></td></tr></table></td></tr><tr><td height='20'>&nbsp;</td></tr><tr>  <td width='50%' height='950' align='left'  valign='top' id='T1'  ><table width='96%' border='0' cellspacing='1' cellpadding='1'><tr><td width='25%'><div id='list2'><ul id='reOrder1'></ul></div></td><td width='75%'><div id='list3'><ul id='reOrder2'></ul></div><input type='hidden' name='hddpilaaux' id='hddpilaaux' /></td></tr></table></td></tr><tr class='page-break'>  <td  id='T2' ><table width='96%' border='0' cellspacing='1' cellpadding='1'><tr><td width='25%'><div id='list4'><ul id='reOrder4'></ul></div></td><td width='75%'><div id='list5'><ul id='reOrder5'></ul></div></td></tr></table></td></tr><tr>  <td  id='T3' ><table width='96%' border='0' cellspacing='1' cellpadding='1'><tr><td width='25%'><div id='list6'><ul id='reOrder6'></ul></div></td><td width='75%'><div id='list7'><ul id='reOrder7'></ul></div></td></tr></table></td></tr></table>");
+					//
+					var part1 = '<table width="850px"  border="0" cellspacing="1" cellpadding="1"><tr>  <td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="12%" align="center" bgcolor="#999999" class="topgrid"  id="top1">&nbsp;</td>  <td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="82%" bgcolor="#FFFFFF">&nbsp;</td></tr><tr>  <td bgcolor="#FFFFFF">&nbsp;</td>  <td align="center" bgcolor="#999999" class="topgrid"  id="top2">&nbsp;</td><td bgcolor="#FFFFFF">&nbsp;</td>  <td bgcolor="#FFFFFF">&nbsp;</td></tr><tr>  <td bgcolor="#FFFFFF">&nbsp;</td>  <td align="center" bgcolor="#999999" class="topgrid" id="top3">&nbsp;</td><td bgcolor="#FFFFFF">&nbsp;</td>  <td align="center" valign="top" bgcolor="#FF0000" class="linetitle">Condicion equipo y/o Mantenimiento a programar</td></tr>';
+					var line = '';
+					//alert("xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + param[0] + "&PILA1=" + param[1] + "&PLANTA=" + 'PLANTA 1' + "&IND_OP=OP");
+					
+					$('#print-modal-content').contents().find('body').find('#data_tren').html("LINEA " + param[0] + " PILA " + param[1] + " " + urldecode(param[2]));
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + param[0] + "&PILA1=" + param[1] + "&PLANTA=" + param[2] + "&IND_OP=OP&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+//
+									}else if (obj == "EMPTY"){
+//
+									}else{
+										$('#print-modal-content').contents().find('body').find('#list2 ul').html(obj);
+										$('#print-modal-content').contents().find('body').find('#list2 ul :checkbox').remove();
+										$('#print-modal-content').contents().find('body').find('#hddpilaaux').val($(obj).find("#pila_aux").val());
+									}
+								}
+					});
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadTren&PILA1=" + $('#print-modal-content').contents().find('body').find('#hddpilaaux').attr('value') + "&PLANTA=" + param[2] + "&IND_OP=FL&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+//
+									}else if (obj == "EMPTY"){
+//
+									}else{
+										$('#print-modal-content').contents().find('body').find('#list4 ul').html(obj);
+										$('#print-modal-content').contents().find('body').find('#list4 ul :checkbox').remove();
+									}
+								}
+					});
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + param[0] + "&PILA1=" + param[1] + "&PLANTA=" + param[2] + "&IND_OP=FL&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+//
+									}else if (obj == "EMPTY"){
+//
+									}else{
+										$('#print-modal-content').contents().find('body').find('#list6 ul').html(obj);
+										$('#print-modal-content').contents().find('body').find('#list6 ul :checkbox').remove();
+									}
+								}
+					});
+					var arr_l = "";
+					if ($('#print-modal-content').contents().find('body').find('#list2 li').length > 0){
+						$('#print-modal-content').contents().find('body').find('#list2 li').each(function(i)
+						{	
+							if ($(this).find("#hd").val() == 'M'){
+								var cod = $(this).find("#hd_cod").val();
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacoraUltFull&Z=" +  Math.random();
+								if (cod != ''){
+									ASP = ASP + "&EQUIPO=" + cod + "&FAENA=CERRO COLORADO";
+								}
+								//window.open(ASP);
+								var UCC = '';
+								var UME = '';
+								var UMM = '';
+								var UMI = '';
+								var UCC_BIT = '';
+								var UME_BIT = '';
+								var UMM_BIT = '';
+								var UMI_BIT = '';
+								var UCC_FECHP = '';
+								var UME_FECHP = '';
+								var UMM_FECHP = '';
+								var UMI_FECHP = '';
+								$.ajax({
+											url: ASP,
+											type: "POST",
+											dataType: "html",
+											async: false,
+											success: function (obj) {
+												xmlDoc = $.parseXML( obj );
+												$xml = $( xmlDoc );
+												var count=$($xml).find("ROW").size();
+												if (count == 0){
+
+												}else{
+													//EQ = $xml.find("EQUIPO").text();
+													UCC = $xml.find("UCC").text();
+													UME = $xml.find("UME").text();
+													UMM = $xml.find("UMM").text();
+													UMI = $xml.find("UMI").text();
+													UCC_BIT = $xml.find("UCC_BIT").text();
+													UME_BIT = $xml.find("UME_BIT").text();
+													UMM_BIT = $xml.find("UMM_BIT").text();
+													UMI_BIT = $xml.find("UMI_BIT").text();													
+													UCC_FECHP = $xml.find("UCC_FECHP").text();
+													UME_FECHP = $xml.find("UME_FECHP").text();
+													UMM_FECHP = $xml.find("UMM_FECHP").text();
+													UMI_FECHP = $xml.find("UMI_FECHP").text();													
+//													STATUS = $xml.find("STATUS").text();
+//													IDSTATUS = $xml.find("IDSTATUS").text();
+												}
+											}
+								});
+								line = line + '<tr>  <td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + $(this).find("label").html() + '</td>' 
+								line = line + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + cod + '</td>'
+								line = line + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top"><img src="' + $(this).find("img").attr('src') + '"/></td>'
+								line = line + '<td bgcolor="#FFFFFF"  class="linegrid" valign="top">'
+								if (UCC != '' || UCC_BIT != ''){line = line + ' UCC: '}
+								if (UCC != ''){line = line + UCC.substring(0,10) + ' - '}
+								if (UCC_BIT != ''){line = line + UCC_BIT + ' // ' }
+								if (UMM != '' || UMM_BIT != ''){line = line + ' UMM: '}
+								if (UMM != ''){line = line +  UMM.substring(0,10) + ' - '}
+								if (UMM_BIT != ''){line = line + UMM_BIT + ' // ' }
+								if (UME != '' || UME_BIT != ''){line = line + ' UME: '}
+								if (UME != ''){line = line +  UME.substring(0,10) + ' - '}
+								if (UME_BIT != ''){line = line + UME_BIT + ' // ' }
+								if (UMI != '' || UMI_BIT != ''){line = line + ' UMI: '}
+								if (UMI != ''){line = line +  UMI.substring(0,10) + ' - '}
+								if (UMI_BIT != ''){line = line + UMI_BIT + ' // ' }
+								if (UCC_FECHP != ''){line = line + ' Prog Cambio Cinta: ' + UCC_FECHP.substring(0,10) + ' // '}
+								if (UME_FECHP != ''){line = line + ' Prog Mtto Electr.: ' + UME_FECHP.substring(0,10) + ' // '}
+								if (UMM_FECHP != ''){line = line + ' Prog Mtto Mec.: ' + UMM_FECHP.substring(0,10) + ' // '}
+								if (UMI_FECHP != ''){line = line + ' Prog Mtto Instrum.: ' + UMI_FECHP.substring(0,10) + ' // '}
+								
+								
+								//line = line + 'UCC: ' + UCC + ' UMM: ' + UMM + ' UME: ' + UME + ' UMI: ' + UMI + 'UCC: ' + UCC_BIT + ' UMM: ' + UME_BIT + ' UME: ' + UME_BIT + ' UMI: ' + UMI_BIT
+								line = line + '</td></tr>';
+
+							}else if ($(this).find("#hd").val() == 'F'){
+								arr_l = arr_l + $(this).text() + '|';
+							}
+						});
+						var arr_l = arr_l.substring(0, arr_l.length-1);
+					var part2 = '<tr>  <td bgcolor="#FFFFFF">&nbsp;</td>  <td align="center" bgcolor="#006699" class="basegrid" id="top4">&nbsp;</td><td bgcolor="#FFFFFF">&nbsp;</td>  <td bgcolor="#FFFFFF">&nbsp;</td></tr></table>';
+					$('#print-modal-content').contents().find('body').find('#list3').html(part1 + line + part2);
+					}
+					var arrs = arr_l.split('|');
+					var pos = 4;
+					for(i=arrs.length-1;i>=0;i--){
+							$('#print-modal-content').contents().find('body').find('#top'+ pos).html(arrs[i]);
+							pos = pos - 1;
+					}
+					$('#print-modal-content').contents().find('body').find('#list2').width('1px');
+					$('#print-modal-content').contents().find('body').find('#list2').hide();
+					
+					var partRE1 = '<br><br><br><table width="850px"  border="0" cellspacing="1" cellpadding="1"><tr>  <td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="12%">&nbsp;</td><td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="82%" align="center" valign="top" bgcolor="#99CC99" class="linetitle">CORREAS MOVILES DISPONIBLES PARA REEMPLAZO (CONDICIONALES)</td></tr>';
+					var lineRE = '';
+					if ($('#print-modal-content').contents().find('body').find('#list4 li').length > 0){
+						$('#print-modal-content').contents().find('body').find('#list4 li').each(function(i)
+						{	
+							if ($(this).find("#hd").val() == 'M'){
+								var cod = $(this).find("#hd_cod").val();
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacoraUltFull";
+								if (cod != ''){
+									ASP = ASP + "&EQUIPO=" + cod + "&FAENA=CERRO COLORADO";
+								}
+								ASP = ASP + "&Z=" +  Math.random();
+								//window.open(ASP);
+								var UCC = '';
+								var UME = '';
+								var UMM = '';
+								var UMI = '';
+								var UCC_BIT = '';
+								var UME_BIT = '';
+								var UMM_BIT = '';
+								var UMI_BIT = '';
+								var UCC_FECHP = '';
+								var UME_FECHP = '';
+								var UMM_FECHP = '';
+								var UMI_FECHP = '';
+								$.ajax({
+											url: ASP,
+											type: "POST",
+											dataType: "html",
+											async: false,
+											success: function (obj) {
+												xmlDoc = $.parseXML( obj );
+												$xml = $( xmlDoc );
+												var count=$($xml).find("ROW").size();
+												if (count == 0){
+
+												}else{
+													//EQ = $xml.find("EQUIPO").text();
+													UCC = $xml.find("UCC").text();
+													UME = $xml.find("UME").text();
+													UMM = $xml.find("UMM").text();
+													UMI = $xml.find("UMI").text();
+													UCC_BIT = $xml.find("UCC_BIT").text();
+													UME_BIT = $xml.find("UME_BIT").text();
+													UMM_BIT = $xml.find("UMM_BIT").text();
+													UMI_BIT = $xml.find("UMI_BIT").text();													
+													UCC_FECHP = $xml.find("UCC_FECHP").text();
+													UME_FECHP = $xml.find("UME_FECHP").text();
+													UMM_FECHP = $xml.find("UMM_FECHP").text();
+													UMI_FECHP = $xml.find("UMI_FECHP").text();													
+//													STATUS = $xml.find("STATUS").text();
+//													IDSTATUS = $xml.find("IDSTATUS").text();
+												}
+											}
+								});
+								lineRE = lineRE + '<tr>  <td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + $(this).find("label").html() + '</td>' 
+								lineRE = lineRE + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + cod + '</td>'
+								lineRE = lineRE + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top"><img src="' + $(this).find("img").attr('src') + '"/></td>'
+								lineRE = lineRE + '<td bgcolor="#FFFFFF"  class="linegrid" valign="top">'
+								if (UCC != '' || UCC_BIT != ''){line = line + ' UCC: '}
+								if (UCC != ''){line = line + UCC.substring(0,10) + ' - '}
+								if (UCC_BIT != ''){line = line + UCC_BIT + ' // ' }
+								if (UMM != '' || UMM_BIT != ''){line = line + ' UMM: '}
+								if (UMM != ''){line = line +  UMM.substring(0,10) + ' - '}
+								if (UMM_BIT != ''){line = line + UMM_BIT + ' // ' }
+								if (UME != '' || UME_BIT != ''){line = line + ' UME: '}
+								if (UME != ''){line = line +  UME.substring(0,10) + ' - '}
+								if (UME_BIT != ''){line = line + UME_BIT + ' // ' }
+								if (UMI != '' || UMI_BIT != ''){line = line + ' UMI: '}
+								if (UMI != ''){line = line +  UMI.substring(0,10) + ' - '}
+								if (UMI_BIT != ''){line = line + UMI_BIT + ' // ' }
+								if (UCC_FECHP != ''){line = line + ' Prog Cambio Cinta: ' + UCC_FECHP.substring(0,10) + ' // '}
+								if (UME_FECHP != ''){line = line + ' Prog Mtto Electr.: ' + UME_FECHP.substring(0,10) + ' // '}
+								if (UMM_FECHP != ''){line = line + ' Prog Mtto Mec.: ' + UMM_FECHP.substring(0,10) + ' // '}
+								if (UMI_FECHP != ''){line = line + ' Prog Mtto Instrum.: ' + UMI_FECHP.substring(0,10) + ' // '}
+								
+								
+								//line = line + 'UCC: ' + UCC + ' UMM: ' + UMM + ' UME: ' + UME + ' UMI: ' + UMI + 'UCC: ' + UCC_BIT + ' UMM: ' + UME_BIT + ' UME: ' + UME_BIT + ' UMI: ' + UMI_BIT
+								lineRE = lineRE + '</td></tr>';
+
+							}
+						});
+					var partRE2 = '</table><br><br><br>';
+					$('#print-modal-content').contents().find('body').find('#list5').html(partRE1 + lineRE + partRE2);
+					}
+
+					//var lineRE = '<tr><td bgcolor="#FFFFFF" class="linegrid" valign="top">&nbsp;</td>  <td align="center" bgcolor="#FFFFFF" class="linegrid" valign="top">&nbsp;</td><td bgcolor="#FFFFFF" class="linegrid" valign="top">&nbsp;</td>  <td bgcolor="#FFFFFF" class="linegrid" valign="top">&nbsp;</td></tr>';		
+					$('#print-modal-content').contents().find('body').find('#list4').width('1px');
+					$('#print-modal-content').contents().find('body').find('#list4').hide();
+
+					var partFL1 = '<table width="850px"  border="0" cellspacing="1" cellpadding="1"><tr>  <td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="12%">&nbsp;</td><td width="3%" bgcolor="#FFFFFF">&nbsp;</td>  <td width="82%" align="center" valign="top" bgcolor="#FF0000" class="linetitle">CORREAS FUERA DE TREN "FUERA DE SERVICIO" (NO UTILIZAR)</td></tr>';
+					var lineFL = '';
+					if ($('#print-modal-content').contents().find('body').find('#list6 li').length > 0){
+						$('#print-modal-content').contents().find('body').find('#list6 li').each(function(i)
+						{	
+							if ($(this).find("#hd").val() == 'M'){
+								var cod = $(this).find("#hd_cod").val();
+								var ASP = "xml/eq_moviles.asp?recurso=GetBitacoraUltFull";
+								if (cod != ''){
+									ASP = ASP + "&EQUIPO=" + cod + "&FAENA=CERRO COLORADO";
+								}
+								ASP = ASP + "&Z=" +  Math.random();
+								//window.open(ASP);
+								var UCC = '';
+								var UME = '';
+								var UMM = '';
+								var UMI = '';
+								var UCC_BIT = '';
+								var UME_BIT = '';
+								var UMM_BIT = '';
+								var UMI_BIT = '';
+								var UCC_FECHP = '';
+								var UME_FECHP = '';
+								var UMM_FECHP = '';
+								var UMI_FECHP = '';
+								$.ajax({
+											url: ASP,
+											type: "POST",
+											dataType: "html",
+											async: false,
+											success: function (obj) {
+												xmlDoc = $.parseXML( obj );
+												$xml = $( xmlDoc );
+												var count=$($xml).find("ROW").size();
+												if (count == 0){
+
+												}else{
+													//EQ = $xml.find("EQUIPO").text();
+													UCC = $xml.find("UCC").text();
+													UME = $xml.find("UME").text();
+													UMM = $xml.find("UMM").text();
+													UMI = $xml.find("UMI").text();
+													UCC_BIT = $xml.find("UCC_BIT").text();
+													UME_BIT = $xml.find("UME_BIT").text();
+													UMM_BIT = $xml.find("UMM_BIT").text();
+													UMI_BIT = $xml.find("UMI_BIT").text();													
+													UCC_FECHP = $xml.find("UCC_FECHP").text();
+													UME_FECHP = $xml.find("UME_FECHP").text();
+													UMM_FECHP = $xml.find("UMM_FECHP").text();
+													UMI_FECHP = $xml.find("UMI_FECHP").text();													
+//													STATUS = $xml.find("STATUS").text();
+//													IDSTATUS = $xml.find("IDSTATUS").text();
+												}
+											}
+								});
+								lineFL = lineFL + '<tr>  <td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + $(this).find("label").html() + '</td>' 
+								lineFL = lineFL + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top">' + cod + '</td>'
+								lineFL = lineFL + '<td align="center" bgcolor="#FFFFFF"  class="linegrid" valign="top"><img src="' + $(this).find("img").attr('src') + '"/></td>'
+								lineFL = lineFL + '<td bgcolor="#FFFFFF"  class="linegrid" valign="top">'
+								if (UCC != '' || UCC_BIT != ''){line = line + ' UCC: '}
+								if (UCC != ''){line = line + UCC.substring(0,10) + ' - '}
+								if (UCC_BIT != ''){line = line + UCC_BIT + ' // ' }
+								if (UMM != '' || UMM_BIT != ''){line = line + ' UMM: '}
+								if (UMM != ''){line = line +  UMM.substring(0,10) + ' - '}
+								if (UMM_BIT != ''){line = line + UMM_BIT + ' // ' }
+								if (UME != '' || UME_BIT != ''){line = line + ' UME: '}
+								if (UME != ''){line = line +  UME.substring(0,10) + ' - '}
+								if (UME_BIT != ''){line = line + UME_BIT + ' // ' }
+								if (UMI != '' || UMI_BIT != ''){line = line + ' UMI: '}
+								if (UMI != ''){line = line +  UMI.substring(0,10) + ' - '}
+								if (UMI_BIT != ''){line = line + UMI_BIT + ' // ' }
+								if (UCC_FECHP != ''){line = line + ' Prog Cambio Cinta: ' + UCC_FECHP.substring(0,10) + ' // '}
+								if (UME_FECHP != ''){line = line + ' Prog Mtto Electr.: ' + UME_FECHP.substring(0,10) + ' // '}
+								if (UMM_FECHP != ''){line = line + ' Prog Mtto Mec.: ' + UMM_FECHP.substring(0,10) + ' // '}
+								if (UMI_FECHP != ''){line = line + ' Prog Mtto Instrum.: ' + UMI_FECHP.substring(0,10) + ' // '}
+								
+								
+								//line = line + 'UCC: ' + UCC + ' UMM: ' + UMM + ' UME: ' + UME + ' UMI: ' + UMI + 'UCC: ' + UCC_BIT + ' UMM: ' + UME_BIT + ' UME: ' + UME_BIT + ' UMI: ' + UMI_BIT
+								lineFL = lineFL + '</td></tr>';
+
+							}
+						});
+					var partFL2 = '</table>';
+					$('#print-modal-content').contents().find('body').find('#list7').html(partFL1 + lineFL + partFL2);
+					}
+
+					$('#print-modal-content').contents().find('body').find('#list6').width('1px');
+					$('#print-modal-content').contents().find('body').find('#list6').hide();
+					
+					$('#print-modal-content').height($('#print-modal-content').contents().height());
+
+
+				}else{
+					$.msgBox({
+						title: "Advertencia",
+						content: "Seleccione criterios a Imprimir!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+				}
+			});	
+			$("#cblsisting").change(function(){
+				if ($("select#cblsisting").val() == 'UCC'){
+					var sist = "CINTA"
+				}else if ($("select#cblsisting").val() == 'UME'){
+					var sist = "COMPONENTES ELECTRICOS"
+				}else if ($("select#cblsisting").val() == 'UMM'){
+					var sist = "COMPONENTES MECANICOS"
+				}else if ($("select#cblsisting").val() == 'UMI'){
+					var sist = "INSTRUMENTACION"
+				}
+				var ASP = "xml/eq_moviles.asp?recurso=listComponentesMoviles&EQUIPO=" + $("#txt_equipo").val() + "&SISTEMA=" + sist  + "&Z=" +  Math.random();
+					$.post( 
+						 ASP,
+						 function(data) {
+								$('#cblcomping').html(data);
+						 },'html'
+			
+					  );	
+				$('cblcomping').val('-1');
+				//setTimeout(function(){$('cblcomping').val('-1');},2000);
+			});	
+		});
+		function clean() {
+			$('#txtiding').val('');
+			$('#txtfeching').val('');
+			$('#hddstatus').val('');
+			$('#txtfechprog').val('');
+			$('#txtfechejec').val('');
+			$('#txtobsing').val('');
+			$('#hddact').val('ING');
+			$('select#cblsisting').val('');
+			$('select#cblcomping').val('');
+			$('select#cblaccing').val('');
+			$('select#cbltipoing').val('');
+			$('select#cblconding').val('');									
+			$('#cblstatusing').ddslick('select', {index: '0' });	
+		}
+	function urldecode (str) {
+	  return decodeURIComponent((str + '').replace(/\+/g, '%20'));
+	}
+		
+	function url_query( query ) {
+		query = query.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		var expr = "[\\?&]"+query+"=([^&#]*)";
+		var regex = new RegExp( expr );
+		var results = regex.exec( window.location.href );
+		if ( results !== null ) {
+			return urldecode(results[1]);
+		} else {
+			return false;
+		}
+	}
+	</script>    
+    </head>
+	<body>
+    	<div id="panel_load"><div class="modal-backdrop"></div><div class="modal"><img src="images/Icon-Search-loader.gif" alt="" title="" /></div></div>
+		<div id="demo">
+						<!--
+						#################################
+							- SLIDING TABS / START -
+						#################################
+						-->
+                        
+<!--                                                <div class="slide-out-div">
+                                                            <a class="handle" href="contact.html"></a>
+                                                <iframe id="ifrm" name="ifrm" src="contact.html" frameborder="0" scrolling="no" style="width:360px;height:330px;"></iframe>
+                                                </div>-->	
+                    <div id="extruderLeft2" class="{title:'Mtto. C. Mov'}" >
+                        <FORM id="formIngMtto">
+                            <table width="98%" border="0" cellpadding="3" cellspacing="1" class="contactForm">
+                              <tr>
+                                <td colspan="6" align="center">Formulario de Mantenciones y Reparaciones en Correas Moviles</td>
+                              </tr>
+                              <tr>
+                                <td>Status Op.</td>
+                                <td><select name="cblstatusing" id="cblstatusing">
+                                  <option value="-1" selected>[-- Seleccione --]</option>
+                                  <option value="7" data-imagesrc="http://www.ttminsight.cl/sgm/scripts/up.png" data-description="Buen Estado">Operativa</option>
+                                  <option value="5" data-imagesrc="http://www.ttminsight.cl/sgm/scripts/right_up.png" data-description="Estado con Observaciones">Operativa con Obs</option>
+                                  <option value="4" data-imagesrc="http://www.ttminsight.cl/sgm/scripts/right.png" data-description="Programar Mtto.">Operativa regular</option>
+                                  <option value="3" data-imagesrc="http://www.ttminsight.cl/sgm/scripts/right_down.png" data-description="Fallas Revelantes">Operativa Bajo Cond.</option>
+                                  <option value="1" data-imagesrc="http://www.ttminsight.cl/sgm/scripts/down.png" data-description="Fallas sin Solucionar">Fuera de Servicio</option>
+                                </select>
+                                <input type="hidden" name="hddstatus" id="hddstatus">
+                                <input type="hidden" name="hddact" id="hddact">
+                                <input type="hidden" name="hddpanel" id="hddpanel">
+                                <input type="hidden" name="hddN" id="hddN"></td>
+                                <td>Id</td>
+                                <td>
+                                <input name="txtiding" type="text" class="selcbl" id="txtiding" readonly /></td>
+                                <td>Fecha Ing.</td>
+                                <td><input name="txtfeching" type="text" class="selcbl" id="txtfeching" /></td>
+                              </tr>
+                              <tr>
+                                <td>Equipo</td>
+                                <td><input name="txt_equipo" type="text" class="selcbl" id="txt_equipo" readonly /></td>
+                                <td>Sistema</td>
+                                <td><select name="cblsisting" class="selcbl" id="cblsisting">
+                                  <option value="-1" selected>[-- Seleccione --]</option>
+                                  <option value="UME">Comp. Electricos</option>
+                                  <option value="UMM">Comp. Mecanicos</option>
+                                  <option value="UCC">Cinta</option>
+                                  <option value="UMI">Instrumentacion</option>
+                                </select></td>
+                                <td>Componente</td>
+                                <td><select name="cblcomping" class="selcbl" id="cblcomping">
+                                 <option value="-1">[-- Seleccione --]</option>
+                                </select></td>
+                              </tr>
+                              <tr>
+                                <td>Accion</td>
+                                <td><select name="cblaccing" class="selcbl" id="cblaccing">
+                                <option value="-1" selected>[-- Seleccione --]</option>
+                                <option value="MTTO">MTTO</option>
+                                <option value="CAMBIO">CAMBIO</option>
+                                </select></td>
+                                <td>Tipo</td>
+                                <td><select name="cbltipoing" class="selcbl" id="cbltipoing">
+                                <option value="-1" selected>[-- Seleccione --]</option>
+                                <option value="CORRECT">Correctivo</option>
+                                <option value="PREV">Preventivo</option>
+                                </select></td>
+                                <td>Condicion</td>
+                                <td><select name="cblconding" class="selcbl" id="cblconding">
+                                <option value="-1" selected>[-- Seleccione --]</option>
+                                <option value="REPROG">Reprogramado</option>
+                                <option value="EJEC">Ejecutado</option>
+                                </select></td>
+                              </tr>
+                              <tr>
+                                <td>Fecha Prog.</td>
+                                <td><input name="txtfechprog" type="text" class="selcbl" id="txtfechprog" /></td>
+                                <td>Fecha Ejec.</td>
+                                <td><input name="txtfechejec" type="text" class="selcbl" id="txtfechejec" /></td>
+                                <td>Solucionado</td>
+                                <td><input name="chk_solucion" type="checkbox" id="chk_solucion" value="TRUE"></td>
+                              </tr>
+                              <tr>
+                                <td>Observacion</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <td colspan="4"><label for="txtobsing"></label>
+                                <textarea name="txtobsing" cols="55" rows="5" class="textarea" id="txtobsing"></textarea></td>
+                                <td colspan="2" align="center">
+                                	<input name="btnnuevoing" type="button" class="formeqmov" id="btnnuevoing" value="Nuevo">&nbsp;&nbsp;
+                                  	<input name="btngrabaring" type="button" class="formeqmov" id="btngrabaring" value="Grabar">
+                                </td>
+                              </tr>
+                            </table>
+                        </FORM>
+		  			</div>                                                                                                
+					<div id="slidingtabs" class="clean_rounded clean_rounded-vertical">
+							<div class="st_tabs"> 
+								<a href="#" class="st_prev">prev</a><a href="#" class="st_next">next</a>
+							  <div class="st_tabs_wrap" id="list1">
+									<ul class="st_tabs_ul">
+									</ul>
+							  </div>
+							</div>
+                      		<div class="st_views" id="list_mod">
+							</div>
+                            
+                            <div class="st_search" id="Fsearch">
+                                        <table width="100%" border="0" cellpadding="1" cellspacing="1" class="voice">
+                                          <tr>
+                                            <td colspan="4" align="center">Criterios de Filtros de Moviles</td>
+                                          </tr>
+                                          <tr>
+                                            <td colspan="4" align="center"><select name="cblcriterios" id="cblcriterios">
+                                            </select><div class="loading" id="load1" align="right"><img src="images/ajax-loader.gif" height="20px" width="20px"/></div></td>
+                                          </tr>
+                                          <tr>
+                                            <td width="5%"><a id="link_btnfiltros" class="post6"></a></td>
+                                            <td width="5%"><a id="link_btnPrinter" class="post7"></a></td>
+                                            <td width="5%"><a id="link_btnTrenes" class="post5"></a></td>
+                                            <td width="5%"><a id="link_btnLayout" class="post8"></a></td>
+                                          </tr>
+                                          <tr>
+                                            <td align="center" valign="top"></td>
+                                            <td align="center" valign="top"></td>
+                                            <td align="center" valign="top"></td>
+                                          </tr>
+                                        </table>
+                            </div>
+		  </div>
+						<!--
+						#################################
+							- SLIDING TABS / END -
+						#################################
+						-->
+						
+					</div>
+<script type="text/javascript">
+	$(function(){
+			$('#txtfeching').val(fech_end);
+			$('#cblstatusing').ddslick({
+				onSelected: function(selectedData){
+					$("#hddstatus").val(selectedData.original.val());
+				}
+			});
+			
+	})
+	var ASP = "xml/eq_moviles.asp?recurso=listCriterios&Z=" +  Math.random();
+	$.post( 
+		 ASP,
+		 function(data) {
+				$('#cblcriterios').html(data);
+		 },'html'
+	);	
+//	<option value="-1">[--Seleccionar--]</option>
+
+	if (url_query("lst") != 'all' && url_query("lst") != ''){
+		//$("#cblcriterios option[value='" + url_query("lst") + "']").attr('selected', 'selected');
+		
+		var kys = url_query("lst").split('|');
+		Loadmoviles_UM(kys[0],kys[1]);	
+	}else{
+		Loadmoviles_UM('','');	
+	}
+	jQuery(document).ready(function () {
+		setTimeout(function(){LoadslidingTabs();},2500);
+		setTimeout(function(){$("select#cblcriterios").val(url_query("lst"));},800);
+		setTimeout(function(){$("#panel_load").remove();},2500);
+	});
+</script>    
+    <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar.css" />
+	<link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar_dhx_web.css" />     
+	<script src="Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtfeching","txtfechprog","txtfechejec"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+	</body>
+	
+</html>

@@ -1,0 +1,15 @@
+CREATE TABLE USUARIOS 
+(id TEXT,
+rut SMALLINT(8),
+DV TEXT(1),
+nombres TEXT,
+apellidos TEXT,
+password text,
+estado TEXT,
+cargo TEXT,
+rol TEXT,
+e_mail TEXT,
+ip TEXT,
+fono TEXT,
+celular TEXT,
+area TEXT, userdate DATE)

@@ -1,0 +1,64 @@
+﻿body {
+}
+table.header 
+{
+	width:955px;
+	height:70px;
+	background-image:url(../ttm_skins/Images/45g875e/Skin/00004558KJ.jpg);
+	background-repeat:no-repeat;
+	}
+table.header td.header_td1
+{
+	width:32px;
+	height:70px;
+	}
+table.header td.header_td2
+{
+	width:186px;
+	height:70px;
+	}
+table.header td.header_td3
+{
+	width:469px;
+	height:70px;
+	}
+table.header td.header_td4
+{
+	width:23px;
+	height:70px;
+	}
+table.header_botones 
+{
+	width:245px;
+	height:70px;
+	}
+table.header_botones td.header_botones_td1
+{
+	width:245px;
+	height:54px;
+	}
+.ImgMenSup
+{
+	width:955px; 
+	height:22px; 
+	background-image:url(../ttm_skins/Images/45g875e/Skin/001214.jpg); 
+	background-repeat:no-repeat;
+	}
+.ConRep 
+{
+	width:955px; 
+	height:400px; 
+	background-image:url(../ttm_skins/Images/45g875e/Skin/001218.jpg); 
+	background-repeat: repeat-y;
+	}
+.ImgFoo 
+{
+	
+	width:955px; 
+	height:48px; 
+	background-image:url(../ttm_skins/Images/45g875e/Skin/001219.jpg); 
+	background-repeat:no-repeat;
+	}
+
+	
+	

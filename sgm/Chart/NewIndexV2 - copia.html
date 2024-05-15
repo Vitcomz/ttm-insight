@@ -1,0 +1,558 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="layout.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+<style>
+BODY{margin:0};
+
+#bottombar{
+	position:absolute;
+	border: 1px solid black;
+	padding: 2px;
+	background-color: white;
+	width: 470px;
+	visibility: hidden;
+	z-index: 150;
+}
+
+</style>
+
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+</head>
+<script type="text/javascript" language="javascript">
+<!--
+var layout = new Array();
+var t;
+function roundNumber(number, decimals) { // Arguments: number to round, number of decimal places
+	var newnumber = new Number(number+'').toFixed(parseInt(decimals));
+	return parseFloat(newnumber); // Output the result to the form field (change for your purposes)
+}
+/**********************************************************************/
+function verBitacora(equipo){
+	var url ="Layout.html?EQUIPO=" + equipo;
+		this.location.href=url;
+}
+//**********************************************************************/
+function getBitacora(){
+	//document.getElementById("holder").style.background="url(ly/" + getEmpresa() + ".jpg) no-repeat";
+	//document.getElementById("imagin").innerHTML = "<IMG id='x2x' src='" + "ly/" + getEmpresa() + ".jpg" + "' id='layouts' height='100%'>"
+	document.getElementById("x2x").src = "ly/" + getEmpresa() + ".jpg";
+	//document.getElementById("x2x").style.height= "100%";
+	// remuevo todos los elementos del mapa
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+
+	// **************** cargo las maquinas principales ****************
+		if (id_br == "IE")
+		{
+			var xmlTemp2 = document.getElementById("xmlTemp2");
+			xmlTemp2.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlTemp2 = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlTemp2.XMLDocument;
+		//	alert(id_br); 
+		if (id_br == 'IE'){
+			var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = getEmpresaMoz();
+		}
+		var url = "../xml/Bitacoras.asp?RECURSO=LayoutFaena";
+	 	url += "&FAENA=" + emp;
+		url += "&USUARIO=" + Usuario;
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (xmlestado){
+    	     var tree = xmlDso.documentElement;	
+			 var _largo = tree.childNodes.length;
+			 //var _largo=1;
+				//alert(document.getElementById("x2x").width+' '+document.getElementById("x2x").height);
+				if(window.outerWidth){
+					deltaW = window.outerWidth-window.innerWidth;
+					deltaH = window.outerHeight-window.innerHeight;
+				}
+				else{
+					deltaW = 18;
+					deltaH = 110;
+				}
+				//1500*950
+				//-------------------------------------------last --------------------------------------------
+//				var ancho = screen.width-deltaW-18; 
+//				var alto = screen.height-deltaH-110;
+//				ancho=alto*(1500/923);
+				//--------------------------------------------------------------------------------------------
+				//var ancho = document.getElementById("x2x").width;
+				//var largo = document.getElementById("x2x").height;
+				//var holderL = document.getElementById("holder").offsetHeight;
+				//var holderW = document.getElementById("holder").offsetWidth;
+				//-------------------------------------------last --------------------------------------------				
+//					document.getElementById("x2x").width = ancho;
+//					document.getElementById("x2x").height = alto;
+				//--------------------------------------------------------------------------------------------					
+//					document.getElementById("x2x").width = screen.width-deltaW-10;
+//					document.getElementById("x2x").height = screen.height-deltaH-180;		
+					
+//					document.getElementById("idMap").width = ancho;
+//					document.getElementById("idMap").height = alto;
+						
+						
+						if ($(window).height() == 1080){
+							$("#x2x1").css("height", ($(window).height()/100)*92 + 'px'); 
+						}else if ($(window).height() > 1082){
+							$("#x2x1").css("height", ($(window).height()/100)*93.5 + 'px'); 
+						}else if ($(window).height() > 900 && $(window).height() < 1080){
+//							$("#x2x1").css("height", ($(window).height()/100)*93.5 + 'px'); 
+							$("#x2x1").css("height", $("#content-slider-1").height()); 	
+						}else if ($(window).height() < 900){
+							$("#x2x1").css("height", ($(window).height()/100)*88 + 'px'); 	
+						}
+						
+						var ancho = (($(window).width()/100)*100);
+						//-deltaW;
+						//-18;
+						if ($(window).height() > 1050){
+							var alto = (($(window).height()/100)*95);
+						}else{
+							var alto = (($(window).height()/100)*86.5);
+						}
+												
+			  //if (alto >  880){
+//				  	var xalt =  200;
+//			  }else{
+					var xalt = 0;
+//			  }
+			  document.getElementById("x2x").width = ancho;
+              document.getElementById("x2x").height = alto;
+			  
+	          for(var i = 0; i < _largo; i++){
+    	        var node = tree.childNodes.item(i);
+				equipo = getChildNodeValue(node,"EQUIPO");
+				//imagen = getChildNodeValue(node,"EQUIPO") + ".png";
+				switch(getChildNodeValue(node,"COLOR")) {
+					case 'BAJA':
+						//ColorFondo = '#3366FF';
+						if (ancho >  1050){
+							imagen = "icon_baja.png"; // pantallas grandes
+						}else{
+							imagen = "icon_baja_800.png";
+						}
+						break
+					case 'MEDIA':
+						//ColorFondo = '#CCCC00';
+						if (ancho >  1050){
+							imagen = "icon_media.png"; // pantallas grandes
+						}else{
+							imagen = "icon_media_800.png";
+						}
+						break
+					case 'ALTA':
+						//ColorFondo = '#CC0000';
+						if (ancho >  1050){
+							imagen = "icon_alta.png"; // pantallas grandes
+						}else{
+							imagen = "icon_alta_800.png";
+						}
+						break
+					default:
+						//ColorFondo = '#00CC00';
+						if (ancho >  1050){
+							imagen = "icon_normal.png"; // pantallas grandes
+						}else{
+							imagen = "icon_normal_800.png";
+						}
+					}
+				var idMap = document.getElementById("idMap");
+				var miDt = new Element('dt',{'id': equipo+'dt'}).injectInside(idMap);
+				var miIMG = new Element('img', {
+
+						//'src' : "ly/L"+imagen, 
+						'src' : "ly/"+imagen, 
+						'class': 'polLnk',
+						'title': equipo + " CRITICIDAD:" + getChildNodeValue(node,"COLOR") ,
+						'id': equipo,
+						styles: {
+							'left' : (getChildNodeValue(node,"X")*(ancho)/100) + 'px',
+							'top'  : (((getChildNodeValue(node,"Y")*(alto)+xalt)/100)+8) + 'px'
+							// ESCALA ALTO: 110 PC, 195 LCD, 130 IPAD							
+						},
+						events: {
+							click: function(){
+								//alert(this.id);
+								fade('fadeBlock',1);
+									//deplacer();
+								verBitacora(this.id);
+								//alert(document.getElementById("x2x").height);
+							},
+							mouseover: function(){ 
+								//alert(this.id);
+								this.style.opacity=1;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=100;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=100)';
+								}
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=65;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=65)';
+								}
+							}
+						}
+					}).injectInside(equipo+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+'Title',
+						html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+					}).injectInside(idMap);
+ 			 }//end for
+			 equipo=null;
+    	  }//end If
+	else
+	  window.open(url);
+	  
+	  t=setTimeout("loadPage();",60000);
+	  
+}
+
+
+function loadPage(){
+
+clearTimeout(t);
+window.document.location = 'NewIndexv2.html';
+
+}
+
+var TimeToFade = 400;
+
+function fade(eid,swit)
+{
+  var element = document.getElementById(eid);
+  if(element == null)
+    return;
+    
+   
+  if(element.FadeState == null)
+  {
+    if(element.style.opacity == null || element.style.opacity == '' 
+       || element.style.opacity == '1')
+      element.FadeState = 2;
+    else
+      element.FadeState = -2;
+  }
+    
+  if(element.FadeState == 1 || element.FadeState == -1)
+  {
+    element.FadeState = element.FadeState == 1 ? -1 : 1;
+    element.FadeTimeLeft = TimeToFade - element.FadeTimeLeft;
+  }
+  else
+  {
+    element.FadeState = element.FadeState == 2 ? -1 : 1;
+    element.FadeTimeLeft = TimeToFade;
+	if (swit == 1){
+		element.style.visibility = 'visible';
+	}else{
+		element.style.visibility = 'hidden'
+	}
+    setTimeout("animateFade(" + new Date().getTime() + ",'" + eid + "')", 33);
+  }  
+}
+
+function animateFade(lastTick, eid)
+{  
+  var curTick = new Date().getTime();
+  var elapsedTicks = curTick - lastTick;
+  
+  var element = document.getElementById(eid);
+ 
+  if(element.FadeTimeLeft <= elapsedTicks)
+  {
+//    element.style.visibility = element.FadeState == 1 ? 'visible' : 'hidden';
+    element.style.opacity = element.FadeState == 1 ? '1' : '0';
+    element.style.filter = 'alpha(opacity = ' + (element.FadeState == 1 ? '100' : '0') + ')';
+    element.FadeState = element.FadeState == 1 ? 2 : -2;
+    return;
+  }
+ 
+  element.FadeTimeLeft -= elapsedTicks;
+  var newOpVal = element.FadeTimeLeft/TimeToFade;
+  if(element.FadeState == 1)
+    newOpVal = 1 - newOpVal;
+
+  element.style.opacity = newOpVal;
+  element.style.filter = 'alpha(opacity = ' + (newOpVal*100) + ')';
+  
+  setTimeout("animateFade(" + curTick + ",'" + eid + "')", 33);
+}
+
+
+//-->
+var xOffset=6
+var yOffset=15    
+
+var affiche = false; // La variable i nous dit si le bloc est visible ou non
+var w3c=document.getElementById && !document.all;
+var ie=document.all;
+
+if (ie||w3c) {
+  	//var laBulle = document.all ? document.all["fadeBlock"] : document.getElementById ? document.getElementById("fadeBlock") : "";
+	var laBulle = document.getElementById("fadeBlock");
+}
+
+function ietruebody(){  // retourne le bon corps...
+  return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function deplacer(e) {
+  
+  //affiche = true;
+  if(affiche){
+    var curX = (w3c) ? e.pageX : event.x + ietruebody().scrollLeft;
+    var curY = (w3c) ? e.pageY : event.y + ietruebody().scrollTop;
+
+    var winwidth = ie && !window.opera ? ietruebody().clientWidth : window.innerWidth - 20; //1259
+    var winheight = ie && !window.opera ? ietruebody().clientHeight : window.innerHeight - 20; //643
+
+    var rightedge = ie && !window.opera ? winwidth - event.clientX - xOffset : winwidth - e.clientX - xOffset;
+    var bottomedge = ie && !window.opera ? winheight - event.clientY - yOffset : winheight - e.clientY - yOffset;
+
+    var leftedge = (xOffset < 0) ? xOffset*(-1) : -1000
+
+    // modifier la largeur de l'objet s'il est trop grand...
+    if(laBulle.offsetWidth > winwidth / 2){
+      laBulle.style.width = winwidth / 2
+    }
+	
+//    // si la largeur horizontale n'est pas assez grande pour l'info bulle
+//    if(rightedge < laBulle.offsetWidth){
+//      // bouge la position horizontale de sa largeur à gauch
+//	  	laBulle.style.left = xOffset + 20 + "px"
+//    } else {
+//      if(curX < leftedge){
+//        laBulle.style.left = "2px"
+//      } else{
+//        // la position horizontale de la souris
+//        laBulle.style.left = curX + xOffset + "px"
+//      }
+//    }
+//
+//    // même chose avec la verticale
+//    if(bottomedge < laBulle.offsetHeight){
+//		if (bottomedge > curY){
+//     	 	laBulle.style.top = curY + 10 + "px"
+//		}else if (curY < bottomedge+100 && curY > bottomedge-100){
+//			laBulle.style.top = laBulle.offsetHeight/2 - 10 + "px"
+//		}else if (curY > bottomedge+150 && curY < bottomedge+300){
+//			laBulle.style.top = laBulle.offsetHeight/2 - 30 + "px"
+//		}else{
+//			laBulle.style.top = curY - laBulle.offsetHeight + "px"
+//		}
+//    } else {
+////      laBulle.style.top = curY + yOffset + "px"
+//      laBulle.style.top = curY + yOffset + 45 + "px"
+//    }
+	laBulle.style.top = 50 +"px";
+	laBulle.style.left = 20 +" px";
+	laBulle.style.height = 500  +" px";
+	laBulle.style.width = 1200  +" px";
+	
+
+  }
+
+}
+
+function listEquipos_images(equipo){	
+		if (id_br == "IE")
+		{
+			var xmlTempx = document.getElementById("xmlTempx");
+			xmlTempx.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlTempx = document.implementation.createDocument("", "", null);
+		}
+		if (id_br == 'IE'){
+			var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = getEmpresaMoz();
+		}
+	
+		var xmlDso =  xmlTempx.XMLDocument;
+		var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+			url += "&FAENA="+emp;
+			url +="&VTZ="+Math.random();
+		
+	//alert(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}	
+//	var res = xmlDso.load(url);
+//	 window.open(url);
+	if (res){
+			var tree = xmlDso.documentElement;				
+			for(var i = 0; i < tree.childNodes.length; i++){
+				var node = tree.childNodes.item(i);
+				if (getChildNodeValue(node,"CODIGO") == equipo){
+				return getChildNodeValue(node,"LAYOUT");
+				}
+			}
+		}
+	else
+		window.open(url);
+		
+//			if (getEmpresa()=='CERRO COLORADO')
+//					formulario.listEquipos.value='010-FE-001';
+} 
+
+//------------------------------------------bottombar----------------------------------------------------------------
+
+function iecompattest(){
+return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function staticbar(){
+	var _persistclose=0 //set to 0 or 1. 1 mea_ns once the bar is manually closed, it will remain closed for browser session
+	var _startX = 30 //set x offset of bar in pixels
+	var _startY = 5 //set y offset of bar in pixels
+	var _verticalpos="frombottom" //enter "fromtop" or "frombottom"
+	barheight=document.getElementById("bottombar").offsetHeight
+	var _ns = (navigator.appName.indexOf("Netscape") != -1) || window.opera;
+	var _d = document;
+	function ml(_id){
+		var _el=document.getElementById(_id);
+		_el.style.visibility="visible"
+		if(_d.layers)_el.style=_el;
+		_el._sP=function(x,y){_el.style.left=x+"px";_el.style.top=y+"px";};
+		_el.x = _startX;
+		if (_verticalpos=="fromtop")
+		_el.y = _startY;
+		else{
+		_el.y = _ns ? pageYOffset + innerHeight : iecompattest().scrollTop + iecompattest().clientHeight;
+		_el.y -= _startY;
+		}
+		return _el;
+	}
+	window.stayTopLeft=function(){
+		if (_verticalpos=="fromtop"){
+		var _pY = _ns ? pageYOffset : iecompattest().scrollTop;
+		ftlObj.y += (_pY + _startY - ftlObj.y)/8;
+		}
+		else{
+		var _pY = _ns ? pageYOffset + innerHeight - barheight: iecompattest().scrollTop + iecompattest().clientHeight - barheight;
+		ftlObj.y += (_pY - _startY - ftlObj.y)/8;
+		}
+		ftlObj._sP(ftlObj.x, ftlObj.y);
+		setTimeout("stayTopLeft()", 10);
+	}
+	ftlObj = ml("bottombar");
+	stayTopLeft();
+}
+
+if (window.addEventListener)
+window.addEventListener("load", staticbar, false)
+else if (window.attachEvent)
+window.attachEvent("onload", staticbar)
+else if (document.getElementById)
+window.onload=staticbar();
+
+
+</script>
+
+<body onload="getBitacora();" >
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<LINK rel="stylesheet" href="jslide/royalslider.css">
+<SCRIPT src="jslide/jquery-1.8.3.min.js"></SCRIPT>
+<SCRIPT src="jslide/jquery.royalslider.min.js"></SCRIPT>
+<LINK rel="stylesheet" href="jslide/rs-default.css">
+
+
+<br/><br/>
+<form name="formulario">
+<br/>
+<div id="fadeBlock"  style="position:absolute;border:1px solid black; background:#FFFFFF; visibility:hidden; opacity:0 ;filter:alpha(opacity = 0); "></div>
+<div id="holder" align="left" style="position:absolute; height:100%; width:100%">
+	<div id="imagin"  style="position:absolute; width:100%"><img id="x2x" /></div>
+    <!--div style="position:absolute; height:100%; width:100%"-->
+        <dl class="map" id="idMap">
+            <dt><a onclick="verOT('semilla');" class="polLnk" id="semilla" target="_blank"></a></dt>
+            <dd id="pol1Title"></dd>
+        </dl>
+    <!--/div-->
+</div>
+<div id="bottombar"><img src="CRITICIDADES.png" border="0" /></div>
+</form>
+<script type="text/javascript" language="javascript">
+	
+</script>
+</body>
+</html>

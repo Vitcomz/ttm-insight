@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Condiciones</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+body {
+ color : #000000;
+ margin-left: 0px;
+ margin-top: 0px;
+ margin-right: 0px;
+ margin-bottom: 0px;
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 10px;
+ margin-left: 0px;
+ margin-top: 0px;
+ margin-right: 0px;
+ margin-bottom: 0px;
+ scrollbar-face-color:#dde3eb; 
+ scrollbar-shadow-color: #000000;
+ scrollbar-highlight-color: #000000; 
+ scrollbar-3dlight-color: #999999;
+ scrollbar-darkshadow-color: #333333; 
+ scrollbar-track-color: #282828;
+ scrollbar-arrow-color: #000000;
+}
+
+-->
+</STYLE></HEAD>
+
+<SCRIPT>
+var divBox = new Object();
+var tipo;
+var functionName;
+var garantia;
+var validez;
+var observaciones;
+var  aporteEmp;
+var  aporteCli;
+var  viajeFall;
+var  standBy;
+  
+
+function mostrarVentana(_validez, _garantia, _aporteEmp, _aporteCli, _viajeFall, _standBy, _observaciones, _divBox, _function){
+    
+  validez = _validez;
+  garantia = _garantia;
+  aporteEmp = _aporteEmp;
+  aporteCli = _aporteCli;
+  viajeFall = _viajeFall;
+  standBy = _standBy;
+  observaciones = _observaciones;
+  
+  formulario.txtValidez.value = _validez.value;
+  formulario.txtGarantia.value = _garantia.value;
+  formulario.txtAporteEmp.value= _aporteEmp.value;
+  formulario.txtAporteCli.value = _aporteCli.value;
+  formulario.txtViajeFall.value = _viajeFall.value;
+  formulario.txtStandBy.value = _standBy.value;
+  formulario.txtObservaciones.value = _observaciones.value;
+  
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(_garantia)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function aceptar(){
+
+  validez.value = formulario.txtValidez.value;
+  garantia.value = formulario.txtGarantia.value;
+  aporteEmp.value = formulario.txtAporteEmp.value;
+  aporteCli.value = formulario.txtAporteCli.value;
+  viajeFall.value = formulario.txtViajeFall.value;
+  standBy.value = formulario.txtStandBy.value;
+  observaciones.value = formulario.txtObservaciones.value;
+  
+divBox.style.visibility = 'hidden';
+ 
+ }
+
+
+//window.onLoad = _inicio();
+
+</SCRIPT>
+<BODY>
+	<FORM NAME="formulario">		
+	  <TABLE WIDTH="100%" BORDER="0">
+		<TR CLASS="titulo">
+		<TD WIDTH="231" HEIGHT="16" ALIGN="center">Condiciones Generales</TD>
+		<TD WIDTH="778" HEIGHT="16"  align="RIGHT">
+							<IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14"
+								 onClick="divBox.style.visibility = 'hidden';"></TD>
+	      </TR>
+	  </TABLE>  
+		 <TABLE ALIGN="center" WIDTH="100%" CLASS="texto">
+		   <!--DWLayoutTable-->
+		   <TR>
+		     <TD HEIGHT="37">VALIDEZ OFERTA</TD>
+		     <TD VALIGN="TOP">
+		       <TEXTAREA NAME="txtValidez" TYPE="text" CLASS="textArea" ROWS="2" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		     </TD>
+	       </TR>
+		   <TR>
+		    <TD WIDTH="51" HEIGHT="37">GARANTIAS</TD>
+		    <TD WIDTH="952" VALIGN="TOP">
+		      <TEXTAREA NAME="txtGarantia" TYPE="text" CLASS="textArea" ROWS="2" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+		  </TR>
+          <TR><TD HEIGHT="67">APORTES TTM CHILE</TD>
+            <TD VALIGN="TOP">
+              <TEXTAREA NAME="txtAporteEmp" TYPE="text" CLASS="textArea" ROWS="4" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+          </TR>
+          <TR><TD HEIGHT="67">APORTES CLIENTE</TD>
+            <TD VALIGN="TOP">
+              <TEXTAREA NAME="txtAporteCli" TYPE="text" CLASS="textArea" ROWS="4" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+          </TR>
+          <TR><TD HEIGHT="67">VIAJE FALLIDO</TD>
+            <TD VALIGN="TOP">
+              <TEXTAREA NAME="txtViajeFall" TYPE="text" CLASS="textArea" ROWS="4" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+          </TR>
+          <TR><TD HEIGHT="67">HORAS STAND BY</TD>
+            <TD VALIGN="TOP">
+              <TEXTAREA NAME="txtStandBy" TYPE="text" CLASS="textArea" ROWS="4" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+          </TR>
+          <TR><TD HEIGHT="67">OBSERVACIONES</TD>
+            <TD VALIGN="TOP">
+              <TEXTAREA NAME="txtObservaciones" TYPE="text" CLASS="textArea" ROWS="4" COLS="70"
+                onKeyPress="validaKeys(this,249, window.event);"></TEXTAREA>
+		  </TD>
+          </TR>
+		  <TR><TD COLSPAN="2">
+	      <INPUT NAME="button" TYPE="button" CLASS="BotonBlanco" 
+		  	onClick="aceptar();" VALUE="Aceptar" />
+  		  </TD></TR>
+		  </TABLE>
+</FORM>
+
+	</BODY>
+</HTML>

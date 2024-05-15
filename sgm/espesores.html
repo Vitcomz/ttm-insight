@@ -1,0 +1,902 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang="en">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<TITLE>Medicion de Espesores</TITLE>
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+<LINK rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+<STYLE TYPE="text/css">
+<!--
+.style4 {color: #FF0000}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="Chart/FusionCharts.js"></SCRIPT>
+<!--SCRIPT language="JavaScript1.2" src="equipos.js"></SCRIPT-->
+<script>
+var espesor;
+var espesor_r;
+var ancho;
+var lenMedida;
+
+function Get(){}
+
+function getEquipo(){
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=GetEquipo&CODIGO=" + formulario.txtEquipo.value;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+    xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+				window.open(url);
+	
+	setTimeout("creaLecturas();",400);
+	//setTimeout("graph();",400);
+			
+
+}
+
+function getMedicion(){
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/mediciones.asp?RECURSO=getMedicion&FOLIO=" + formulario.txtFolio.value;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+    xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+				window.open(url);
+	
+	setTimeout("listLecturas();",800);
+	
+			
+
+}
+
+function guardar(){
+xmlDoc.async=false;
+var xmlDso = xmlDoc.XMLDocument;
+
+	if (formulario.txtFolio.value)
+			var url = "xml/mediciones.asp?Recurso=updateMedicion&FOLIO=" + formulario.txtFolio.value;
+	else
+			var url = "xml/mediciones.asp?Recurso=newMedicion";
+
+	url += "&FECHA=" + formulario.txtFecha.value;
+	url += "&INSPECTOR=" + formulario.txtInspector.value;
+	url += "&EQUIPO=" + formulario.txtEquipo.value;
+	url += "&DIAS_OPERACION=" + formulario.txtDiasOp.value;
+	url += "&FECHA_ULT_MAN=" + formulario.txtFechaUltCambio.value;
+	url += "&FECHA_CAMBIO=" + formulario.txtFechaProyec.value;
+	url += "&DIAS_PROY=" + formulario.txtDiasProyectados.value;
+	url += "&DUREZA=" + formulario.txtDureza.value;
+	url += "&OBSERVACION=" + formulario.txtObservacion.value;
+	url += "&FAENA=" + getEmpresa();
+	url += "&VTZ=" + Math.random();
+	//alert(url);
+	
+	var res =xmlDso.load(url);
+	if (res){
+		formulario.txtFolio.value = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"FOLIO");
+		setTimeout("guardarMediciones();",400);
+		}
+	else
+		window.open(url);
+			
+
+}
+
+function graph(){
+var muestreo="";
+var proyec="";
+var retorno="";
+
+var tbl= document.getElementById('tabMedidas');
+
+espesor = Math.ceil(formulario.txtEspesor.value);
+ncols = tbl.rows[4].children.length;
+i=1;
+url = "xml/Graphics.asp?RECURSO=grEspesor%26FAENA=" + getEmpresa();
+//alert(i);
+
+while (i<ncols){
+if (tbl.rows[3].children[i].children[0].value){
+	valor = tbl.rows[3].children[i].children[0].value;
+	muestreo = muestreo + ";" + valor;
+	proyec = proyec +  ";" + tbl.rows[6].children[i].innerText;
+	
+	if (formulario.txtTipoEquipo.value=="CORREA TRANSPORTADORA"||formulario.txtTipoEquipo.value=="ALIMENTADOR"||formulario.txtTipoEquipo.value=="TRAMO"||formulario.txtTipoEquipo.value=="EMPALME"||formulario.txtTipoEquipo.value=="CINTA"){
+		retorno = retorno +  ";" + tbl.rows[10].children[i].children[0].value;
+		}
+	}
+i=i+1;
+}
+
+url += "%26MUESTREO=" + muestreo;
+url += "%26PROYEC=" + proyec;
+url += "%26RETORNO=" + retorno;
+url += "%26CUBIERTA=" + espesor;
+url += "%26FONDO=-" + formulario.txtEspesorR.value;
+
+var chart = new FusionCharts("Chart/MSLine.swf", "ChartId", "850", "300", "0", "1");
+	chart.setDataURL(url);		   
+	chart.render("chartdiv");
+		   
+		  //window.open(url);
+}
+
+function diasProyec(){
+
+var fechaCambio = formulario.txtFechaUltCambio.value;
+var dFechaCambio = new Date(fechaCambio.substr(6,4), 
+						  fechaCambio.substr(3,2)-1,
+						  fechaCambio.substr(0,2));
+					  
+var fechaProyec = formulario.txtFechaProyec.value;
+var dFechaProyec = new Date(fechaProyec.substr(6,4), 
+					  fechaProyec.substr(3,2)-1,
+					  fechaProyec.substr(0,2));
+					  
+formulario.txtDiasProyectados.value = Math.round((dFechaProyec.getTime()-dFechaCambio.getTime())/(24*1000*60*60));				  	
+actualizar();
+				  
+}
+
+function actualizar(){
+
+var tbl= document.getElementById('tabMedidas');
+
+espesor = Math.ceil(formulario.txtEspesor.value);
+espesor_r = Math.ceil(formulario.txtEspesorR.value);
+ncols = tbl.rows[4].children.length;
+i=1;
+
+while (i<ncols){
+//alert(i);
+if (tbl.rows[3].children[i].children[0].value){
+	valor=tbl.rows[3].children[i].children[0].value;
+	tbl.rows[4].children[i].innerText = redond(espesor - valor,2);
+	desgaste = espesor - valor;
+	tbl.rows[5].children[i].innerText = redond((desgaste / tbl.rows[2].children[i].innerText)* 100,2);
+	tbl.rows[7].children[i].innerText = redond(desgaste / formulario.txtDiasOp.value * formulario.txtDiasProyectados.value,2);
+	tbl.rows[6].children[i].innerText = redond(tbl.rows[2].children[i].innerText - tbl.rows[7].children[i].innerText,2);
+	
+	if (formulario.txtTipoEquipo.value=="CORREA TRANSPORTADORA"||formulario.txtTipoEquipo.value=="ALIMENTADOR"||formulario.txtTipoEquipo.value=="TRAMO"||formulario.txtTipoEquipo.value=="CINTA"||formulario.txtTipoEquipo.value=="EMPALME"){
+		valor=tbl.rows[10].children[i].children[0].value;
+		tbl.rows[9].children[i].innerText = redond(valor-(espesor_r)*-1,2)*-1;
+		}
+	}
+i=i+1;
+}
+
+graph();
+return;
+}
+
+function guardarMediciones(){
+var muestreo="";
+var retorno="";
+
+var tbl= document.getElementById('tabMedidas');
+
+ncols = tbl.rows[3].children.length;
+i=1;
+
+xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/mediciones.asp?RECURSO=delMedValor&FOLIO=" + formulario.txtFolio.value;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	var res =xmlDso.load(url);
+	if (!res)
+		window.open(url);	
+		
+ while (i<ncols){
+	//alert(i);
+		if (tbl.rows[3].children[i].children[0].value){
+			valor = tbl.rows[3].children[i].children[0].value;
+			muestreo = muestreo + ";" + valor;
+			
+			if (formulario.txtTipoEquipo.value=="CORREA TRANSPORTADORA"||formulario.txtTipoEquipo.value=="ALIMENTADOR"||formulario.txtTipoEquipo.value=="TRAMO"||formulario.txtTipoEquipo.value=="CINTA"||formulario.txtTipoEquipo.value=="EMPALME"){
+				valor_retorno = tbl.rows[10].children[i].children[0].value;
+				retorno = retorno + ";" + valor_retorno;
+				}
+				
+			}//end if
+	i=i+1;
+	}//end while
+	
+	xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/mediciones.asp?RECURSO=newMedValor&FOLIO=" + formulario.txtFolio.value;
+	 	url += "&MUESTREO=" + muestreo;
+		url += "&RETORNO=" + retorno;
+		url += "&VTZ=" + Math.random();
+	
+	var res =xmlDso.load(url);
+	if (res){
+		alert("Medicion Guardada Folio." + formulario.txtFolio.value);
+		//getMedicion();
+		}
+	else
+		window.open(url);
+			
+}
+
+function listLecturas(){
+
+var tbl= document.getElementById('tabMedidas');
+
+makeHead(tbl);
+
+i=1;
+
+xmlList.async=false;
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/mediciones.asp?RECURSO=listMedValor&FOLIO=" + formulario.txtFolio.value;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+	xmlestado = xmlDso.load(url);
+	//window.open(url);
+	if (!xmlestado){
+				window.open(url);
+				return;
+				}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<span class='rotulo'>MUESTREO</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;k=0;	
+				
+	var tree = xmlDso.documentElement;
+	for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    valor = getChildNodeValue(node,"VALOR");
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambio(this);' " + 
+								" value='"+ valor +"' /> ";
+				k=k+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+				}
+	
+	while (k<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambio(this);' /> ";
+				k=k+lenMedida;
+				//j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE REAL</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>% REAL DESGASTE</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>MUESTREO PROYECTADO</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+					cell.style.color= "#ff0000";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE PROYECTADO</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>CARCASA</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>0</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE RETORNO</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>MUESTREO RETORNO</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;k=0;	
+				
+	var tree = xmlDso.documentElement;
+	for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    valor = getChildNodeValue(node,"VALOR_RETORNO");
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambioR(this);' " + 
+								" value='"+ valor +"' /> ";
+				k=k+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+				}
+	
+	while (k<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambioR(this);' /> ";
+				k=k+lenMedida;
+				//j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+			
+	espesor_r = Math.ceil(formulario.txtEspesorR.value);
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>RETORNO ORIGINAL</SPAN>";
+	cell.width = 250;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'> " +
+		 							espesor_r*-1 + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+				
+	setTimeout("diasProyec();",500);
+	setTimeout("graph();",500);		
+}
+
+function makeHead(tbl){
+
+var i=0;j=1;
+ 	ancho = Math.ceil(formulario.txtAncho.value);
+ 	espesor = Math.ceil(formulario.txtEspesor.value);
+	espesor_r = Math.ceil(formulario.txtEspesorR.value);
+	
+var fechaCambio = formulario.txtFechaUltCambio.value;
+var dFechaCambio = new Date(fechaCambio.substr(6,4), 
+						  fechaCambio.substr(3,2)-1,
+						  fechaCambio.substr(0,2));
+
+var fechaActual = formulario.txtFecha.value;
+var dFecha = new Date(fechaActual.substr(6,4), 
+					  fechaActual.substr(3,2)-1,
+					  fechaActual.substr(0,2));
+
+formulario.txtDiasOp.value = Math.round((dFecha.getTime()-dFechaCambio.getTime())/(24*1000*60*60));  
+						  
+						  
+if (ancho<=0){
+		alert("Equipo no registra el Ancho " + ancho);
+		return;
+		}
+		
+	
+if (formulario.txtTipoEquipo.value=="POLEA"){
+	lenMedida = 100;
+	}
+else{
+	lenMedida = 50;
+}
+		  
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<INPUT class='rotulo' size='25' value='N� DE MEDIDAS.' />";
+	cell.width = 250;
+
+	while (i<=ancho){
+			var cell = row.insertCell(j);
+				cell.innerHTML = "<SPAN class='tinyText'> " + j + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DISTANCIA (mm)</SPAN>";
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'> " + i + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>CUBIERTA ORIGINAL</SPAN>";
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'> " +
+		 							espesor + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+}
+
+function creaLecturas(){
+	
+	var tbl= document.getElementById('tabMedidas');
+	
+	makeHead(tbl);
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>MUESTREO</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambio(this);' /> ";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE REAL</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>% REAL DESGASTE</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>MUESTREO PROYECTADO</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+					cell.style.color= "#ff0000";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE PROYECTADO</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>CARCASA</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>0</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>DESGASTE RETORNO</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'>&nbsp;</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>MUESTREO RETORNO</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='tinyInput' TYPE=TEXT SIZE=4 onChange='cambioR(this);' /> ";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+			
+	espesor_r = Math.ceil(formulario.txtEspesorR.value);
+	
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='rotulo'>RETORNO ORIGINAL</SPAN>";
+	cell.width = 150;
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='tinyText'> " +
+		 							espesor_r*-1 + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+			
+		
+					
+}
+
+function cambio(obj){
+tbl = obj.parentElement.parentElement.parentElement;
+col = obj.parentElement.cellIndex;
+
+valor = obj.value.replace(",",".");
+obj.value = valor;
+
+tbl.rows[4].children[col].innerText = redond(espesor - valor,2);
+
+desgaste = espesor - valor;
+
+tbl.rows[5].children[col].innerText = redond((desgaste / tbl.rows[2].children[col].innerText)* 100,2);
+
+tbl.rows[7].children[col].innerText = redond(desgaste / formulario.txtDiasOp.value * formulario.txtDiasProyectados.value,2);
+
+tbl.rows[6].children[col].innerText  = redond(tbl.rows[2].children[col].innerText - tbl.rows[7].children[col].innerText,2);
+
+//alert(obj.parentElement.cellIndex);
+}
+
+function cambioR(obj){
+tbl = obj.parentElement.parentElement.parentElement;
+col = obj.parentElement.cellIndex;
+
+valor = obj.value.replace(",",".");
+
+if (valor>0)
+	obj.value = valor*-1;
+else
+	obj.value = valor;
+	
+	
+tbl.rows[9].children[col].innerText = redond(valor-(espesor_r),2);
+
+//alert(obj.parentElement.cellIndex);
+}
+
+function inicio(){
+formulario.txtFecha.value = _hoy();
+}
+
+
+function nuevo(){
+window.location.href="espesores.html";
+formulario.txtFecha.value = _hoy();
+}
+
+function callPrint(strid){
+
+var prtContent = document.getElementById("printDiv");
+var WinPrint = window.open('','','left=0,top=0,width=1,height=1,t oolbar=0,scrollbars=0,status=0');
+WinPrint.document.write("<LINK rel='stylesheet' href='sci.css' type='text/css'>" + prtContent.innerHTML);
+WinPrint.document.close();
+WinPrint.focus();
+WinPrint.print();
+WinPrint.close();
+
+}
+
+
+function toExcel(){
+
+ 	var xmlDso = xmlList.XMLDocument;
+	
+	var url = "xml/mediciones.asp?RECURSO=excelMediciones"
+		url += "&FOLIO=" + formulario.txtFolio.value;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	  
+	
+	  window.open(url);
+	  
+	  }
+	  
+</script>
+
+<BODY onLoad="inicio();">
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+
+<DIV id="divFiles" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 290px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameFiles" src="archivos.html" frameBorder="0" width="450" scrolling="no" height="220"></IFRAME>
+</DIV>
+
+
+<DIV id="DivEquipo" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 80px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px; width: 380px; height: 320px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameEquipo" src="ListEquiposPadres.html" frameBorder="0" width="380" scrolling="no"	height="320"></IFRAME>
+</DIV>
+
+  <DIV id="divFolio" style="POSITION: absolute;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 59px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; TOP: 126px; width: 320px;"	onclick="event.cancelBubble=true">
+	<IFRAME name="frameFolio" src="listMediciones.html" frameBorder="0"
+				 width="320" scrolling="no" height="230"></IFRAME>
+  </DIV>
+  
+<DIV id="DivUsuarios" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 196px;  BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 74px; width: 260px; height: 200px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="260" scrolling="no"	height="200"></IFRAME>
+</DIV>
+  
+<DIV id="divCalendar" onClick="event.cancelBubble=true" style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+		<IFRAME frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+  </DIV>
+<BR>
+
+<div id="printDiv">
+<TABLE width="100%" cellpadding="3" cellspacing="5" >
+  <!--DWLayoutTable-->
+<TR>
+  <TD width="870" valign="bottom" class="titulo" >INFORME MEDICION DE ESPESORES</TD>
+</TR>
+<TR>
+  <TD height="588" valign="top" >
+    <TABLE  border="0" width="930" cellpadding="1" cellspacing="0" DATASRC="#xmlDoc"  >
+      <!--DWLayoutTable-->
+      <TR align="center" class="rotulo" width="872" >
+        <TD width="194" HEIGHT="23" valign="middle">Folio Medicion</TD>
+            <TD colspan="2" ALIGN="center" valign="middle">Fecha Medicion</TD>
+          <TD colspan="2" valign="middle">Inspector/Responsable</TD>
+            <TD width="287"></TD>
+            <TD width="76"></TD>
+      </TR>
+      <TR align="center">
+        <TD  align="left" valign="top">
+        <INPUT name="txtFolio" type="text" class="Campo"  size="22" 
+        		datafld="FOLIO" onKeyPress="if(event.keyCode==13)getMedicion();"/>
+          <IMG src="images/lupa.jpg" alt="" align="top"
+				style="cursor:hand" onClick="frameFolio.popsearchbox(10, 
+				 txtFolio, txtFecha, divFolio, 'getMedicion();');" /></TD>
+        <TD colspan="2" align="center" valign="top">
+        <input name="txtFecha" type="text" class="Campo"  size="22" datafld="FECHA_MED"/>       
+        <IMG src="images/calendar.jpg" alt="" ALIGN="ABSBOTTOM" STYLE="CURSOR: hand"
+				onClick="FrameCalendar.fPopCalendar(txtFecha,txtFecha,divCalendar);">        </TD>
+        <TD colspan="2" valign="top">
+          <input name="txtInspector" type="text" class="Campo"  size="22" datafld="INSPECTOR" />         
+          <img src="images/lupa.jpg" align="absbottom"
+			 style="cursor:hand" onClick="ListFrame.popsearchbox(10, txtInspector, txtInspector, DivUsuarios)"/> </TD>
+        <TD colspan="2" align="left" valign="top">
+          <input  type="button" class="botonBlanco" onClick="nuevo();" value="Nuevo">
+          <input  type="button" class="botonBlanco" onClick="callPrint();" value="Imprimir">
+          <input  type="button" class="botonBlanco" onClick="toExcel();" value="Export to Excel"></TD>
+        </TR>
+      <TR align="center" class="rotulo">
+        <TD align="center" valign="top">Equipo</TD>
+        <TD COLSPAN="6" align="left" valign="top">Descripci&oacute;n</TD>
+        </TR>
+      <TR align="center">
+        <TD HEIGHT="26" align="center" valign="top">
+          <INPUT name="txtEquipo" type="text" class="Campo" size="22" datafld="CODIGO"
+		  	   onKeyPress="if(event.keyCode==13)GetEquipo();" />
+          <IMG src="images/lupa.jpg" align="top"
+				style="cursor:hand" onClick="ListFrameEquipo.popsearchbox(10, 
+                txtEquipo, TxtDescripcion, DivEquipo, 'getEquipo();');" /></TD>
+            <TD COLSPAN="6" align="left" valign="top">
+              <INPUT name="TxtDescripcion" type="text" class="Campo"
+            		 size="70" datafld="DESCRIPCION">
+            <input name="txtTipoEquipo" type="text" class="Campo"  size="35" datafld="DESC_TIPO_EQUIPO"/>            </TD>
+          </TR>
+		   <TR align="center" class="rotulo">
+		     <TD height="25" valign="top" >Fecha Ultimo Cambio Cinta</TD>
+		     <TD colspan="6" align="left" valign="top" >
+             <input name="txtFechaUltCambio" type="text" class="Campo" size="20" datafld="FECHA_ULT_MAN" />
+&nbsp;&nbsp;Ancho del Equipo
+<input name="txtAncho" type="text" class="Campo" size="10" datafld="ANCHO" />
+&nbsp;&nbsp;Espesor
+             Cubierta
+<input name="txtEspesor" type="text" class="Campo"  size="10" datafld="ESPESOR"/> 
+               Espesor Retorno
+             <input name="txtEspesorR" type="text" class="Campo"  size="10" datafld="ESPESOR_R"/></TD>
+	      </TR>
+		   <TR align="center" class="rotulo">
+		     <TD height="23" valign="top" >Dias de Operaci&oacute;n</TD>
+		     <TD colspan="6" align="left" valign="top" >
+             <input name="txtDiasOp" type="text" class="Campo"  size="5" />
+             Dureza 
+             <input name="txtDureza" type="text" class="Campo"  size="5" datafld='DUREZA'/>
+             Shore A</TD>
+	      </TR>
+		   <TR align="center" class="rotulo">
+		     <TD height="23" valign="top" >Fecha Tentativa de Cambio</TD>
+		     <TD width="173" align="left" valign="top" >
+             <input name="txtFechaProyec" type="text" class="Campo"  size="22" 
+              datafld="FECHA_CAMBIO" onKeyUp="if(event.keyCode==13)diasProyec();"/>
+             <span class="texto" style="color:#000000; font-weight:bold;">
+             <IMG  src="images/calendar.jpg" alt="" ALIGN="ABSBOTTOM" STYLE="CURSOR: hand"
+				onClick="FrameCalendar.fPopCalendar(txtFechaProyec,txtFechaProyec,divCalendar, 1,'diasProyec();');">             </span></TD>
+	      <TD colspan="2" rowspan="2" >Observaciones :</TD>
+	         <TD colspan="3" rowspan="2" ><textarea name="txtObservacion" type="text" class="Campo"
+            		 rows="3" cols="80" datafld="OBSERVACION"></textarea></TD>
+          </TR>
+		   <TR align="center" class="rotulo">
+		     <TD height="34" >Dias Proyectados</TD>
+		     <TD align="left" ><input name="txtDiasProyectados" type="text" class="Campo" datafld="DIAS_PROY" size="5" />
+             </TD>
+	      </TR>
+		   
+		   <tr>
+		     <td height="0"></td>
+		     <td></td>
+		     <td width="0"></td>
+		     <td width="117"></td>
+		     <td width="55"></td>
+	         <td></td>
+	         <td></td>
+	      </tr>
+    	</TABLE>
+        <TABLE  DATASRC="#xmlDoc">
+        <TR><TD>
+            <table border="1" cellpadding="1" cellspacing="0" width="100%" id="tabMedidas" class="tinyText" >
+            </table>
+         </TD></TR>
+         </TABLE>     
+      	<TABLE>
+		 <TR align="center">
+		 <TD height="40" colspan="7" align="left" valign="top">
+      <DIV ID="chartdiv" ALIGN="left"> Grafico </DIV>
+      <HR></TD>
+          </TR>
+                
+                <TR>
+                  <TD height="31"  colspan="5" valign="middle">
+                    <input  type="button" class="botonBlanco" onClick="guardar();" value="Guardar">
+                  <INPUT type="button" class="botonBlanco" onClick="document.location.href='index.html'"
+                     value="Salir">                  </TD>
+                  <TD  colspan="2"  align="right" valign="middle" ><!--DWLayoutEmptyCell-->&nbsp;</TD>
+                </TR>
+                <tr>
+                  <td width="0" height="15"></td>
+                  <td width="0"></td>
+                  <td width="0"></td>
+                  <td width="11"></td>
+                  <td width="125"></td>
+                  <td width="328"></td>
+                  <td width="0"></td>
+          </tr>
+      </TABLE>
+  </TD>
+</TR>
+  </TABLE>
+</td></tr>
+</table>
+</div>
+</FORM>
+</BODY>
+</HTML>

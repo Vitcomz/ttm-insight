@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+
+
+
+
+
+
+
+</style></head>
+<xml id = xmlDoc></xml>
+<xml id = xmlSistemas></xml>
+<xml id = xmlMenu></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+
+<script>
+
+//SET PASSWORD FOR root@localhost = OLD_PASSWORD('julius');
+xmlDoc.async = false;
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function Nuevo(){
+var url ="NewMenu.html?SISTEMA=" + formulario.listSistemas.value;
+	//window.open(url,'','width=600,height=300,toolbar=no,statusbar=no,align=middle');
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:500px;dialogHeight:180px");	
+	ListMenu();
+}
+
+
+function UpdateTable()
+{
+ var tabla;
+        tabla = document.getElementById('Tabla1');
+		for (i=1; i< tabla.rows.length; i++)
+		{
+			Codigo = tabla.rows[i].children[0].children[0].value;
+			Nombre = tabla.rows[i].children[1].children[0].value;
+			CodPadre= tabla.rows[i].children[2].children[0].value;
+			Orden = tabla.rows[i].children[3].children[0].value;
+			Link = tabla.rows[i].children[4].children[0].value;
+			UpdateMenu(Codigo, CodPadre, Nombre, Link, Orden);
+		}
+ListMenu(); 
+
+}
+
+function UpdateMenu(CodMenu, CodMenuPadre, Nombre, Link, Orden)
+{
+	var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/menu.php?RECURSO=updateMenu"
+			url += "&CODIGO=" + CodMenu;
+			url += "&NOMBRE=" + Nombre;
+			url += "&COD_MENU_PADRE=" + CodMenuPadre;
+			url += "&LINK=" + Link;
+			url += "&ORDEN=" + Orden;
+		//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+ function cargarSistemas(){
+        xmlSistemas.async = false;
+        var xmlDso =  xmlSistemas.XMLDocument;
+		url = "xml/sistemas.php?RECURSO=listSistemas";
+		//window.open(url);
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.listSistemas.options[i] = opcion;   
+          }
+                 
+         }
+ }
+	  
+function ListMenu()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.php?RECURSO=listMenu&SISTEMA=" + formulario.listSistemas.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+
+function InsertRow()
+{
+
+ var tbl = document.getElementById('tblSample');
+ 
+  var lastRow = tbl.rows.length;
+  // if there's no header row in the table, then iteration = lastRow + 1
+
+  var row = tbl.insertRow(lastRow);
+  
+  // left cell
+  var cell = row.insertCell(0);
+  var textNode = document.createTextNode(lastRow-1);
+  cell.appendChild(textNode);
+  
+    var cell = row.insertCell(1);
+  var textNode = document.createTextNode('Campo1');
+  cell.appendChild(textNode);
+  
+  var cell = row.insertCell(2);
+  var textNode = document.createTextNode('Campo2');
+  cell.appendChild(textNode);
+  
+}
+
+
+function Eliminar(Index)
+{
+
+	var tabla = document.getElementById('Tabla1');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.php?RECURSO=delMenu&CODIGO=" + Codigo;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Menu Codigo =" + Codigo)){
+					xmlestado = xmlDso.load(url);
+					ListMenu();
+					}
+}
+
+</script>
+
+
+<body onLoad="" class="body">
+
+<form name="formulario">
+<table border="1" id="tblSample">
+  <tr>
+    <th colspan="3">Sample table</th>
+  </tr>
+  <tr>
+    <td>Fila</td>
+    <td>TituloCampo1</td>
+    <td>TituloCampo2</td>
+    <td>TituloCampo3453452</td>
+ </tr>
+</table>
+</form>
+<br>
+<div align="center">
+
+  <input type="button" onClick="InsertRow();" value="InsertRow" class="botonBlanco">
+</div>
+</body>
+</html>

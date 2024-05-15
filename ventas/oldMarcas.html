@@ -1,0 +1,127 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Marcas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlRoles></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+
+<script>
+
+xmlDoc.async = false;
+
+
+function cargarMarcas(){
+ 
+        xmlRoles.async = false;
+        var xmlDso =  xmlRoles.XMLDocument;
+		url = "xml/Marcas.asp?RECURSO=ListMarcas";
+
+        var res = xmlDso.load(url);
+        if (!res)
+		window.open(url);
+ }
+ 
+
+function Eliminar(Index)
+{
+
+	var tabla = document.getElementById('MenuRol');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Marcas.asp?RECURSO=DelMarca&CODIGO=" + Codigo;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Marca Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	}
+	
+	cargarMarcas();
+}
+
+
+
+
+function NewMarca(){
+
+		var id = prompt("Codigo del Marca","");
+		var nombre = prompt("Nombre del Marca","");
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Marcas.asp?RECURSO=NewMarca";
+			url += "&CODIGO=" + id;
+			url += "&DESCRIPCION=" + nombre;
+
+		xmlestado = xmlDso.load(url);
+		if (xmlestado)
+			alert("Se agreg� una nueva Marca.");
+		else
+			window.open(url);
+			
+	cargarMarcas();
+}
+
+
+</script>
+
+<body onLoad="cargarMarcas();">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<form name="formulario" method="post" action="">
+
+  <p>&nbsp;</p>
+  <p class="titulo">&nbsp;</p>
+  <table width="292" border="0" class="texto">
+    <tr>
+      <td width="67" class="titulo">MARCAS</td>
+      <td width="209">&nbsp;</td>
+    </tr>
+</table>
+  <table width="292" border="0" class="texto" datasrc="#xmlRoles" id="MenuRol">
+    <thead>
+      <tr class="HeaderLista">
+        <td>Codigo </td>
+        <td>Nombre</td>
+		<td><img src="images/add.gif" onClick="NewMarca();"
+				style="cursor:hand" alt="Nuevo Rol"/></td>
+      </tr>
+    </thead>
+    <tr>
+      <td><input type="text" class="input" id="TxtRol" size="15" datafld="CODIGO"/></td>
+      <td><input type="text" class="input" id="TxtMenu" size="25" datafld="DESCRIPCION"/></td>
+	  <td onClick="Eliminar(this.parentElement.rowIndex);"><img src="images/trash.jpg" style="cursor:hand;"></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+  <table border="0">
+    <tr>
+      <td colspan="2">
+	  	<div align="center"></div>
+	</td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

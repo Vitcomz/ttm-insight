@@ -1,0 +1,33 @@
+No. Pero lo contiene el Fin700 y funciona algo asi para que crees el modelo
+de datos.
+
+1.- Cada Bodega se ubica en una Planta de una Localidad.
+
+2.- La bodega contiene varios estantes, y cada estante tiene dos o mas
+secciones, en las cuales se guardan los Articulos.
+
+3.- Cada Artículo pertenece a una línea de producto.
+
+4.- En la Bodega se generan documentos (cabecera y detalle del documento),de
+acuerdo al tipo de transacción
+    (Entrada, Salida, Lista Pedido, Cotización,etc).
+
+5.- Cada vez que sale un artículo de la bodega, este puede salir con el
+mismo precio que se compró (fifo) o valor medio.
+
+6.- Para hacer un control de inventario, el sistema mensualmente maneja un
+Saldo Provisorio por cada uno de los artículos (temporal por el mes), con el
+propósito de que a fin de mes al cerrar existencia dichos valores en
+cantidad y precio queden resumido en Saldo Definitivo (para efectos del
+cierre).
+
+7.- Además anualmente se ejecuta la corrección monetaria d acuerdo a la
+variación del IPC.
+
+
+Amigo cualquier consulta me avisa.
+
+Durante la semana voy a revisar tú sistema y te mandaré observaciones o
+sugerencias si encuentro.
+
+

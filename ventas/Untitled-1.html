@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+	
+	<head>
+		<link rel="shortcut icon" href="/favicon.ico">
+		<title>Plesk</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+
+
+
+
+
+		<script language="javascript" type="text/javascript" src="/javascript/common.js?plesk_version=psa-7.5.4-75060618.14"></script>
+		<script language="javascript" type="text/javascript" src="/javascript/chk.js.php"></script>
+		
+<link rel="stylesheet" type="text/css" href="/skins/winxp.new.compact/css/general.css">
+<link rel="stylesheet" type="text/css" href="/skins/winxp.new.compact/css/main/custom.css">
+<link rel="stylesheet" type="text/css" href="/skins/winxp.new.compact/css/main/layout.css">
+<link rel="stylesheet" type="text/nonsense" href="/skins/winxp.new.compact/css/misc.css">
+
+
+		<script type="text/javascript">
+<!--
+function _body_onload()
+{
+	loff();
+	SetContext('get_password');
+	alert("Identificación fallida: login o email especificados inválidos. Por favor, reintente.");
+	
+}
+
+function _body_onunload()
+{
+	lon();
+	
+}
+
+
+var opt_no_frames = false;
+var opt_integrated_mode = false;
+
+function setFocus()
+{
+	f1 = document.forms[0];
+	f2 = document.forms[1];
+	if (f1.login_name && f2.email)
+		if (f1.login_name.value == "")
+			f1.login_name.focus();
+		else
+			f2.email.focus();
+}
+
+function cancel_oC(f1, f2)
+{
+	if (f1.login_name && f2.login_name)
+		f2.login_name.value = f1.login_name.value;
+
+	f2.action = "/login_up.php3";
+	f2.submit();
+
+	return false;
+}
+
+function get_password_oC(f1, f2)
+{
+	if (f1.login_name && f2.login_name)
+		f2.login_name.value = f1.login_name.value;
+	else
+		return false;
+
+	f2.cmd.value = "get_password";
+	f2.submit();
+
+	return false;
+}
+
+//-->
+		</script>
+	</head>
+	<body onLoad="_body_onload();" onUnload="_body_onunload();" id="mainLogin" class="">
+	<a href="#" name="top" id="top"></a>
+	<table border="0" cellspacing="0" cellpadding="0" id="loaderContainer" onClick="return false;"><tr><td id="loaderContainerWH"><div id="loader"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><p><img src="/skins/winxp.new.compact/icons/loading.gif" height="32" width="32" alt=""/><strong>Por favor espere.<br>Cargando ...</strong></p></td></tr></table></div></td></tr></table>
+	<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td id="screenWH">
+	<div class="screenBody" id="login">
+		<div class="formArea">
+<table cellspacing="0" cellpadding="0">
+
+	<tr><td id="loginTitle">Obtener contraseña</td></tr>
+	
+	<tr><td id="loginForm">
+	
+		<b>Atención!!!</b><br>Enviar la contraseña por email es inseguro!<br>Inserte su usuario y email registrados en el sistema para poderle enviar su contraseña.
+
+		<table class="formFields" cellspacing="0" width="100%">
+	
+			<form name="form1" action="/get_password.php" method="post" onSubmit="if ((document.forms[1]) && (!document.forms[1].email)) document.forms[1].email.focus(); return false;">
+			<tr>
+				<td class="name"><label for="login_name"> Login:</label></td>
+				<td><input type="text" name="login_name" id="login_name" value="iskcon" size="25" maxlength="501"></td>
+			</tr>
+			</form>
+		
+			<form  name="form2" action="/get_password.php" method="post" onSubmit="return get_password_oC(document.forms[0], document.forms[1])">
+			<tr>
+				<td class="name"><label for="email">E-mail:</label></td>
+				<td><input type="text" name="email" id="email" value="juliogui@yahoo.com" size="25" maxlength="501"></td>
+			</tr>
+			<input type="hidden" name="login_name" value="">
+			<input type="hidden" name="cmd" value="get_password">
+			</form>
+		
+		</table>
+		
+		<div class="formButtons">
+			<div class="commonButton" id="bid-ok" title="Aceptar" onClick="return get_password_oC(document.forms[0], document.forms[1]);;return false" onMouseOver="mouse_move(&#039;b_get_password_send&#039;)" onMouseOut="mouse_move()"><button name="bname_ok">Aceptar</button><span>Aceptar</span></div>
+			<div class="commonButton" id="bid-cancel" title="Cancelar" onClick="return cancel_oC(document.forms[0], document.forms[1]);;return false" onMouseOver="mouse_move(&#039;b_get_password_cancel&#039;)" onMouseOut="mouse_move()"><button name="bname_cancel">Cancelar</button><span>Cancelar</span></div>
+		</div>
+	
+		</form>
+	</td></tr>	
+</table>
+</div>
+
+	</div>
+	</td></tr></table>
+	</div>
+	</body>
+
+	<script type="text/javascript">
+		try {
+			lsetup();
+		} catch (e) {
+		}
+	</script>
+</html>

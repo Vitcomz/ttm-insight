@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+</HEAD>
+<LINK REL="stylesheet" HREF="css/estiloWEB.css" TYPE="text/css">
+
+
+<SCRIPT LANGUAGE="javascript1.2">
+//var popbox = new Object();
+//var codeobj = new Object();
+//var nameobj = new Object();
+
+function Inicio3(){
+	var IDx = getParametro("IDx");
+	var FAMx = getParametro("FAMx");
+	var TIPx = getParametro("TIPx");
+	var USx = getParametro("USx");
+	if (IDx != false && FAMx != false){
+		var selectx = document.getElementById("ListTipo");
+		for (i=0;i<selectx.length;  i++) {
+			 selectx.remove(i);
+		}
+		if (( USx == 'RMEZA' || USx == 'MORTIZ' || USx == 'SSANCHEZ')){
+			if (TIPx == 'POLEAS'){ //TRAMO RASPADORES EMPALME POLINES POLEAS CINTA
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('MED.ESP.', 'MED.ESP.');
+			}else if (TIPx == 'TRAMO'){ 
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('MED.ESP.', 'MED.ESP.');
+				selectx.options[selectx.options.length] = new Option('SCANNER', 'SCANNER');
+				selectx.options[selectx.options.length] = new Option('RX', 'RX');
+			}else if (TIPx == 'RASPADORES'){ 
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('TERMOGRAFIA', 'TERMOGRAFIA');
+				selectx.options[selectx.options.length] = new Option('INF.INSTALACION', 'INF.INSTALACION');
+				selectx.options[selectx.options.length] = new Option('INSP.INSTALACION', 'INSP.INSTALACION');
+			}else if (TIPx == 'EMPALME'){ 
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('RX', 'RX');
+			}else if (TIPx == 'POLINES'){ 
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('TERMOGRAFIA', 'TERMOGRAFIA');
+			}else if (TIPx == 'CINTA'){ 
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+				selectx.options[selectx.options.length] = new Option('SCANNER', 'SCANNER');
+			}else{
+				selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+			}
+		}else{
+			selectx.options[selectx.options.length] = new Option('[-Seleccione-]', 'NO INCLUYE');
+		}
+		document.getElementById("formulario_files").txtIdent.value = IDx;
+		document.getElementById("formulario_files").txtFamilia.value = FAMx;
+	    url = "xml/archivos.asp?recurso=SaveFile";
+	    url = url + "&FAMILIA="+document.getElementById("formulario_files").txtFamilia.value;;
+	    url = url + "&IDENTIFICADOR="+document.getElementById("formulario_files").txtIdent.value;
+		url = url + "&CLASIFICACION="+document.getElementById("formulario_files").ListTipo.options[document.getElementById("formulario_files").ListTipo.selectedIndex].value;
+	    document.getElementById("formulario_files").action=url;
+		document.getElementById("btn_submint").disabled="disabled";
+	}else{
+		//alert('Antes de adjuntar archivos debe estar grabado el tema!!!');
+	}
+}
+
+function ocultar(r,d){
+	
+}
+
+function Checkfiles()
+{
+	var fup = document.getElementById('attach1');
+	var fileName = fup.value;
+	var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+	if(ext == "gif" || ext == "GIF" || ext == "JPEG" || ext == "jpeg" || ext == "jpg" || ext == "JPG" || ext == "doc" || ext == "DOC" || ext == "docx" || ext == "DOCX" || ext == "xls" || ext == "XLS" || ext == "xlsx" || ext == "XLSX" || ext == "pdf" || ext == "PDF"|| ext == "png"|| ext == "PNG" || ext == "ppt"|| ext == "PPT" || ext == "pptx"|| ext == "PPTX" || ext == "txt"|| ext == "TXT")
+	{
+		//return true;
+		document.getElementById("btn_submint").disabled = false;
+	}else{
+		alert("Archivo con extension no valida");
+		fup.value = ""; //.focus();
+		document.getElementById("btn_submint").disabled = true;
+		//return false;
+	}
+}
+
+function validate(){
+	var fup = document.getElementById('attach1');
+	var fileName = fup.value;
+	var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+	if(ext == "gif" || ext == "GIF" || ext == "JPEG" || ext == "jpeg" || ext == "jpg" || ext == "JPG" || ext == "doc" || ext == "DOC" || ext == "docx" || ext == "DOCX" || ext == "xls" || ext == "XLS" || ext == "xlsx" || ext == "XLSX" || ext == "pdf" || ext == "PDF"|| ext == "png"|| ext == "PNG" || ext == "ppt"|| ext == "PPT" || ext == "pptx"|| ext == "PPTX" || ext == "txt"|| ext == "TXT")
+	{
+		var logic =  true;
+	}else{
+		alert("Archivo con extension no valida");
+		//fup.focus();
+		var logic = false;
+	}
+	return logic;
+}
+
+function refrshdata(){
+	    url = "xml/archivos.asp?recurso=SaveFile";
+	    url = url + "&FAMILIA="+document.getElementById("formulario_files").txtFamilia.value;;
+	    url = url + "&IDENTIFICADOR="+document.getElementById("formulario_files").txtIdent.value;
+		url = url + "&CLASIFICACION="+document.getElementById("formulario_files").ListTipo.options[document.getElementById("formulario_files").ListTipo.selectedIndex].value;
+	    document.getElementById("formulario_files").action=url;
+		document.getElementById("btn_submint").disabled="disabled";
+}
+</SCRIPT>
+
+<BODY >
+<DIV  class="titulo" STYLE="border-bottom: #A91905 2px solid;font-size:16">Adjuntar Archivo</DIV>
+<DIV style='margin-left:5'>
+<FORM NAME="formulario_files" id="formulario_files" METHOD="POST" 
+					enctype="multipart/form-data" onSubmit="javascript:return validate();" />
+ <TABLE WIDTH="639" BORDER="0">
+ <TR>
+      <TD WIDTH="83"><FONT CLASS="texto">Identificación:</FONT></TD>
+      <TD WIDTH="114"><INPUT NAME="txtIdent" CLASS="input" SIZE="12" id="txtIdent" readonly /><BR> </TD>
+      <TD WIDTH="65">&nbsp;</TD>
+      <TD WIDTH="359">&nbsp;</TD>
+ </TR>
+ <TR>
+      <TD WIDTH="83"><FONT CLASS="texto">Categoria:</FONT></TD>
+      <TD WIDTH="114"><INPUT NAME="txtFamilia" CLASS="input" SIZE="12" id="txtFamilia" readonly /><BR> </TD>
+      <TD WIDTH="65"><FONT CLASS="texto">Tipo:</FONT></TD>
+      <TD WIDTH="359"><select name="ListTipo" class="input" id="ListTipo" onChange="refrshdata();">
+        <option value="-1">[-Seleccione-]</option>
+      </select></TD>
+ </TR>
+ <TR>
+      <TD><FONT CLASS="texto">Archivo:</FONT></TD>
+      <TD colspan="3">
+        <FONT CLASS="texto">
+          <INPUT NAME="attach1" TYPE="file" CLASS="input" SIZE="40" id="attach1" onChange='Checkfiles()'>
+        </FONT> </TD>
+      </TR>
+ </TABLE><BR>
+<INPUT type=submit CLASS="botonBlanco" VALUE="Adjuntar" onClick="formulario_files.submit();" id="btn_submint">
+</FORM>
+<script language="JavaScript1.2" >Inicio3();</script>
+<BR></DIV>
+
+</BODY>
+</HTML>

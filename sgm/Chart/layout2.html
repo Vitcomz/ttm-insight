@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="layout2.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript" src="../standard/mootools.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" src="../standard/jquery.min.js"></script>
+
+<script type="text/javascript" src="mapevents.js" language="javascript"></script>
+
+
+    
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+</head>
+<script>
+<!--
+var layout = new Array();
+/**********************************************************************/
+function inicio(){
+	
+}
+/**********************************************************************/
+function boxOT(_folio){
+
+//alert(_folio);
+var url = "boxOT.html";
+	url += "?FOLIO=" + _folio;
+	url += "&VTZ=" + Math.random();
+
+winCfg = "width=380px,height=150px,left=" + 150 + "px,top=" + 150 +"px,resize=1,scrolling=0";	
+showModalDialog(url,window,"status:no;help:no;dialogWidth:450px;dialogHeight:150px;scroll:yes");
+
+}
+/**********************************************************************/
+function listEquipos(){
+	var call = getParametro("call");
+	xmlTemp.async = false;
+	var xmlDso =  xmlTemp.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO=HSANDOVAL"
+		url += "&FAENA="+getEmpresa()
+		url +="&VTZ="+Math.random();
+		
+	var res = xmlDso.load(url);
+	if (res){
+			var tree = xmlDso.documentElement;				
+			for(var i = 0; i < tree.childNodes.length; i++){
+				var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"CODIGO") + " " 
+							+ getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listEquipos.options[i] = opcion;
+				if (i==(call-1)){formulario.listEquipos.options[i].selected=true;}
+				layout[i]=getChildNodeValue(node,"LAYOUT");
+			}
+		}
+	else
+		window.open(url);
+} 
+/**********************************************************************/
+function getBitacora(){
+	document.getElementById("idMap").style.background="url(ly/" + layout[formulario.listEquipos.selectedIndex] + ") no-repeat";
+	//document.getElementById("idTitle").innerHTML= document.getElementById("listEquipos").value;
+	// remuevo todos los elementos del mapa
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+
+	xmlTemp2.async = false;
+		var xmlDso = xmlTemp2.XMLDocument;
+		var url = "../xml/OT.asp?RECURSO=getLayout";
+			url += "&FAENA=" + getEmpresa();
+			url += "&EQUIPO_PRIN=" + formulario.listEquipos.value;
+			url += "&USUARIO=" + Usuario;
+			url += "&VTZ=" + Math.random();
+		xmlestado = xmlDso.load(url);
+		//window.open(url);
+		 
+		if (xmlestado){
+    	     var tree = xmlDso.documentElement;	
+			 var _largo = tree.childNodes.length;
+			 //var _largo=1;
+	          for(var i = 0; i < _largo; i++){
+    	        var node = tree.childNodes.item(i);
+				equipo=getChildNodeValue(node,"EQUIPO");
+				imagen = getChildNodeValue(node,"COLOR")+'-'+getChildNodeValue(node,"LAYOUT");
+				folio = getChildNodeValue(node,"FOLIO")
+				//alert(folio);
+				
+				var miDt = new Element('dt', {'id': equipo+'dt'}).injectInside(idMap);
+				
+				
+				
+				var miIMG = new Element('img', {
+						'src' : "ly/"+imagen, 
+						'class': 'polLnk',
+						'title': equipo + " CRITICIDAD:" + getChildNodeValue(node,"COLOR") ,
+						'id': folio,
+						styles: {
+							left: getChildNodeValue(node,"X"),
+							top : getChildNodeValue(node,"Y")
+						},
+						events: {
+							click: function(){
+								//alert(this.id);
+								boxOT(this.id);
+							},
+							mouseover: function(){ 
+								//alert(this.tagName);
+								this.style.opacity=1;
+								this.filters.alpha.opacity=100;
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								this.filters.alpha.opacity=65;
+							}
+						}
+					}).injectInside(equipo+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+'Title',
+						html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+					}).injectInside(idMap);
+ 			 }//end for
+			 equipo=null;
+			//document.getElementById("para").value=document.getElementById("idMap").innerHTML;
+    	  }//end If
+	else
+	  window.open(url);
+}
+//-->
+</script>
+
+
+<body onload="listEquipos();getBitacora();" >
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br/><br/>
+<form name="formulario">
+<br/>
+<h1>DIAGRAMA LAYOUT DE CRITICIDADES&nbsp;&nbsp;&nbsp;
+EQUIPO: <select id="listEquipos" name="listEquipos"  class="Campo" onChange="getBitacora();"></select></h1>
+<div id="holder" align="left">
+<div style="overflow-y:auto;">
+<dl class="map" id="idMap">
+	<dt><a onclick="verOT('semilla');" class="polLnk" id="semilla" target="_blank"></a></dt>
+	<dd id="pol1Title"></dd>
+</dl>
+</div>
+</div>
+
+</form>
+</body>
+</html>

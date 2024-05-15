@@ -1,0 +1,349 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Registro de Paradas</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlParadas></xml>
+        <xml id=xmlEquipos></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlListFaenas></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+		<!-- MENU -->
+		<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+		<!-- MENU -->
+        <script type="text/javascript" src="/Scripts/deteccion.js"></script>
+        <STYLE TYPE="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </STYLE>
+</HEAD>
+
+<SCRIPT>
+
+function inicio(){
+
+
+mydate = new Date();
+formulario.listMes.value = mydate.getMonth()+1;
+
+//dt = parseInt(_hoy().substring(0,2));
+
+listSecciones();
+listEquipos();
+
+setTimeout("listParadas();",100);
+}
+
+
+
+function listParadas(){
+
+  xmlParadas.async = false;
+  var xmlDso = xmlParadas.XMLDocument;
+  var url = "xml/Paradas.asp?RECURSO=listParadas";
+  	  url+= "&FAENA=" + getEmpresa();
+	  url+= "&MES=" + formulario.listMes.value;
+	  url+= "&ANO=" + formulario.listAno.value;
+	  url+= "&EQUIPO=" + formulario.listEquipos.value;
+	  url+= "&SECCION=" + formulario.listSecciones.value;
+	  url += "&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+			  //BLOQUE DE NAVEGACION
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/9);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+    	     }
+		else
+			  window.open(url);
+	
+ } 
+  
+function editParada(_row){
+
+index = _row.rowIndex;
+
+var tabla = document.getElementById('tblParadas');
+var id =  tabla.rows[index].children[0].innerText;
+	
+var url ="dlgParadas.html?ID=" + id ;
+	url += "&SECCION=" + formulario.listSecciones.value;
+	url += "&VTZ=" + Math.random();
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:800px;dialogHeight:600px;scroll:yes");
+	
+	
+listParadas();
+
+}
+
+function newParada(){
+
+ 	var url ="dlgParadas.html";
+	url += "?SECCION=" + formulario.listSecciones.value;
+	url += "&VTZ=" + Math.random();
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:800px;dialogHeight:600px;scroll:yes");
+	
+	listParadas();	
+	
+}
+
+function listEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ 
+
+function listSecciones(){
+
+       xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url += "&VTZ=" + Math.random();
+			
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            if (opcion.value == empresa) opcion.selected = true;
+          	formulario.listSecciones.options[i] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+}
+
+
+function eliminar(index){
+
+	var tabla = document.getElementById('tblParadas');
+	var folio =  tabla.rows[index].children[0].children[0].innerText;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/paradas.asp?RECURSO=delParada&FOLIO=" + folio;
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	//window.open(url);
+	if(confirm("Eliminar Detenci�n " + folio)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					setTimeout("listParadas();",100);
+	}
+}
+ 
+function getEquipo(){
+}
+
+function toExcel(){
+
+ xmlParadas.async = false;
+  var xmlDso = xmlParadas.XMLDocument;
+  var url = "xml/Paradas.asp?RECURSO=listParadas";
+  	  url+= "&FAENA=" + getEmpresa();
+	  url+= "&FECHA_INI=" + formulario.txtFechaIni.value;
+	  url+= "&FECHA_FIN=" + formulario.txtFechaFin.value;
+	  url+= "&SECCION=" + formulario.listSecciones.value;
+	  url+= "&EXCEL=YES";
+	  url+= "&VTZ=" + Math.random();
+	 // alert(Url);
+		window.open(url);
+      }
+	  
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+//window.onLoad = inicio();
+
+</SCRIPT>
+<BODY onLoad="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+		style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95;
+        top: 278; height: 23; border-style: ridge; border-width: 2px">
+		<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+	
+
+
+<DIV ID="DivObservacion" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 280px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameObservacion" SRC="observacion.html" frameBorder="0"
+	 width="560" SCROLLING="no" HEIGHT="280">
+</IFRAME>
+</DIV>
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+	<BR>
+	<BR>
+		<FORM NAME="formulario">
+		  <INPUT NAME="TxtCodigo" TYPE="hidden" CLASS="input" />
+				  <SPAN CLASS="titulo">Registro de Paradas de Equipos.</SPAN>
+                  <TABLE WIDTH="745">
+                 <!--DWLayoutTable-->
+<TR ALIGN="center">
+				        <TD WIDTH="1" HEIGHT="26">&nbsp;</TD>
+				        <TD WIDTH="324" ALIGN="left" VALIGN="TOP" CLASS="texto"><span class="titulo">SECCION</span> :
+				          <SELECT NAME="listSecciones" DATAFLD="SECCION" onChange="listParadas();">
+                        </SELECT></TD>
+			         <TD colspan="2" align="left"><span class="titulo">EQUIPO :
+                     <select name="listEquipos"  class="input" 	onChange="listParadas();">
+                     </select>
+			         </span></TD>
+		            <TR ALIGN="center">
+    			<TD HEIGHT="31">&nbsp;</TD>
+				   <TD ALIGN="left" VALIGN="BOTTOM" CLASS="texto" STYLE="color:#000000; font-weight:bold;"><span class="text">Mes :
+                       <SELECT CLASS="input" NAME="listMes" onChange="listParadas();">
+                         <OPTION VALUE="1">Enero</OPTION>
+                         <OPTION VALUE="2">Febrero</OPTION>
+                         <OPTION VALUE="3">Marzo</OPTION>
+                         <OPTION VALUE="4">Abril</OPTION>
+                         <OPTION VALUE="5">Mayo</OPTION>
+                         <OPTION VALUE="6">Junio</OPTION>
+                         <OPTION VALUE="7">Julio</OPTION>
+                         <OPTION VALUE="8">Agosto</OPTION>
+                         <OPTION VALUE="9">Septiembre</OPTION>
+                         <OPTION VALUE="10">Octubre</OPTION>
+                         <OPTION VALUE="11">Noviembre</OPTION>
+                         <OPTION VALUE="12">Diciembre</OPTION>
+                       </SELECT>
+&nbsp;
+             A&ntilde;o :
+             <SELECT CLASS="input" NAME="listAno" onChange="listParadas();">
+               <OPTION VALUE="2008">2010</OPTION>
+               <OPTION VALUE="2009">2011</OPTION>
+               <OPTION VALUE="2010">2012</OPTION>
+               <OPTION VALUE="2011" selected>2013</OPTION>
+               <OPTION VALUE="2012">2014</OPTION>
+             </SELECT>
+				   </span></TD>
+		  <TD width="275" ALIGN="LEFT">&nbsp;			        
+			        <INPUT  TYPE="button" VALUE="Buscar" onClick="listParadas();"  CLASS="botonBlanco">
+			      &nbsp;&nbsp;&nbsp;
+			        <INPUT  TYPE="button" VALUE="Nueva Detencion" onClick="newParada();"  CLASS="botonBlanco">			   </TD>
+			       <TD width="125" ALIGN="LEFT"  >
+			        <INPUT TYPE="button" onClick="toExcel()" VALUE="Exportar a Excel." CLASS="botonBlancoLargo">				 </TD>
+		     </TABLE>
+						
+		  <TABLE  BORDER="1" CELLPADDING="0" CELLSPACING="1" BORDERCOLOR="#000000" CLASS="texto"
+				 id="tblParadas" datasrc=#xmlParadas WIDTH="1159" datapagesize="9" >
+		    <!--DWLayoutTable-->
+			<THEAD>
+			<TR CLASS="Rotulo">
+			  <TD WIDTH="40">Folio</TD>
+			  <TD WIDTH="111">Inicio</TD>
+			  <TD WIDTH="111">Termino</TD>
+			  <TD WIDTH="58" align="center">Total Hrs.</TD>
+			  <TD WIDTH="100">Equipo</TD>
+              <TD WIDTH="100">Componente</TD>
+			  <TD WIDTH="146">Tipo</TD>
+			  <TD WIDTH="68">Causa</TD>
+			  <TD WIDTH="379">Observaci&oacute;n</TD>
+              <TD width="45">Ver</TD>
+              <TD width="68">Eliminar</TD>
+			  </TR>
+            </THEAD>
+            <TBODY ID="tbodyParadas">
+			<TR onMouseOver="mOvr(this,'#dee6eb')"	onMouseOut="mOut(this,'#FFFFFF')" >
+				<TD align="center"><SPAN CLASS="tinyText" DATAFLD="ID" ></SPAN></TD>
+<TD>	
+					<SPAN  CLASS="tinyText" DATAFLD="FECHA_INI"></SPAN>&nbsp;
+                    <SPAN  CLASS="tinyText" DATAFLD="HORA_INI"></SPAN>              	</TD>
+				<TD ALIGN="left">
+					<SPAN  CLASS="tinyText" DATAFLD="FECHA_FIN"></SPAN>&nbsp;
+                    <SPAN  CLASS="tinyText" DATAFLD="HORA_FIN"></SPAN></TD>
+                <TD ALIGN="CENTER"><SPAN CLASS="tinyText" DATAFLD="MINUTOS"></SPAN></TD>
+				<TD ALIGN="LEFT"><SPAN CLASS="tinyText" DATAFLD="EQUIPO" ></SPAN></TD>
+                <TD WIDTH="100"><SPAN CLASS="tinyText" DATAFLD="COMPONENTE" ></SPAN></TD>
+				<TD><SPAN CLASS="tinyText" DATAFLD="TIPO" ></SPAN></TD>
+				<TD ALIGN="left">
+                	<SPAN TYPE="HIDDEN" DATAFLD="COD_CAUSA" ></SPAN>
+					<SPAN CLASS="tinyText" DATAFLD="CAUSA" ></SPAN></TD>
+				<TD ALIGN="left">
+                <TEXTAREA cols="60" rows="3" name="TxtDescripcion" class="texto" DATAFLD="OBSERVACION"></TEXTAREA>			  </TD>
+            <td align="center" valign="middle" onClick="editParada(this.parentElement);" name='td'>
+              <img name='img' src="IMAGES/lupa.jpg"  border="0" alt="Ver registro"></td>
+			<td align="center"  valign="middle" id="Celda" onClick="eliminar(this.parentElement.rowIndex);">
+    		<img src="IMAGES/trash.jpg"  border="0" alt="Eliminar registro"></td> 
+			</TR>
+            </TBODY>
+        	<TFOOT>
+            <TR>
+             <TD COLSPAN="10" ALIGN="left" valign="bottom">
+             Registros: <SPAN ID="ID_list_cant_reg"></SPAN>&nbsp;| Vista: <SPAN ID="ID_list_fraccion_reg"></SPAN>
+      <INPUT  class="littleButton" TYPE="button" 
+					   				value=" << " onClick="irInicio('tblParadas');">
+						<INPUT  class="littleButton" TYPE="button"
+									 value="  <  " onClick="irAtras('tblParadas');">
+						<INPUT  class="littleButton" TYPE="button" 
+								value="  >  " onClick="irAdelante('tblParadas');">
+               <INPUT  class="littleButton" TYPE="button" VALUE=" >> " 
+									onClick="irFinal('tblParadas');">                        </TD>
+              </TR>
+            <TR>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+              <TD></TD>
+            </TR>
+             </TFOOT>
+</TABLE>
+<BR>
+<INPUT TYPE="button" onClick="guardar();" CLASS="botonBlancoLargo"  value="Guardar"/>
+
+</FORM>
+
+	</BODY>
+</HTML>

@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Insight movil - Bitacora de Inspeciones</title>
+<xml id="xmlDso"></xml>
+<xml id="xmlTemp1"></xml>
+
+<link rel="stylesheet" href="sci.css" type="text/css">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+
+
+
+
+
+
+<script language="Javascript1.2" src="vitcomz_m.js"></script>
+<script language="Javascript1.2" src="jquery.js"></script>
+
+<script type="text/javascript" src="windowfiles/dhtmlwindow.js"></script>
+
+
+<script>
+
+xmlDso.async = false;
+
+ function limpiarTabla(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	  var row = tbl.deleteRow(-1);
+ }
+ 
+
+function _close(){
+
+	this.location.href="/index.html";
+			
+}
+
+function listTipos(){
+
+	var	i=0;	
+  	var url = "/sgm/xml/Equipos.asp?RECURSO=ListTiposMov";
+ 		url += "&VTZ=" + Math.random();
+	  	 // window.open(url);
+						  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	formulario.listTipos.options[i] = opcion;
+				i=i+1;
+				j=i;
+			}) //end each
+	           	opcion = new Option("TODOS","TOD");
+				opcion.selected = true;
+	          	formulario.listTipos.options[j] = opcion;
+				
+		})//end $get
+	
+
+	setTimeout("listBitacora();",500);
+ }
+ 
+function listBitacora(){
+
+
+	var url = "/sgm/xml/Movil.asp?RECURSO=ListBitacora";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2012";
+		url += "&USUARIO=HSANDOVAL";
+		url += "&CRITICIDAD=" + formulario.listCriticidad.value;
+		url += "&FAENA=" + formulario.listFaena.value;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN=TOD";
+		url += "&TIPO=" + document.getElementById("idListTipo").value;
+		url += "&EQUIPO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&VTZ=" + Math.random();
+		
+ //  alert(url);
+   
+   		var data = ""; var j;
+					var tbl = document.getElementById('tblEquipos');
+						limpiarTabla('tblEquipos');
+						
+//window.open(url);
+
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+					//var title = $(this).find("firstname").attr("title");
+					var _item = i +1 ;
+					var _folio = $(this).find("FOLIO").text();
+					var fecha = $(this).find("FECHA").text();
+					
+					row = tbl.insertRow(-1);
+					row.style.cursor = 'hand';
+					$(row).click(function(event) {verBitacora(this);});
+					
+					
+					if (j==1){row.bgColor= "#E3E6EA";j=2;}
+					else{j=1;row.bgColor= "#CCCCCC";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "<span >" + $(this).find("ID").text() + "</span>";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<span >" + $(this).find("EQUIPO_PRIN").text() + "</span>";
+										  
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("EQUIPO").text() + "</span>";
+										  					  
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "<span >" + $(this).find("FECHA").text() + "</span>";
+										  
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<span   >" + $(this).find("DESCRIPCION").text() + "</span>";
+										  					  
+					i=i+1;
+			
+			}) //end each
+		})//end $get
+		
+}
+
+
+
+function inicio(){
+
+listTipos();
+
+
+
+}
+
+function verBitacora(obj){
+
+var tabla = document.getElementById('tblEquipos');
+
+//alert(obj.parentElement.parentElement.rowIndex);
+
+var Index = obj.rowIndex;
+var id =  tabla.rows[Index].childNodes[0].childNodes[0].innerHTML;
+
+ var point = getXY(obj);
+ var _left = point.x + 40;
+ var _top  = point.y + 10;
+
+var url = "boxBitacora.html";
+	url += "?ID=" + id;
+
+winCfg = "width=300px,height=365px,left=" + _left + "px,top=" + _top +"px,resize=1,scrolling=0";
+var inlinewin=dhtmlwindow.open("googlebox", "iframe", url , "BITACORA", winCfg, "recal");
+//frameBitacora.showWin(id, divBitacora, tabla.rows[Index].childNodes[0]);
+
+
+}
+
+</script>
+
+<body onload="inicio();">
+<form name="formulario">
+<span class="titulo" style="width:100%">INSIGHT MOVIL - Bitacora de Inspecciones</span><br />
+	<span class="rotulo">Faena:</span>
+    <select name="listFaena"  onchange="listBitacora();"  class="texto" style="width: 70px">
+   		<option value="ESCONDIDA" selected="selected">ESCONDIDA</option>
+    	<option value="CERRO COLORADO">CERRO COLORADO</option>
+    	<option value="SPENCE">SPENCE</option>
+    	<option value="PTMP">PTMP</option>
+        <option value="RADOMIRO TOMIC">RADOMIRO TOMIC</option>
+        <option value="EL ABRA - ESCORPION">EL ABRA - ESCORPION</option>
+    </select>
+	Estado
+	<select name="listCriticidad" onchange="listBitacora();" class="texto">
+    	<option value="BAJA">BAJA</option>
+    	<option value="MEDIA">MEDIA</option>
+    	<option value="ALTA" selected="selected">ALTA</option>
+        <option value="TOD" >TODAS</option>
+    </select>
+<br />
+	<span class="rotulo">Tipo Equipo:</span>
+    <select name="listTipos" onchange="listBitacora();" class="texto" id="idListTipo">
+    </select>
+    
+  <table align="center" class="texto"   cellpadding="3" cellspacing="0"
+    			BORDER="0" DATASRC="#xmlDso" id="tblEquipos">
+    <thead>
+    <tr bgcolor="#CC0000" class="textoBlnB">
+		<td width="30" height="30"><strong>ID</strong></td>
+		<td width="90" bgcolor="#CC0000"><strong>EQUIPO</strong></td>
+    	<td width="100"><strong>COMPONENTE</strong></td>
+    	<td width="60"><strong>FECHA INSPECCIÓN</strong></td>
+    	<td width="100"><strong>DESCRIPCIÓN</strong></td>
+	</tr>
+    </thead>
+	</table>
+
+      
+<input type="button" class="boton" onClick="_close();" value="Salir">
+
+</form>
+</body>
+</html>

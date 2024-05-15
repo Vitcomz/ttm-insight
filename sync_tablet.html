@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Usuarios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+<SCRIPT language="JavaScript1.2" src="sgm/standard/vitcomz.js"></SCRIPT>
+
+<script type="text/javascript" src="Scripts/cookie.js"></script>
+<script type="text/javascript" src="Scripts/deteccion.js"></script>
+<!---->
+<SCRIPT language="JavaScript1.2" src="Scripts/download.js" type="text/javascript"></SCRIPT>
+<SCRIPT>
+
+<!--adding-->
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+alert(emp);
+
+function GetUsuarios(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "sci/xml/sync_Usuarios.asp?RECURSO=GetUsuario";
+	url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado){
+				window.open(url);
+		}else{
+			download(xmlDoc, "usuarios.xml", "text/xml");
+		}
+}
+
+
+function GetLayoutFaena(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "sgm/xml/sync_Bitacoras.asp?RECURSO=LayoutFaena";
+	 	url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado){
+				window.open(url);
+		}else{
+			download(xmlDoc, "layout_gral.xml", "text/xml");
+		}
+}
+
+function GetList_Equipos(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "sgm/xml/sync_Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				window.open(url);
+		}else{
+			download(xmlDoc, "List_Equipos.xml", "text/xml");
+		}
+}
+
+</SCRIPT>
+
+<BODY>
+<SCRIPT>
+//	GetUsuarios();
+//	GetLayoutFaena();
+//	GetList_Equipos();
+</SCRIPT>
+</BODY>
+</HTML>

@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+ 
+
+
+
+
+
+
+</HEAD>
+<XML id="XMLTemp"></XML>
+<XML id="xmlEquipos"></XML>
+
+<LINK REL="stylesheet" HREF="/css/estiloWEB.css" TYPE="text/css" MEDIA="screen">
+<!--adding-->
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script language="JavaScript1.2" src="js/jquery.js"></script>
+<!---->
+<SCRIPT>
+<!--adding-->
+
+function GetSession(){
+	var ID = GetCookie('log');
+	if(ID == null)
+			return "DESCONOCIDO";
+	else 
+		return ID.toUpperCase();
+}
+function GetSessionMoz(){
+	var ID = GetCookieMoz('log');
+	if(ID == null)
+			return "DESCONOCIDO";
+	else 
+		return ID.toUpperCase();
+}
+
+
+function getEmpresa(){
+	var ID = GetCookie('emp');
+	if(ID == null)
+			return "DESCONOCIDO";
+	else 
+		return ID.toUpperCase();
+}
+
+function getEmpresaMoz(){
+	var ID = GetCookieMoz('emp');
+	if(ID == null)
+			return "DESCONOCIDO";
+	else 
+		return ID.toUpperCase();
+}
+
+
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+<!---->
+//<!-- 
+var popbox = new Object();
+var folio = new Object();
+var fecha = new Object();
+var equipo = new Object();
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+
+function popsearchbox(_equipo, _folio, _fecha, _popbox, _function){
+	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		//parent.stopPropagation();
+	}else if (id_br == "IE"){
+		parent.event.cancelBubble=true;
+	}
+  equipo = _equipo;
+  folio = _folio;
+  fecha = _fecha;
+  popbox = _popbox;
+  functionName = _function;
+  
+  var point = getXY(folio);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + 10;
+    visibility = "visible";
+  }
+  // ListEquipos();
+ search();
+
+}
+
+function close(){
+  //nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+	
+	
+	var j=0;
+	var cr = 0;
+  var url = "xml/mediciones.asp?RECURSO=listMediciones";
+ 	 url +="&CODIGO=CAR"; // codigo = car
+  	 url +="&USUARIO="+GetSession();
+	 url +="&EQUIPO="+getParametro("EQUIPO");
+	 url +="&FAENA="+getEmpresa();
+	 url +="&FECHA_ULT_MAN="+parent.formulario.txtFechaInst.value;
+	 url +="&VTZ=" + Math.random();
+	 
+	//window.open(url);
+
+  labelLoading.style.visibility = "visible";
+
+				var context = "";
+				var v_prop="";
+				
+		var tbl = document.getElementById('tabLect');
+		
+		$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+		//	document.getElementById("idFolio").value =  $(this).find("ID").text();
+
+			if (j==1){_bgColor= "#FFFFFF";j=2;}
+					else{ _bgColor="#CCCCCC";j=1;}
+			
+ 		 var row = tbl.insertRow(-1);
+		 	// row.onclick = function (){set(this)};
+			 row.bgColor= _bgColor;
+		//	 row.className = "texto";
+	 
+		   var folio = $(this).find("FOLIO").text();
+		   
+  			var cell = row.insertCell(-1);
+			cell.innerHTML = "<input  type='checkbox'  id='chkFolio' onClick='set(this.parentElement.parentElement);' />" +
+							 "<span>" + folio + " </span>";
+			//cell.width="50";
+		//	alert(folio);
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =   "<span>" +  $(this).find("FECHA").text()+ " </span>";
+															
+		
+			var cell = row.insertCell(-1);
+				cell.innerHTML =   "<span class='texto'>" +  $(this).find("EQUIPO").text()+ " </span>";
+															
+			var cell = row.insertCell(-1);
+				cell.innerHTML =   "<span>" + $(this).find("INSPECTOR").text()+ " </span>";
+				
+			var v_prop = $(this).find("V_PROP").text();
+			var  total = $(this).find("TOTAL").text();
+			var  diasSin = $(this).find("DIAS_SIN_OP").text();
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span>" + $(this).find("TIPO").text() +"</span>" +
+									"<input type='hidden' value='" + total + "' />"+
+									"<input type='hidden' value='" + v_prop + "' />"+
+									"<input type='hidden' value='" + diasSin + "' />";
+  
+ 			}) ,hiddenW();//End each
+		});//end $.get
+ 
+
+ 
+  
+  
+}
+
+function hiddenW(){
+ 
+ labelLoading.style.visibility = "hidden";
+ }
+ 
+ 
+function setCheck(){
+	
+var tbl= parent.document.getElementById('ctl00_ContentPlaceHolder1_tabMedidas');
+   var tbl2= document.getElementById('tabLect');
+	
+  for(var i = 3; i < tbl.rows.length; i++){
+	  //alert(tbl.rows[i].children[0].children[1].innerText);
+			if(tbl.rows[i].children[0].children[1]){
+			  for(var j = 0; j < tbl2.rows.length; j++){
+				  //alert(tbl2.rows[j].children[0].children[1].innerText + " " + tbl2.rows[j].cells[4].children[0].innerText);
+					// tbl.rows[i].cells[0].children[0].value
+					if( tbl.rows[i].cells[0].children[0].value==(tbl2.rows[j].children[0].children[1].innerText+tbl2.rows[j].cells[4].children[0].innerText)){
+						tbl2.rows[j].children[0].children[0].checked=true;
+					}//end if
+			  }// end for	
+		   }//end if
+	}// end for
+		
+}
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ 
+function buscaHijos(itr){
+var i;
+
+  if (itr){
+    XMLTemp.async=false;
+	 var xmlDso = XMLTemp.XMLDocument;
+	 var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres";
+	 	 url +="&CODIGO=" + itr.children[0].children[0].innerText
+		 url +="&FAENA="+getEmpresa();
+	 var res = xmlDso.load(url);
+	 
+	 if (xmlDso.documentElement.childNodes.length==0){
+	 	//alert('hh');
+		 setcodeandname(itr.children[0].children[0].innerText, itr.children[1].children[0].innerText);
+			}
+			
+	}
+	
+	if (!res)
+	 		window.open(url);
+	//alert(itr.tagName);
+}
+
+function set(itr){
+
+var v_prop;
+
+if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+			folio = itr.children[0].children[1].innerHTML;
+			fecha = itr.children[1].children[0].innerHTML;
+			equipo = itr.children[2].children[0].innerHTML;
+			tipo = itr.children[4].children[0].innerHTML;
+			total = itr.children[4].children[1].value;
+			v_prop = itr.children[4].children[2].value;
+			dias = itr.children[4].children[3].value;
+		}else{
+			folio = itr.children[0].children[1].innerText;
+			fecha = itr.children[1].children[0].innerText;
+			equipo = itr.children[2].children[0].innerText;
+			tipo = itr.children[4].children[0].innerText;
+			total = itr.children[4].children[1].value;
+			v_prop = itr.children[4].children[2].value;
+			dias = itr.children[4].children[3].value;
+		}
+			
+
+	
+	
+	if(itr.children[0].children[0].checked){
+		//itr.children[0].children[0].checked=false;
+		//window.parent.parent.parent
+		window.parent.getMedicion(folio, fecha, equipo, tipo, total, v_prop, dias); 
+	}else{
+//		//itr.children[0].children[0].checked=true;
+		window.parent.delMedicion(folio, fecha, tipo);
+		
+	}
+		 
+		 
+}
+
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+//			var evt=window.event;
+//			var fromElement=evt.fromElement || evt.relatedTarget;
+//			var toElement=evt.toElement || evt.relatedTarget;
+//			function mOvr(src,clrOver) { if (!src.contains(fromElementt)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+//			function mOut(src,clrIn) { if (!src.contains(toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+		}
+		else if (id_br == "IE")
+		{
+			function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+			function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+		}
+//-->
+</SCRIPT>
+
+<STYLE>
+ body{
+ font-size:10px;
+ font-family:Verdana, Arial, Helvetica, sans-serif;
+ }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0   bgcolor="#dee6eb"  onLoad="search();">
+<span class="loading" id="labelLoading" 
+     style="Z-INDEX: 135; LEFT: 86px; VISIBILITY: hidden; WIDTH: 120px; POSITION: absolute; TOP: 44px; HEIGHT: 48px">	<img src="mg/ajax-loader.gif"  />Cargando.... espere un momento.</span>
+                
+<span id="msg" class="text" style="display:none;"></span>
+<SPAN ID="cont" STYLE="height:280px; overflow-y:auto; border:solid 1px #6587a3;">
+<TABLE WIDTH="98%"  border=0 cellpadding=2 cellspacing=2 id="tabLect">
+<tbody>
+  
+</tbody>  
+</TABLE>
+
+</SPAN>
+
+</BODY>
+
+</HTML>

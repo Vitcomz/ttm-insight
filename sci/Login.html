@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Autenticar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</head>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+<XML id="XMLDoc"></XML>
+</head>
+
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+function ValidaSession(){
+	if (getParametro("Modo")){
+			DelSession(formulario.TxtID.value);
+			this.location.href="login.html";
+			}
+}
+		
+function login(){
+	 
+	XMLDoc.async = false;
+	var xmlDso = XMLDoc.XMLDocument;
+	var url="xml/usuarios.asp?RECURSO=ValidaPass&ID=" + formulario.TxtID.value;
+		url += "&PASSWORD=" + formulario.TxtPassWord.value;
+		res = xmlDso.load(url);
+		if (res){
+            var tree = xmlDso.documentElement;
+            if (tree.childNodes(0).childNodes(0).text == 'True'){
+					CrearSession(formulario.TxtID.value);
+					this.location.href="index.html";
+					}
+			else
+			   mensaje.style.visibility = "visible";
+	  }
+  else
+		  window.open(url);
+
+}
+
+</script>
+
+<body onload="formulario.TxtID.focus();ValidaSession();">
+<form name="formulario" >
+  <table width="292" border="0" align="center" class="texto">
+    <tr align="center">	
+	<td height="23" colspan="2" class="input">
+		SCI Identificaci�n de Usuario
+    </td>	
+    </tr>
+    <tr align="center">	
+	<td height="23" colspan="2">
+	  <p class="titulo">
+	  <script>
+	  	document.write("Session Actual <b>" + GetSession() + "</b>");
+	  </script>
+	  </p>
+   </td>
+   </tr>
+    <tr>
+	<td  align="right">USUARIO :</td>
+      <td width="176">
+	  <input name="TxtID" type="text" id="TxtID" class="input" onClick="mensaje.style.visibility = 'hidden'" onkeyup=fn(this.form,this)>
+      </td>
+	</tr>
+    <tr>
+      <td align="right">PASSWORD :</td>
+      <td><input class="input" name="TxtPassWord" id="TxtPassWord" type="password" onClick="this.value='';mensaje.style.visibility = 'hidden'"  onkeyup=fn(this.form,this)   onChange="login();">
+	  </td>
+    </tr>
+    <tr valign="middle">
+      <td height="45" colspan="2"  align="center">
+			<input type="button" class="botonBlanco" onClick="login();" value="Aceptar">&nbsp;&nbsp;
+			<input type="button" class="botonBlanco" onClick="window.location.href='/intranet.html'" value="Cancelar">
+      </td>
+  </table>
+  	<table width="230" align="center">
+	  <tr><td>
+	  <span class="mensaje" id="mensaje">
+	   Usuario o Contrase�a Invalido.</span>
+	  </td> </tr>
+  </table>
+<p class="texto"><br>
+<div align="center">
+<a href="http://www.google.cl" target="_self">Google</a><br>
+<a href="http://www.hotmail.com" target="_self">Hotmail</a><br>
+<a href="http://www.lun.cl" target="_self">Las Ultimas Noticias</a><br>
+<a href="http://www.mercurioantofagasta.cl" target="_self">Mercurio Antofagasta</a><br>
+<a href="http://www.juliorojas.cl" target="_self">Vitcomz</a><br>
+</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,390 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Bodegas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlBodegas></xml>
+<xml id = xmlUbicaciones></xml>
+<xml id = xmlSecciones></xml>
+<xml id = xmlTemp></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<script>
+
+var option = "New";
+xmlDoc.async = false;
+
+function inicio(){
+//formulario.txtCodigo.focus();
+}
+
+function getBodega(){
+
+	xmlBodegas.async = false;
+	var xmlDso = xmlBodegas.XMLDocument;
+	var url = "xml/Bodegas.asp?RECURSO=GetBodega&CODIGO=" + formulario.txtCodigo.value;
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+				
+	option = "Edit";
+
+
+setTimeout("listUbicacion();",1);
+setTimeout("listSeccion();",1);
+}
+
+
+function guardar(){
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Bodegas.asp?RECURSO=ExisteBodega&CODIGO=" + formulario.txtCodigo.value;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			}
+	else
+		window.open(url);
+	    
+if (getChildNodeValue(node,"Exist")=="False")
+			newBodega();
+else
+	if (option=="Edit")
+					updateBodega();
+			else
+					alert("Codigo Bodega existente!");
+
+}
+
+
+function updateBodega(){
+					
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Bodegas.asp?RECURSO=UpdateBodega&CODIGO=" + formulario.txtCodigo.value;
+		url += "&NOMBRE=" + formulario.txtNombre.value;
+		url += "&DIRECCION=" + formulario.txtDireccion.value;
+		url += "&ENCARGADO=" + formulario.txtEncargado.value;
+		url += "&IND_ACTUAL=" + formulario.txtActual.checked;
+		
+		//window.open(url);
+	    xmlestado = xmlDso.load(url);
+		if (!xmlestado)
+			 window.open(url);
+		else
+			alert("Bodega Actualizada.");
+		
+}
+
+function newBodega(){
+					
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Bodegas.asp?RECURSO=NewBodega&CODIGO=" + formulario.txtCodigo.value;
+		url += "&NOMBRE=" + formulario.txtNombre.value;
+		url += "&DIRECCION=" + formulario.txtDireccion.value;
+		url += "&ENCARGADO=" + formulario.txtEncargado.value;
+		url += "&IND_ACTUAL=" + formulario.txtActual.value;
+		
+		//window.open(url);
+	    xmlestado = xmlDso.load(url);
+		if (!xmlestado)
+			 window.open(url);
+		else
+			alert("Bodega Ingresada.");
+		
+}
+
+function cancelar(){
+	LimpiarForm();
+	option='New';
+	formulario.txtCodigo.focus();
+}
+
+
+function eliminarUbicacion(Index){
+	var tabla = document.getElementById('tabUbicaciones');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "/existencias/xml/Bodegas.asp?RECURSO=DelUbicacion&NOMBRE=" + Codigo;
+		url += "&COD_BODEGA=" + formulario.txtCodigo.value;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Ubicaci�n =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					listUbicacion();
+		}
+}
+
+function eliminarSeccion(Index){
+	var tabla = document.getElementById('tabSecciones');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "/existencias/xml/Bodegas.asp?RECURSO=DelSeccion&NOMBRE=" + Codigo;
+		url += "&COD_BODEGA=" + formulario.txtCodigo.value;
+		url += "&UBICACION=" + document.getElementById('idUbicacion').innerText;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Seccion =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					listSeccion();
+		}
+}
+
+function creaUbicacion(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre de la Ubicaci�n.","");
+	var url = "xml/Bodegas.asp?RECURSO=NewUbicacion";
+		url+= "&NOMBRE=" + input;
+		url+= "&COD_BODEGA=" + formulario.txtCodigo.value;
+		
+	if (input){
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+	listUbicacion();
+}
+
+function creaSeccion(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre de la Secci�n.","");
+	var url = "xml/Bodegas.asp?RECURSO=NewSeccion";
+		url+= "&NOMBRE=" + input;
+		url+= "&COD_BODEGA=" + formulario.txtCodigo.value;
+		url+= "&UBICACION=" + document.getElementById("idUbicacion").innerText;
+		
+	if (input){
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+	listSeccion();
+}
+
+function listUbicacion(){
+
+  xmlUbicaciones.async = false;
+  var xmlDso =  xmlUbicaciones.XMLDocument;
+  var url = "/existencias/xml/Bodegas.asp?RECURSO=ListUbicaciones";
+   	 url += "&COD_BODEGA="+formulario.txtCodigo.value;
+	 
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+ 
+ function listSeccion(){
+
+  xmlSecciones.async = false;
+  var xmlDso =  xmlSecciones.XMLDocument;
+  var url = "/existencias/xml/Bodegas.asp?RECURSO=ListSecciones";
+  	 url += "&COD_BODEGA="+formulario.txtCodigo.value;
+	 url += "&UBICACION="+document.getElementById("idUbicacion").innerText;
+	 
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+ 
+ function selUbicacion(Index){
+
+	var tabla = document.getElementById('tabUbicaciones');
+	var Nombre =  tabla.rows[Index].children[0].innerText;
+	document.getElementById('idUbicacion').innerText = Nombre;
+	listSeccion(Nombre);
+	//getDescripcionActividad(Actividad);
+}
+
+function LimpiarForm(){
+		for (var i=0;i<document.formulario.length;i++){
+			if (document.formulario.elements[i].className=="input")
+							document.formulario.elements[i].value="";
+			}
+	}
+	
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+
+
+function  clrModelo(){
+	formulario.txtModelo.value="";
+}
+
+						
+</script>
+
+<body onLoad="">
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+
+<DIV id="DivUsuarios" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 196px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 74px; width: 260px; height: 200px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="260" scrolling="no"	height="200"></IFRAME>
+</DIV>
+
+<DIV id="divBodegas" 
+  	style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 65px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 137px; width: 226px; height: 168px;"	onclick="event.cancelBubble=true">
+		<IFRAME name="frameBodegas" src="ListBodegas.html" frameBorder="0"
+				 width="250" scrolling="no" height="170"></IFRAME>
+</DIV>
+		
+<br><br><br>
+<table width="785" height="">
+<tr>
+  <td width="777" height="31" class="titulo">BODEGA</td>
+</tr>
+<tr><td valign="top">
+	<table width="777"  height="227" border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlBodegas">
+	  <!--DWLayoutTable-->
+	  <tr class="texto" >
+	    <td width="1" height="16"></td>
+	    <td colspan="2" align="center" valign="top" class="Rotulo">CODIGO</td>
+	    <td width="225" align="left" valign="top" class="Rotulo">&nbsp;&nbsp;&nbsp;NOMBRE</td>
+	    <td rowspan="8" align="center" valign="top">
+		<!--UBICACIONES-->
+		<table width="250" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabUbicaciones" DATASRC="#xmlUbicaciones">
+		<thead>
+			<tr class="HeaderLista"><td colspan="3">UBICACIONES</td></tr>
+			<tr class="HeaderLista"><td width="200">NOMBRE</td>
+			  <td width="16" height="16">
+			  <IMG style="CURSOR: hand" onclick="creaUbicacion();" 
+								src="images/add.gif"></td>
+			 </tr>
+		<thead>
+		<tbody>
+		<tr>
+			<td onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')" 
+			onClick="selUbicacion(this.parentElement.rowIndex)" ><span datafld="NOMBRE_UB"/></td>
+			<td align="center" onClick="eliminarUbicacion(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+		</tbody>
+		</table>
+		<!--UBICACIONES-->
+	</td>
+	<TD width="220" rowspan="8" valign="top"><!--SECCIONES-->
+		<table width="160" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabSecciones" DATASRC="#xmlSecciones">
+		  <thead>
+			  <tr class="HeaderLista">
+			    <td colspan="3">&nbsp;<span id="idUbicacion"></span></td>
+			  </tr>
+			  <tr class="HeaderLista">
+			    <td width="183">SECCION</td>
+			    <td width="16" height="16">
+			    <IMG style="CURSOR: hand" onclick="creaSeccion();" 
+								src="images/add.gif"></td>
+			   </tr>
+		  <thead>
+		  <tbody>
+		  <tr>
+			  <td><span  datafld="NOMBRE_SEC"/></td>
+			  <td align="center" onClick="eliminarSeccion(this.parentElement.rowIndex);">
+				  <img src="images/trash.jpg" style="cursor:hand;"></td>
+		  </tr>
+		  </tbody>
+		  </table>
+		  <!--SECCIONES-->
+		  </TD>
+	  </tr>
+	  <tr class="texto" >
+	    <td height="29">&nbsp;</td>
+	    <td width="93" align="center" valign="top">
+		<input name="txtCodigo" type="text" class="input"
+			  	size="16" datafld="CODIGO" /></td>
+	    <td width="30" valign="top">
+			<img src="images/lupa.jpg" alt="Buscar" width="19" height="19" style="CURSOR: hand" 
+						onClick="frameBodegas.popsearchbox(txtCodigo,txtCodigo,
+							 divBodegas,'getBodega()'); return false;"></td>
+	    <td align="left" valign="top">
+		  <input name="txtNombre" type="text" class="input"
+		  	size="45" datafld="NOMBRE" />		</td>
+	    </tr>
+	  <tr class="texto" >
+	    <td height="16"></td>
+	    <td colspan="3" align="left" valign="top" class="Rotulo">DIRECCION</td>
+	    </tr>
+	  <tr > 
+		<td height="37" >&nbsp;</td>
+		<td colspan="3" valign="top" >
+		    <input class="input" name="txtDireccion" 
+			type="text" size="70" datafld="DIRECCION"></td>
+	    </tr>
+	<tr class="texto" >
+	  <td height="16"></td>
+	  <td colspan="2" align="center" valign="top" class="Rotulo">RESPONSABLE</td>
+	  <td align="center" valign="top" class="Rotulo">
+	  	 BODEGA ACTUAL</td>
+	  </tr>
+	<tr class="texto" >
+	  <td height="24">&nbsp;</td>
+	  <td align="left" valign="top">
+		    <input name="txtEncargado" type="text" 
+	  				class="input" size="16" datafld="ENCARGADO"/>					</td>
+	  <td valign="top">
+	  		<img src="images/lupa.jpg" align="absbottom" 
+				 style="cursor:hand" 
+				 onClick="ListFrame.popsearchbox(10, txtEncargado, txtEncargado, DivUsuarios);"/>
+	  </td>
+	  <td align="center" valign="top">
+	  <input name="txtActual"  type="checkbox"
+	  				class="input" size="16" datafld="IND_ACTUAL"/></td>
+	  </tr>
+
+	<tr class="texto" >
+	  <td height="20"></td>
+	  <td colspan="3" align="left" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+	<tr class="texto" >
+      <td height="60">&nbsp;</td>
+      <td colspan="3" align="left" valign="top">&nbsp;&nbsp;
+        <input name="button3" type="button" class="botonBlanco" onClick="guardar();" value="Guardar">
+        <input name="button3" type="button" class="botonBlanco" onClick="cancelar();" value="Cancelar">
+		</td>
+      </tr>
+	</table>
+</td>
+</tr>
+</table>
+
+</form>
+</body>
+</html>

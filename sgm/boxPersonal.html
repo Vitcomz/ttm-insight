@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+
+  divBox = _divBox;
+  functionName = _function
+ // var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+	//left = point.x+300;
+//	top  = point.y-100;
+	} 
+
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+function mostrarPrioridad(){
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=getPrioridad";
+		url += "&CODIGO=" + document.getElementById('txtCodEquipo').innerText;
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+				
+}
+
+function guardarPersonal(){
+
+/*
+					
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/EQUIPOS.asp?RECURSO=updatePrioridad";
+		url += "&CODIGO=" + document.getElementById('txtCodEquipo').innerText;
+		url += "&PRIORIDAD=" + prioridad;
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+*/
+//
+//eval("parent." + functionName);
+//
+}
+
+function ListPersonal(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.ListOpNave.options[i] = opcion;
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+				formulario.ListOpGrua.options[i] = opcion;
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+				formulario.ListPortanolero.options[i] = opcion;
+				 }
+    	     }
+		else
+			  window.open(url);
+
+ } 
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body onLoad="ListPersonal();">
+<form name="formulario">
+<table border="0">
+						  <tr class="titulo">
+						    <td width="132" height="17" align="left">Personal de Turno</td>
+						    <td width="152" height="17" align="center"></td>
+						    <td width="16" height="17" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+  </table> 
+	<table><tr align="center"><td colspan="2">
+				<span class="texto" type="text" size="5" id="txtCodEquipo"></span>&nbsp;
+				<span class="texto" type="text" size="35" id="txtDesEquipo"></span>
+				</td></tr>
+	</table>
+		<table width="240" align="center"  class="CampoBold" DATASRC=#xmlTemp>
+    <tr bgcolor="#EEEEEE">
+		          <td height="13" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+				<tr>
+				  <td width="153" align="center">Operador Nave</td>
+				  <TD width="75" align="center">
+					<select name="ListOpNave" class="Input" datafld="RESPONSABLE">
+                </select>
+				</td></tr>
+				<tr>
+				  <td align="center">Operador Grua</td>
+				  <TD align="center">
+					<select name="ListOpGrua" class="Input" datafld="RESPONSABLE">
+                </select>
+				</td></tr>
+				<tr>
+				  <td align="center">Portalonero</td>
+				  <TD align="center">
+					<select name="ListPortanolero" class="Input" datafld="RESPONSABLE">
+                </select>
+				</td></tr>
+				<tr bgcolor="#EEEEEE">
+		        <td height="13" onClick="return;">&nbsp;</td>
+		        <td align="center">&nbsp;</td>
+	          </tr>
+  </table>
+<br>
+  	  <div align="center">
+	   <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="divBox.style.visibility = 'hidden';guardarPersonal();" value="Aceptar">
+  	  </div>
+	</form>
+
+	</body>
+</HTML>

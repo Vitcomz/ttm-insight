@@ -1,0 +1,727 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<xml id = xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+<title>Informe de Polines</title>
+
+
+
+
+
+
+</head>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<script language="Javascript1.2" src="../Scripts/jquery.min.js"></script>
+<script src="../Scripts/highstock.js"></script>
+<script src="../Scripts/exporting.js"></script>
+<script src="../Scripts/jquery-ui-1.js"></script>
+
+
+<SCRIPT LANGUAGE="Javascript" SRC="FusionCharts.js"></SCRIPT>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+-->
+</style>
+
+<script>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+function removeOptions(selectbox)
+{
+    var i;
+    for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+    {
+        selectbox.remove(i);
+    }
+}
+
+function ListBitacora(){
+
+   /*frameInforme.ListBitacora(document.getElementById("txtFechaIni").value,
+   document.getElementById("txtFechaFin").value,document.getElementById("ListEquipos").value); 
+   */
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	if (document.getElementById("listEquipos").value != "-1"){
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Bitacoras.asp?RECURSO=InfBitPolines";
+			url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+			url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+			url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+			url += "&EQUIPO="+document.getElementById("listEquipos").value;
+			url += "&FAENA="+emp;
+			url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+			url += "&RANX=" + document.getElementById("listRangos").value ;			
+			url += "&VTZ=" + Math.random();
+			
+		window.open(url);
+		//	alert(url);
+		//xmlestado = xmlDso.load(url);
+	
+		document.getElementById('frameInforme').src= url;
+		with (document.getElementById('divWait').style){visibility = "visible";} 
+		
+		updateChart('chart1Id');
+	}
+}
+
+		var data = new Array();
+		var chartLoaded = false;
+		
+function generateXML(animate){	
+		
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Bitacoras.asp?RECURSO=InfBitPolinesSinxsl";
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+		url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+		url += "&EQUIPO="+document.getElementById("listEquipos").value;
+		url += "&FAENA="+emp;
+		url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		url += "&RANX=" + document.getElementById("listRangos").value ;	
+		url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado)
+				window.open(url);
+				
+		var strXML = "";
+		var strXMLTit;
+		
+		var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+		var auxs = "";
+		var auxs2 = "</dataset>";
+		var posx = 0;
+		var posx2 = 0;
+		var totpos = 0;
+		var cssx = "";
+		var xs = 3;
+		var colors = new Array('a7c4f9','d64b54','46c97b','e6a081','ead421','6d0b66','2417cb','913c09','4ba4d2','fb8f8c','ef9cf1','f0ba0c','cc3829','c359b3','d156b3','8c2935');
+		for (i=0; i<x.length; i++) {	
+			if (auxs != x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue){
+				if (auxs != ""){ strXML = strXML + auxs2 }
+				cssx = Math.random().toString(16).slice(2, 8);
+				auxs = x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue;
+				strXML = strXML + "<dataset seriesName='" + x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue + "' color='" + colors[xs] + "' anchorSides='" + xs + "' anchorRadius='5' anchorBorderThickness = '1' anchorBgColor='" + colors[xs] + "' >"; //anchorBorderColor='" + colors[xs] + "'
+				xs = xs + 1;
+				//color='009900' anchorSides='3' anchorRadius='4' anchorBgColor='D5FFD5' anchorBorderColor='009900'
+			}
+			// 	IZQ = 2.5; CEN = 1.5; DER = 0.5
+			posx2 = x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue;
+			if (parseInt(posx2) > posx){ 
+				posx = x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue;
+			} 
+			if (x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "IZQ"){
+				strXML = strXML + "<set y='0.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}else if(x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "CEN"){
+				strXML = strXML + "<set y='1.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}else if(x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "DER"){
+				strXML = strXML + "<set y='2.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}
+//			strXML = strXML + "<set y='2.5' x='21' /><set y='2.5' x='32' /><set y='0.5' x='43' /><set y='1.5' x='48' /><set y='2.5' x='50' /><set y='1.5' x='56' /><set y='1.5' x='59' /><set y='0.5' x='73' /><set y='2.5' x='89' /><set y='1.5' x='93' />";
+
+			
+		}
+		strXML = strXML + auxs2;
+
+		//strXML = strXML + "<dataset seriesName='Dano Estructural' color='0000FF' anchorSides='4' anchorRadius='4' anchorBgColor='C6C6FF' anchorBorderColor='0000FF'><set y='1.5' x='23'/><set y='1.5' x='29'/><set y='1.5' x='33'/><set y='1.5' x='41'/><set y='1.5' x='47'/><set y='1.5' x='49'/><set y='0.5' x='51'/><set y='1.5' x='53'/><set y='0.5' x='57'/><set y='0.5' x='58'/><set y='1.5' x='61'/><set y='0.5' x='63'/><set y='1.5' x='64'/><set y='1.5' x='71'/><set y='2.5' x='77'/><set y='1.5' x='79'/><set y='1.5' x='83'/><set y='1.5' x='89'/><set y='2.5' x='91'/><set y='0.5' x='93'/>   </dataset>"
+		strXML = strXML + "<categories verticalLineColor='666666' verticalLineThickness='1'>";
+		var minval = 0;
+		if ( document.getElementById("listRangos").value == "TOD"){
+			if (posx <= 10){
+				totpos = 10;
+				strXML = strXML + "<category y='1' label='1' /><category label='2' x='2' showVerticalLine='0'/><category label='3' x='3' showVerticalLine='0'/><category label='4' x='4' showVerticalLine='0'/><category label='5' x='5' showVerticalLine='0'/><category label='6' x='6' showVerticalLine='0'/><category label='7' x='7' showVerticalLine='0'/><category label='8' x='8' showVerticalLine='0'/><category label='9' x='9' showVerticalLine='0'/><category label='10' x='10' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+			}else if (posx <= 30){
+				totpos = 30;
+				strXML = strXML + "<category y='1' label='1' /><category label='3' x='3' showVerticalLine='0'/><category label='6' x='6' showVerticalLine='0'/><category label='9' x='9' showVerticalLine='0'/><category label='12' x='12' showVerticalLine='0'/><category label='15' x='15' showVerticalLine='0'/><category label='18' x='18' showVerticalLine='0'/><category label='21' x='21' showVerticalLine='0'/><category label='24' x='24' showVerticalLine='0'/><category label='27' x='27' showVerticalLine='0'/><category label='30' x='30' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+			}else if (posx <= 50){
+				totpos = 50;
+				strXML = strXML + "<category y='1' label='1' /><category label='5' x='5' showVerticalLine='0'/><category label='10' x='10' showVerticalLine='0'/><category label='15' x='15' showVerticalLine='0'/><category label='20' x='20' showVerticalLine='0'/><category label='25' x='25' showVerticalLine='0'/><category label='30' x='30' showVerticalLine='0'/><category label='35' x='35' showVerticalLine='0'/><category label='40' x='40' showVerticalLine='0'/><category label='45' x='45' showVerticalLine='0'/><category label='50' x='50' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+			}else if (posx <= 100){
+				totpos = 100;
+				strXML = strXML + "<category y='1' label='1' /><category label='10' x='10' showVerticalLine='0'/><category label='20' x='20' showVerticalLine='0'/><category label='30' x='30' showVerticalLine='0'/><category label='40' x='40' showVerticalLine='0'/><category label='50' x='50' showVerticalLine='0'/><category label='60' x='60' showVerticalLine='0'/><category label='70' x='70' showVerticalLine='0'/><category label='80' x='80' showVerticalLine='0'/><category label='90' x='90' showVerticalLine='0'/><category label='100' x='100' showVerticalLine= '0'/>";
+					removeOptions(document.getElementById("listRangos"));
+					listRangos();
+					opcionx = new Option("1 - 10" ,"1-10");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("11 - 20" ,"11-20");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("21 - 30" ,"21-30");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("31 - 40" ,"31-40");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("41 - 50" ,"41-50");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("51 - 60" ,"51-60");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("61 - 70" ,"61-70");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("71 - 80" ,"71-80");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("81 - 90" ,"81-90");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("91 - 100" ,"91-100");
+					document.getElementById("listRangos").options[10] = opcionx;
+			}else if (posx <= 500){
+				totpos = 500;
+				strXML = strXML + "<category y='1' label='1' /><category label='50' x='50' showVerticalLine='0'/><category label='100' x='100' showVerticalLine='0'/><category label='150' x='150' showVerticalLine='0'/><category label='200' x='200' showVerticalLine='0'/><category label='250' x='250' showVerticalLine='0'/><category label='300' x='300' showVerticalLine='0'/><category label='350' x='350' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='450' x='450' showVerticalLine='0'/><category label='500' x='500' showVerticalLine= '0'/>";
+					removeOptions(document.getElementById("listRangos"));
+					listRangos();
+					opcionx = new Option("1 - 50" ,"1-50");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("51 - 100" ,"51-100");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("101 - 150" ,"21-150");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("151 - 200" ,"31-200");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("201 - 250" ,"41-250");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("251 - 300" ,"51-300");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("301 - 350" ,"61-350");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("351 - 400" ,"71-400");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("400 - 450" ,"81-450");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("451 - 500" ,"91-500");
+					document.getElementById("listRangos").options[10] = opcionx;
+				
+			}else if (posx <= 1000){	
+				totpos = 1000;		
+				strXML = strXML + "<category y='1' label='1' showVerticalLine='0' /><category label='100' x='100' showVerticalLine='0'/><category label='200' x='200' showVerticalLine='0'/><category label='300' x='300' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='500' x='500' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='700' x='700' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='900' x='900' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+					opcionx = new Option("1 - 100" ,"1-100");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("101 - 200" ,"101-200");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("201 - 300" ,"201-300");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("301 - 400" ,"301-400");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("401 - 500" ,"401-500");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("501 - 600" ,"501-600");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("601 - 700" ,"601-700");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("701 - 800" ,"701-800");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("801 - 900" ,"801-900");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("901 - 1000" ,"901-1000");
+					document.getElementById("listRangos").options[10] = opcionx;
+			}else if (posx <= 2000){	
+				totpos = 2000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='200' x='200' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1400' x='1400' showVerticalLine='0'/><category label='1600' x='1600' showVerticalLine='0'/><category label='1800' x='1800' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+					opcionx = new Option("1 - 200" ,"1-200");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("201 - 400" ,"201-400");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("401 - 600" ,"401-600");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("601 - 800" ,"601-800");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("801 - 1000" ,"801-1000");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("1001 - 1200" ,"1001-1200");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("1201 - 1400" ,"1201-1400");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("1401 - 1600" ,"1401-1600");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("1601 - 1800" ,"1601-1800");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("1801 - 2000" ,"1801-2000");
+					document.getElementById("listRangos").options[10] = opcionx;
+				
+			}else if (posx <= 3000){	
+				totpos = 3000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='300' x='300' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='900' x='900' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1500' x='1500' showVerticalLine='0'/><category label='1800' x='1800' showVerticalLine='0'/><category label='2100' x='2100' showVerticalLine='0'/><category label='2400' x='2400' showVerticalLine='0'/><category label='2700' x='2700' showVerticalLine='0'/><category label='3000' x='3000' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+					opcionx = new Option("1 - 300" ,"1-300");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("301 - 600" ,"301-600");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("601 - 900" ,"601-900");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("901 - 1200" ,"901-1200");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("1201 - 1500" ,"1201-1500");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("1501 - 1800" ,"1501-1800");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("1801 - 2100" ,"1801-2100");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("2101 - 2400" ,"2101-2400");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("2401 - 2700" ,"2401-2700");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("2701 - 3000" ,"2701-3000");
+					document.getElementById("listRangos").options[10] = opcionx;
+				
+			}else if (posx <= 4000){	
+				totpos = 4000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='400' x='400' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1600' x='1600' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine='0'/><category label='2400' x='2400' showVerticalLine='0'/><category label='2800' x='2800' showVerticalLine='0'/><category label='3200' x='3200' showVerticalLine='0'/><category label='3600' x='3600' showVerticalLine='0'/><category label='4000' x='4000' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+					opcionx = new Option("1 - 400" ,"1-400");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("401 - 800" ,"401-800");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("801 - 1200" ,"801-1200");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("1201 - 1600" ,"1201-1600");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("1601 - 2000" ,"1601-2000");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("2001 - 2400" ,"2001-2400");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("2401 - 2800" ,"2401-2800");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("2801 - 3200" ,"2801-3200");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("3201 - 3600" ,"3201-3600");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("3601 - 4000" ,"3601-4000");
+					document.getElementById("listRangos").options[10] = opcionx;
+					
+					
+			}else if (posx <= 5000){	
+				totpos = 5000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='500' x='500' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine='0'/><category label='1500' x='1500' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine='0'/><category label='2500' x='2500' showVerticalLine='0'/><category label='3000' x='3000' showVerticalLine='0'/><category label='3500' x='3500' showVerticalLine='0'/><category label='4000' x='4000' showVerticalLine='0'/><category label='4500' x='4500' showVerticalLine='0'/><category label='5000' x='5000' showVerticalLine= '0'/>";
+				removeOptions(document.getElementById("listRangos"));
+				listRangos();
+					opcionx = new Option("1 - 500" ,"1-500");
+					document.getElementById("listRangos").options[1] = opcionx;
+					opcionx = new Option("501 - 1000" ,"501-1000");
+					document.getElementById("listRangos").options[2] = opcionx;
+					opcionx = new Option("1001 - 1500" ,"1001-1500");
+					document.getElementById("listRangos").options[3] = opcionx;
+					opcionx = new Option("1501 - 2000" ,"1501-2000");
+					document.getElementById("listRangos").options[4] = opcionx;
+					opcionx = new Option("2001 - 2500" ,"2001-2500");
+					document.getElementById("listRangos").options[5] = opcionx;
+					opcionx = new Option("2501 - 3000" ,"2501-3000");
+					document.getElementById("listRangos").options[6] = opcionx;
+					opcionx = new Option("3001 - 3500" ,"3001-3500");
+					document.getElementById("listRangos").options[7] = opcionx;
+					opcionx = new Option("3501 - 4000" ,"3501-4000");
+					document.getElementById("listRangos").options[8] = opcionx;
+					opcionx = new Option("4001 - 4500" ,"4001-4500");
+					document.getElementById("listRangos").options[9] = opcionx;
+					opcionx = new Option("4501 - 5000" ,"4501-5000");
+					document.getElementById("listRangos").options[10] = opcionx;
+				
+			}
+			minval = 0;
+		}else{
+			var rang = document.getElementById("listRangos").value;
+			var arrang = rang.split("-");
+			var id1 = arrang[0];
+			var id2 = arrang[1];
+			totpos = ((id2 - (id1-1)) / 10);
+			strXML = strXML + "<category y='1' label='1' />";
+			for (i = (id1-1); i <= id2; i += totpos) { 
+				strXML = strXML + "<category label='" + i + "' x='" + i + "' showVerticalLine='0'/>";
+			}
+			totpos = totpos + 1;
+			minval = id1 - 1;
+		}
+
+		strXMLTit = "<chart palette='2' caption='Eventos' yAxisName='IZQ          CEN          DER' xAxisName='Cinta Transportadora' xAxisMaxValue='" + totpos + "'  xAxisMinValue='" + minval + "' yAxisMaxValue='3'  >";
+
+		strXML = strXML + "</categories>";
+		strXML = strXML + "</chart>";
+
+		//alert(strXML);
+		return strXMLTit+strXML;	
+		
+}
+
+
+	
+/**
+ * FC_Rendered method is invoked when the chart has completed rendering for the first time.
+ * It's a pre-defined method name. 
+ *	@param	domId	Dom ID of the chart object
+*/
+function FC_Rendered(domId){			
+	//It is in this method that you can update chart's data using JS methods.
+	//Check if this is the chart that we want to update
+		if (domId=="chart1Id"){			
+			//Set chartLoaded flag to true
+			chartLoaded = true;
+			
+			//Get reference to chart object using Dom ID
+			var chartObj = getChartFromId(domId);
+			//Update it's XML - set animate Flag to true
+			chartObj.setDataXML(generateXML(true));
+		}			
+		return true;			
+}
+
+function updateChart(domId){		
+		//Update only if chart has loaded
+		if (chartLoaded){
+			//Get reference to chart object using Dom ID
+			var chartObj = getChartFromId(domId);
+			//Update it's XML - set animate Flag from AnimateChart checkbox in form
+			chartObj.setDataXML(generateXML(true));
+		}
+}
+
+function Graficos(){
+
+   window.open("../chart/index.html");
+   	
+//if(!xmlestado)
+//		window.open(url);	
+
+}
+
+ 
+ function listEquipos(){
+		if (id_br == "IE")
+		{
+			var xmlEquipos = document.getElementById("xmlEquipos");
+			xmlEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipos = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+emp;
+	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+
+  if (xmlestado){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("[--Seleccione--]" ,"-1");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            document.getElementById("listEquipos").options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            document.getElementById("listEquipos").options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ 
+function listRangos(){
+	opcionx = new Option("TODOS" ,"TOD");
+	document.getElementById("listRangos").options[0] = opcionx; 
+}
+ 
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();
+  day       = mydate.getDay();  
+
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+document.getElementById("txtFechaFin").value = day_month + "/" + month +"/"+ year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+ day_month=dateIni.getDate();
+ month=dateIni.getMonth()+1;
+ 
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+document.getElementById("txtFechaIni").value = "01/" + month +"/"+ year;
+
+listEquipos();
+listSecciones();
+listRangos();
+ListBitacora();
+
+}
+
+function listSecciones(){
+
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url+= "&VTZ=" + Math.random();
+			
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	document.getElementById("listSecciones").options[i] = opcion;   
+          	}
+			
+			opcion = new Option("PLANTA 1" , "CHAPRI1','CHASEC1','AGLO1','API1");
+			document.getElementById("listSecciones").options[i] = opcion; 
+			
+			opcion = new Option("PLANTA 2" , "CHAPRI2','CHASEC2','AGLO2','API2");
+			document.getElementById("listSecciones").options[i+1] = opcion; 
+			
+			opcion = new Option("TODOS" ,"TOD");
+			document.getElementById("listSecciones").options[i+2] = opcion; 
+					
+		  }
+		 else
+		 	window.open(url); 
+}
+function hiddenFrm(){ with (document.getElementById("divWait").style){visibility = "hidden";}}
+
+function _print(){
+  var url = "printTopPolines.html?";
+  	  url += "&FAENA=" + emp;
+   	  url += "&F1=" + document.getElementById("txtFechaIni").value;
+   	  url += "&F2=" + document.getElementById("txtFechaFin").value;
+   	  url += "&CR=" + document.getElementById("listCriticidad").value;
+   	  url += "&SC=" + document.getElementById("listSecciones").value;
+   	  url += "&EQ=" + document.getElementById("listEquipos").value;
+	  url += "&RG=" + document.getElementById("listRangos").value;
+	  url += "&VTZ=" + Math.random();
+	  //alert(url);
+	  window.open(url, "MsgWindow", "location=0,status=0,scrollbars=0,width=1,height=1");
+}
+
+</script>
+
+<body  onload="Inicio();">
+<form name="formulario" id="formulario">
+<input type="hidden" value="" name="IdUsuario" id="IdUsuario">
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 58px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="../images/cargando.gif" />	</div>
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br><br><br>
+<table width="972" id="tableTitulo">
+     <!--DWLayoutTable-->
+     <tr>
+          <td width="353"  height="21" class="titulo">INFORME DE POLINES</td>
+          <td width="194">&nbsp;</td>
+       <td width="199">&nbsp;</td>
+       <td width="132">&nbsp;</td>
+     </tr>
+     <tr>
+          <td height="29" valign="middle" class="titulo">Desde :
+<input type="text" class="input" name="txtFechaIni" id="txtFechaIni" size="12" />&nbsp;&nbsp;&nbsp;&nbsp;
+               Hasta :
+		<input type="text" class="input" name="txtFechaFin" id="txtFechaFin" size="12" /></td>
+          <td class="titulo">CRITICIDAD :
+            <select name="listCriticidad"  id="listCriticidad" onchange="ListBitacora();">
+              <option value="TOD" selected="selected">TODOS</option>
+              <option value="ALTA">ALTA</option>
+              <option value="MEDIA">MEDIA</option>
+              <option value="BAJA">BAJA</option>
+              <option value="MEDALTA">MEDIA - ALTA</option>
+            </select></td>
+			<td>&nbsp;
+                <input type="button" class="botonBlanco" value="Buscar" onclick="ListBitacora();" />
+                <input type="button" class="botonBlanco" value="Imprimir" 
+                    onclick="_print();" /></td>
+          <td >&nbsp;&nbsp;&nbsp;&nbsp;</td>
+          </tr>
+     <tr>
+       <td height="29" colspan="4" valign="middle" class="calibri">SECCION :
+         <select name="listSecciones" id="listSecciones" datafld="SECCION" onchange="ListBitacora();">
+         </select>&nbsp;&nbsp;&nbsp;EQUIPO:
+         <select name="listEquipos" id="listEquipos" onchange="ListBitacora();">
+         </select>&nbsp;&nbsp;&nbsp;RANGOS:
+         <select name="listRangos" id="listRangos" onchange="ListBitacora();">
+         </select></td>
+     </tr>
+</table><br />
+<div id="divInforme" onClick="event.cancelBubble=true" 
+style="position: absolute;  width: 100%; z-index: 90; left: 0; top: 5; height: 289px; border-style: ridge; border-width: 0px">
+<iframe frameBorder="0" height="100%" id="frameInforme" name="frameInforme" 
+          onload="with (divWait.style){visibility = 'hidden';}" scrolling="yes" src="" width="100%"></iframe>
+</div><br />
+<div id="divInformeGrafico" onClick="event.cancelBubble=true" 
+style="position: absolute; width: 100%; z-index: 91; left: 0px; top: 460px; height: 290px; border-style: ridge; border-width: 0px">
+		<div id="chart1div">
+			FusionCharts
+		</div>
+
+</div>
+
+		<script language="JavaScript">	
+			var chart1 = new FusionCharts("Scatter.swf", "chart1Id", "930", "300", "0", "1");		   
+			//Initialize chart with empty data. We'll feed it data on the chart's FC_Rendered event.
+			
+			chart1.setDataXML("<chart></chart>");
+			chart1.render("chart1div");
+		</script>
+
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni","txtFechaFin"]);
+		myCalendar.setSkin("dhx_web");
+
+if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+	if (document.getElementById("listEquipos").value != "-1"){
+	var heightx = window.innerHeight;
+	document.getElementById("frameinforme").height = heightx-160;
+	}
+}
+</script>
+            
+
+</form>
+</body>
+</html>

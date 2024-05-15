@@ -1,0 +1,137 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Nuevo Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlSistemas></xml>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></head>
+<xml id = xmlNewMenu></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+
+<script>
+
+ function getChildNodeValue(parentnode, nodename){
+        for (var i = 0; i < parentnode.childNodes.length; i++){
+          if (parentnode.childNodes.item(i).nodeName == nodename){
+            return(parentnode.childNodes.item(i).text)
+          }
+        }
+        return("");
+      }
+	  
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  } 
+  alert('Query Variable ' + variable + ' not found');
+}
+
+function InsertMenuRol(Index){
+
+var tabla = document.getElementById('Tabla1');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var CodRol = getQueryVariable("COD_ROL");
+	
+	xmlNewMenu.async = false;
+	var xmlDso = xmlNewMenu.XMLDocument;
+	var url = "xml/Roles.asp?RECURSO=NewMenuRol";
+		url += "&COD_ROL=" + CodRol;
+		url += "&COD_MENU=" + Codigo;
+		//window.open(url);
+		xmlestado = xmlDso.load(url);
+		
+		window.close();		
+		
+}
+
+function getCodSistema() {
+formulario.TxtSistema.value = getQueryVariable("SISTEMA");
+}
+
+ function cargarSistemas(){
+        xmlSistemas.async = false;
+        var xmlDso =  xmlSistemas.XMLDocument;
+		url = "xml/sistemas.asp?RECURSO=ListSistemas";
+		var res = xmlDso.load(url);
+	     if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.listSistemas.options[i] = opcion;   
+          }
+                 
+         }
+ }
+ 
+
+function ListMenu()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Menu.asp?RECURSO=ListMenu&SISTEMA=" + formulario.listSistemas.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+</script>
+
+<body onLoad="cargarSistemas();ListMenu()">
+<form name="formulario">
+<DIV id="DivListSistemas" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListSistemas.html" frameBorder="0" width="250" scrolling="no"	height="180"></IFRAME>
+</DIV> 
+  <table border="0">
+      <tr class="texto" >
+      <td align="left">Sistema:</td>
+      <td align="left">
+	  <select name="listSistemas" id="select"   style="size:auto" class="input"
+				onChange="ListMenu();" >
+        <option selected></option>
+      </select>        <!--input 	onClick="Get();"	type="button" value="B" name="buttonBuscar" tabindex="10"/-->
+      <td width="489" align="left">&nbsp;</td><td width="0"></td>
+    </tr>
+  </table>
+  <br>
+  <table width="292" border="0" class="texto" datasrc="#xmlDoc" id="Tabla1" align="center">
+    <thead>
+      <tr  class="HeaderLista">
+        <td width="99" >Menus</td>
+        <td width="167">&nbsp;</td>
+      </tr>
+    </thead>
+    <tr onClick="InsertMenuRol(this.rowIndex);" class="ItemLista">
+      <td><input name="TxtRol" type="text" class="input" id="TxtRol" size="15" datafld="CODIGO"/></td>
+      <td><input  name="TxtMenu" type="text" class="input" id="TxtMenu" size="25" datafld="NOMBRE"/></td>
+    </tr>
+  </table>
+
+</form>
+</body>
+</html>

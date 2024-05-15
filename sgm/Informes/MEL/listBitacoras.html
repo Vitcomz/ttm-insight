@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV='Expires' CONTENT='Tue, 01 Jan 1980 1:00:00 GMT'>
+<META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+
+
+
+
+
+
+</HEAD>
+<XML id="XMLTemp"></XML>
+<XML id="xmlEquipos"></XML>
+
+<LINK REL="stylesheet" HREF="style/sci.css" TYPE="text/css" MEDIA="screen">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="/sgm/standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT LANGUAGE="JavaScript1.2">
+//<!-- 
+
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+var popbox = new Object();
+var folio = new Object();
+var fecha = new Object();
+var equipo = new Object();
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+
+function inicio(){
+
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay();  
+
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+document.getElementById("txtFecha").value = parent.document.getElementById("idFecha").value;
+parent.document.getElementById("txtBitacoras").value = "";
+search();
+}
+
+
+
+function search(){
+ 
+	if (id_br == "IE")
+	{
+		var xmlTemp = document.getElementById("xmlTemp");
+		xmlTemp.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp = document.implementation.createDocument("", "", null);
+	}
+  var xmlDso = xmlTemp.XMLDocument;
+  var cr = 0;
+  var url = "Informes.asp?RECURSO=listBitDia";
+	 url +="&FAENA="+emp;
+	 url +="&FECHA="+document.getElementById("txtFecha").value;
+	 url +="&VTZ=" + Math.random();
+	 
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	//window.open(url);
+	if(!res)
+		window.open(url);
+	//   window.open(url);
+  
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      document.getElementById("msg").style.display = "block";
+      document.getElementById("cont").style.display = "none";
+      document.getElementById("msg").innerText = "No se encontraron registros";
+    }else{
+      document.getElementById("msg").style.display = "none";
+      document.getElementById("cont").style.display = "block";
+			if (id_br == "IE")
+			{
+				
+				var tbody = document.getElementById("tabLect").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}		
+				
+
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				var tbody = document.getElementById("tabLect").getElementsByTagName("tbody")[0];
+				if (total_registros_lista > 0){
+					//document.getElementById("checkall").disabled = "disabled";
+					var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						var row = document.createElement("TR");
+						row.onMouseOver="mOvr(this,'#ABCCE5')";
+						row.onMouseOut="mOut(this,'#dee6eb')"; 
+						row.style.cursor = "hand";  
+						
+						var cell1 = document.createElement("TD");
+						cell1.style.borderBottom = "solid 1px #6587a3";
+						cell1.innerHTML =   "<input  type='checkbox'  class='tinyText' id='chkFolio' onClick='set(this.parentElement.parentElement);' /> <SPAN CLASS='calibri'>" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell2 = document.createElement("TD");
+						cell2.style.borderBottom = "solid 1px #6587a3";
+						cell2.innerHTML =   "<SPAN CLASS='calibri'>" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell3 = document.createElement("TD");
+						cell3.style.borderBottom = "solid 1px #6587a3";					
+						cell3.innerHTML =   "<SPAN CLASS='calibri'>" + x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell4 = document.createElement("TD");
+						cell4.style.borderBottom = "solid 1px #6587a3";		
+						if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null){			
+							cell4.innerHTML =   "<SPAN CLASS='calibri'>" + x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + "</span>";
+						}else{
+							cell4.innerHTML =   "<SPAN CLASS='calibri'></span>";
+						}
+						var cell5 = document.createElement("TD");
+						cell5.style.borderBottom = "solid 1px #6587a3";					
+						cell5.innerHTML =   "<SPAN CLASS='calibri'>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span>";
+
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						var cell5 = document.createElement("TD");
+						cell5.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[0].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<TR  STYLE='cursor:hand;'>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><input  type='checkbox'  class='tinyText' id='chkFolio' onClick='set(this.parentElement.parentElement);'/><SPAN CLASS='calibri'>"+  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='calibri'>"+  x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='calibri'>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null){
+				  	 context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='calibri'>"+  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  }else{
+				  	 context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='calibri'></SPAN></td>";
+				  }
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='calibri'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[0].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[0].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				  
+	   
+    }
+  }else{
+    document.getElementById("msg").style.display = "block";
+     document.getElementById("cont").style.display = "none";
+    document.getElementById("msg").innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+  if (res){
+		setTimeout("setCheck()",500);
+  }
+}
+
+function setCheck(){
+	
+var bitacoras = (parent.document.getElementById("txtBitacoras").value).split(",");
+
+   var tbl2= document.getElementById("tabLect");
+	
+  for(var i = 0; i < bitacoras.length; i++){
+		
+			  for(var j = 0; j < tbl2.rows.length; j++){
+				 // alert(tbl.rows[i].children[0].children[1].innerText + "/" + tbl2.rows[j].children[0].children[1].innerText);
+					if(bitacoras[i]==tbl2.rows[j].children[0].children[1].innerText){
+						tbl2.rows[j].children[0].children[0].checked=true;
+					}//end if
+			  }// end for	
+			  
+	}// end for
+		
+}
+
+
+ 
+
+function set(itr){
+		if (id_br == "IE")
+		{
+			folio = itr.children[0].children[1].innerText;
+			fecha = itr.children[1].children[0].innerText;
+			equipo = itr.children[2].children[0].innerText;
+			tipo = itr.children[4].children[0].innerText;
+			
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			folio = itr.children[0].children[1].innerHTML;
+			fecha = itr.children[1].children[0].innerHTML;
+			equipo = itr.children[2].children[0].innerHTML;
+			tipo = itr.children[4].children[0].innerHTML;
+			
+		}
+
+	
+	//alert(folio + " " + fecha);
+	
+	if(itr.children[0].children[0].checked){
+		//itr.children[0].children[0].checked=false;
+		if(parent.document.getElementById("txtBitacoras").value == '')
+			parent.document.getElementById("txtBitacoras").value = folio;
+		else
+			parent.document.getElementById("txtBitacoras").value = parent.document.getElementById("txtBitacoras").value + "," + folio;
+		
+		}
+	else{
+		//itr.children[0].children[0].checked=true;
+	parent.document.getElementById("txtBitacoras").value = parent.document.getElementById("txtBitacoras").value.replace(folio+",","");
+		
+	}
+	parent.document.getElementById("idFecha").value=fecha;	 
+		 
+}
+
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+//			var evt=window.event;
+		}
+		else if (id_br == "IE")
+		{
+			function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+			function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+		}
+
+//-->
+checked=false;
+function checkedAll() {
+	var aa= document.getElementById("frm");
+	if (checked == false){
+    	checked = true;
+    }else{
+    	checked = false;
+    }
+	var tbl= document.getElementById("tabLect");
+	var arr
+	var k = 0;
+	for (var i =0; i < (aa.elements.length); i++){
+		if (aa.elements[i].type=='checkbox' && aa.elements[i].id!='checkall'){
+			 aa.elements[i].checked = checked;
+			 if (checked){
+				if (id_br == "IE")
+				{
+					 if (k == 0){
+						 arr = tbl.rows[k].children[0].children[1].innerText;
+					 }else{
+						 arr = arr + "," + tbl.rows[k].children[0].children[1].innerText;
+					 }
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					 if (k == 0){
+						 arr = tbl.rows[k].children[0].children[1].innerHTML;
+					 }else{
+						 arr = arr + "," + tbl.rows[k].children[0].children[1].innerHTML;
+					 }
+				}
+				 
+			 }else{
+				 arr = "";
+			 }
+			 k = k + 1;
+		}
+	}
+	parent.document.getElementById("txtBitacoras").value = arr;
+}
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" bgcolor="#dee6eb" SCROLL="no" onLoad="inicio();">
+<form id="frm">
+	<div id="divCalendar" 
+		style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5;
+        			 top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<iframe frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="../DTPicker.htm" width="180"></iframe>
+	</div>
+	<span class="text">FECHA: </span>
+    <INPUT type="text" class="text" id="txtFecha" name="txtFecha" size="9"  onChange="search();"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="checkbox" id="checkall" name="checkall" onclick="checkedAll();"><span class="text">Seleccionar Todos</span>
+<CENTER>
+<span id="msg" class="text" style="display:none;"></span>
+<SPAN ID="cont" STYLE="height:380px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3" id="tabLect">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</TABLE>
+</SPAN>
+
+</CENTER>
+    <link rel="stylesheet" type="text/css" href="/sgm/Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="/sgm/Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="/sgm/Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFecha"]);
+		myCalendar.setSkin("dhx_web");
+		myCalendar.attachEvent("onClick",function(date){search()});
+		if (total_registros_lista == 0){
+				document.getElementById("btndelpic").disabled = "disabled";
+//		}else{
+//				document.getElementById("checkall").disabled = "disabled";
+		}
+	</script>
+</form>
+</BODY>
+
+</HTML>

@@ -1,0 +1,382 @@
+<html>
+
+<head>
+</head>
+<xml id=xmlDoc></xml>
+<xml id=xmlTemp></xml>
+<style type="text/css">
+	<!--
+	body {
+		margin-left: 0px;
+		margin-top: 0px;
+		margin-right: 0px;
+		margin-bottom: 0px;
+
+	}
+
+	.media {
+		background-color: #FFFF00;
+		color: #000000;
+		padding: 3px;
+	}
+
+	.baja {
+		background-color: #129e32;
+		color: #ffffff;
+		padding: 3px;
+	}
+	.alta {
+		background-color: #FF0000;
+		color: #ffffff;
+		padding: 3px;
+	}
+
+	 
+
+	/*@media print{
+  div#header{
+   position:fixed;
+   height:80%;
+  }
+ 
+  div#content{
+  top:100px;
+  margin-bottom:20px;
+   height:80%;
+  }
+  
+  div#footer{
+   position:fixed;
+  }
+  
+  body{
+  overflow:hidden;
+  background-color:#FFFFFF;
+ }
+ 
+ .page-break	{ display: block; page-break-before: always; }
+ 
+}
+*/
+	@media screen {
+
+		div#footer {
+			position: fixed;
+			visibility: hidden;
+		}
+
+	}
+	-->
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script>
+	var browser = DetectBrowser();
+	var id_br = browser.substring(0, 2);
+	if (id_br == 'IE') {
+		var emp = getEmpresa();
+	} else if (id_br == "FF" || id_br == "OP" || id_br == "SF" || id_br == "CR") {
+		var emp = getEmpresaMoz();
+	}
+
+	function _hoy() {
+		var ua = navigator.userAgent.toLowerCase();
+		var mydate = new Date();
+		var Hora = mydate.getHours();
+		var Min = mydate.getMinutes();
+		var day_month = mydate.getDate();
+		var month = mydate.getMonth() + 1;
+		var day = mydate.getDay();
+
+		var year = mydate.getYear() + 1900;
+		if (ua.indexOf('msie') != -1)
+			var year = mydate.getYear();
+
+		if (ua.indexOf('opera') != -1) var year = mydate.getYear();
+
+		if ((Hora + "").length == 1) sHora = '0' + Hora;
+		else sHora = Hora;
+
+		if ((Min + "").length == 1) sMin = '0' + Min;
+		else sMin = Min;
+
+		if ((day_month + "").length == 1) sDay = '0' + day_month;
+		else sDay = day_month;
+
+		if ((month + "").length == 1) month = '0' + month;
+
+		return (sDay + "/" + month + "/" + year);
+
+	}
+
+	function checkImage(src) {
+		var img = new Image();
+		img.src = src;
+		img.onload = function () {
+			//			alert('T')
+			return src
+		};
+		img.onerror = function () {
+			//			alert('F')
+			return "noDisponible.png"
+		};
+	}
+
+	function testImage(id, URL) {
+		var tester = new Image();
+		tester.onLoad = isGood(id, URL);
+		tester.onError = isBad(id);
+		tester.src = URL;
+	}
+
+	function isGood(id, URL) {
+		setTimeout("document.getElementById('" + id + "').src = '" + URL + "';", 900);
+	}
+
+	function isBad(id) {
+		//	setTimeout("document.getElementById('" + id +"').src = 'http://www.ttminsight.cl/sgm/images/noDisponible.png';",900);
+	}
+
+	function show(mySel) {
+		var SelBranchVal = "";
+		var x = 0;
+		for (x = 0; x < mySel.length; x++) {
+			if (mySel[x].selected) {
+				SelBranchVal = mySel[x].value + "," + SelBranchVal;
+			}
+		}
+		SelBranchVal = SelBranchVal.substring(0, (SelBranchVal.length - 1));
+		//alert(SelBranchVal);
+		return SelBranchVal;
+	}
+
+	function ListBitacora(arr) {
+
+		if (id_br == "IE") {
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		} else if (id_br == "FF" || id_br == "OP" || id_br == "SF" || id_br == "CR") {
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+
+		var idx = parent.document.getElementById("listSecciones").selectedIndex;
+		var area = parent.document.getElementById("listSecciones").options[idx].text;
+
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Informes.asp?RECURSO=InfInspecciones"
+		url += "&RESPONSABLE=TOD";
+		url += "&FAENA=" + emp;
+		//url += "&EQUIPO_PRIN=" + Equipo;
+		url += "&EQUIPO=" + show(parent.document.getElementById("listEquipos"));
+		url += "&TIPO=" + show(parent.document.getElementById("listTipos"));
+		url += "&SECCION=" + show(parent.document.getElementById("listSecciones"));
+		url += "&SECCION_DES=" + area;
+		url += "&CRITICIDAD=" + show(parent.document.getElementById("listCriticidad"));
+		url += "&TURNO=TOD";
+		url += "&USUARIO=" + GetSession();
+		url += "&IND_INCIDENTE=TOD";
+		url += "&IND_SOLUCION=TRUE";
+		url += "&EXCEL=NO";
+		url += "&VTZ=" + Math.random();
+
+		//window.open(url);
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF" || id_br == "CR") {
+			if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else { // code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.open("GET", url, false);
+			xmlhttp.send();
+			xmlDoc = xmlhttp.responseText;
+			parser = new DOMParser();
+			xmlDso = parser.parseFromString(xmlDoc, "text/xml");
+			xmlestado = parser.parseFromString(xmlDoc, "text/xml");
+			//alert(xmlDso);
+			//window.open(url);
+		} else if (id_br == "IE") {
+			xmlestado = xmlDso.load(url);
+		}
+
+
+		if (xmlestado) {
+
+			total_registros_lista = xmlDso.documentElement.childNodes.length;
+			//document.getElementsByTagName('tbody')[1].innerHTML = "";
+			var date = _hoy()
+			var faena = getEmpresa();
+			var banner = "banner_" + faena + ".jpg"
+
+			document.getElementById('body-x').innerHTML = "";
+			var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+			var context = "";
+
+			context = context + "<DIV  class='page-break'><DIV>";
+			context = context + "<table width='1000'  BORDER='0' cellpadding='4' cellspacing='20' "
+			context = context + " bgcolor='#FFFFFF' CLASS='calibri' id='" + x + "'><thead><tr height='110px'>"
+			context = context + " <td colspan='5'><img src='../images/" + banner + "'/></td></tr><tr height='30px'>"
+			context = context + " <td colspan='5' class='calibri_16'>INSPECCIONES DIARIAS&nbsp;&nbsp;&nbsp;"
+			context = context + " FAENA : <span id='idFaena'>" + faena + "</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+			context = context + " AREA : <span>" + area + "</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+			context = context + " FECHA : <span id='idFecha'>" + date + "</span></TD></tr></thead>"
+		
+
+			for (i = 0; i < x.length; i++) {
+
+				//context = context +  "<tr  class='page-break'>";
+				if (i >= (x.length - 5)) {
+					varid = "tblBitacorasTableX";
+				} else {
+					varid = "tblBitacorasTable";
+				}
+
+				if (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 30 || i == 35 ||
+					i == 40 || i == 45 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75 ||
+					i == 80 || i == 95 || i == 100) {
+
+
+					context = context + "<DIV  class='page-break'><DIV>";
+					context = context +
+						"<table width='1000' BORDER='0' cellpadding='4' cellspacing='20' "
+					context = context + " bgcolor='#ffffff' CLASS='calibri' id='" + varid + "'><thead><tr height='110px'>"
+					context = context + " <td colspan='5'><img src='../images/" + banner + "'/></td></tr><tr height='30px' bgcolor='#666666'>"
+					context = context + " <td colspan='5' class='calibri_16'>INSPECCIONES DIARIAS&nbsp;&nbsp;&nbsp;"
+					context = context + " FAENA : <span id='idFaena'>" + faena + "</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					context = context + " AREA  : <span>" + area + "</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					context = context + " FECHA : <span id='idFecha'>" + date + "</span></td></tr></thead>"
+					 
+
+				} else {
+					context = context + "<DIV>";
+				}
+
+				context = context + "<tr >";
+				context = context + "<td valign='top' width='450' align='left'><span><h2>" 
+				context = context +	x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0].nodeValue + "</h2></span> " ;
+
+				var	color = x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue;
+
+				switch (color) {
+					case  "MEDIA":
+						var hColor = "class='media'";
+						break;
+					case "BAJA":
+						var hColor = "class='baja'";
+						break;
+					case "ALTA":
+						var hColor = "class='alta'";
+				}
+
+				if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null) {
+					context = context + "<span><h4> CRITICIDAD :<span " +hColor + ">" +  color + "</span></h4></span><br/>";
+				}
+			
+				context = context + "<strong>FECHA:</strong> " + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "<br />";
+
+				if (x[i].getElementsByTagName("REPORT")[0].childNodes[0] != null) {
+					context = context +"  NUMERO OT : " + x[i].getElementsByTagName("REPORT")[0].childNodes[0].nodeValue + "<br/>";
+				}
+				context = context + "<strong>TIPO DE FALLA: </strong>" + x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue + "<br/>";
+				context = context + "<strong>OBSERVACIÓN: </strong><br/>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "<br/><br/>";
+				context = context + "<strong>RECOMENDACIÓN: </strong><br/>" + x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "<br/>";
+			
+				context = context + "</td>";
+				context = context +"<td width='500px'>" 
+				context = context + "<img id='img" + i + "' STYLE='border-color:#666666' BORDER='1' height='205px' ALIGN='middle' ";
+				context = context + " ONERROR=this.src='../images/noDisponible.png' src='" + trim(x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue) + "'><BR />" ;
+		
+				context = context + "</td>";
+				context = context + "</tr>";
+				
+						 
+
+			}
+
+
+			if (context != "") {
+				document.getElementById('body-x').innerHTML = context;
+			} else {
+				document.getElementById('body-x').innerHTML =
+					"<tr><td >&nbsp;</td><td >0</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+			}
+
+		}
+
+	}
+
+
+
+	function trim(stringToTrim) {
+		return stringToTrim.replace(/^\s+|\s+$/g, "");
+	}
+
+	function ltrim(stringToTrim) {
+		return stringToTrim.replace(/^\s+/, "");
+	}
+
+	function rtrim(stringToTrim) {
+		return stringToTrim.replace(/\s+$/, "");
+	}
+
+	function print() {
+		var prtContent = document.getElementById("tblMain").innerHTML;
+		var WinPrint = window.open('', '', 'left=0,top=0,width=1,height=1, toolbar=0,scrollbars=0,status=0');
+		WinPrint.document.write(
+			"<html xmlns='http://www.w3.org/1999/xhtml'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /><title>Untitled Document</title></head><body><LINK rel='stylesheet' href='../sci.css' type='text/css'><style> #tblBitacorasTable { page-break-after: always; }</style><table width='100%' bgcolor='#666666' id='tblMain' border='0'>" +
+			prtContent + "</table></body></html>");
+
+		if (id_br == 'IE') {
+			WinPrint.document.close();
+			WinPrint.focus();
+			WinPrint.print();
+			WinPrint.close();
+		} else if (id_br == "FF" || id_br == "OP") {
+			WinPrint.document.close();
+			WinPrint.focus();
+			WinPrint.print();
+			WinPrint.close();
+		} else if (id_br == "CR" || id_br == "SF") {
+			//WinPrint.document.close();
+			//WinPrint.focus();
+			setTimeout(function () {
+				WinPrint.print();
+				WinPrint.close();
+			}, 4500);
+			//WinPrint.print();
+			//WinPrint.close();	}
+		}
+	}
+
+
+	function hiddenFrm() {
+		with(parent.document.getElementById("divWait").style) {
+			visibility = "hidden";
+		}
+	}
+</script>
+
+<body>
+
+	<table width="100%" bgcolor="#666666" height="100%" id="tblMain" border="0">
+		<tr>
+			<td width="50px">&nbsp;</td>
+			<td align="center" valign="top">
+				<table width="1000" BORDER="0" cellpadding="4" cellspacing="0" BORDERCOLOR="#666666" bgcolor="#FFFFFF"
+					CLASS="calibri">
+
+					<tr>
+						<td   id="body-x">
+
+						</td>
+						<td width="50px">&nbsp;</td>
+					</tr>
+				</table>
+
+				<div id="footer" align="center">
+					<img src="..\images\pie2.jpg" align="bottom" />
+				</div>
+</body>

@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+        
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+
+<title>Informe de Inspecciones</title>
+
+
+
+
+
+
+</head>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+-->
+</style>
+<script>
+var newEvent = false;
+xmlDoc.async = false;
+
+
+function ListBitacora(){
+   //frameInforme.ListBitacora(formulario.txtFechaIni.value);
+   	var xmlDso = xmlDoc.XMLDocument;
+	xmlDoc.async = false;
+	var url = "../xml/Bitacoras.asp?RECURSO=InfDiaA";
+		url += "&INICIO=" + formulario.txtFechaIni.value;
+		url += "&TERMINO=" + formulario.txtFechaFin.value;
+		url += "&FAENA="+getEmpresa();
+		url += "&NUM=" + formulario.txtNumero.value;
+		url += "&FOLIO_OT=" + formulario.txtOT.value;
+		url += "&EQUIPO=TOD";
+		url += "&TURNO=TOD";
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&PLANTA=" + formulario.listPlanta.value;
+		url += "&VTZ=" + Math.random();
+	
+	document.getElementById('frameinforme').src= url;
+	//window.open(url);
+			 
+}
+
+function excel(){
+  	var xmlDso = xmlDoc.XMLDocument;
+	xmlDoc.async = false;
+	var url = "../xml/Bitacoras.asp?RECURSO=InfDiaA";
+		url += "&INICIO=" + formulario.txtFechaIni.value;
+		url += "&TERMINO=" + formulario.txtFechaFin.value;
+		url += "&FAENA="+getEmpresa();
+		url += "&NUM=" + formulario.txtNumero.value;
+		url += "&FOLIO_OT=" + formulario.txtOT.value;
+		url += "&EQUIPO=TOD";
+		url += "&TURNO=TOD";
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&EXCEL=YES";
+		url += "&VTZ=" + Math.random();
+		
+			window.open(url);
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getYear();    
+  day       = mydate.getDay();  
+
+antMonth = month -1 ;
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+if (antMonth<10)
+		antMonth = "0"+antMonth;
+		 
+formulario.txtFechaIni.value = "01/" + antMonth +"/"+ year;
+formulario.txtFechaFin.value = day_month + "/" + month +"/"+ year;
+ListBitacora();
+
+}
+
+
+
+</script>
+
+<body  onload="Inicio();">
+<form name="formulario">
+<input type="hidden" value="" name="IdUsuario">
+	<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<iframe frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="../DTPicker.htm" width="180"></iframe>
+	</div>
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br><br><br>
+<table width="911" id="tableTitulo">
+     <!--DWLayoutTable-->
+<tr>
+          <td width="451"  height="22" class="titulo">INFORME DE INSPECCIONES DIARIAS</td>
+      <td width="198">&nbsp;</td>
+      <td width="169">&nbsp;</td>
+       <td width="73" rowspan="2" valign="top">
+       <div align="RIGHT"></div></td>
+    </tr>
+     <tr>
+          <td height="29" valign="middle" class="titulo"><span class="text">Desde :
+              <input type="text" class="input" name="txtFechaIni" size="15" value="01/01/2008" />
+              <img  src='../images/calendar.jpg' alt="Calendario" align='middle' style='CURSOR: hand'
+						  onclick="FrameCalendar.fPopCalendar(txtFechaIni, txtFechaIni,divCalendar,'ListBitacora();');return false;" />
+                          &nbsp;&nbsp;&nbsp;Hasta :
+                          <input type="text" class="input" name="txtFechaFin" size="15" value="01/01/2008" />
+                          <img  src='../images/calendar.jpg' alt="Calendario" align='middle' style='CURSOR: hand'
+						  onclick="FrameCalendar.fPopCalendar(txtFechaFin, txtFechaFin,divCalendar,'ListBitacora();');return false;" /> &nbsp;
+          <input type="button" class="botonBlanco" value="Buscar" onclick="ListBitacora();" />
+          </span></td>
+      <td class="titulo">&nbsp;&nbsp;
+          <!--input type="button" class="botonBlanco" value="Exportar a Word" 
+                    onclick="excel();" /-->
+        </td>
+	<td>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="button" class="botonBlanco" value="Imprimir" 
+                    onclick="frameInforme.focus();frameInforme.print();" /></td>
+          </tr>
+     <tr>
+       <td height="29" valign="middle" class="titulo">
+       		Planta : <select name="listPlanta"  onchange="ListBitacora();">
+           				<option value="PLANTA 1">PLANTA 1</option>
+                        <option value="PLANTA 2">PLANTA 2</option>
+            		 </select> 
+       		Numero Informe :
+         <span class="text">
+         <input type="text" class="input" name="txtNumero" size="10"  />
+       </span></td>
+       <td class="titulo">OT : <span class="text">
+       <input type="text" class="input" name="txtOT" size="10" id="txtOT"  />
+       </span></td>
+       <td ><!--DWLayoutEmptyCell-->&nbsp;</td>
+       <td valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+     </tr>
+</table>
+</form>
+<iframe frameBorder="0" id="frameinforme" name="frameInforme" scrolling="yes" src="" width="100%" height="450px"></iframe>
+</body>
+</html>

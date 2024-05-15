@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlActividades></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  formulario.txtCodEquipo.value = codeobj.value;
+  formulario.txtDesEquipo.value = nameobj.value;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+	} 
+	
+mostrarActividadesEquipo();
+}
+
+
+
+
+function mostrarActividadesEquipo(){
+
+var CodEquipo = formulario.txtCodEquipo.value;
+
+if (CodEquipo){
+
+	var tbl = document.getElementById('tabActividades');
+	var lastRow = tbl.rows.length;
+	limpiarTablaCabecera(tbl);
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=ListSubActividadesEquipo&EQUIPO="+CodEquipo;
+    var res =xmlDso.load(url);
+	
+ 	var ActividadAnterior = "";
+	
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		
+         for (i=0; i< tree.childNodes.length; i++){
+           var node = tree.childNodes.item(i);          
+          //var row = tbl.deleteRow(1);
+		  
+		  if (getChildNodeValue(node,"ACTIVIDAD") != ActividadAnterior){
+          	var row = tbl.insertRow(-1); 
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden'/>";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='Campo' >" + getChildNodeValue(node,"ACTIVIDAD") + "</span>";
+ 
+			}
+			
+			ActividadAnterior = getChildNodeValue(node,"ACTIVIDAD");
+			var row = tbl.insertRow(-1);
+
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden' value=" + 
+						getChildNodeValue(node,"COD_ACTIVIDAD") + " />" +
+						 "<input  class='hidden' value=" + 
+						getChildNodeValue(node,"COD_SUB_ACTIVIDAD") + " />";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='texto'>" + getChildNodeValue(node,"NOMBRE") + "</span>";
+						 					
+         }
+        }
+        else
+        { divBox.style.visibility = 'hidden';
+		alert("Sin Actividades");
+        }
+      }
+      else
+  	    	window.open(url);
+			
+
+  }  
+ 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+</script>
+	<body>
+<form name="formulario">
+		<table border="0">
+						  <tr class="titulo">
+						    <td width="132" height="17" align="center">Actividades</td>
+						    <td width="152" height="17" align="center"></td>
+						    <td width="16" height="17" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table> 
+<span id="cont" style="height:250px; overflow-y:auto; border:solid 0px #6587a3;">
+
+		<TABLE id="tabActividades" border="0" align="left" >
+		<thead><tr align="center"><td height="30" colspan="2" valign="top">
+				<input class="inputT" type="text" size="5" name="txtCodEquipo">&nbsp;
+				<input class="inputT" type="text" size="35" name="txtDesEquipo">
+				</td></tr>
+				<tr><td></tr></td>
+				</thead>
+	      </TABLE>
+</span>		  
+	  <br>
+	
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="divBox.style.visibility = 'hidden';" value="Cerrar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

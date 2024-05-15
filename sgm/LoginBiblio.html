@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Autenticar</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV='Expires' CONTENT='Tue, 01 Jan 1980 1:00:00 GMT'>
+<META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	/*background-image:url(correa_ttm.jpg);*/
+}
+-->
+</STYLE>
+<XML id="XMLDoc"></XML>
+<XML id="xmlListFaenas"></XML>
+
+
+
+
+
+
+</HEAD>
+
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+</script>
+
+<SCRIPT>
+
+function ValidaSession(){
+	if (getParametro("modo")){
+			DelSession(document.getElementById("formulario").TxtID.value);
+			DelSessionEmpresa(document.getElementById("formulario").TxtID.value);
+			this.location.href="login.html";
+			}
+}
+	
+function _close(){
+	this.location.href="/index.html";
+}
+	
+function Login(){
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlDoc.XMLDocument;
+	
+	var url="/sci/xml/usuarios.asp?RECURSO=ValidaPass&ID=" + document.getElementById("formulario").TxtID.value;
+		url += "&PASSWORD=" + document.getElementById("formulario").TxtPassWord.value;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		if (res){
+            var tree = xmlDso.documentElement;
+			var x = xmlDso.getElementsByTagName("ROW")[0].childNodes[0].nodeValue;
+            if (x == 'True'){
+					CrearSession(document.getElementById("formulario").TxtID.value);
+					//CrearSessionEmpresa(document.getElementById("formulario").ListFaenas.value);			
+					this.location.href="biblioteca.html";
+					}
+			else{
+			   alert("Usuario o Password Invalidos!");
+			   document.getElementById("formulario").TxtID.focus();
+			   }
+	  }
+}
+
+</SCRIPT>
+
+<BODY onload="ValidaSession();">
+<FORM name="formulario" id="formulario">
+  <TABLE width="292" border="0" align="center" class="texto">
+    <TR align="center">	
+	<TD height="23" colspan="2" class="input">Documentaci&oacute;n SGI<BR>Identificaci�n de Usuario.</TD>	
+    </TR>
+    <TR align="center">	
+	<TD height="16" colspan="2">
+	  <P class="titulo">
+	  <SCRIPT>
+	  	document.write("Session Actual <b>" + GetSession() + "</b>");
+	  </SCRIPT>
+	  </P>
+   </TD>
+   </TR>
+       
+    
+    <TR>
+	<TD  align="right">USUARIO :</TD>
+      <TD width="176">
+	  <INPUT name="TxtID" id="TxtID" type="text"  class="input"
+	  onClick="document.getElementById('mensaje').style.visibility = 'hidden'" >
+      </TD>
+	</TR>
+    <TR>
+      <TD align="right">PASSWORD :</TD>
+      <TD>
+	  <INPUT class="input" name="TxtPassWord" id="TxtPassWord"  type="password"
+	    onClick="this.value='';document.getElementById('mensaje').style.visibility = 'hidden'" >
+	  </TD>
+    </TR>
+    <TR valign="middle">
+      <TD height="45" colspan="2"  align="center">
+			<INPUT type="button" class="botonBlanco" onClick="Login();" value="Aceptar">&nbsp;&nbsp;
+			<INPUT type="button" class="botonBlanco" onClick="_close();" value="Volver al Home">
+      </TD>
+	</TABLE>
+<TABLE width="230" align="center">
+	  <TR><TD>
+	  <SPAN class="mensaje" id="mensaje">
+	   Usuario o Contrase�a Invalido.</SPAN>
+	  </TD> </TR>
+	 </TABLE>
+     <DIV ALIGN="CENTER"> <span class="calibri_16" style="color:#C00">SISTEMA DE GESTI&Oacute;N INTEGRADO</span>
+<p><IMG SRC="images/logoNew.jpg" BORDER="0" /></p>
+       
+       <!--p class="texto">
+	Para ingresar de forma limitada utilice : USUARIO : demo , PASSWORD :123<br-->
+      </DIV>
+  <CENTER>
+  </CENTER>
+</FORM>
+<script>document.getElementById("formulario").TxtID.focus();</script>
+</BODY>
+</HTML>

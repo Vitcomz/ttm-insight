@@ -1,0 +1,613 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+    font-family:Calibri;	
+	margin-left: auto;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	background-color:#f39721;
+}
+
+a{
+text-decoration:underline;
+color:#fff;
+
+}
+
+.salir{
+color:#FFFFFF;
+text-decoration:underline;
+font-size:12px;
+}
+
+
+
+#login{
+	background-image:url(../mg/tbLogin.jpg);
+	width:845px;
+    height:617px;
+	position:absolute;
+	align:center;
+	border:0;
+	align:center;
+	cellpadding:0; 
+	cellspacing:0; 
+	left: 50%; 
+	margin-left: -430px;
+	margin-top:0px;
+}
+
+#tbSubtitulos{
+	background-color:#f4fafe;
+	width:100%;
+	border:none;
+	border-collapse:collapse;
+	border-color:#f4fafe;
+}
+
+#escritorio{
+	background-image:url(../mg/tbescritorio.jpg);
+	width:845px;
+	height:472px;
+	align:center;
+	border:0;
+	align:center;
+	cellpadding:0;
+	cellspacing:0;
+
+}
+
+ 
+#btnGuardar{
+	margin-left:0px;
+	background: url(../mg/btnGuardar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnNuevo{
+	margin-left:0px;
+	background: url(../mg/btnNuevo.png) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnBorrar{
+	margin-left:0px;
+	background: url(../mg/btnBorrar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnEnviar{
+	margin-left:0px;
+	background: url(../mg/btnEnviar.png) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnAdjuntar{
+	margin-left:0px;
+	background: url(../mg/btnAdjuntar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnImprimir{
+	margin-left:0px;
+	background: url(../mg/btnImprimir.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+	cursor: hand;
+	cursor:pointer;
+}
+
+#btnCancelar{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btncancelar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+		cursor: hand;
+	cursor:pointer;
+}
+
+#btnSalir{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btnSalir.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+		cursor: hand;
+	cursor:pointer;
+}
+
+#btnFotos{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btnFotos.jpg) no-repeat;
+	width:89px;
+	height:30px;
+	border:none;
+		cursor: hand;
+	cursor:pointer;
+}
+
+#btnEliminar{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btnEliminar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+}
+
+#btnBuscar{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btnBuscar.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+}
+
+#btnExcel{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/btnExcel.jpg) no-repeat;
+	width:66px;
+	height:30px;
+	border:none;
+}
+
+
+#listEquipos{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXT.jpg) no-repeat;
+	width:174px;
+	height:25px;
+	border:0px;
+	padding-left:0px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.select{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXT.jpg) no-repeat;
+	height:25px;
+	border:0px;
+	padding-left:0px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+#listEquipos2{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/fechTXT.jpg) no-repeat;
+	width:118px;
+	height:25px;
+	border:0px;
+	padding-left:0px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+#campoEquipos2{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/fechTXT.jpg) no-repeat;
+	width:118px;
+	height:25px;
+	border:0px;
+	padding-left:3px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+#fechTXT{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/fechTXT.jpg) no-repeat;
+	width:118px;
+	height:25px;
+	border:0px;
+	padding-left:4px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#fb0623;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+#inputTXTgde{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXTgde.jpg) no-repeat;
+	width:396px;
+	height:25px;
+	border:0px;
+	padding-left:6px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+#inputTXTmult{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXTmult.jpg) no-repeat;
+	width:396px;
+	height:71px;
+	border:0px;
+	padding-left:6px;
+	padding-top:4px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+#campoEquipos{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXT.jpg) no-repeat;
+	width:174px;
+	height:25px;
+	border:0px;
+	padding-left:6px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.inputVtz{
+
+font-size:14px;
+font-family: Verdana,Arial,sans-serif;
+background-color: #ffffff;
+display: inline-block;
+padding: 4px 6px;
+vertical-align: middle;
+border: 1px solid #cccccc;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+ padding: 0.5em;
+border-radius: 4px;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+
+}
+
+
+.inputSearch{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputSearch.jpg) no-repeat;
+	width:371px;
+	height:25px;
+	border:0px;
+	padding-left:1px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+	cursor: hand;
+}
+
+.inputSrchShort{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputSrchShort.jpg) no-repeat;
+	width:120px;
+	height:25px;
+	border:0px;
+	padding-left:1px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+	cursor: hand;
+}
+
+
+.inputSht{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXT.jpg) no-repeat;
+	width:174px;
+	height:25px;
+	border:0px;
+	padding-left:6px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.inputSht2{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTxt2.jpg) no-repeat;
+	width:30px;
+	height:25px;
+	border:0px;
+	padding-left:6px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.inputSht3{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTxt3.jpg) no-repeat;
+	width:85px;
+	height:25px;
+	border:0px;
+	padding-left:3px;
+	padding-top:0px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.inputTiny{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:8px;
+font-weight:bold;
+border:solid 1px #000000;
+color:#003399;
+}
+
+.textArea{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXTmult.jpg) no-repeat;
+	width:396px;
+	height:71px;
+	border:0px;
+	padding-left:6px;
+	padding-top:4px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+
+.textArea2{
+	margin-left:0px;
+	overflow:auto;
+	background: url(../mg/inputTXTmult2.jpg) no-repeat;
+	width:550px;
+	height:71px;
+	border:0px;
+	padding-left:6px;
+	padding-top:4px;
+	font-family: arial;
+	font-style: normal;
+	font-weight: normal;
+	color:#006699;
+	text-transform: normal;
+	letter-spacing: normal;
+	line-height: 1.3em;
+}
+
+.textosLogin{
+	font:Verdana, Arial, Helvetica, sans-serif;
+	color:#ffffff;
+	font-size:12px;
+	font-style:italic;
+	margin-left:50px;
+	margin-top:20px;
+}
+
+.subtitulos{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#446f97;
+	font-weight:bold;
+}
+
+
+.borderTop{
+
+border-top:solid 1px #ccc;
+
+}
+
+
+
+.grBox{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#000;
+	font-weight:bold;
+	border-bottom:groove 2px #000000;
+	border-top:solid 1px #000000;
+	border-left:groove 2px #000000;
+	border-right:solid 1px #000000;
+}
+
+
+
+.subtitulosS{
+	font-size:14px;
+	font-family:calibri;
+	color:#446fff;
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+.subtitulosS:hover {
+  background-color: #EBEBEB;
+}
+
+.titulo{
+	font-size:14px;
+	font-family:calibri;
+	color:#75879B;
+	font-weight:bold;
+	
+	
+}
+
+ 
+.titulo2{
+	font-size:14px;
+	font-family:calibri;
+	color:#fff;
+	font-weight:bold;
+	
+}
+
+.hidden{
+visibility:hidden;
+height:0;
+}
+
+
+.nivel1{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#009900;
+	font-weight:bold;
+}
+.nivel2{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#f3b215;
+	font-weight:bold;
+}
+.nivel3{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#FF0000;
+	font-weight:bold;
+}
+
+.tinyText{
+	font-size:10px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#446f97;
+}
+ 
+.tinyTitle{
+	font-size:10px;
+	font-weight:bold;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#446f97;
+}
+
+.texto{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#446f97;
+	font-weight:bold;
+	text-align:left;
+}
+
+.texto2{
+	font-size:14px;
+	font-family:Calibri;
+	color:#000000;
+	text-align:left;
+}
+
+
+ 
+.textosGr{
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#000;
+	font-weight:normal;
+	text-align:left;
+	border-top:dotted 1px #000000;
+}
+

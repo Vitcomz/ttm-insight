@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLDoc"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var functionName;
+
+function popsearchbox(_codeobj, _nameobj, _popbox, _function){
+
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  functionName = _function;
+
+  with (popbox.style){
+    visibility = "visible";
+  }
+
+search();
+}
+function setcodeandname(code, name){
+  codeobj.value = code;
+  nameobj.value = name;
+}
+
+function close(){
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(strc,strn){
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url ="/existencias/xml/Marcas.asp?RECURSO=ListMarcas";
+  var res = xmlDso.load(url);
+//  window.open(url);
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+  }
+}
+function set(itr){
+  if (itr){
+  	setcodeandname(itr.children[0].children[0].innerText, itr.children[0].children[1].innerText);
+	eval("parent." + functionName);
+	}
+  else setcodeandname("","");
+ close();
+ 
+}
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"
+	BGCOLOR="#dee6eb" SCROLL="no" onLoad="">
+
+<CENTER>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="set();">
+    </TD>
+  </TR>
+</TABLE>
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+
+<SPAN ID="cont" STYLE="height:150px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLDoc" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:default;" onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dee6eb')">
+    <TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="CODIGO" CLASS="hidden"></SPAN>
+	  <SPAN DATAFLD="DESCRIPCION" CLASS="text"></SPAN>
+    </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+
+
+
+
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,124 @@
+/* Copyright Dynarch.com, 2003-2006.  All Rights Reserved. */
+/* basic layout style for DynarchMenu; no colors are defined in this */
+/* horizontal parts */
+
+div.dynarch-horiz-menu {
+/*  white-space: nowrap; */
+  padding: 0px 3px;
+  border: 1px solid;
+  cursor: default;
+}
+
+div.dynarch-horiz-menu table, div.dynarch-popup-menu table { font: 11px tahoma,verdana,sans-serif; }
+div.dynarch-popup-menu table { border-collapse: collapse; }
+div.dynarch-horiz-menu table tr td.item table td.icon { padding-right: 3px; }
+div.dynarch-horiz-menu table tr td.item { padding: 3px 10px; }
+div.dynarch-horiz-menu table tr td.item img { vertical-align: middle; }
+div.dynarch-horiz-menu table tr td.separator { width: 6px; }
+div.dynarch-horiz-menu table tr td.separator div {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  margin: 3px 2px 2px 2px;
+  height: 1.2em;
+  overflow: hidden;
+}
+
+div.dynarch-horiz-menu td.disabled, div.dynarch-horiz-menu td.disabled table td { color: #aca899; }
+div.dynarch-horiz-menu td.disabled img { -moz-opacity: 0.4; filter: alpha(opacity=40); }
+
+/* vertical parts */
+
+div.dynarch-popup-menu {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  border: 1px solid;
+  padding: 1px;
+  cursor: default;
+  z-index: 1000;
+}
+div.dynarch-popup-base-menu { position: static; }
+div.dynarch-popup-menu tr.item td.icon img,
+div.dynarch-popup-menu tr.item td.icon div { width: 18px; height: 18px; }
+div.dynarch-popup-menu tr.item td.icon { padding: 0px 1px; height: 18px; width: 18px; }
+div.dynarch-popup-menu tr.item td.label { padding: 1px 15px 1px 3px; /* white-space: nowrap; */}
+div.dynarch-popup-menu tr.item td.arrow { width: 11px; }
+div.dynarch-popup-menu tr.item td.arrow div { width: 11px; background: transparent url("img/rarrow.gif") no-repeat 0% 50%; }
+div.dynarch-popup-menu tr.hover td.arrow div,
+div.dynarch-popup-menu tr.active td.arrow div { background: transparent url("img/rarrow-hover.gif") no-repeat 0% 50%; }
+
+div.dynarch-popup-menu tr.separator td div {
+  margin: 2px;
+  height: 1px;
+  line-height: 1px;
+  font-size: 1px;
+  border: none;
+}
+div.dynarch-popup-menu tr.disabled td.label { color: #aca899; }
+div.dynarch-popup-menu tr.disabled td.icon img { -moz-opacity: 0.4; filter: alpha(opacity=40); }
+
+/* shadows */
+
+div.dynarch-menu-shadow, img.dynarch-menu-shadow, div.div.dynarch-IE6-shadow { z-index: 990; position: absolute; }
+div.dynarch-menu-shadow { background-color: #555; -moz-opacity: 0.6; filter: alpha(opacity=60); }
+
+/* hider */
+iframe#dynarch-menu-hider { z-index: 980; }
+
+/* toolbars */
+
+div.dynarch-menu-toolbar table tr td.item {
+  padding: 2px 3px;
+}
+.impossible-class-name-to-preload-shadow-image-in-internet-exploder { background-image: url("img/shadow.png"); }
+
+
+/* Additional styles for a "3D" look&feel similar to the menus in
+Windows 98/2000 or Mozilla Modern theme. */
+
+/* horizontal parts */
+
+div.dynarch-horiz-menu { border-width: 2px; border-style: groove; }
+div.dynarch-horiz-menu { padding: 1px; }
+div.dynarch-horiz-menu table tr td.hover { padding: 2px 9px; border: 1px solid; }
+div.dynarch-horiz-menu table tr td.active,
+div.dynarch-horiz-menu table tr td.pressed { padding: 3px 8px 1px 10px; border: 1px solid; }
+
+/* vertical parts */
+
+div.dynarch-popup-menu { padding: 0px; }
+div.dynarch-popup-menu div.d { border: 1px solid; }
+div.dynarch-popup-menu div.a { padding: 1px;  }
+div.dynarch-popup-menu tr.separator td div { border-top: 1px solid; margin: 4px 2px 3px 2px; }
+
+/* toolbars */
+
+div.dynarch-menu-toolbar table tr td.item {
+  padding: 2px 3px;
+}
+div.dynarch-menu-toolbar table tr td.hover {
+  padding: 1px 2px;
+}
+div.dynarch-menu-toolbar table tr td.active,
+div.dynarch-menu-toolbar table tr td.pressed {
+  padding: 2px 1px 0px 3px;
+}
+
+
+/* horizontal parts */
+
+div.dynarch-horiz-menu { background-color: #dde3eb; color: #000; border-color: #dde3eb; }
+div.dynarch-horiz-menu table { color: #000; }
+div.dynarch-horiz-menu table tr td.hover { border-color: #fff #8f9fb1 #8f9fb1 #fff; }
+div.dynarch-horiz-menu table tr td.active,
+div.dynarch-horiz-menu table tr td.pressed { border-color: #8f9fb1 #fff #fff #8f9fb1; background-color: #cdd3db; }
+div.dynarch-horiz-menu table tr td.pressed { background-color: #eaf0f8; }
+div.dynarch-horiz-menu table tr td.separator div { border-left-color: #a5abc0; border-right-color: #eef1f7; }
+
+/* vertical parts */
+
+div.dynarch-popup-menu { border-color: #7f8893; color: #000; background-color: #dde3eb; }
+div.dynarch-popup-menu div.d { border-color: #eef4fc #b9bfc7 #b9bfc7 #eef4fc; }
+div.dynarch-popup-menu div.a { padding: 0; }
+div.dynarch-popup-menu tr.separator td div { border-color: #a5abc0; background-color: #eef1f7; }
+div.dynarch-popup-menu tr.item.hover, div.dynarch-popup-menu tr.item.active { background-color: #424f63; color: #fff; }

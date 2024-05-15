@@ -1,0 +1,473 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLTemp"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<!--adding-->
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<!---->
+
+<SCRIPT>
+<!--adding-->
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+<!---->
+
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var strs;
+var functionName;
+
+var Equipo = new Object();
+var Tipo = new Object();
+var activo=false;
+
+function popsearchbox(_codeobj, _nameobj, _equipo, _tipo, _popbox, _function){
+	
+  //alert(_equipo.tagName);
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  Equipo = _equipo;
+  Tipo = _tipo;
+  
+  functionName = _function;
+  with (popbox.style){visibility = "visible";}
+  
+if (!activo){
+   	search();
+	}  
+
+}
+
+function setcodeandname(code, name){
+
+  codeobj.value = code;
+  
+  if (nameobj.tagName =='SPAN'){
+  		  nameobj.innerText = name;
+		  }
+	else
+	  nameobj.value = name;
+ popbox.style.visibility = "hidden";
+	 if (id_br == "IE"){ 
+		event.cancelBubble=true;
+	 }
+ //runFunction();
+}
+
+function close(){
+  //nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+  activo = true;
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var XMLTemp = document.getElementById("XMLTemp");
+			XMLTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var XMLTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	
+  var xmlDso = XMLTemp.XMLDocument;
+  var cr = 0;
+  var url = "xml/Paradas.asp?RECURSO=listTipoParadas";
+ 	 	url +="&EQUIPO=" + Equipo.value;
+	 	url +="&TIPO=" + Tipo.value;
+		url +="&FAENA=" + getEmpresa();
+  	 	url +="&USUARIO="+GetSession();
+		url +="&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+  // window.open(url);
+  if (xmlestado){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+       document.getElementById("msg").style.display = "block";
+      document.getElementById("cont").style.display = "none";
+       document.getElementById("msg").innerText = "No se encontraron registros";
+    }else{
+       document.getElementById("msg").style.display = "none";
+      document.getElementById("cont").style.display = "block";
+			if (id_br == "IE")
+			{
+				
+				var tbody = document.getElementById("tblComponente").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}		
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				var tbody = document.getElementById("tblComponente").getElementsByTagName("tbody")[0];
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						var row = document.createElement("TR");
+						row.onMouseOver="mOvr(this,'#ABCCE5')";
+						row.onMouseOut="mOut(this,'#dee6eb')"; 
+						row.style.cursor = "hand";  
+						row.style.height = "9";
+						
+						var cell1 = document.createElement("TD");
+						cell1.style.borderBottom = "solid 1px #6587a3";
+						cell1.onclick = function () { set(this.parentElement); };
+						cell1.innerHTML =   "<SPAN CLASS='text'>" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell2 = document.createElement("TD");
+						cell2.style.borderBottom = "solid 1px #6587a3";
+						cell2.onclick = function () { set(this.parentElement); };
+						cell2.innerHTML =   "<SPAN CLASS='text'>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell3 = document.createElement("TD");
+						cell3.style.borderBottom = "solid 1px #6587a3";					
+						cell3.innerHTML =   "<IMG SRC='images/add.gif' onClick='buscaHijos(this.parentElement.parentElement);' STYLE='cursor:hand'>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						//row.appendChild(cell3);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						//row.appendChild(cell3);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[1].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<TR  STYLE='cursor:hand;'  HEIGHT='9'>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' onClick='set(this.parentElement);'><SPAN CLASS='text'>"+  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' onClick='set(this.parentElement);'><SPAN CLASS='text'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				 // context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' ><IMG SRC='images/add.gif' onClick='buscaHijos(this.parentElement.parentElement);' STYLE='cursor:hand'></TD>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[1].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[1].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+	  
+    }
+  }else{
+     document.getElementById("msg").style.display = "block";
+    document.getElementById("cont").style.display = "none";
+     document.getElementById("msg").innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+}
+
+function buscar(itr){
+var i;
+
+  if (itr){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var XMLTemp = document.getElementById("XMLTemp");
+			XMLTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var XMLTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+			var equip = itr.children[0].children[0].innerHTML
+		}else{
+			var equip = itr.children[0].children[0].innerText;
+		}
+	 var xmlDso = XMLTemp.XMLDocument;
+	 var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres";
+	 	 url +="&CODIGO=" + equip;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	 
+	 if (xmlDso.documentElement.childNodes.length==0){
+	 	//alert('hh');
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+			var equip = itr.children[0].children[0].innerHTML;
+			var equip1 = itr.children[1].children[0].innerHTML;
+		}else{
+			var equip = itr.children[0].children[0].innerText;
+			var equip1 = itr.children[1].children[0].innerText;
+		}
+
+		 setcodeandname(equip, equip1);
+	}else{
+			if (id_br == "IE")
+			{
+				
+				var tbody = document.getElementById("tblComponente").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}		
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				var tbody = document.getElementById("tblComponente").getElementsByTagName("tbody")[0];
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						var row = document.createElement("TR");
+						row.onMouseOver="mOvr(this,'#ABCCE5')";
+						row.onMouseOut="mOut(this,'#dee6eb')"; 
+						row.style.cursor = "hand";  
+						row.style.height = "9";
+						
+						var cell1 = document.createElement("TD");
+						cell1.style.borderBottom = "solid 1px #6587a3";
+						cell1.onclick = function () { set(this.parentElement); };
+						cell1.innerHTML =   "<SPAN CLASS='text'>" + x[i].getElementsByTagName("CODIGO")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell2 = document.createElement("TD");
+						cell2.style.borderBottom = "solid 1px #6587a3";
+						cell2.onclick = function () { set(this.parentElement); };
+						cell2.innerHTML =   "<SPAN CLASS='text'>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span>";
+						
+						var cell3 = document.createElement("TD");
+						cell3.style.borderBottom = "solid 1px #6587a3";					
+						cell3.innerHTML =   "<IMG SRC='images/add.gif' onClick='buscaHijos(this.parentElement.parentElement);' STYLE='cursor:hand'>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[1].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<TR  STYLE='cursor:hand;' HEIGHT='9'>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' onClick='set(this.parentElement);'><SPAN CLASS='text'>"+  x[i].getElementsByTagName("CODIGO")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' onClick='set(this.parentElement);'><SPAN CLASS='text'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</SPAN></td>";
+				  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;' ><IMG SRC='images/add.gif' onClick='buscaHijos(this.parentElement.parentElement);' STYLE='cursor:hand'></TD>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[1].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[1].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><tr>";
+				}
+			}
+		
+	}
+			
+	}	
+	if (!xmlestado)
+	 		window.open(url);
+	//alert(itr.tagName);
+}
+
+function set(itr){
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+			var equip = itr.children[0].children[0].innerHTML;
+			var equip1 = itr.children[1].children[0].innerHTML;
+		}else{
+			var equip = itr.children[0].children[0].innerText;
+			var equip1 = itr.children[1].children[0].innerText;
+		}
+	setcodeandname(equip, equip1);
+
+}
+
+function runFunction(){
+
+setTimeout("parent." + functionName, 400);
+
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+//			var evt=window.event;
+//			var fromElement=evt.fromElement || evt.relatedTarget;
+//			var toElement=evt.toElement || evt.relatedTarget;
+//			function mOvr(src,clrOver) { if (!src.contains(fromElementt)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+//			function mOut(src,clrIn) { if (!src.contains(toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+		}
+		else if (id_br == "IE")
+		{
+			function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+			function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+		}
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"
+ bgcolor="#dee6eb" SCROLL="no" onLoad="">
+
+<CENTER>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/refresh.gif" ALT="Inicio" STYLE="CURSOR: hand" 
+										onclick="search();">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" 
+	  		onClick="popbox.style.visibility = 'hidden';activo=false;">
+    </TD>
+  </TR>
+</TABLE>
+
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+
+<SPAN ID="cont" STYLE="height:270px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE id="tblComponente" WIDTH="100%" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</TABLE>
+</SPAN>
+
+</CENTER>
+</BODY>
+
+</HTML>

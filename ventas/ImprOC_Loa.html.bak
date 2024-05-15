@@ -1,0 +1,525 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOC"></xml>
+		<xml id="xmlAutoriza"></xml>
+		<xml id="xmlActividades"></xml>
+		<xml id="xmlResponsables"></xml>
+
+	<link rel="stylesheet" href="standard/menu.css" type="text/css">
+	<link rel="stylesheet" href="sci.css" type="text/css">
+	<script src="standard/vitcomz.js"> </script>
+
+<script>
+//Funciones de Inicio de Página
+
+var TotalArticulos=0;
+var TotalServicios=0;
+var tipoMoneda;
+var indExenta;
+	
+function inicio(){
+  //Variables generales
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  
+  ListResponsables();
+}
+
+
+function nuevo(){
+  //Variables generales
+  window.location.href="OT.html";
+}
+
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+  
+function getOC(){
+
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/OrdenCompra.asp?Recurso=GetOC&FOLIO=" + getParametro("OC");
+	    url += "&USERNAME=" + GetSession();
+	document.getElementById('IdNroOrden').innerText = getParametro("OC");
+    var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+		
+	setTimeout("mostrarArticulos()",1);
+	setTimeout("mostrarServicios()",1);
+	setTimeout("mostrarTotales()",1);
+	setTimeout("getAutoriza()",1);
+	
+	/*if(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"ESTADO")=='APR')
+				document.getElementById("btnEnviar").value = "Enviar a Adquisiciones.";
+
+	if(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"ESTADO")=='ENC')
+				document.getElementById("btnEnviar").value = "Enviar a Proveedor.";*/
+
+	tipoMoneda = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"DES_MONEDA");
+	indExenta = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"IND_EXENTA");
+	
+	if (getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"ESTADO")=="NUL"){
+					nullObj = document.getElementById("divNull");
+					with (nullObj.style){visibility = "visible";
+  										}
+						}
+	
+	//alert(indExenta);
+	
+}
+	
+	
+function getAutoriza(){
+
+    xmlAutoriza.async = false;
+    var xmlDso = xmlAutoriza.XMLDocument;
+	var url = "xml/Existencias.asp?Recurso=GetAutorizaCompras";
+	
+    var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+	
+	
+}
+
+function mostrarArticulos(){
+
+limpiarTabla2('tabArticulos');
+
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	var folio = getParametro("OC");
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=ListArticulosOC&FOLIO=" + folio;
+		url += "&APROBADO=TRUE";
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='tituloBox' type='text' size='8' value='" + 
+										getChildNodeValue(node,"ID") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<INPUT class='tituloBox' type='text' size='60' value='"+ 
+										getChildNodeValue(node,"DESCRIPCION") + "'>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='3' value='" 	+ 
+										Cantidad + "'>";
+										
+			var cell = row.insertCell(3);
+			
+			if (tipoMoneda == 'PESOS'){
+				 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+										formatMiles(Valor) + "'>";
+										}
+			else{
+				 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+										formatMiles(Valor) + "'>";
+										}
+			
+
+			var cell = row.insertCell(4);
+			
+			
+			if (tipoMoneda == 'PESOS'){
+					cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+											formatMiles(Valor
+											*Cantidad) + "'>";
+					TotalArticulos = TotalArticulos + Valor * Cantidad;
+					}
+			else{
+				 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+										formatMiles((parseFloat(Valor)
+										*parseFloat(Cantidad))) + "'>";												
+				 TotalArticulos = TotalArticulos + parseFloat(Valor)	* parseFloat(Cantidad);
+				 }
+			
+		/*	var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";*/
+			         }//FOR
+         }
+      }
+      else
+      	window.open(url);
+ 
+}
+
+function mostrarServicios(){
+
+limpiarTabla2('tabServicios');
+
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	var folio = getParametro("OC");
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Servicios.asp?RECURSO=ListServiciosOC&FOLIO=" + folio;
+		url += "&APROBADO=TRUE";
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='tituloBox' type='text' size='8' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+  			var cell = row.insertCell(1);
+			cell.innerHTML = "<div  class='tituloBoxW'  >" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</div>";
+			cell.width = 390;
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='3' value='" 	+ 
+										Cantidad + "'>";
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+										formatMiles(parseFloat(Valor)) + "'>";
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='tituloBoxNum' type='text' size='10' value='" 	+ 
+										formatMiles((parseFloat(Valor)
+										*parseFloat(Cantidad))) + "'>";
+										
+			TotalServicios = TotalServicios + parseFloat(Valor)	* parseFloat(Cantidad);
+										
+		      }//FOR
+        }
+      }
+      else
+      	window.open(url);
+ 
+}
+
+function mostrarTotales(){
+	var tbl = document.getElementById('tabTotales');
+	var lastRow = tbl.rows.length;
+	
+	 
+	 Total = TotalArticulos + TotalServicios;
+    										
+			
+	if(indExenta=='TRUE'){
+		var row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+			cell.innerHTML = "<FONT CLASS='titulo'>Total en Palabras: <div class='bordes'>" + 
+							  millones(parseInt(Total*1.19))+" </div>"+
+							 tipoMoneda + "</FONT><br><FONT CLASS='titulo'>COMPRA EXENTA DE IVA.</FONT>";
+  	 		var cell = row.insertCell(1);
+		 			cell.innerHTML = "<FONT CLASS='titulo'>TOTAL NETO </FONT>" +
+		 			"<INPUT class='tituloBoxNum' type='text' size='10' value='" +  formatMiles(Total) + "'>";
+			cell.align='right';
+		}
+		else{
+			
+		  document.getElementById("idPalabras").innerText = millones(redond(Total*1.19,0))+" " + tipoMoneda;
+			
+			var row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+							 
+			if (tipoMoneda=='PESOS'){
+		 			cell.innerHTML = "<FONT CLASS='titulo'>TOTAL NETO </FONT>" +
+		 			"<INPUT class='tituloBoxNum' type='text' size='10' value='" +  formatMiles(redond(Total,0)) + "'>";
+					}
+			else
+				{
+		 			cell.innerHTML = "<FONT CLASS='titulo'>TOTAL NETO </FONT>" +
+		 			"<INPUT class='tituloBoxNum' type='text' size='10' value='" +  formatMiles(Total) + "'>";
+					}
+			cell.align='right';
+			
+					
+			var row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+			
+			if (tipoMoneda=='PESOS'){
+				cell.innerHTML = "<FONT CLASS='titulo'>IVA 19% </FONT>" +
+								 "<INPUT class='tituloBoxNum' type='text' size='10' value='" + 
+										formatMiles(redond(Total*1.19 - Total,0)) + "'>";
+										}
+			else{
+				cell.innerHTML = "<FONT CLASS='titulo'>IVA 19% </FONT>" +
+								 "<INPUT class='tituloBoxNum' type='text' size='10' value='" + 
+										formatMiles(Total*1.19 - Total,0) + "'>";
+				}
+			    cell.align='right';
+				
+			var row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+			
+			if (tipoMoneda=='PESOS'){
+				cell.innerHTML = "<FONT CLASS='titulo'>TOTAL </FONT><INPUT class='tituloBoxNum'"+
+								 "type='text' size='10' value='" + formatMiles(redond(Total*1.19,0)) + "'>";
+							}
+			else{
+				cell.innerHTML = "<FONT CLASS='titulo'>TOTAL </FONT><INPUT class='tituloBoxNum'"+
+								 "type='text' size='10' value='" + formatMiles(Total*1.19,0) + "'>";
+				}
+			cell.align='right';
+		
+		}
+		
+		
+
+}
+
+
+//Funciones generales
+ function limpiarTabla(tabla)
+ {
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(0);
+	 }
+ }
+ 
+  function limpiarTabla2(tabla)
+ {
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(1);
+	 }
+ }
+ 
+</script>
+	<style type="text/css">
+<!--
+body {
+	margin-left: 0.5in;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style2 {color: #FF0000}
+-->
+    </style></HEAD>
+	<body onload="getOC();">
+	
+	
+	<DIV id="divNull" class="null" onclick="event.cancelBubble=true" style="visibility:hidden;" ></DIV>
+
+ 
+		<form name="formulario">
+			<table height="243" cellSpacing="0" cellPadding="0" width="717" border="0"  DATASRC="#xmlOC">
+			  <!--DWLayoutTable-->
+				<tr class="titulo">
+					<th width="19" height="146" vAlign="top"><!--DWLayoutEmptyCell-->&nbsp;</th>
+					<th colspan="2" align="center" vAlign="top">	
+						  <p class="titulo2">MUELLAJE DEL LOA S.A.</p>					  
+							<p> GIRO :Servcios relacionados con el transporte por agua<br>
+				      			R.U.T. 99.598.020-7<BR>
+				     			Avda Grecia s/n Costado del recinto portuario<BR>
+				      			Fono : 56-55-432301 / Fax 56-55-432309<BR>
+	      		 				ANTOFAGASTA</p></th>
+				    <th colspan="2" align="center" vAlign="middle">
+					<table width="179" height="100" border="2"  bordercolor="#FF0000" cellpadding="0" cellspacing="0">
+						<tr><td>
+							<table width="179" height="100" align="center" >
+								<tr>
+								  <td align="center"><span class="style2">R.U.T. 99.598.020-7</span></td>
+								</tr>
+								<td align="center"><span class="style2">ORDEN DE COMPRA</span></td></tr>
+								  <td align="center"><span class="style2">ORDEN N&ordm; </span><span class="style2" id="IdNroOrden"></span></td>
+								</tr>
+						  </table>
+							</td></tr>
+				  	  </table>					</th>
+			    </tr>
+				<tr class="titulo">
+				  <th height="15" colspan="2" vAlign="top"><!--DWLayoutEmptyCell-->&nbsp;</th>
+				  <th width="300" align="center" vAlign="top"><!--DWLayoutEmptyCell-->&nbsp;</th>
+				  <th width="154"></th>
+			      <th width="140" align="center" vAlign="middle"><!--DWLayoutEmptyCell-->&nbsp;</th>
+		      </tr>
+				<tr class="titulo">
+				  <th height="15" colspan="2" align="right" vAlign="top">Fecha : </th>
+				  <th align="left" vAlign="top">&nbsp;<span datafld="FECHA"></span></th>
+				  <th align="right">RUT : </th>
+			      <th align="left" vAlign="middle">&nbsp;<span datafld="RUT_PROVEEDOR"></span></th>
+		      </tr>
+				<tr class="titulo">
+				  <th height="16" colspan="2" align="right" vAlign="top">Proveedor : </th>
+				  <th align="left" vAlign="top">&nbsp;<span datafld="PROVEEDOR"></span></th>
+				  <th align="right">Fono : </th>
+			      <th align="left" vAlign="middle">&nbsp;<span datafld="FONO"></span></th>
+		      </tr>
+				<tr class="titulo">
+				  <th height="15" colspan="2" align="right" valign="top">Direcci&oacute;n : </th>
+				  <th align="left" valign="top">&nbsp;<span datafld="DIRECCION"></span></th>
+				  <th align="right">Ciudad : </th>
+			      <th align="left" vAlign="middle">&nbsp;<span datafld="CIUDAD"></span></th>
+		      </tr>
+				<tr class="titulo">
+				  <th height="15" colspan="2" align="right" vAlign="top">Giro : </th>
+				  <th align="left" vAlign="top">&nbsp;<span datafld="GIRO"></span></th>
+				  <th align="right">Condiciones de Pago : </th>
+				  <th align="left" vAlign="middle">&nbsp;<span datafld="COND_PAGO"></span></th>
+		      </tr>
+				<tr class="titulo">
+				  <th height="15" colspan="2" align="right" vAlign="top">Motivo/Projecto : </th>
+				  <th align="left" vAlign="top">&nbsp;<span datafld="PROJECTO"></span></th>
+				  <th align="right">Tipo de Moneda : </th>
+				  <th align="left" vAlign="middle">&nbsp;<span id="idTipoMoneda" datafld="DES_MONEDA"></span></th>
+		      </tr>
+			 <tr class="titulo">
+				  <td height="13" colspan="2" align="right" vAlign="top">Lugar de Entrega : </td>
+				  <td align="left" vAlign="top">&nbsp;<span datafld="LUGAR_ENTREGA"></span></td>
+				  <td align="right">Plazo de Entrega : </td>
+				  <td>&nbsp;<span datafld="PLAZO_ENTREGA"></span></td>
+			  </tr>
+			 <tr>
+			   <td height="1"></td>
+			   <td width="104"></td>
+			   <td></td>
+			   <td></td>
+			   <td></td>
+		      </tr>
+		  </table>
+			<table height="588" cellSpacing="0" cellPadding="0" width="761" border="0">
+			  <!--DWLayoutTable-->
+			<tr>
+			  <th height="288" colspan="2" align="left" valign="top">
+			   <TABLE width="714" border="0" cellPadding="0" cellSpacing="0">
+				  <!--DWLayoutTable-->
+					<TR class="titulo" height="20">
+						<TH width="7" height="15" ></TH>
+				        <TH colspan="5" align="left" vAlign="middle">&nbsp;
+					  </TH>
+				    </TR>
+					<TR class="titulo" height="20">
+					  <TH height="15" ></TH>
+					  <TH width="84" align="left">CODIGO</TH>
+			     <TH width="383">DESCRIPCION</TH>
+				 <TH width="72" align="left">CANTIDAD</TH>
+				 <TH width="87" align="left">UNITARIO</TH>
+				 <TH width="81" align="left">TOTAL</TH>
+				 </TR>
+			    </TABLE>	
+				 <TABLE id="tabArticulos" border="0"></TABLE>	
+				<TABLE id="tabServicios" border="0">
+		      </TABLE>
+			 </th>
+			  <th width="11"></th>
+			</tr>
+			<tr>
+			  <th width="719" height="19" align="center" valign="top" class="LitleText">
+			  &quot;Orden de compra debe ser facturada en un solo documento, esta permitido la facturaci&oacute;n de un solo documento para mas de una compra
+realizando la referencia correspondiente.&quot;			  </th>
+			</tr>
+			<tr><td>
+			  <table width="100%">
+			  	<tr>
+				 <td width="53%" height="69" align="left">
+				 	<table DATASRC="#xmlOC">
+					<tr>
+				 	<td width="110" height="71" valign="top" class="texto">Total en Palabras :</td>
+					<td width="241" valign="top" class="bordes">
+								<span id="idPalabras"></span></td>
+					</tr>
+					<tr>
+				 	<td width="110" height="23" valign="top" class="texto">Solicitado por :</td>
+					<td width="241" valign="top" class="bordes">
+								<span datafld="NOMBRES"></span>&nbsp;<span datafld="APELLIDOS"></span></td>
+					</tr>
+			 	   	<tr >
+			 	     <td height="21" valign="top" class="texto">Area : </td>
+	 	      		 <td valign="top" class="bordes"><span datafld="AREA"></span></td>
+	 	          	</tr>
+			 	   <tr>
+			 	     <td rowspan="2" valign="top" class="texto">Autorizado por :  </td>
+	 	     		 <td height="25" valign="top" class="bordes"><span datafld="RESP_AREA"></span></td>
+	 	      		</tr>
+					</table>
+			 	  </td>
+				<!--lado derecho-->
+					<td width="47%"  align="right" valign="top">
+								<table align="right" border="0" id="tabTotales" width="200"></table>
+				  </td>
+				</tr>
+			  </table>
+					 
+			  
+			</tr></td>
+			<tr><td>
+		  	<table  width="719" height="79" align="left" cellpadding="0" cellspacing="3" class="texto" >
+		  	  <!--DWLayoutTable-->	
+			 <tr>
+					<td width="711" height="71" rowspan="4" align="right" valign="bottom" class="texto">
+					<table height="19" cellSpacing="0" cellPadding="0" 
+									border="0" DATASRC="#xmlAutoriza">
+			  		<TR valign="bottom">
+					  <td  height="30" align="center" valign="baseline" class="titulo">
+						  _______________<br>
+				  		AUTORIZACI&Oacute;N<br>
+				  		<span datafld="NOMBRES"></span>&nbsp;<span datafld="APELLIDOS"></span></td>
+			  		</TR>
+			   </table>				 	</td>
+	  		  </tr>
+			 
+			 
+			  </table>    
+		  <tr><td height="2">
+		  </TABLE>
+		<br><br>
+	</TR></TBODY></TABLE>
+	</form>
+ </body>
+</HTML>

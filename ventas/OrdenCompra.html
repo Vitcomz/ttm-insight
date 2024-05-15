@@ -1,0 +1,1038 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<title>Orden de Compra - Vitcomz </title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOC"></xml>
+		<xml id="xmlArea"></xml>
+		<xml id="xmlResponsables"></xml>
+		<xml id="xmlArticulos"></xml>
+		<xml id="xmlServicios"></xml>
+		<xml id="xmlMonedas"></xml>
+
+	<link rel="stylesheet" href="standard/menu.css" type="text/css">
+	<link rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+	<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+	<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+//Funciones de Inicio de P�gina
+var Autoriza;
+	
+function inicio(){
+
+  mydate 	= new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  
+  
+  ListResponsables();
+  listMonedas();
+	
+  formulario.txtUsuario.value = Usuario;  
+  formulario.listResponsables.value = Usuario;  
+  
+ 
+  if(getParametro("Folio")){
+				formulario.txtFolio.value = getParametro("Folio");
+				getOC();
+				}
+				
+getDatosArea(Usuario);
+
+
+if(Autoriza!=Usuario)
+		document.getElementById('chkVB1').disabled = true;
+
+}
+
+
+
+function nuevo(){
+  //Variables generales
+
+	document.getElementById('title').innerText="ORDEN DE COMPRA";
+	window.location.href="OrdenCompra.html";
+
+}
+
+function getDatosArea(UserName){
+
+    xmlArea.async = false;
+    var xmlDso = xmlArea.XMLDocument;
+	var url = "/sci/xml/Areas.asp?Recurso=GetAreaUsuario&USUARIO=" + UserName;
+    var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+		
+	var tree = xmlDso.documentElement;
+	
+		  var node = tree.childNodes.item(0); 
+		  //alert(node.text);
+		  Autoriza = getChildNodeValue(node,"AUTORIZA");
+		//  alert(Autoriza);
+	
+}
+
+
+function guardar(){
+
+labelLoading.style.visibility = "visible";
+
+	if (formulario.listEstados.value=='NUL'){
+					alert("Orden fue Anulada.");
+					labelLoading.style.visibility = "hidden";
+					getOC();
+					return;
+					}
+					
+	if (formulario.listEstados.value=='ENV'){
+					alert("Orden fue enviada al proveedor.");
+					labelLoading.style.visibility = "hidden";
+					getOC();
+					return;
+					}
+					
+					
+if (formulario.listEstados.value=='REC'){
+					alert("Orden fue recepcionada.");
+					labelLoading.style.visibility = "hidden";
+					getOC();
+					return;
+					}
+					
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;							
+	
+	var url = "xml/OrdenCompra.asp?Recurso=SetAprueba&FOLIO=" + formulario.txtFolio.value;
+
+	url += "&VB1=" + formulario.chkVB1.checked;
+	url += "&EMPRESA=" + getEmpresa();
+
+	//alert(url);
+	var res =xmlDso.load(url);
+	if (res){
+		guardarArticulos();
+		guardarServicios();
+		}
+	else
+		window.open(url);
+		
+	setTimeout("getOC();",1);
+}
+
+
+function guardarArticulos(){
+
+ var tbl = document.getElementById('tabArticulos');
+ var lastRow = tbl.rows.length;
+	xmlArticulos.async = false;
+ var xmlDso = xmlArticulos.XMLDocument;
+			
+ 
+ for (i=1; i<lastRow -1; i++){
+		url = "xml/Articulos.asp?RECURSO=UpdateArticulosOC"
+		url += "&CODIGO="+ tbl.rows[i].children[0].children[0].value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		url += "&VALOR=" + tbl.rows[i].children[3].children[0].value;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		url += "&APROBADO=" + tbl.rows[i].children[5].children[0].checked;
+		//alert(tbl.rows[i].children[5].children[0].checked);
+	    var res =xmlDso.load(url);
+				if (!res) 
+						window.open(url);
+	}
+	 
+} 
+
+function guardarServicios(){
+
+ var tbl = document.getElementById('tabServicios');
+ var lastRow = tbl.rows.length;
+	xmlServicios.async = false;
+ var xmlDso = xmlServicios.XMLDocument;
+  
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);
+						
+ 
+ for (i=1; i<lastRow -1; i++){
+		url = "xml/Servicios.asp?RECURSO=UpdateServiciosOC"
+		url += "&CODIGO=" + tbl.rows[i].children[0].children[0].value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		url += "&VALOR=" + tbl.rows[i].children[3].children[0].value;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		url += "&APROBADO=" + tbl.rows[i].children[5].children[0].checked;
+
+	    var res =xmlDso.load(url);
+				if (!res) 
+						window.open(url);
+	}
+		
+	 
+} 
+
+function listMonedas(){
+
+  xmlMonedas.async = false;
+  var xmlDso = xmlMonedas.XMLDocument;
+  var url = "xml/monedas.asp?RECURSO=ListMonedas";
+  var res = xmlDso.load(url);
+
+ if (formulario.listMonedas.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"NOMBRE") ,getChildNodeValue(node,"SIMBOLO"));
+	            formulario.listMonedas.options[i] = opcion; }
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+  
+function getOC(){
+
+    xmlOC.async = false;
+	labelLoading.style.visibility = "visible";
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/OrdenCompra.asp?Recurso=GetOC&FOLIO=" + formulario.txtFolio.value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&USERNAME="+Usuario;
+	
+    var res =xmlDso.load(url);
+	
+	if (res){
+		if (xmlDso.documentElement.childNodes.length==0){
+			labelLoading.style.visibility = "hidden";
+			formulario.txtFolio.focus();
+			getDatosArea(Usuario);
+			limpiarTabla2('tabArticulos');
+			limpiarTabla2('tabServicios');
+			}
+		else{
+		setTimeout("mostrarArticulos();",1);
+		setTimeout("mostrarServicios();",1);
+		}
+	  }
+	else
+		window.open(url);
+	
+	
+	if(xmlDso.documentElement.childNodes.length>0)
+	getDatosArea(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"RESPONSABLE"));
+	
+	
+	/*if(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"ESTADO")=='APR')
+				document.getElementById("btnEnviar").value = "Enviar a Adquisiciones.";*/
+	//alert(Autoriza);	
+		
+if(Autoriza!=Usuario)
+		document.getElementById('chkVB1').disabled = true;
+		
+	
+	
+}
+
+
+function anular(){
+
+	if(formulario.listEstados.value=="REC"){
+				alert("La Orden ya fue recepcionada.");
+				return;
+				}
+				
+	if (confirm("Desea anular orden de compra Nro " +formulario.txtFolio.value)){			
+		xmlOC.async = false;
+	    var xmlDso = xmlOC.XMLDocument;							
+	
+		var url = "xml/OrdenCompra.asp?Recurso=nullOrdenCompra&FOLIO=" + formulario.txtFolio.value;
+			url += "&USERNAME=" + Usuario;
+			url += "&EMPRESA=" + getEmpresa();
+
+		//alert(url);
+		var res =xmlDso.load(url);
+		if (!res)
+			window.open(url);
+	}
+	
+	getOC();
+	
+}
+	
+function enviar(){
+	
+					
+	if (formulario.listEstados.value=='ENV'){
+					alert("Orden fue enviada al proveedor.");
+					return;
+					}
+					
+					
+					
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+					
+	
+	if (formulario.txtFolio.value){
+		var url = "xml/OrdenCompra.asp?Recurso=UpdateOrdenCompra&FOLIO=" + formulario.txtFolio.value;
+		
+		url += "&FECHA=" + formulario.txtFecha.value;
+		url += "&RESPONSABLE=" + formulario.listResponsables.value;
+		url += "&TIPO=" + formulario.tipoMoneda.value;
+		url += "&OBSERVACION=" + formulario.txtObservacion.value;
+		url += "&RUT_PROVEEDOR=" + getRut(formulario.txtRutProveedor.value);
+		url += "&COND_PAGO=" + formulario.listPago.value;
+		url += "&ESTADO=ENV";
+		url += "&EMPRESA=" + formulario.listEmpresa.value;
+		url += "&USERNAME=" + Usuario;
+		url += "&TIPO=" + formulario.tipoMoneda.value;
+		
+		var res =xmlDso.load(url);
+	}
+	else
+		return;
+		
+	if (!res)
+		window.open(url);
+		
+	setTimeout("getOC();",400);
+}
+
+
+
+function creaArticulo(){
+
+var ID = formulario.txtID.value;
+var Cantidad = formulario.txtCantidad.value;
+var Precio = formulario.txtPrecio.value;
+
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	
+    xmlIncidente.async = false;
+    var xmlDso = xmlIncidente.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=GetArticulo&ID="+ID;
+    var res =xmlDso.load(url);
+ 
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"ID") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<INPUT class='Campo' type='text' size='60' value='"+ 
+										getChildNodeValue(node,"NOMBRE") + "'>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='Campo' type='text' size='3' value='" 	+ 
+										Cantidad + "'>";
+
+			var cell = row.insertCell(3);
+					 cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" 	+ 
+										Precio + "'>";
+
+			var cell = row.insertCell(4);
+					 cell.innerHTML ="<INPUT class='Campo' type='text' size='8' value='" 	+ 
+										Cantidad * Precio + "'>";
+										
+										
+		/*	var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";*/
+         }//for
+        }//if
+      }
+      else
+      {alert("Ha ocurrido un error al cargar los datos.\n" + xmlDso.parseError.reason);
+	  window.open(url);}
+ 
+
+}
+ 
+
+function mostrarArticulos(){
+
+
+limpiarTabla2('tabArticulos');
+
+
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	var folio = formulario.txtFolio.value;
+	
+    xmlArticulos.async = false;
+    var xmlDso = xmlArticulos.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=ListArticulosOC&FOLIO=" + folio;
+		url += "&EMPRESA=" + getEmpresa();
+		//url += "&APROBADO=TRUE";
+	
+	if (!formulario.txtFolio.value)
+	return;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"ID") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<INPUT class='Campo' type='text' size='60' value='"+ 
+										getChildNodeValue(node,"DESCRIPCION") + "'>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' onkeyUp='cambiaTotal(this)' readonly='true' >";
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										Valor + "' onkeyUp='cambiaTotal(this)' readonly='true'>";
+				cell.align='right';
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true'>";
+				cell.align='right';
+				
+			
+			if (Autoriza==Usuario){
+			
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked'/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand'/>";
+					}
+					
+			else{
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked' disabled/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' disabled/>";
+				}
+						
+		/*	var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";*/
+			         }//FOR
+         }
+      }
+      else
+      	window.open(url);
+		
+		
+ mostrarTotales();
+}
+
+ 
+function mostrarServicios(){
+
+limpiarTabla2('tabServicios');
+
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	var folio = formulario.txtFolio.value;
+	
+    xmlServicios.async = false;
+    var xmlDso = xmlServicios.XMLDocument;
+	var url = "xml/Servicios.asp?RECURSO=ListServiciosOC&FOLIO=" + folio;
+		url += "&EMPRESA=" + getEmpresa();
+
+		//url += "&APROBADO=TRUE";
+		
+	if (!formulario.txtFolio.value)
+	return;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+  			var cell = row.insertCell(1);
+			cell.innerHTML = "<textarea class='Campo' type='text' cols='70' rows=3>" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</textarea>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' readonly='true'>";
+				cell.align='right';
+				
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='8' value='" 	+ 
+										Valor + "' readonly='true'>";
+				cell.align='right';
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='8' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true'>";
+				cell.align='right';
+										
+		if (Autoriza==Usuario){
+			
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked'/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand'/>";
+					}
+					
+			else{
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked' disabled/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' disabled/>";
+				}
+			}
+										
+	  }//FOR
+      }
+      else
+      	window.open(url);
+	
+	mostrarTotalesServicios();
+	labelLoading.style.visibility = "hidden";
+ 
+}
+
+
+function cambiaTotal(obj){
+ var i = obj.parentElement.parentElement.rowIndex;
+ 
+var cantidad = obj.parentElement.parentElement.parentElement.children(i).children(2).children(0).value;
+var valor_unitario = obj.parentElement.parentElement.parentElement.children(i).children(3).children(0).value;
+obj.parentElement.parentElement.parentElement.children(i).children(4).children(0).value = cantidad * valor_unitario;
+
+mostrarTotales();
+mostrarTotalesServicios();
+ }
+ 
+ function mostrarTotales(){
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	total=0;
+	//alert(tbl.children(1).children(lastRow-1).children(3).children(0).value);
+	if (lastRow<2) return;			
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + Math.ceil(tbl.children(1).children(i).children(4).children(0).value);
+	}
+	
+	if (!tbl.children(1).children(lastRow-1).children(3).children(0).value)
+				tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" + 
+										total + "'>";
+	
+	cell.align='right';
+
+	
+}
+
+function mostrarTotalesServicios(){
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	total=0;
+	//alert(tbl.children(1).children(lastRow-1).children(3).children(0).value);
+	if (lastRow<2) return;
+			
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + Math.ceil(tbl.children(1).children(i).children(4).children(0).value);
+	}
+	
+
+	if (!tbl.children(1).children(lastRow-1).children(3).children(0).value)
+				tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" + 
+										total + "'>";
+	
+	cell.align='right';
+
+	
+}
+
+
+//Funciones generales
+//*****************************************************************
+
+ function limpiarTabla(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+ }
+ 
+function limpiarTabla2(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(1);
+	 }
+}
+ 
+function imprimirOC(){
+//showModalDialog(url,window,"status:no;help:no;dialogWidth:510px;dialogHeight:200px");
+
+if (!(formulario.chkVB1.checked)){
+						alert("Faltan aprobaciones.");
+						return;}
+					
+
+if (formulario.listEmpresa.value=='ATI')
+	var url = "ImprOC.html?OC=" + formulario.txtFolio.value;
+else
+	if (formulario.listEmpresa.value=='MATI')
+		var url = "ImprOC_MATI.html?OC=" + formulario.txtFolio.value;
+	else
+		var url = "ImprOC_LOA.html?OC=" + formulario.txtFolio.value;
+		
+window.open(url);
+
+	xmlArea.async = false;
+    var xmlDso = xmlArea.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=SetImprime&FOLIO=" + formulario.txtFolio.value;
+	    var res =xmlDso.load(url);
+		
+}
+
+
+function checkAll(){
+
+		
+ checkAllArt();
+ checkAllServ();
+	 
+} 
+
+function checkAllArt(){
+
+ var tbl = document.getElementById('tabArticulos');
+ var chk = document.getElementById('chkVB1');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=1; i<lastRow-1; i++){
+	if (chk.checked)
+		tbl.rows[i].children[5].children[0].checked=true;
+	else
+		tbl.rows[i].children[5].children[0].checked=false;
+	}
+	 
+} 
+
+function checkAllServ(){
+
+ var tbl = document.getElementById('tabServicios');
+ var chk = document.getElementById('chkVB1');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=1; i<lastRow-1; i++){
+	 if (chk.checked)
+		tbl.rows[i].children[5].children[0].checked=true;
+	else
+		tbl.rows[i].children[5].children[0].checked=false;
+	}
+	 
+} 
+
+
+</script>
+</HEAD>
+
+<body onload="inicio();">
+	
+	<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivProv" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 207px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 165px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameProv" src="ListProveedores.html" frameBorder="0" width="312" scrolling="no"	height="230"></IFRAME>
+</DIV>
+
+<DIV id="divOC" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 109px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 125px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameOC" src="ListOC.html" frameBorder="0" width="312" scrolling="no"	height="230"></IFRAME>
+</DIV>
+	
+<DIV id="divArticulos" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 50px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 150px" onclick="event.cancelBubble=true">
+			<IFRAME name="frameArticulos" src="BuscarArticulos.html" frameBorder="0" width="350" scrolling="no" height="250"></IFRAME>
+</DIV>
+
+<DIV id="DivObservacion" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 280px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameObservacion" src="observacion.html" frameBorder="0"
+	 width="560" scrolling="no" height="280">
+</IFRAME>
+</DIV>
+
+		<br>
+		<br>	
+		<form name="formulario">
+		<script language="JavaScript1.2" src="standard/menudata.js"></script>
+		<span class="loading" id="labelLoading" 
+		style="Z-INDEX: 135; LEFT: 296px; VISIBILITY: hidden; WIDTH: 256px; POSITION: absolute; TOP: 204px; HEIGHT: 48px">
+				<img src="images/ajax-loader.gif"  />Cargando.... espere un momento </span>
+			<table height="45" cellspacing="0" cellpadding="0" width="758" border="0">
+              <!--DWLayoutTable-->
+              <tr>
+                <th class="titulo" colspan="3" height="19"><span id="title">ORDEN DE COMPRA</span></th>
+              </tr>
+              <tr>
+                <th width="747" height="19" align="left" valign="bottom"
+				 background="images/blueBarLarge.jpg" class="titulo"> &nbsp;&nbsp;DESCRIPCION</th>
+              </tr>
+            </table>
+			<table height="428" cellSpacing="0" cellPadding="0" width="761" border="0">
+			  <!--DWLayoutTable-->
+				<tr>
+					<th height="102" colspan="2" vAlign="middle"> <!-- CABECERA SOLICITUD -->
+						<table id="tabCabecera1" cellSpacing="0" cellPadding="0" 
+								height="126" width="766" align="left" DATASRC="#xmlOC">
+						  <!--DWLayoutTable-->
+						<TR align="center">
+							<TD width="92"  height="19"  valign="top" class="Rotulo">FOLIO</TD>
+							<TD colSpan="4"  valign="top" class="Rotulo" >PROVEEDOR</TD>
+							<TD colspan="2"  valign="top" class="Rotulo">FECHA </TD>
+							<TD colspan="3" valign="top" class="Rotulo">ESTADO</TD>
+							<TD width="127"  valign="top" class="Rotulo" >EMPRESA</TD>
+				          </TR>
+						<TR align="center" vAlign="middle">
+						  <TD align="left"  valign="middle">
+					  	    <input class="Campo" type="text" size="5" name="txtFolio"
+							onKeyPress="if(event.keyCode==13)getOC();"
+							onBlur="if(this.value)getOC();" datafld="FOLIO">
+				          <IMG src="images/refresh.gif" alt="Buscar"	align="middle" style="CURSOR: hand" 
+								onclick="frameOC.mostrarVentana(txtFolio, 0, divOC,'getOC();',Usuario); return false;"></TD>
+						  <TD colSpan="4" align="left" valign="middle">
+   							<input name="txtRutProveedor" type="text" 
+									class="input" size="12" datafld="RUT_PROVEEDOR"/>
+				            <input name="txtProveedor" type="text" class="input"
+						  					  size="40" datafld="PROVEEDOR"/>
+                            
+						    <input  class="Campo" id="idRol" type="hidden" size="1" name="txtRol">
+					      <input  class="Campo" id="idUsuario" type="hidden" size="1" name="txtUsuario"></TD>
+						  <TD colspan="2" align="left" valign="middle">
+						    <input class="Campo" type="text" size="12" name="txtFecha"
+							   datafld="FECHA" readonly="true">
+						    </input>
+			  	          <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+							  onclick="FrameCalendar.fPopCalendar(txtFecha,
+							  txtFecha,divCalendar);return false"></TD>
+							  <TD colspan="3" align="left"  valign="middle">				  	    	
+							  <select  name="listEstados" class="input" disabled="disabled"
+											datafld="ESTADO">
+                                <option value="GEN">GENERADA</option>
+                                <option value="ENV">ENVIADA</option>
+                                <option value="REC">RECEPCIONADA</option>
+								<option value="PRC">P. RECEPCIONADA</option>
+								<option value="NUL">ANULADA</option>
+                          </select> </TD>
+						  <TD align="left"   valign="middle">
+						  <select  name="listEmpresa" class="input" 
+											datafld="EMPRESA" disabled="disabled">
+                            <option value="ATI" selected>ATI</option>
+                            <option value="MATI">MATI</option>
+                            <option value="LOA">LOA</option>
+                          </select></TD>
+						</TR>
+							<TR align="left">
+								<td  colSpan="2" valign="top" class="Rotulo">MOTIVO / PROJECTO</td>
+								<td colspan="2" align="center" valign="top"  class="Rotulo">RESPONSABLE</td>
+								<td colspan="2" align="center" valign="top"  class="Rotulo">COND. DE PAGO </td>
+								<td colSpan="2" align="center" valign="middle"  class="Rotulo">V&deg;B&deg;  1</td>
+						        <td width="76" align="center"  class="Rotulo">V&deg;B&deg;  2 </td>
+						        <td colSpan="2" align="center" valign="top"  class="Rotulo">TIPO DE MONEDA</td>
+						    </TR>
+							<TR align="left">
+								<td  colSpan="2" valign="top">
+								<input class="Campo" type="text" size="50"
+									 name="txtProjecto" datafld="PROJECTO"  readonly="true"></td>
+								<td colspan="2" align="center" valign="top">
+								  <select name="listResponsables" class="input" datafld="RESPONSABLE" disabled>
+				                </select>								</td>
+							  <td colspan="2" valign="top">
+							  	<select name="listPago" class="input" datafld="COND_PAGO" disabled>
+									<OPTION value="Contado" selected="selected">Al Dia</OPTION>
+									<OPTION value="15 D�as" >15 D�as</OPTION>
+									<OPTION value="30 D�as" >30 D�as</OPTION>
+									<OPTION value="60 D�as" >60 D�as</OPTION>
+                           	  </select>							  </td>
+						      <td colSpan="2" align="left" valign="top">
+					  		  <input  name="chkVB1" type="checkbox" class="input"  id="chkVB1"
+											 datafld="VB1" onClick="checkAll();"></td>
+						      <td align="left" valign="top">
+				  			  <input name="chkVB2" type="checkbox" class="input"  id="chkVB2" datafld="VB2"></td>
+						      <td colSpan="2" align="center" valign="top"  nowrap class="texto">
+							  <SELECT NAME="listMonedas" class="input" datafld="TIPO_MONEDA" disabled>
+								</SELECT>								</td>
+						    </TR>
+							<tr>
+							  <td height="19" colspan="2" valign="top" class="Rotulo">
+							  Lugar de Entrega</td>
+							  <td width="90" align="center" valign="top" class="Rotulo">O.C. EXENTA </td>
+							  <td colspan="3" valign="top" class="Rotulo">PLAZO  ENTREGA </td>
+						      <td colspan="5" valign="top" class="Rotulo"><!--DWLayoutEmptyCell-->&nbsp;</td>
+						  </tr>
+							<tr>
+							  <td height="22" colspan="2" valign="top">
+							  <select name="listEntrega" class="input" datafld="LUGAR_ENTREGA" disabled>
+							  	<OPTION value="MATTA 1839 Of. 701">MATTA 1839 Of. 701</OPTION>
+							   	<OPTION value="RECINTO PORTUARIO AVDA. GRECIA S/N" selected>RECINTO PORTUARIO AVDA. GRECIA S/N</OPTION>
+                              </select>							  </td>
+							  <td align="center" valign="top">
+						  	  <input  name="chkExenta" type="checkbox" 
+									class="input"  id="chkExenta" datafld="IND_EXENTA"  disabled>							  </td>
+							  <td colspan="3" valign="top">
+							    <select name="select" class="input" datafld="PLAZO_ENTREGA" disabled>
+                                <OPTION value="Inmediata" >Inmediata</OPTION>
+                                <OPTION value="3 D�as" >3 D�as</OPTION>
+                                <OPTION value="7 D�as" >7 D�as</OPTION>
+                                <OPTION value="15 D�as" >15 D�as</OPTION>
+								 <OPTION value="30 D�as" >30 D�as</OPTION>
+								  <OPTION value="60 D&iacute;as" >60 D�as</OPTION>
+                                </select></td>
+						      <td colspan="5" valign="top">
+							    <!--input class="Campo" type="text" size="50"
+									 name="txtObservacion" datafld="OBSERVACION">				
+						    <IMG style="CURSOR: hand" 
+							onclick="FrameObservacion.mostrarVentana(txtObservacion,
+							  txtObservacion,DivObservacion);return false"
+							src="images/table.png" align="middle"-->							</td>
+						  </tr>
+							<tr>
+							  <td height="0"></td>
+							  <td></td>
+							  <td></td>
+							  <td width="9"></td>
+							  <td width="11"></td>
+							  <td width="111"></td>
+							  <td width="1"></td>
+							  <td width="44"></td>
+							  <td></td>
+							  <td width="14"></td>
+							  <td></td>
+						  </tr>
+							<tr>
+							  <td height="3"></td>
+							  <td width="189"></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+						  </tr>
+					  </table>				  </th>
+			    </tr>
+			<tr>
+			
+			  <th width="759" height="146" align="left" valign="top">
+			<!---- ARTICULOS --->
+						<table width="294" border="0" cellPadding="0" cellSpacing="0" >
+							<TBODY>
+								<TR  valign="top" align="left">
+									<th  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;ARTICULOS</th>	
+									<th width="58" height="19" align="center"><input type="hidden" name="txtID"  size="2"  />
+								<input type="hidden" name="txtCantidad"  size="2"  />
+								<input type="hidden" name="txtPrecio"  size="2"  />
+								</th>
+								</TR>
+						  </TBODY>
+			    </table>
+							<TABLE width="710" border="0" id="tabArticulos">
+							  <!--DWLayoutTable-->
+							<TR class="Rotulo">
+								<TH width="85" height="18" align="left">
+									Codigo </TH>
+								<TH width="372" align="left">
+									Descripci&oacute;n </TH>
+								<TH width="66" align="left" valign="middle">Cantidad</TH>
+								<th width="89">Valor Unitario </th>
+								<th width="76">Total</th>
+								<th ><!---input type="checkbox"  id="chkAllArt" class="input" onClick="checkAllArt();"---></th>
+							  </TR>
+			  </TABLE>			  </th>
+			  </tr>
+			<tr>
+			
+			  <th width="759" height="148" align="left" valign="top">
+			<!---- SERVICIOS --->
+												<table width="294" border="0" cellPadding="0" cellSpacing="0" >
+							<TBODY>
+								<TR  valign="top" align="left">
+									<th  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;SERVICIOS</th>	
+									<th width="58" height="19" align="center">
+							
+								</th>
+								</TR>
+						  </TBODY>
+			    </table>
+				 <TABLE width="710" border="0" id="tabServicios" >
+							  <!--DWLayoutTable-->
+							<TR class="Rotulo">
+							<TH align="left">
+									Codigo</TH>
+								<TH width="372" align="left">
+									Descripci&oacute;n </TH>
+								<TH width="66" align="left" valign="middle">Cantidad</TH>
+								<th width="89">Valor Unitario </th>
+								<th width="76">Total</th>
+								<th ><!---input type="checkbox"  id="chkAllServ" class="input" onClick="checkAllServ();"---></th>
+				   </TR>
+				</TABLE>
+
+			  </th>
+			  </tr>
+
+			<tr>
+			  <th colspan="3" align="left" vAlign="top" scope="row">
+			  		
+			<BR>	
+			  </th>
+			  </tr>
+			<tr>
+			  <td height="0"></td>
+			  <td width="1"></td>
+			  <td width="1"></td>
+			  </tr>
+		  <tr><td colspan="3"></TBODY>
+	      </TABLE>
+			<table height="19" cellSpacing="0" cellPadding="0" width="752" border="0">
+				<TR>
+				  <td align="center"><input name="button" type="button" class="botonBlanco" onClick="guardar();" value="Aceptar"></td>
+					<td align="center">&nbsp;</td>
+				  <td align="center">
+				    <!---input id="btnEnviar" type="button" class="botonBlancoLargo" onClick="enviar();" value="Enviar Proveedor"--->
+			      </td>
+							</td>
+					<td align="center">
+							<input class="botonBlanco" onclick="anular();" type="button" value="Anular"></td>
+					<td align="center">
+							<input class="botonBlanco" onclick="imprimirOC();" type="button" value="Imprimir"></td>
+					<td align="center">&nbsp;</td>
+					</TD></TR>
+			</table>
+			</TR></TBODY></TABLE></form>
+</body>
+</HTML>

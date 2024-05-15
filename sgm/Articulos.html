@@ -1,0 +1,404 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Articulos</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlArticulo></xml>
+<xml id = xmlTemp></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+
+xmlDoc.async = false;
+
+function GetArticulo(){
+
+	xmlArticulo.async = false;
+	var xmlDso = xmlArticulo.XMLDocument;
+	var url = "/ventas/xml/Articulos.asp?RECURSO=GetArticulo&ID=" + formulario.txtID.value;
+		url += "&VTZ=" + Math.random();
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+
+/*
+    var tree = xmlDso.documentElement;
+	var node = tree.childNodes.item(0);
+  	SubFamilia = getChildNodeValue(node,"SUB_FAMILIA");
+			
+
+setTimeout("ListSubFamilias("+ SubFamilia + ");",400);*/
+}
+
+
+
+function guardar(){
+
+xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "/ventas/xml/Articulos.asp?RECURSO=existeArticulo&ID=" + formulario.txtID.value;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			//alert(getChildNodeValue(node,"RETURN"));
+			if (getChildNodeValue(node,"RETURN")=="NOT")
+					newArticulo();
+			else
+					updateArticulo();
+			}
+	else
+		window.open(url);
+	    
+				
+
+	
+
+}
+
+function newArticulo(){			
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "/ventas/xml/Articulos.asp?RECURSO=NewArticulo";
+		url += "&ID=" + formulario.txtID.value;
+		url += "&NOMBRE=" + formulario.txtNombre.value;
+		url += "&FAMILIA=" + formulario.listFamilias.value;
+		url += "&SUB_FAMILIA=" + formulario.listSubFamilias.value;
+		url += "&TIPO_MONEDA=" + formulario.listMonedas.value;
+		url += "&UNIDAD_MEDIDA=" + formulario.listUnidad.value;
+		url += "&MODELO=13";
+		url += "&MARCA=SIN";
+		url += "&RUT_PROVEEDOR=1";
+		url += "&VALOR=" + formulario.txtValor.value;
+		url += "&VTZ=" + Math.random();
+			
+		xmlestado = xmlDso.load(url);
+		
+	//     window.open(url);
+		if (xmlestado){
+				var tree = xmlDso.documentElement;
+	    	    var node = tree.childNodes.item(0);
+	   		
+				  alert("Articulo Ingresado.");
+				  }
+	   else 
+	     window.open(url);
+}
+
+function updateArticulo(){
+					
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "/ventas/xml/Articulos.asp?RECURSO=UpdateArticulo&ID=" + formulario.txtID.value;
+		url += "&CODIGO=" + formulario.txtCodigo.value;
+		url += "&NOMBRE=" + formulario.txtNombre.value;
+		url += "&FAMILIA=" + formulario.listFamilias.value;
+		url += "&SUB_FAMILIA=" + formulario.listSubFamilias.value;
+		url += "&TIPO_MONEDA=" + formulario.listMonedas.value;
+		url += "&MODELO=" + formulario.txtCodModelo.value;
+		url += "&MARCA=" + formulario.txtCodMarca.value;
+		url += "&UNIDAD_MEDIDA=" + formulario.listUnidad.value;
+		url += "&VALOR=" + (formulario.txtValor.value).replace(',','.');		
+		url += "&STOCK_MIN=" + formulario.TxtStockMin.value;
+		url += "&VTZ=" + Math.random();	
+		//window.open(url);
+	    xmlestado = xmlDso.load(url);
+		if (!xmlestado)
+			 window.open(url);
+		else{
+			alert("Articulo Actualizado.");
+			LimpiarForm();
+			option = "New"
+			}
+}
+
+
+function cancelar(){
+	LimpiarForm();
+	option='New';
+	formulario.txtCodigo.focus();
+}
+
+function eliminar(){
+	xmlTemp.async = false;
+  	var xmlDso =  xmlTemp.XMLDocument;
+  	var url = "/ventas/xml/Articulos.asp?RECURSO=DelArticulo";
+		 url += "&ID=" + formulario.txtID.value;
+		 
+	if (confirm("Seguro decea eliminar articulo id=" + formulario.txtID.value))
+			  var res = xmlDso.load(url);
+	
+	window.location.href="Articulos.html";
+
+}
+
+function ListFamilias(){
+
+  xmlTemp.async = false;
+  var xmlDso =  xmlTemp.XMLDocument;
+  var url = "/ventas/xml/familias.asp?RECURSO=ListFamilias";
+//  var url = "xml/equipos.asp?RECURSO=ListEquiposxUsuario";
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listFamilias.options[i] = opcion;
+				 }
+    	  }
+	else
+	  window.open(url);
+	
+} 
+
+function ListSubFamilias(selCode){
+
+  xmlTemp.async = false;
+  var xmlDso =  xmlTemp.XMLDocument;
+  var url = "/ventas/xml/familias.asp?RECURSO=ListSubFamilias";
+		url += "&FAMILIA=" + formulario.listFamilias.value;
+		
+		 
+  var res = xmlDso.load(url);
+  	
+  if (res){
+    	      var tree = xmlDso.documentElement;
+			  
+   			  formulario.listSubFamilias.length = tree.childNodes.length;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.listSubFamilias.options[i] = opcion;
+				if (opcion.value == selCode) opcion.selected = true;
+				//lert(getChildNodeValue(node,"DESCRIPCION"));
+				 }
+    	  }
+	else
+	  window.open(url);
+	
+} 
+ 
+
+
+
+function verFicha(){
+
+   window.location.href="ficha.html?ID=" + formulario.txtID.value + '&DESC=' + formulario.TxtNombre.value;
+  
+ }
+
+
+function search(strn){
+
+  xmlDoc.async = false;
+  var xmlDso = xmlDoc.XMLDocument;
+  var url = "/ventas/xml/Articulos.asp?RECURSO=ListArticulos&c="+strn;
+  var res = xmlDso.load(url);
+		 
+	  if (!res)
+	  			window.open(url);
+  
+ }
+
+function LimpiarForm(){
+		for (var i=0;i<document.formulario.length;i++){
+			if (document.formulario.elements[i].className=="input")
+							document.formulario.elements[i].value="";
+			}
+	}
+	
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+function GetProv(){
+}
+
+function  clrModelo(){
+	formulario.txtModelo.value="";
+}
+
+						
+</SCRIPT>
+
+<BODY onLoad="formulario.txtID.focus();ListFamilias();ListSubFamilias();">
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+
+<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+		style="position: absolute; visibility: hidden; width: 10;
+		z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+	<IFRAME frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180">
+	</IFRAME>
+</DIV>
+
+	<DIV id="divNew" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameNew" src="newArticulo.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+
+  <DIV id="divMarcas" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 69px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 231px"	onclick="event.cancelBubble=true">
+		<IFRAME name="frameMarcas" src="ListMarcas.html" frameBorder="0"
+				 width="250" scrolling="no" height="170"></IFRAME>
+  </DIV>
+		
+<DIV id="DivProv" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 152px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 232px; width: 393px; height: 211px;" onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameProv" src="ListProveedores.html" frameBorder="0" width="393" scrolling="no"	height="230"></IFRAME>
+</DIV>
+
+<DIV id="divArticulos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 99px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 98px; width: 450px; height: 235px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameArticulos" src="ListArticulos.html" frameBorder="0" width="450" scrolling="no" height="235"></IFRAME>
+</DIV>
+
+	<DIV id="divModelos" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 216px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 234px"	onclick="event.cancelBubble=true">
+	<IFRAME name="frameModelos" src="ListModelos.html" frameBorder="0" width="250" scrolling="no" height="170"></IFRAME>
+  </DIV>
+	
+<BR><BR><BR>
+<TABLE width="1031" height="">
+<TR>
+  <TD width="1023" height="31" class="titulo">Productos / Servicios</TD>
+</TR>
+<TR><TD valign="top">
+	<TABLE width="649"  height="237" border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlArticulo">
+	  <!--DWLayoutTable-->
+	  <TR class="texto" >
+	    <TD width="17" height="17"></TD>
+	    <TD align="center" valign="top">ID</TD>
+	    <TD colspan="3" align="left">&nbsp;&nbsp;&nbsp;CODIGO DE BARRA </TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="24">&nbsp;</TD>
+	    <TD width="143" align="left" valign="top">
+		<INPUT name="txtID" type="text" class="input"
+			  	size="16" datafld="ID" onKeyPress="if(event.keyCode==13)GetArticulo();" />
+	      <IMG src="images/lupa.jpg" alt="Buscar" width="19" height="19" align="top" style="CURSOR: hand" 
+									onClick="frameArticulos.popsearchbox(txtID,txtNombre,
+									 divArticulos,'GetArticulo();'); return false;"></TD>
+	    <TD colspan="3" align="left">
+		  <INPUT name="txtCodigo" type="text" class="input"
+		  	size="30" datafld="CODIGO" />		</TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="15"></TD>
+	    <TD colspan="4" align="left" valign="top">DESCRIPCION</TD>
+	    </TR>
+	  <TR > 
+		<TD height="24" >&nbsp;</TD>
+		<TD colspan="4" valign="top" >
+		    <TEXTAREA class="input" name="txtNombre" type="text"  ROWS="3" COLS="100" datafld="NOMBRE"></TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="texto" >
+	  <TD height="15"></TD>
+	  <TD align="center" valign="top">MARCA</TD>
+	  <TD align="center" valign="top">MODELO</TD>
+	  <TD width="106" align="CENTER" valign="top">VALOR</TD>
+	  <TD width="134" align="center">STOCK MINIMO </TD>
+	  </TR>
+	<TR class="texto" >
+	  <TD height="24">&nbsp;</TD>
+	  <TD align="left" valign="top">
+	        <INPUT name="txtCodMarca" type="hidden"
+	  				class="input" datafld="COD_MARCA"/>
+		    <INPUT name="txtMarca" type="text" 
+	  				class="input" size="18" datafld="MARCA"/>
+		    <IMG src="images/lupa.jpg" alt="Marcas" width="19" height="19" align="top"
+	  					 style="CURSOR: hand" 
+						 onClick="frameMarcas.popsearchbox(txtCodMarca,txtMarca, divMarcas,'clrModelo();'); return false;"> </TD>
+	  <TD width="185" align="left" valign="top">
+			  <INPUT class="Campo" type="hidden"  name="txtCodModelo" datafld="COD_MODELO">
+		    <INPUT class="input" type="text" size="18" name="txtModelo" datafld="MODELO">
+		    <IMG src="images/lupa.jpg" alt="Buscar" width="19" height="19" align="top" style="CURSOR: hand" 
+			  onClick="frameModelos.popsearchbox(txtCodMarca, txtCodModelo, txtModelo,
+			  					 divModelos); return false;"> </TD>
+	  <TD align="center" valign="top">
+      		<INPUT name="txtValor" type="text" 	class="input"  size="16" datafld="VALOR"></TD>
+	  <TD align="center" valign="top">
+      <INPUT name="TxtStockMin" type="text" 
+	  				class="input" id="TxtStockMin" size="16" maxlength="15" datafld="STOCK_MIN"/></TD>
+	  </TR>
+	<TR class="texto" >
+		<TD height="16"></TD>
+		<TD align="center" valign="top">FAMILIA</TD>
+		<TD align="left" valign="top">SUB FAMILIA </TD>
+		<TD>TIPO MONEDA</TD>
+		<TD align="center">UNIDAD DE MEDIDA</TD>
+	</TR>
+	<TR class="texto" >
+	  <TD height="24">&nbsp;</TD>
+	  <TD align="left" valign="top"><SELECT name="listFamilias" class="input" datafld="FAMILIA" onChange="ListSubFamilias();">
+            </SELECT></TD>
+	  <TD valign="top">
+	  <SELECT name="listSubFamilias" class="input" datafld="SUB_FAMILIA">
+            </SELECT></TD>
+	  <TD >
+	    <SELECT NAME="listMonedas" CLASS="input" DATAFLD="TIPO_MONEDA" >
+                                	<OPTION VALUE="PE" SELECTED>PESOS</OPTION>
+                                    <OPTION VALUE="DO">DOLAR</OPTION>
+                                    <OPTION VALUE="EU">EURO</OPTION>
+                                    <OPTION VALUE="LB">LIBRA</OPTION>
+         </SELECT>
+	  </TD>
+	  <TD align="center">
+	    <SELECT NAME="listUnidad" CLASS="input" DATAFLD="UNIDAD_MEDIDA" >
+          <OPTION VALUE="UN" SELECTED>UNIDAD</OPTION>
+          <OPTION VALUE="KG">KG</OPTION>
+          <OPTION VALUE="LT">LITRO</OPTION>
+          <OPTION VALUE="MTR">METROS</OPTION>
+          <OPTION VALUE="MT2">METROS CUADRADOS</OPTION>
+          <OPTION VALUE="SET">SET</OPTION>
+          <OPTION VALUE="PUL">PULGADAS</OPTION>
+          <OPTION VALUE="PU2">PULGADAS CUADRADAS</OPTION>
+          <OPTION VALUE="KIT">KIT</OPTION>
+          <OPTION VALUE="ROLLOS">ROLLOS</OPTION>
+        </SELECT>
+</TD>
+	</TR>
+	
+	<TR class="texto" >
+	  <TD height="17"></TD>
+	  <TD colspan="2" align="left" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	  <TD></TD>
+	  <TD></TD>
+	</TR>
+	<TR class="texto" >
+      <TD height="50">&nbsp;</TD>
+      <TD colspan="3" align="left" valign="top">&nbsp;&nbsp;
+        <INPUT name="button3" type="button" class="botonBlanco" onClick="guardar();" value="Guardar">
+        <INPUT name="button3" type="button" class="botonBlanco" onClick="cancelar();" value="Limpiar">	
+		<INPUT name="button3" type="button" class="botonBlanco" onClick="eliminar();" value="Eliminar">		</TD>
+      <TD align="left" valign="top"><INPUT name="button" type="button" class="botonBlanco" 
+			  		onClick="verFicha();" value="Ficha"></TD>
+      </TR>
+	</TABLE>
+</TD>
+</TR>
+</TABLE>
+
+</FORM>
+</BODY>
+</HTML>

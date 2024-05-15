@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Menu</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlRoles></xml>
+<xml id = xmlSistemas></xml>
+<xml id = xmlList></xml>
+<xml id = xmlMenuPrincipal></xml>
+<xml id = xmlMenu></xml>
+
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+xmlDoc.async = false;
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function Nuevo(){
+var url ="NewMenu.html?SISTEMA=" + formulario.listSistemas.value;
+	url += "&MENU=" + formulario.listMenu.value;
+	//window.open(url,'','width=600,height=300,toolbar=no,statusbar=no,align=middle');
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:510px;dialogHeight:200px");	
+	ListSubMenu();
+}
+
+
+function UpdateTable()
+{
+
+
+	var Sistema = formulario.listSistemas.value;
+	var tabla;
+        tabla = document.getElementById('Tabla1');
+		for (i=1; i< tabla.rows.length; i++){
+			Codigo = tabla.rows[i].children[0].children[0].value;
+			Nombre = tabla.rows[i].children[1].children[0].value;
+			CodPadre= tabla.rows[i].children[2].children[0].value;
+			Orden = tabla.rows[i].children[3].children[0].value;
+			Link = tabla.rows[i].children[4].children[0].value;
+			DelRolMenu(Codigo);
+			if(tabla.rows[i].children[6].children[0].checked)
+					InsertRolMenu(Codigo);
+			UpdateMenu(Codigo, CodPadre, Nombre, Link, Orden, Sistema);
+
+		}
+ListSubMenu(); 
+
+}
+
+function InsertRolMenu(Codigo){
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Menu.asp?RECURSO=NewMenuRol"
+			url += "&CODIGO=" + Codigo;
+			url += "&ROL=" + formulario.listRoles.value;
+			url += "&SISTEMA=" + formulario.listSistemas.value;
+	xmlestado = xmlDso.load(url);
+	
+	if(!xmlestado)
+		window.open(url);
+}
+
+function DelRolMenu(Codigo){
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Menu.asp?RECURSO=DelMenuRol"
+			url += "&CODIGO=" + Codigo;
+			url += "&ROL=" + formulario.listRoles.value;
+			url += "&SISTEMA=" + formulario.listSistemas.value;
+	xmlestado = xmlDso.load(url);
+	
+	if(!xmlestado)
+		window.open(url);
+}
+							
+function UpdateMenu(CodMenu, CodMenuPadre, Nombre, Link, Orden, Sistema){
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Menu.asp?RECURSO=UpdateMenu"
+			url += "&CODIGO=" + CodMenu;
+			url += "&NOMBRE=" + Nombre;
+			url += "&COD_MENU_PADRE=" + CodMenuPadre;
+			url += "&LINK=" + Link;
+			url += "&ORDEN=" + Orden;
+			url += "&SISTEMA=" + Sistema;
+		//window.open(url);
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+			
+}
+
+ function cargarSistemas(){
+        xmlSistemas.async = false;
+        var xmlDso =  xmlSistemas.XMLDocument;
+		url = "xml/sistemas.asp?RECURSO=ListSistemas";
+		//window.open(url);
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.listSistemas.options[i] = opcion;   
+          }
+                 
+         }
+ }
+ 
+ function cargarRoles(){
+ 
+        xmlRoles.async = false;
+        var xmlDso =  xmlRoles.XMLDocument;
+		url = "xml/Roles.asp?RECURSO=ListRol";
+
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID")); 
+            formulario.listRoles.options[i] = opcion;  
+          }
+                 
+         }
+ }
+ 
+function cargarMenuPrincipal(){
+        xmlMenuPrincipal.async = false;
+        var xmlDso = xmlMenuPrincipal.XMLDocument;
+		var url = "xml/menu.asp?RECURSO=ListMenuPrincipal&SISTEMA=" + formulario.listSistemas.value;
+	   formulario.listMenu.length =0;
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+		      opcion = new Option("PRINCIPAL","");
+			if (opcion.value == "") opcion.selected = true;
+            formulario.listMenu.options[0] = opcion; 
+			
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"CODIGO"));
+            formulario.listMenu.options[i+1] = opcion;   
+        	 }   
+			 opcion = new Option("TODOS","TODOS");
+			formulario.listMenu.options[i+1] = opcion; 
+        }
+		else
+		window.open(url);
+ }
+	  
+function ListSubMenu(){
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.asp?RECURSO=ListSubMenu&SISTEMA=" + formulario.listSistemas.value;
+		url += "&COD_MENU_PADRE=" + formulario.listMenu.value;
+		url += "&ROL=" + formulario.listRoles.value;
+	//window.open(url);
+	//alert(url);
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+		window.open(url);
+}
+
+
+function ListMenuPrincipal(){
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.asp?RECURSO=ListMenuPrincipal&SISTEMA=" + formulario.listSistemas.value;
+	//url += "&COD_MENU=" + formulario.listMenu.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+		window.open(url);
+}
+
+
+function Eliminar(Index){
+
+	var tabla = document.getElementById('Tabla1');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.asp?RECURSO=DelMenu&CODIGO=" + Codigo;
+		url += "&SISTEMA=" + formulario.listSistemas.value;
+
+	//window.open(url);
+	if(confirm("Eliminar Menu Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+		ListSubMenu();
+	}
+}
+
+function inicio(){
+
+cargarRoles();
+cargarSistemas();
+cargarMenuPrincipal();
+
+ListSubMenu();
+
+
+
+
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM name="formulario">
+
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE>
+<TR>
+  <TD width="382" height="31" class="titulo">Men&uacute;s</TD>
+</TR>
+	<TR class="texto">
+	  <TD  valign="top">Rol :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <SELECT name="listRoles" class="input" onChange="ListSubMenu();">
+          <OPTION selected></OPTION>
+        </SELECT></TD>
+    </TR>
+	<TR class="texto">
+	  <TD  valign="top">Sistema:
+        <SELECT name="listSistemas" id="listSistemas"   style="size:auto;z-index:100;" class="input"
+					onChange="ListSubMenu();cargarMenuPrincipal();" >
+          <OPTION selected></OPTION>
+        </SELECT>
+Menu:
+<SELECT name="listMenu" id="listMenu"   style="size:auto;z-index:100;" class="input"
+					onChange="ListSubMenu();" >
+  <OPTION selected></OPTION>
+</SELECT></TD>
+    </TR>
+</TABLE>
+<SPAN class="titulo">Sub Menus : </SPAN>
+<TABLE width="692" cellpadding="4" cellspacing="1" class="texto" id="Tabla1"  DATASRC="#xmlDoc">
+		<THEAD>
+		<TR class="HeaderLista">
+		  <TD width="77">CODIGO</TD>
+		  <TD width="127">NOMBRE</TD>
+		  <TD width="77">PADRE</TD>
+  		  <TD width="43">ORDEN</TD>
+		  <TD width="202">LINK</TD>
+		  <TD width="60">Eliminar Men�</TD>
+  		  <TD width="73" align="center">Asignar Rol</TD>
+	
+	</THEAD>
+	<TR class="ItemLista">
+		  <TD onClick="return;">
+          <INPUT name="TxtCodigo" type="text" class="input" size="15" datafld="CODIGO"/></TD>
+			<TD><INPUT  name="TxtNombre" type="text" class="input" size="25" datafld="NOMBRE"/></TD>
+			<TD><INPUT name="TxtPadre" type="text" class="input"  size="15" datafld="COD_MENU_PADRE"/></TD>
+			<TD><INPUT name="TxtOrden" type="text" class="input"  size="3" datafld="ORDEN"/></TD>
+			<TD><INPUT  name="TxtLink" type="text" class="input"  size="40" datafld="LINK"/></TD>
+			<TD onClick="Eliminar(this.parentElement.rowIndex);"><IMG src="images/trash.jpg" style="cursor:hand;"></TD>
+			<TD><INPUT type="checkbox"  class="input" style="cursor:hand;" DATAFLD="ROL"></TD>
+	</TR>
+
+</TABLE>
+<BR>
+</FORM>
+<BR>
+<DIV align="center">
+  <INPUT name="button" type="button" class="botonBlanco"  onClick="Nuevo();" value="Nuevo Men�">&nbsp;
+  <INPUT type="button" onClick="UpdateTable();" value="Guardar" class="botonBlanco">&nbsp;
+  <INPUT type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</DIV>
+</BODY>
+</HTML>

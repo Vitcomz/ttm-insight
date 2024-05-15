@@ -1,0 +1,490 @@
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<TITLE>Equipos</TITLE>
+<link rel="stylesheet" href="sci.css" type="text/css" media="screen" />
+<style>
+body{
+
+background:#CCCCCC; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #FFFFFF ,#CCCCCC ); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #FFFFFF ,#CCCCCC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:10px;
+margin: 0px 0px 0px 0px;
+
+
+}
+
+.text2{
+font-size:10px;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+</style>
+
+
+
+
+
+
+</HEAD>
+ 
+<script language="Javascript1.2" src="/sgm/js/jquery.js"></script>
+<script language="Javascript1.2" src="/sgm/windowfiles/dhtmlwindow.js"></script>
+<script language="JavaScript1.2" src="/sgm/js/main.js"></script>
+
+<script>
+
+
+var inlinewin6;
+var paramNew;
+
+function getEquipos(){
+
+var url = "explorer2.0.html";
+	url += "?VTZ=" + Math.random();
+	//alert(url);	
+		
+winCfg = "width=480px,height=360px,left=" + 410 + "px,top=" + 170 +"px,resize=1,scrolling=0";	
+
+if(inlinewin6) inlinewin6.show();
+else inlinewin6 = parent.dhtmlwindow.open("explorerBox", "iframe", url , "BUSCAR EQUIPOS", winCfg);
+ 
+inlinewin6.onclose=function(){getEquipo()}
+
+}
+
+
+
+function getEquipo(){
+//xmlEquipo.async=false;
+	
+		with (divWait.style){visibility = "visible";} 
+		var url = "/sgm/js/equipos.asp?RECURSO=getEquipo";
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	 
+	// alert(url);
+	//window.open(url);
+	 
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			//document.getElementById("idCodigo").value =  $(this).find("CODIGO").text();
+			document.getElementById("idDescripcion").value =  $(this).find("DESCRIPCION").text();
+			document.getElementById("idEquipoPadre").value =  $(this).find("EQUIPO_PADRE").text();
+			document.getElementById("idFecha").value =  $(this).find("FECHA").text();
+			document.getElementById("idMarca").value = $(this).find("MARCA").text();
+			document.getElementById("idModelo").value =  $(this).find("MODELO").text();
+			document.getElementById("idUbicacion").value =  $(this).find("UBICACION").text();
+			document.getElementById("idTipo").value =  $(this).find("TIPO_EQUIPO").text();
+			document.getElementById("idSector").value =  $(this).find("SECTOR").text();
+		//	document.getElementById("idEstado").value =  $(this).find("ESTADO").text();
+			document.getElementById("idOrden").value =  $(this).find("ORDEN").text();
+			document.getElementById("idGCode").value =  $(this).find("GCODE").text();
+			document.getElementById("idObs").value =  $(this).find("OBSERVACION").text();
+			document.getElementById("idAncho").value =  $(this).find("ANCHO").text();
+			document.getElementById("idLargo").value =  $(this).find("LARGO").text();
+			document.getElementById("idCubierta").value =  $(this).find("CARGA").text();
+			document.getElementById("idRetorno").value =  $(this).find("RETORNO").text();
+			document.getElementById("idSeguridad").value =  $(this).find("SEG").text();
+//			document.getElementById("idNroMesas").value =  $(this).find("MESAS").text();
+			document.getElementById("idLayout").value =  $(this).find("LAYOUT").text();
+		//	document.getElementById("idLayout2").value =  $(this).find("LAYOUT2").text();
+			document.getElementById("idX").value =  $(this).find("X").text();
+			document.getElementById("idY").value =  $(this).find("Y").text();
+			
+		}),listArchivos();hidWait()//End each
+	});//end $.get
+				
+}
+
+function listSectores(){
+
+  var url = "/sgm/xml/equipos.asp?RECURSO=explorer";
+  	  url += "&UBICACION=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+  var i=0;
+  
+  //window.open(url);
+  
+ $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	formulario.listSector.options[i] = opcion;
+				i=i+1;
+			}) //end each
+				opcion = new Option("SELECCIONAR" ,"");
+				formulario.listSector.options[i] = opcion;
+				listTipos();
+		})//end $get
+		
+ 
+    
+	
+ } 
+
+function listTipos(){
+
+
+  var i=0;
+ 
+  var url = "/sgm/xml/equipos.asp?RECURSO=ListTipos";
+  
+ // window.open(url);
+  
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	formulario.listTipos.options[i] = opcion;
+				i=i+1;
+			}) //end each
+				opcion = new Option("SELECCIONAR" ,"");
+				formulario.listTipos.options[i] = opcion;
+				getEquipo();
+				
+		})//end $get
+	
+ } 
+ 
+function salir(){
+parent.document.getElementById('boxEquipos').close();
+}
+
+ 
+
+function updateEquipo(){
+	
+ 
+ 	if (paramNew){
+		var url = "/sgm/js/equipos.asp?RECURSO=newEquipo";
+	}else{
+		var url = "/sgm/js/equipos.asp?RECURSO=updateEquipoGR";
+	}
+		
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&DESCRIPCION=" + scape(document.getElementById("idDescripcion").value);
+		url += "&COD_EQUIPO_PADRE=" + document.getElementById("idEquipoPadre").value;
+		url += "&FECHA=" + document.getElementById("idFecha").value;
+		url += "&SECTOR=" + document.getElementById("idSector").value;
+		//url += "&ESTADO=" + document.getElementById("idEstado").value;
+		url += "&MARCA=" + document.getElementById("idMarca").value ;
+		url += "&MODELO=" + document.getElementById("idModelo").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&TIPO_EQUIPO=" + document.getElementById("idTipo").value;
+		url += "&OBSERVACION=" + scape(document.getElementById("idObs").value);
+		url += "&GCODE=" + document.getElementById("idGCode").value;
+		url += "&SEG=" + document.getElementById("idSeguridad").value;
+		url += "&SECUENCIA=" + document.getElementById("idOrden").value;
+		url += "&ANCHO=" + document.getElementById("idAncho").value;
+		url += "&ESPESOR=" + document.getElementById("idCubierta").value;
+		url += "&ESPESOR_R=" + document.getElementById("idRetorno").value;
+		url += "&LARGO=" + document.getElementById("idLargo").value;
+		url += "&LAYOUT=" + document.getElementById("idLayout").value;
+		url += "&X=" + document.getElementById("idX").value;
+		url += "&Y=" + document.getElementById("idY").value;
+		url += "&USERNAME=" + getSession();
+		url += "&VTZ=" + Math.random();
+		
+//alert(url);
+	//window.open(url);
+				
+	 $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					alert("Actualizaci�n Realizada.");
+			}) //end each
+		})//end $get
+			
+}
+
+ function newFile(){
+ 
+	if(!document.getElementById("idCodigo").value){
+	alert("Seleccione un equipo.");
+	return;}
+	
+	document.frameFiles.mostrarVentana(document.getElementById("idCodigo").value, divFiles,"EQUIPO");
+}
+
+function showFile(lnk){
+winCfg = "width=1050px,height=550px,left=" + 20 + "px,top=" + 80 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxDoc", "iframe", lnk , "--==ARCHIVO==--", winCfg);
+//inlinewin2.onclose=function(){ }
+}
+
+ function listArchivos(){
+ 
+ 	var tbl = document.getElementById('tblFiles');
+	 limpiarTabla2(tbl);
+				
+	var url = "js/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=EQUIPO"; 
+		url += "&IDENTIFICADOR="+document.getElementById("idCodigo").value;
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+   
+   //	window.open(url);
+    
+	 var j=1; 
+		       
+	 var row = tbl.insertRow(-1);
+		 row.className ="texto";
+  		 /*
+			
+		var cell = row.insertCell(-1);
+ 			cell.innerHTML =  "Nombre de Archivo "	
+			cell.align= 'left';
+	
+		var cell = row.insertCell(-1);
+ 			cell.innerHTML =  "Tama�o"	
+			cell.align= 'left';
+			
+		var cell = row.insertCell(-1);
+ 			cell.innerHTML =  "Tipo "	
+			cell.align= 'left';
+		*/
+					
+		 
+		//var cell = row.insertCell(-1);cell.innerHTML =  "Sel. "
+		//var cell = row.insertCell(-1);cell.innerHTML =  "Eliminar"
+						
+	$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+ 
+ 		 var row = tbl.insertRow(-1);
+			row.className = "texto";
+			 															
+		var	id =$(this).find("ID").text();
+		var	lnk =$(this).find("FILEID").text();
+		var nom = $(this).find("NOMBRE").text();
+		var siz = $(this).find("SIZE").text();
+		
+		var cell = row.insertCell(-1);
+		
+			cell.innerHTML = "<span style='cursor:pointer;text-decoration:underline; ' > " + nom + "</span>";
+			cell.onclick = function (){showFile(lnk)};
+	 		//cell.width="280px";
+			
+	var cell = row.insertCell(-1);
+			cell.innerHTML = "<span>" + $(this).find("SIZE").text() +"</span>"
+		  	cell.onclick = function (){showFile(lnk)};
+			//cell.width="10px";		
+											
+	 
+			
+	/*			
+			var txtHtml = "<select onchange='setFileType(this,"+id+")' >";			
+				for (j=0; j< tipoAr.length; j++){
+					if (tipoAr[j]==$(this).find("CATEGORIA").text())
+						txtHtml += "<option value='" + tipoAr[j] +"' selected>" + tipoAr[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + tipoAr[j] +"' >" + tipoAr[j] + "</option>";	
+					
+					}
+						
+			txtHtml += "</select>";
+			cell.innerHTML = txtHtml;
+ */
+			 		
+		var ini = $(this).find("FECHA_INI").text();
+			
+	/*
+		var cell = row.insertCell(-1);
+			cell.innerHTML =  "<input type='checkbox'  style='cursor:pointer;' />"
+			cell.align="center";
+		 	 
+ 
+		var cell = row.insertCell(-1);
+			cell.innerHTML =  "<img src='mg/borrar.gif' alt='Eliminar Archivo' style='cursor:pointer;' />";
+			cell.align="center";
+		 	cell.onclick = function (){delFile(id, nom)};
+			*/
+			 
+		})//End each
+	});//end $.get
+
+}
+
+function inicio(){
+				
+//alert(getParametro("CODIGO"));
+
+if (getParametro("CODIGO")){
+	document.getElementById("idCodigo").value = getParametro("CODIGO");
+}else{
+
+paramNew=true;
+document.getElementById("idBtnSave").value ="Guardar Nuevo";
+}
+
+if (getParametro("COD_PADRE")){
+	document.getElementById("idEquipoPadre").value = getParametro("COD_PADRE");
+}
+
+
+var str=" MSEPULVEDA DG SMORENOV CVIDAL SSEPULVEDA"; 
+	
+ 
+
+	if(str.indexOf(getSession())>0) {
+	document.getElementById("idBtnSave").className ='normal';
+		}
+
+if (getRol()=='ADMIN' || getRol()=='SUPERVISOR'){
+	document.getElementById("idBtnSave").className ='normal';
+	}
+	
+document.getElementById("idUbicacion").value = getEmpresa();
+listSectores();
+
+
+//alert(getRol());
+}
+
+
+function hidWait(){
+
+with (divWait.style){visibility = "hidden"}; 
+}
+
+</script>
+
+
+<BODY onLoad="inicio();">
+<FORM name="formulario">
+
+ <div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 166px; top: 50px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+    
+  <DIV ID="divFiles" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #000 1px ridge; BORDER-TOP: #000 1px ridge; Z-INDEX: 145; LEFT: 130px; BORDER-LEFT: #000 1px ridge; BORDER-BOTTOM: #000 1px ridge; POSITION: absolute; TOP: 60px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="frameFiles" id="frameFiles" SRC="archivos.html?x=2" frameBorder="0" WIDTH="520" SCROLLING="no" HEIGHT="300"></IFRAME>
+</DIV>
+  <table width="98%" border="0" align="left" cellpadding="0" cellspacing="5" class="normal"  >
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="116" height="13" align="right"><!--DWLayoutEmptyCell-->&nbsp;</td>
+      <td width="219" align="left" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+      <td colspan="3" align="center" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="18" align="right">Codigo Equipo :</td>
+      <td align="left" valign="middle">
+      <input id="idCodigo" type="text" onKeyPress="if(event.keyCode==13)getEquipo();" 
+      			onblur="getEquipo();" class="tinyText" /></td>
+      <td width="257" align="center" valign="top"><br />      </td>
+    <td width="200" align="center">
+    <strong> 
+    	<img src="mg/documents.png" alt="Archivos" align="absmiddle" style="cursor:pointer; "  onClick="newFile();"/> 
+      Documentaci&oacute;n</strong></td>
+    <td width="15" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="15" align="right">Descripci�n Equipo:</td>
+      <td colspan="2" valign="top">
+      <input   id="idDescripcion" class="tinyText" size="60" />      </td>
+      <td rowspan="8" valign="top"><br/>
+      
+         <table width="200"  id="tblFiles" cellspacing="0"  >
+        </table>    �</td>
+    <td rowspan="8"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="15" align="right">Equipo Padre :</td>
+      <td colspan="2" valign="top">
+        <input type="text" class="tinyText" id="idEquipoPadre"  name="txtEquipoPadre" /></td>
+    </tr>
+    
+    
+    <tr>
+      <td height="15" align="right">Fecha Instalaci&oacute;n :</td>
+      <td colspan="2" valign="top">
+      <input name="txtFecha" type="text" id="idFecha" class="tinyText"   />
+      Ancho :
+      <input type="text" class="tinyText" id="idAncho"  size="20" />
+      [mm] 
+&nbsp;&nbsp;     	<!-- Largo : 
+        <input type="text" class="inputSht3" id="idLargo"  size="20" />
+        [m]--></td>
+    </tr>
+    
+    <tr>
+      <td height="15" align="right">Largo :</td>
+      <td colspan="2" valign="middle">
+      	<input id="idLargo" type="text" class="tinyText" size="6" />
+&nbsp;&nbsp;Esp. Cubierta :
+<input id="idCubierta"  type="text" class="tinyText" size="4" />&nbsp;&nbsp;
+        Esp. Retorno:
+        <input id="idRetorno"  type="text" class="tinyText" size="4" />
+        &nbsp;&nbsp;
+         Seguridad:
+         <input id="idSeguridad"  type="text" class="tinyText" size="4" />        &nbsp;&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="15" align="right">Ubicaci&oacute;n :</td>
+      <td colspan="2" valign="middle">
+        <input id="idUbicacion" class="tinyText" readonly />
+&nbsp;
+	      Secuencia :
+          <input name="txtOrden" id="idOrden" type="text" class="tinyText" size="4" />
+&nbsp;GCode :
+<input name="idOrden5" id="idGCode" type="text" class="tinyText" size="6" /></td>
+    </tr>
+    <tr>
+      <td height="18" align="right">Tipo Equipo :</td>
+      <td colspan="2" valign="top">
+      
+      <select name="listTipos" id="idTipo"   class="tinyText" >
+      </select>
+Layout :
+<input type="text" class="tinyText"  id="idLayout"  size="25" /></td>
+    </tr>
+    <tr>
+      <td height="19" align="right">Marca/Modelo :</td>
+      <td colspan="2" valign="top">
+          <input name="txtCodMarca"  id="idCodMarca" type="hidden" class="input" />
+          <input name="txtMarca" id="idMarca" type="text" class="tinyText" />
+      <input name="txtModelo" id="idModelo" type="text" class="tinyText" >
+      X:
+      <input type="text" id='idX' size="3" class="tinyText" />
+Y:
+<input type="text" id='idY' size="3" class="tinyText"/></td>
+    </tr>
+    
+    <tr>
+      <td height="16" align="right">Area / Secci&oacute;n :</td>
+      <td colspan="2" valign="top">
+	 		 <select id="idSector" name="listSector" class="tinyText" >
+       </select></td>
+    </tr>
+    
+    <tr>
+      <td height="51" align="right">Observaciones :</td>
+      <td colspan="2" valign="top"><textarea name="idObs" cols="50" rows="5" id="idObs"></textarea></td>
+      <td valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td height="13"></td>
+      <td colspan="2">
+   	  <input name="btnGuardar" type="button" id="idBtnSave" 
+        			 class="hidden" value="Guardar "  onClick="updateEquipo();"/></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+</FORM>
+</BODY>
+</HTML>

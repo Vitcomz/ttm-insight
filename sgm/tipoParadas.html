@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Tipo de Paradas</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<STYLE TYPE="text/css">
+
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlGrupos></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT>
+
+xmlTemp.async = false;
+
+function newParada(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	
+		var nomGrupo = prompt("Descripci�n ","");
+		var url = "xml/Paradas.asp?RECURSO=newTipoParada";
+			url += "&DESCRIPCION=" + nomGrupo
+			url += "&TIPO_EQUIPO=" + formulario.ListEquipos.value;
+			url += "&TIPO_FALLA=" + formulario.ListTipos.value;
+			url += "&FAENA=" + getEmpresa();
+			
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		
+		
+	ListParadas();	
+}
+
+
+ 
+function ListParadas(){
+
+xmlHorometros.async=false;
+	var xmlDso = xmlHorometros.XMLDocument;
+  
+  var 	url = "xml/Paradas.asp?RECURSO=listParadasxTipo";
+ 		url += "&TIPO_EQUIPO=" + formulario.ListEquipos.value;
+	 	url += "&TIPO=" + formulario.ListTipos.value; 
+	  	url += "&FAENA=" + getEmpresa();
+		
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+function ListTipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListTipos";
+	  	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"SEL");
+				if (opcion.value == "SEL") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+			 formulario.ListEquipos.value = 1;
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+function ListCheck(CodEquipo){
+
+	var tbl = document.getElementById('tabCheck');
+	//limpiarTabla(tbl);
+	xmlHorometros.async=false;
+	var xmlDso = xmlHorometros.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+		url += "&TIPO_EQUIPO=" + formulario.ListEquipos.value;
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+}
+
+
+
+function Eliminar(Index){
+
+	var tabla = document.getElementById('tabCheck');
+	var Codigo = tabla.rows[Index].children[0].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Paradas.asp?RECURSO=delTipoParada&ID=" + Codigo;
+		url += "&TIPO_EQUIPO=" + formulario.ListEquipos.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Tipo Parada ID " + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListParadas();
+	}
+}
+
+function selGrupo(Index){
+	var tabla = document.getElementById('tabGrupos');
+	var CodGrupo =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodGrupo.value = CodGrupo;
+	document.getElementById('idNombreGrupo').innerText = Nombre;
+	ListHorometros(CodGrupo);
+	//getDescripcionActividad(Actividad);
+	
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	xmlEstado = xmlDso.load(url);
+	
+	if(!xmlEstado)
+			window.open(url);
+
+
+}
+
+function inicio(){
+ListTipos();
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM NAME="formulario">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE WIDTH="493">
+<TR>
+  <TD HEIGHT="31" COLSPAN="2" CLASS="titulo">CAUSAS DE PARADAS</TD>
+</TR>
+<TR CLASS="titulo">
+  <TD>Tipo de Equipo :</TD>
+  <TD>
+    <SELECT NAME="ListEquipos" onChange="ListParadas(this.value);" CLASS="Campo">
+    </SELECT>
+    </TD>
+</TR>
+<TR CLASS="titulo">
+  <TD>Tipo  :</TD>
+  <TD>
+    <SELECT NAME="ListTipos" onChange="ListParadas(this.value);" CLASS="Campo">
+                	<OPTION VALUE="FO">FALLA OPERACIONAL</OPTION> 
+                    <OPTION VALUE="OP">OPERACIONAL PROGRAMADA</OPTION> 
+                    <OPTION VALUE="FM">FALLA MTTO MECANICO</OPTION>
+                    <OPTION VALUE="FE">FALLA MTTO ELECTRICO</OPTION>
+                    <OPTION VALUE="FI">FALLA MTTO INSTRUMENTAL</OPTION>
+                    <OPTION VALUE="FG">FALLA MTTO GENERAL</OPTION>
+                    <OPTION VALUE="MP">MTTO PROGRAMADO</OPTION>
+                    <OPTION VALUE="RS">RESERVA</OPTION>
+                    <OPTION VALUE="ST">STANDBY</OPTION>
+                    <OPTION VALUE="MI">MINA</OPTION>
+                 </SELECT>
+  </TD>
+</TR>
+<TR CLASS="titulo">
+<TD WIDTH="116" HEIGHT="16">&nbsp;</TD>
+<TD WIDTH="365">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<TABLE WIDTH="371" BORDER="0" CELLPADDING="5" CELLSPACING="5">
+  <TR><TD WIDTH="8">&nbsp;&nbsp;</TD>
+	<TD WIDTH="328" ALIGN="center" VALIGN="top" CLASS="td">
+	  <TABLE WIDTH="270" CELLPADDING="0" CELLSPACING="4"
+	  			class="texto" ID="tabCheck" DATASRC="#xmlHorometros">
+		<THEAD>
+			<TR CLASS="HeaderLista">
+			  <TD WIDTH="53">ID</TD>
+			  <TD WIDTH="183">DESCRIPCION</TD>
+			  <TD WIDTH="16" HEIGHT="20">
+			  <IMG STYLE="CURSOR: hand" onClick="newParada();" 
+								src="images/add.gif"></TD>
+			</TR>
+		<THEAD>
+		<TBODY>
+		<TR BGCOLOR="#dde3eb">
+			<TD><SPAN NAME="TxtCodigo" DATAFLD="ID"/></TD>
+			<TD><SPAN NAME="TxtNombre" DATAFLD="DESCRIPCION"/></TD>
+			<TD ALIGN="center" onClick="Eliminar(this.parentElement.rowIndex);">
+				<IMG SRC="images/trash.jpg" STYLE="cursor:hand;"></TD>
+		</TR>
+		</TBODY>
+	</TABLE>
+</TD></TR></TABLE>
+</FORM>
+
+<DIV ALIGN="left" >
+  <INPUT TYPE="button"  onClick="document.location.href='index.html'" VALUE="Salir" CLASS="botonBlanco">
+</DIV>
+</BODY>
+</HTML>

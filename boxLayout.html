@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function showWin(_code, _divBox){
+
+ codeobj = _code;
+ divBox = _divBox;
+ divBox.style.visibility = 'visible'
+
+ getData();
+ 
+}
+
+function getData(){
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=getLayoutData";
+		url += "&CODIGO=" + codeobj;
+		url += "&VTZ=" + Math.random();
+		
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+				
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function guardar(){
+
+ xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=updateLayoutData";
+		url += "&CODIGO=" + codeobj;
+		url += "&LAYOUT=" + formulario.txtLayout.value;
+		url += "&GCODE=" + formulario.txtGCODE.value;;
+		url += "&X=" + formulario.txtX.value;
+		url += "&Y=" + formulario.txtY.value;
+		url += "&SY=" + formulario.txtSY.value;
+		url += "&SX=" + formulario.txtSX.value;
+		url += "&VTZ=" + Math.random();
+		
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+ } 
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body>
+<form name="formulario">
+<table width="100%" border="0">
+<tr class="titulo">
+ <td width="195" height="17" align="left">Informacion Grafica</td>
+      <td width="32" height="17" align="center"></td>
+<td width="17" height="17" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+    </tr>
+  </table> 
+  <table>
+    <tr align="center"><td colspan="2">
+			<span class="texto" type="text" size="5" id="txtCodEquipo"></span>&nbsp;
+			<span class="texto" type="text" size="35" id="txtDesEquipo"></span>
+    </td></tr>
+	</table>
+
+<table width="237" align="center"  class="CampoBold" DATASRC=#xmlTemp>
+    <tr bgcolor="#EEEEEE">
+      <td height="13" onClick="return;">&nbsp;</td>
+		       <td align="center">&nbsp;</td>
+	          </tr>
+				<tr>
+				  <td width="109" align="center">Layout</td>
+				  <TD width="146" align="center">
+                  	<input type="text" class="tinyInput" size="20" DATAFLD='LAYOUT'  name="txtLayout"/></td>
+				</tr>
+				<tr>
+				  <td align="center">G Code</td>
+				  <TD align="center"><input type="text" class="tinyInput" size="10" DATAFLD='GCODE' name="txtGCODE" /></td></tr>
+				<tr>
+				  <td align="center">X</td>
+				  <TD align="center"><input type="text" class="tinyInput" size="10" DATAFLD='X' name="txtX" /></td>
+    </tr>
+				<tr>
+				  <td align="center">Y</td>
+				  <TD align="center"><input type="text" class="tinyInput" size="10" datafld='Y' name="txtY" /></td>
+    </tr>
+				<tr>
+				  <td align="center">SCALE X</td>
+				  <TD align="center">
+                  <input type="text" class="tinyInput" size="10" DATAFLD='SCALEX' name="txtSX" /></td>
+    </tr>
+				<tr>
+				  <td align="center">SCALE Y</td>
+				  <TD align="center"><input type="text" class="tinyInput" size="10" datafld='SCALEY' name="txtSY" />			      </td></tr>
+				<tr bgcolor="#EEEEEE">
+				  <td height="13" colspan="2" onClick="return;">&nbsp;</td>
+    </tr>
+				<tr bgcolor="#EEEEEE">
+		        <td height="13" colspan="2" onClick="return;"><input type="button" class="tinyInput" 
+		  	onClick="divBox.style.visibility = 'hidden';guardar();" value="Aceptar">&nbsp;</td>
+	          </tr>
+  </table>
+<br>
+</form>
+
+</body>
+</HTML>

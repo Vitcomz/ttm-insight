@@ -1,0 +1,698 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Listado de Paradas</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+
+-->
+
+  div.loading-invisible{
+    display:none;
+  }
+  div.loading-visible{
+    /*make visible*/
+    display:block;
+
+    position:absolute;
+    top:100px;
+    left:0;
+    width:80%;
+	height:100%;
+    text-align:center;
+
+    background:#fff;
+	filter: alpha(opacity=89); /* internet explorer */
+	-khtml-opacity: 0.89;      /* khtml, old safari */
+	-moz-opacity: 0.89;       /* mozilla, netscape */
+	opacity: 0.89;           /* fx, safari, opera */
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+  }
+
+</STYLE>
+<link rel="stylesheet" href="../standard/style.css" />
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<SCRIPT>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+
+function ListParada(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	
+		var xmlDso = xmlDoc.XMLDocument;
+	var sorter = "";
+	document.getElementById("loading").className = "loading-visible";
+	   	var url = "../xml/Paradas.asp?RECURSO=infParadas";
+  	  		url+= "&FAENA=" + emp;
+			url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+			url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+			if (document.getElementById("listSecciones").value == 'AREA SECA'){
+				url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+			}else{
+				url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+			}
+			
+			url += "&EQUIPO=" +document.getElementById("ListEquipos").value;
+			url += "&TIPO=" + document.getElementById("listTipo").value;
+			url+= "&VTZ=" + Math.random();
+		//alert(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	    //window.open(url);
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+//				document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+//				bloque_listado = 1;
+//				total_bloque_listado = Math.ceil(total_registros_lista/9);
+//				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+//				objLabelReg.innerText = "1/" + total_bloque_listado;
+				var tbody = document.getElementById("tabParada").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+					  //context = context +  "<td><IMG style='CURSOR: hand' onclick='editBitacora(this.parentElement.parentElement.rowIndex);' src='images/lupa2.gif' align='middle'/></td>";
+					  //context = context +  "<td>&nbsp;&nbsp;</td>";
+					
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0] != null){
+						cell1.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell1.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell2 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0] != null){
+						cell2.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell2.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell4 = document.createElement("TD");
+						if (x[i].getElementsByTagName("MINUTOS")[0].childNodes[0] != null){
+						cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("MINUTOS")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell5 = document.createElement("TD");
+						if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+						cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}
+						var cell6 = document.createElement("TD");
+						if (x[i].getElementsByTagName("TIPO")[0].childNodes[0] != null){
+						cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("TIPO")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell7 = document.createElement("TD");
+						if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0] != null){
+						cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell8 = document.createElement("TD");
+						if (x[i].getElementsByTagName("SECCION")[0].childNodes[0] != null){
+						cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("SECCION")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell9 = document.createElement("TD");
+						if (x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0] != null){
+						cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0].nodeValue + "</div></center>"
+						}else{
+						cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						}						
+						var cell10 = document.createElement("TD");
+						cell10.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						row.appendChild(cell9);
+						row.appendChild(cell10);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						var cell5 = document.createElement("TD");
+						cell5.innerHTML = "<center>&nbsp;</center>";
+						var cell6 = document.createElement("TD");
+						cell6.innerHTML = "<center>&nbsp;</center>";
+						var cell7 = document.createElement("TD");
+						cell7.innerHTML = "<center>&nbsp;</center>";
+						var cell8 = document.createElement("TD");
+						cell8.innerHTML = "<center>&nbsp;</center>";
+						var cell9 = document.createElement("TD");
+						cell9.innerHTML = "<center>&nbsp;</center>";
+						var cell10 = document.createElement("TD");
+						cell10.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						row.appendChild(cell9);
+						row.appendChild(cell10);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  if (x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }		  
+				  if (x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }		  
+				  if (x[i].getElementsByTagName("MINUTOS")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("MINUTOS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }		  
+				  if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }		  
+				  if (x[i].getElementsByTagName("TIPO")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("TIPO")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }
+				  if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0] != null){
+						 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+						 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+			      }				 
+				  if (x[i].getElementsByTagName("SECCION")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("SECCION")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				  }
+				  if (x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0] != null){
+						 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0].nodeValue + "</div></td>";
+				  }else{
+						 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+			      }				 
+				  context = context +  "<td>&nbsp;&nbsp;</td>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >0</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+				
+			}
+			else
+				window.open(url);
+				
+		//setTimeout("color();",600);
+		if (total_registros_lista > 0){
+			setTimeout("pagining();",700);
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);
+		}else{
+			var sorter = "";
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);	
+
+		}
+		
+		
+}
+
+
+
+ function ListEquipos(){
+
+	if (id_br == "IE")
+	{
+		var xmlEquipos = document.getElementById("xmlEquipos");
+		xmlEquipos.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlEquipos = document.implementation.createDocument("", "", null);
+	}
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	 
+		  if (res){
+					  var tree = xmlDso.documentElement;
+					  var opcion = new Option("TODOS" ,"TOD");
+					  document.getElementById("ListEquipos").options[0] = opcion; 
+					  document.getElementById("ListEquipos").selectedIndex = 0;
+					  if (opcion.value == "TOD"){
+						opcion.selected = true
+		  			  }
+					  for(var i = 1; i < tree.childNodes.length+1; i++){
+						var node = tree.childNodes.item(i-1);
+						opcion = new Option(getChildNodeValue(node,"CODIGO") + " " +getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+						document.getElementById("ListEquipos").options[i] = opcion;
+					 }
+				  }
+			else
+			  window.open(url);
+	
+ } 
+
+function listSecciones(){
+
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url+= "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	document.getElementById("listSecciones").options[i] = opcion;   
+          	}
+			
+			opcion = new Option("TODOS" ,"TOD");
+			document.getElementById("listSecciones").options[i] = opcion; 		
+		  }
+		 else
+		 	window.open(url); 
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay();  
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+
+if ((month+"").length==1) month ='0' + month;
+
+//alert("01/01/"+ year);
+//document.getElementById("txtFechaFin").value = day_month + "/" + month + "/" + year;
+var fech_end = day_month + "/" + month + "/" + year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+// day_month=dateIni.getDate();
+// month=dateIni.getMonth()+1;
+ year=dateIni.getFullYear()-1;
+ 
+
+//if ((day_month+"").length==1) day_month ='0'+day_month;
+//if ((month+"").length==1) month ='0' + month;
+
+//document.getElementById("txtFechaIni").value = "01/01/"+ year;
+var fech_ini =  "01/01/"+ year;
+
+document.getElementById("txtFechaIni").value = fech_ini;
+document.getElementById("txtFechaFin").value = fech_end;
+
+ListEquipos();
+listSecciones();
+ListParada();
+
+}
+
+
+function pagining(){
+	var sorter = new TINY.table.sorter('sorter','tabParada',{
+		headclass:'head',
+		ascclass:'asc',
+		descclass:'desc',
+		evenclass:'evenrow',
+		oddclass:'oddrow',
+		evenselclass:'evenselected',
+		oddselclass:'oddselected',
+		paginate:true,
+		size:10,
+		colddid:'columns',
+		currentid:'currentpage',
+		totalid:'totalpages',
+		startingrecid:'startrecord',
+		endingrecid:'endrecord',
+		totalrecid:'totalrecords',
+		hoverid:'selectedrow',
+		pageddid:'pagedropdown',
+		navid:'tablenav',
+		sortcolumn:1,
+		sortdir:1,
+//		sum:[8],
+//		avg:[6,7,8,9],
+//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+		init:true
+	});
+	var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+	hideDiv.call(this);	
+}
+
+
+
+</SCRIPT>
+<link  href="../images/MooDialog.css" rel="stylesheet">
+<style>
+.myDialog {
+	margin: -300px 0 0 -450px;
+	width: 810px;
+	height: 550px;
+}
+
+.myDialog iframe {
+	width: 810px;
+	height: 550px;
+}
+</style>
+<script src="../Scripts/mootools-core.js"></script>
+<script src="../Scripts/Overlay.js"></script>
+<script src="../Scripts/MooDialog.js"></script>
+<script src="../Scripts/MooDialog.IFrame.js"></script>
+<BODY>
+<FORM name="formulario" id="formulario">
+<INPUT type="hidden" value="" name="IdUsuario">
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+<BR><BR><BR>
+<div id="loading" class="loading-invisible">
+<br><br><br><br><br><br><br><br><img src="../images/cargando.png" alt="Cargando..." id="cargando" align="middle"/>
+</div>
+<div id="tablewrapper">
+        <TABLE  id="tableTitulo">
+          <!--DWLayoutTable-->
+        <tr>
+          <td height="29" class="titulo">BITACORA DE INSPECCIONES</td>
+        </tr>
+        <tr>
+          <td valign="top" class="titulo">
+		<div id="tableheader">
+              <div class="search">
+              	<table width="100%" border="0" cellspacing="5" cellpadding="3">
+              <tr>
+                <td align="center"><select name="columns" class="tableheader_select1" id="columns" onChange="sorter.search('query')">
+                </select></td>
+                <td><input type="text" class="tableheader_input1" id="query" onKeyUp="sorter.search('query')" /></td>
+                <td align="center"><span class="titulo">SECCION</span>&nbsp;&nbsp;
+                  <select name="listSecciones" class="tableheader_select2" id="listSecciones" onChange="ListParada();" datafld="SECCION">
+                  </select></td>
+                <td align="center">&nbsp;<span class="titulo">EQUIPO</span>&nbsp;&nbsp;
+                  <select name="ListEquipos" id="ListEquipos" class="tableheader_select2"  onChange="ListParada();">
+                  </select></td>
+              </tr>
+              <tr>
+                <td align="center"><span class="titulo">DESDE :
+                    <input type="text" class="input" name="txtFechaIni" id="txtFechaIni" size="12">
+                    &nbsp;</span></td>
+                <td align="center"><span class="titulo">HASTA :
+                    <input type="text" class="input" name="txtFechaFin" id="txtFechaFin" size="12">
+                </span></td>
+                <td><span class="titulo">TIPO DE DETENCI&Oacute;N :</span>&nbsp;&nbsp;<SELECT id="listTipo" name="listTipo" onChange="ListParada();" CLASS="tableheader_select2" style="width:150px">
+                  <OPTION VALUE="TO">TODAS</OPTION>
+                  <OPTION VALUE="FO">FALLA OPERACIONAL</OPTION>
+                  <OPTION VALUE="OP">OPERACIONAL PROGRAMADA</OPTION>
+                  <OPTION VALUE="FM">FALLA MTTO MECANICO</OPTION>
+                  <OPTION VALUE="FE">FALLA MTTO ELECTRICO</OPTION>
+                  <OPTION VALUE="FI">FALLA MTTO INSTRUMENTAL</OPTION>
+                  <OPTION VALUE="FG">FALLA MTTO GENERAL</OPTION>
+                  <OPTION VALUE="MP">MTTO PROGRAMADO</OPTION>
+                  <OPTION VALUE="RS">RESERVA</OPTION>
+                  <OPTION VALUE="ST">STANDBY</OPTION>
+                  <OPTION VALUE="MI">MINA</OPTION>
+                </SELECT></td>
+                <td align="right" valign="middle"><input type="button" class="botonBlanco" value="Buscar" onClick="ListParada();"></td>
+              </tr>
+            </table>
+              </div>
+              <span class="details">
+                    <div>Registros <span id="startrecord"></span>-<span id="endrecord"></span> de <span id="totalrecords"></span></div>
+                    <div><a href="javascript:sorter.reset()">Reinicio</a></div>
+              </span>
+    	</div>
+        </td></tr>
+        </TABLE>
+    
+	<TABLE cellpadding="1" cellspacing="1" class="tinytable" id="tabParada">
+            <thead>
+                <tr>
+                    <th class="nosort"><h3>Inicio</h3></th>
+                    <th class="nosort"><h3>Termino</h3></th>
+                    <th><h3>Tiempo</h3></th>
+                    <th><h3>Equipo</h3></th>
+                    <th><h3>Tipo</h3></th>
+                    <th><h3>Causa</h3></th>
+                    <th><h3>Seccion</h3></th>
+                    <th class="nosort"><h3>Observacion</h3></th>
+                    <th class="nosort"><h3>&nbsp;</h3></th>
+                </tr>
+				<tr>
+				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+  				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+				</tr>
+           </thead>                
+      <tbody>
+      </tbody>
+    </table>
+        <div id="tablefooter">
+          <div id="tablenav">
+            	<div>
+                    <img src="../images/first.gif" width="16" height="16" alt="primera Pag" onclick="sorter.move(-1,true)" />
+                    <img src="../images/previous.gif" width="16" height="16" alt="Pag Anterior" onclick="sorter.move(-1)" />
+                    <img src="../images/next.gif" width="16" height="16" alt="Pag Siguiente" onclick="sorter.move(1)" />
+                    <img src="../images/last.gif" width="16" height="16" alt="Ultima Pag" onclick="sorter.move(1,true)" />
+                </div>
+                <div>
+                	<select id="pagedropdown"></select>
+				</div>
+                <div>
+                	<a href="javascript:sorter.showall()">Ver Todo</a>
+                </div>
+          </div>
+			<div id="tablelocation">
+            	<div>
+                    <select onchange="sorter.size(this.value)">
+                    <option value="5">5</option>
+                        <option value="10" selected="selected">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>Registro por pag.</span>
+                </div>
+                <div class="page">Pag. <span id="currentpage"></span> de <span id="totalpages"></span></div>
+            </div>
+        </div>
+
+	<script type="text/javascript" src="../Scripts/script.js"></script>
+	<script type="text/javascript">
+	Inicio();
+	var sorter = new TINY.table.sorter('sorter','tabParada',{
+		headclass:'head',
+		ascclass:'asc',
+		descclass:'desc',
+		evenclass:'evenrow',
+		oddclass:'oddrow',
+		evenselclass:'evenselected',
+		oddselclass:'oddselected',
+		paginate:true,
+		size:10,
+		colddid:'columns',
+		currentid:'currentpage',
+		totalid:'totalpages',
+		startingrecid:'startrecord',
+		endingrecid:'endrecord',
+		totalrecid:'totalrecords',
+		hoverid:'selectedrow',
+		pageddid:'pagedropdown',
+		navid:'tablenav',
+		sortcolumn:1,
+		sortdir:1,
+//		sum:[8],
+//		avg:[6,7,8,9],
+//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+		init:true
+	});
+	var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+	hideDiv.call(this);
+  </script>
+</div>
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni","txtFechaFin"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+</FORM>
+</BODY>
+</HTML>

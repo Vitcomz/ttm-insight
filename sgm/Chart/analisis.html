@@ -1,0 +1,469 @@
+<HTML XMLNS="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+<xml id=xmlListFaenas></xml>
+<xml id=xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<TITLE>SGM TTM - INDICADORES DE CONFIABILIDAD</TITLE>
+<LINK REL="stylesheet" HREF="Style.css" TYPE="text/css" />
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript" SRC="FusionCharts.js"></SCRIPT>
+<LINK REL="stylesheet" HREF="../sci.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="../standard/menu.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+</HEAD>
+<SCRIPT>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+function setFecha(){
+ 	
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay();  
+
+//alert(day_month);
+monthFin = month +1;
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((monthFin+"").length==1) monthFin ='0' + monthFin;
+
+//document.getElementById("txtFechaIni").value = "01/" + month +"/"+ year;
+//document.getElementById("txtFechaFin").value = day_month + "/" + monthFin + "/" + year;
+document.getElementById("listMes").value = mydate.getMonth()+1;
+document.getElementById("listAnho").value = mydate.getFullYear();
+
+listSecciones();
+}
+
+function listSecciones(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			
+			
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado)
+					window.open(url);
+					
+        if (xmlestado){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+           	document.getElementById("listSecciones").options[i] = opcion;   
+          }
+					
+			opcion = new Option('AREA SECA','AREA SECA');
+			document.getElementById("listSecciones").options[i] = opcion;
+			opcion.selected = true;
+		  }
+		 else
+		 	window.open(url); 
+}
+
+function buscar(){
+	
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+		url = "../xml/Graphics.asp?RECURSO=listAnalisis";
+		url += "&FAENA=" + emp;
+		url += "&MES=" + document.getElementById("listMes").value;
+		url += "&ANHO=" + document.getElementById("listAnho").value;
+		
+		if (document.getElementById("listSecciones").value=='AREA SECA'){
+			url += "&SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+		}
+		else
+			url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado)
+					window.open(url);
+//----------------------------------------------------------------------------------------------------------------------								
+			if (id_br == "IE")
+			{
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+
+				var tbody = document.getElementById("tabBitacora").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+					
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+							cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell1.innerHTML = "&nbsp;";
+						}
+						var cell2 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FM")[0].childNodes[0] != null){
+							cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("FM")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell2.innerHTML = "&nbsp;";
+						}
+						
+						var cell3 = document.createElement("TD");
+						if (x[i].getElementsByTagName("PORC")[0].childNodes[0] != null){
+							cell3.innerHTML = "<center>"+  x[i].getElementsByTagName("PORC")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell3.innerHTML = "&nbsp;";
+						}
+						var cell4 = document.createElement("TD");
+						if (x[i].getElementsByTagName("PORC_ACUM")[0].childNodes[0] != null){
+							cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("PORC_ACUM")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell4.innerHTML = "&nbsp;";
+						}
+						var cell5 = document.createElement("TD");
+						if (x[i].getElementsByTagName("TT")[0].childNodes[0] != null){
+							cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("TT")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell5.innerHTML = "&nbsp;";
+						}
+						var cell6 = document.createElement("TD");
+						if (x[i].getElementsByTagName("NF")[0].childNodes[0] != null){
+							cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("NF")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell6.innerHTML = "&nbsp;";
+						}
+						var cell7 = document.createElement("TD");
+						 if (x[i].getElementsByTagName("MTBF")[0].childNodes[0] != null){
+							cell7.innerHTML = "<center>"+  x[i].getElementsByTagName("MTBF")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell7.innerHTML = "&nbsp;";
+						 }
+						var cell8 = document.createElement("TD");
+						if (x[i].getElementsByTagName("MTTR")[0].childNodes[0] != null){
+							cell8.innerHTML = "<center>"+  x[i].getElementsByTagName("MTTR")[0].childNodes[0].nodeValue + "</center>";
+						}else{
+							cell8.innerHTML = "&nbsp;";
+						}
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						var cell5 = document.createElement("TD");
+						cell5.innerHTML = "<center>&nbsp;</center>";
+						var cell6 = document.createElement("TD");
+						cell6.innerHTML = "<center>&nbsp;</center>";
+						var cell7 = document.createElement("TD");
+						cell7.innerHTML = "<center>&nbsp;</center>";
+						var cell8 = document.createElement("TD");
+						cell8.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+			      }				 
+				   if (x[i].getElementsByTagName("FM")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("FM")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("PORC")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("PORC")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("PORC_ACUM")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("PORC_ACUM")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("TT")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("TT")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("NF")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("NF")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("MTBF")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("MTBF")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }
+				   if (x[i].getElementsByTagName("MTTR")[0].childNodes[0] != null){
+						context = context +  "<td  >"+  x[i].getElementsByTagName("MTTR")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+				  		context = context +  "<td >&nbsp;</td>";
+				   }				   
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+					
+
+		   
+		    url = "../xml/Graphics.asp?RECURSO=graphPareto%26FAENA=" + emp;
+			url += "%26MES=" + document.getElementById("listMes").value;
+			url += "%26ANHO=" + document.getElementById("listAnho").value;
+			if (document.getElementById("listSecciones").value=='AREA SECA'){
+				url += "%26SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+			}
+			else
+			{
+				url += "%26SECCION='" + document.getElementById("listSecciones").value + "'";
+			}
+
+		   var chart = new FusionCharts("MSColumnLine3D.swf", "ChartId", "450", "300", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv1"); 
+		   
+		   
+		   
+		    url = "../xml/Graphics.asp?RECURSO=graphDispersion%26FAENA=" + emp;
+			url += "%26MES=" + document.getElementById("listMes").value;
+			url += "%26ANHO=" + document.getElementById("listAnho").value;
+			if (document.getElementById("listSecciones").value=='AREA SECA'){
+				url += "%26SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+			}
+			else
+				url += "%26SECCION='" + document.getElementById("listSecciones").value + "'";
+			
+				
+		// window.open(url);
+		   var chart = new FusionCharts("Scatter.swf", "ChartId", "450", "300", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv2");
+		   
+		    url = "../xml/Graphics.asp?RECURSO=graphJack%26FAENA=" + emp;
+			url += "%26MES=" + document.getElementById("listMes").value;
+			url += "%26ANHO=" + document.getElementById("listAnho").value;
+			if (document.getElementById("listSecciones").value=='AREA SECA'){
+				url += "%26SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+			}
+			else
+				url += "%26SECCION='" + document.getElementById("listSecciones").value + "'";
+			
+			
+		// window.open(url);
+		   var chart = new FusionCharts("Scatter.swf", "ChartId", "850", "400", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv3");
+		   
+}
+
+</SCRIPT>
+<BODY onLoad="setFecha();buscar();">
+    
+
+<link rel="stylesheet" href="../standard/style.css" />
+<FORM NAME="formulario" id="formulario">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/menudata.js"></SCRIPT>
+<br>
+<br><br>
+
+<TABLE><TR><TD>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="3" ALIGN="LEFT"  width="60%">
+<TR>
+  <TD HEIGHT="29" COLSPAN="3" ALIGN="left" VALIGN="top" CLASS="text"><STRONG>ANALISIS DE PARAMETROS DE CONFIABILIDAD </STRONG></TD>
+</TR>
+<TR>
+  <TD ALIGN="center" VALIGN="middle" CLASS="text">
+    Mes :
+    <SELECT CLASS="input" NAME="listMes" id="listMes" onChange="buscar();">
+      <OPTION VALUE="1">Enero</OPTION>
+      <OPTION VALUE="2">Febrero</OPTION>
+      <OPTION VALUE="3">Marzo</OPTION>
+      <OPTION VALUE="4">Abril</OPTION>
+      <OPTION VALUE="5">Mayo</OPTION>
+      <OPTION VALUE="6">Junio</OPTION>
+      <OPTION VALUE="7">Julio</OPTION>
+      <OPTION VALUE="8">Agosto</OPTION>
+      <OPTION VALUE="9">Septiembre</OPTION>
+      <OPTION VALUE="10">Octubre</OPTION>
+      <OPTION VALUE="11">Noviembre</OPTION>
+      <OPTION VALUE="12">Diciembre</OPTION>
+      </SELECT>
+    &nbsp;
+    A�o :
+    <SELECT CLASS="input" NAME="listAnho" id="listAnho" onChange="buscar();">
+      <OPTION VALUE="2008">2008</OPTION>
+      <OPTION VALUE="2009">2009</OPTION>
+      <OPTION VALUE="2010">2010</OPTION>
+      <OPTION VALUE="2011" >2011</OPTION>
+      <OPTION VALUE="2012">2012</OPTION>
+      <OPTION VALUE="2013">2013</OPTION>
+      <OPTION VALUE="2014">2014</OPTION>
+      <OPTION VALUE="2015">2015</OPTION>
+      </SELECT>
+    </TD>
+  <TD HEIGHT="33" ALIGN="center" VALIGN="middle" CLASS="text">Seccion :
+    <SELECT CLASS="input" NAME="listSecciones" id="listSecciones" DATAFLD="SECCION" onChange="buscar();">
+      </SELECT></TD>
+  <TD align="center" valign="middle" CLASS="text"><INPUT TYPE="button" CLASS="botonBlanco" VALUE="Buscar" onClick="buscar();" /></TD>
+</TR>
+</TABLE>
+  </TD></TR>
+  <TR>
+  <TD CLASS="text">Valores expresados en Horas.</TD>
+  </TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" BORDER="1"  BORDERCOLORDARK="#000000" CELLSPACING="0"  class="tinytable" id="tabBitacora">
+  <THEAD>
+  	<TR  class="blueTr">
+  	  <TD>Equipo</TD>
+  	  <TD>TFS por Fallas Mtto.</TD>
+  	  <TD>Porcentaje</TD>
+  	  <TD>Acumulado</TD>
+  	  <TD>Tiempo Fuera de Servicio (hrs)</TD>
+  	  <TD>N� Fallas</TD>
+  	  <TD>MTBF</TD>
+  	  <TD>MTTR</TD>
+    </TR>
+   </THEAD>
+		<tbody>
+		</tbody>    
+  </TABLE>
+  </TD></TR>
+  <TR><TD></br>
+  <TABLE ALIGN="LEFT" CELLSPACING="10" >
+  <TR>
+   <TD  VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv1" ALIGN="center"> 
+      Analisis de Pareto </DIV>
+    </TD>
+    <TD VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv2" ALIGN="center"> 
+      Indicadores MTTR. </DIV>
+    </TD>
+  </TR>
+  <TR><TD  COLSPAN="2">
+  	<DIV ID="chartdiv3" ALIGN="center"> 
+      Jack Knife. </DIV>
+  </TD></TR>
+</TABLE>
+</TD></TR></TABLE>
+</FORM>
+</BODY>
+</HTML>

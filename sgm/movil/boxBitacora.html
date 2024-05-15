@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+<link rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+</HEAD>
+<script language="Javascript1.2" src="vitcomz_m.js"></script>
+<script language="Javascript1.2" src="jquery.js"></script>
+<script type="text/javascript" src="windowfiles/dhtmlwindow.js"></script>
+
+<script>
+
+function getBitacora(){
+
+
+		
+	var url = "/sgm/xml/Movil.asp?RECURSO=GetBitacora";
+		url += "&ID=" + getParametro("ID");
+		//window.open(url);
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			document.getElementById("idFolio").innerText =  $(this).find("ID").text();
+			document.getElementById("idFecha").innerText =  $(this).find("FECHA").text();
+			document.getElementById("idEquipo").innerText =  $(this).find("EQUIPO").text();
+			document.getElementById("idInspector").innerText =  $(this).find("RESPONSABLE").text();
+			document.getElementById("idColor").innerText =  $(this).find("COLOR").text();
+			document.getElementById("idCriticidad").innerText =  $(this).find("CRITICIDAD").text();
+			document.getElementById("idDescripcion").innerText = $(this).find("DESCRIPCION").text();
+			document.getElementById("idCausa").innerText =  $(this).find("CAUSA").text();
+			document.getElementById("idRecomendacion").innerText =  $(this).find("RECOMENDACION").text();
+			
+		})//End each
+	});//end $.get
+			
+	
+			
+				
+}
+
+
+
+
+function showImages(obj){
+
+//var point = getXY(obj);
+ var _left =  10;
+ var _top  =  10;
+
+var url = "boxImages.html";
+	url += "?ID=" + document.getElementById("idFolio").innerHTML;
+
+
+winCfg = "width=240px,height=210px,left=" + _left + "px,top=" + _top +"px,resize=1,scrolling=0";
+var inlinewin=dhtmlwindow.open("googlebox", "iframe", url , "PICTURES", winCfg, "recal");
+
+//frameImages.showWin(document.getElementById("idFolio").innerText, divImages);
+
+}
+
+</script>
+
+<body onLoad="getBitacora();" >
+
+<form name="formulario">  
+ <table width="100%" border="0" cellpadding="4" cellspacing="0" 
+		 class="texto" DATASRC=#xmlTemp id="tabMails">
+	<thead>	
+	<TR >
+    <TD width="88" >ID:</td>
+	  <TD width="915" align="left" valign="top"><span id="idFolio" class="texto"></span></td>
+	</TR>
+    </thead>
+    <tbody>
+	 <TR>
+	   <TD align="left">FECHA:</TD>
+	   <TD align="left" valign="top"><span id="idFecha" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD align="left">EQUIPO:</TD>
+	   <TD align="left" valign="top"><span id="idEquipo" class="texto"></span></TD>
+      </TR>
+      <TR>
+       <TD align="left">INSPECTOR:</TD>
+	   <TD align="left" valign="top"><span id="idInspector" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD align="left">CRITICIDAD:</TD>
+	   <TD align="left" valign="top">
+       		<span id="idColor" class="texto"></span>&nbsp;
+       		<span id="idCriticidad" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD align="left">DESCRIPCION:</TD>
+	   <TD align="left" valign="top"><span id="idDescripcion" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD  align="left">CAUSA RAIZ:</TD>
+	   <TD align="left" valign="top"><span id="idCausa" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD  align="left">RECOMENDACI&Oacute;N:</TD>
+	   <TD align="left" valign="top"><span id="idRecomendacion" class="texto"></span></TD>
+      </TR>
+	 <TR>
+	   <TD  align="left">&nbsp;</TD>
+	   <TD align="left" valign="top">&nbsp;</TD>
+      </TR>
+	 <TR>
+     </tbody>
+     <tfoot>
+			<tr bgcolor="#EEEEEE">
+	          <td height="13" colspan="2" >
+                <input type="button" class="tinyInput" 	onClick="document.body.style.visibility = 'hidden';" value="Aceptar">
+		        &nbsp;
+		        <input type="button" class="tinyInput" 	onClick="showImages(this);" value="Ver Fotografias"></td>
+	          </tr>
+      </tfoot>
+  </table>
+</form>
+</body>
+</HTML>

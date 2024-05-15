@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Untitled</title>
+<XML id="XMLDoc"></XML>
+<link rel="stylesheet" href="../sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+
+<script>
+//<!-- 
+var popbox = new Object();
+var folio = new Object();
+var functionStr;
+
+
+function popsearchbox( _folio, _popbox, _function){
+
+  folio = _folio;
+  popbox = _popbox;
+  functionStr = _function;
+
+  with (popbox.style){
+    visibility = "visible";
+  }
+
+ search();
+}
+
+
+function close(){
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</script>
+
+<script>
+//<!-- 
+function search(strc,strn){
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url ="../xml/tren.asp?RECURSO=listTren";
+  	  url +="&FAENA="+getEmpresa();
+	  url +="&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+//  window.open(url);
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+  }
+}
+
+function set(itr){
+  if (itr){
+  	  folio.value = itr.children[0].children[0].innerText;
+	  }
+close();
+
+
+setTimeout("parent." + functionStr,1);
+
+}
+
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</script>
+
+<style>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</style>
+
+<body leftmargin=0 topmargin=0 style="font:normal 100% tahoma;" bgcolor="#dee6eb" scroll="no"  
+onLoad="">
+
+<center>
+
+<table width="100%" border=0 cellpadding=0 cellspacing=0>
+  <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;">&nbsp;B�squeda</td>
+    <td align="right">
+      <img src="../images/close.gif" width="16" height="14" onClick="set();">
+    </td>
+  </tr>
+</table>
+
+<span id="msg" class="text" style="display:none;"></span>
+
+<span id="cont" style="height:150px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<table width="100%" datasrc="#XMLDoc" border=0 cellpadding=2 cellspacing=0 bordercolor="#6587a3">
+  <thead>
+  </thead>
+  <tr onClick="set(this);" style="cursor:default;" onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dee6eb')">
+    <td style="border-bottom:solid 1px #6587a3;">
+      <span datafld="FOLIO" class="text"></span>
+    </td>
+    <td style="border-bottom:solid 1px #6587a3;">
+    	  <span datafld="FECHA" class="text"></span></td>
+      <td style="border-bottom:solid 1px #6587a3;">
+       <span datafld="USUARIO" class="text"></span></td>
+  </tr>
+</table>
+</span>
+
+</center>
+</body>
+
+</html>

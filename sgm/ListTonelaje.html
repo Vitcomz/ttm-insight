@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLDoc"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var Horometro = new Object();
+var valorHorometro = new Object();
+var fecha;
+var equipo;
+var _Index;
+
+function popsearchbox(_valor, _equipo, _horometro, _popbox, Index, static){
+  parent.event.cancelBubble=true;
+  valorHorometro = _valor;
+  equipo = _equipo;
+  document.getElementById('idTitulo').innerText = _equipo.innerText;
+ 
+  popbox = _popbox;
+  _Index = Index;
+ 
+ if (!static) {
+	  var point = getXY(_equipo);
+	  with (popbox.style){
+		left = point.x+450;
+		top  = point.y+20;
+	    visibility = "visible";
+	  }
+	  }
+else{
+	  with (popbox.style){
+		left = 10;
+		top  = 20;
+	    visibility = "visible";
+	  }
+	}
+
+   txtValor.focus();
+  search();
+}
+
+function setcodeandname(code, name){
+ // codeobj.value = code;
+  valorHorometro.value = name;
+}
+
+function close(){
+//  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+var strn;
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url = "xml/mediciones.asp?RECURSO=listLecturasTon";//+Horometro.value;
+	  url += "&EQUIPO="+equipo.innerText;
+	  url += "&FAENA="+getEmpresa();
+	  url += "&VTZ=" + Math.random(); 
+  
+  
+  var res = xmlDso.load(url);
+ 
+// window.open(url);
+ 
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	 window.open(url);
+  }
+}
+
+function newHorometro(){
+ 
+ XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var valor = txtValor.value;
+  
+  url = "xml/mediciones.asp?RECURSO=newTonValor";
+  url +="&EQUIPO="+equipo.innerText+"&FECHA="+_hoy();
+  url +="&VALOR="+valor+"&USUARIO="+GetSession();
+  url +="&FAENA="+getEmpresa();
+  url +="&VTZ=" + Math.random(); 
+
+  var x = confirm("Esta seguro de actualizar el tonelaje " + valor);
+
+	if (x){
+		var res = xmlDso.load(url);
+		if (!res)
+  			window.open(url);
+			}
+ 	parent.ListEquipos();
+ 
+	close();
+}
+
+function set(itr){
+  if (itr){
+	setcodeandname(itr.children[0].children[0].innerText, itr.children[1].children[0].innerText);
+	}
+  else setcodeandname("","");
+  close();
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function eliminar(obj, rowIndexV){
+  //alert(obj.parentElement.rows[rowIndexV].children[0].innerText);
+  var fecha = obj.parentElement.parentElement.parentElement.parentElement.rows[rowIndexV].children[0].innerText;
+  var valor = obj.parentElement.parentElement.parentElement.parentElement.rows[rowIndexV].children[1].innerText;
+  
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+   
+  url ="xml/mediciones.asp?RECURSO=delTonValor";
+  url +="&EQUIPO=" + equipo.innerText;
+  url +="&FECHA=" + fecha;
+  url +="&VALOR=" + valor;
+  url +="&FAENA=" + getEmpresa();
+  url +="&VTZ=" + Math.random();
+  
+  var x = confirm("Esta seguro de eliminar el tonelaje " + valor);
+
+	if (x){
+		var res = xmlDso.load(url);
+		if (!res)
+  			window.open(url);
+			}
+  parent.ListEquipos();
+	close();
+  
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" BGCOLOR="#dee6eb" SCROLL="no"  
+onLoad="">
+
+<CENTER>
+
+<Table WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;Lecturas
+     <SPAN id="idTitulo"></SPAN></TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="set();">
+    </TD>
+  </TR>
+  <TR>
+    <TD class="tinyText">
+  			Tonelaje de la semana
+  			&nbsp;&nbsp;<input type="text" class="input" size="10" name="txtValor"/>&nbsp;&nbsp;
+           <input type="button"  class="botonBlanco" value="Aceptar" onClick="newHorometro();"></TD>
+</tablE>
+<!--
+   <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;" colspan="2">&nbsp;
+	<input type="text" class="input" name="strc" size="25">
+    <input type="button"  class="BotonBlanco" value="Aceptar" onClick="newHorometro(strc.value);">
+	</td>
+  </tr>
+</table-->
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+<SPAN ID="cont" STYLE="height:130px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLDoc" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+   <TR CLASS="HeaderLista"><TD>Fecha</TD>
+   <TD>Tonelaje</TD>
+	</TR>
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:default;"
+  		onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dee6eb')" HEIGHT="9">
+    <TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="FECHA" CLASS="text"></SPAN></TD>
+      <TD STYLE="border-bottom:solid 1px #6587a3;">
+	  <SPAN DATAFLD="VALOR" CLASS="text"></SPAN></td>
+      <td>
+       <IMG STYLE="CURSOR: hand" onclick="eliminar(this, this.parentElement.parentElement.rowIndex);"
+                                    src="images/trash.jpg" /> </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+</BODY>
+
+</HTML>

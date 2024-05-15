@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+	<siteMapNode img="default.png" title="Home" url="~/default.aspx" description="Home" Value="Home">
+		<siteMapNode img="usuario.jpg" title="Administracion" url="~/ttm_sgm/Administracion/SubMenu.aspx" description="Administracion" Value="ADMINISTRACION" roles="ADMIN">
+		  <siteMapNode img="administrador.jpg" title="Equipos" url="~/ttm_sgm/Administracion/Equipos.aspx" description="Administrar Equipos"  Value="EQUIPOS"></siteMapNode>
+		  <siteMapNode img="usuario.jpg" title="Equipos Usuarios" url="~/ttm_sgm/Administracion/asigEquipos.aspx" description="Administrar Equipos Usuarios"  Value="EQUIPOS_USUARIOS"></siteMapNode>
+		  <siteMapNode img="usuario.jpg" title="Tipos Equipos" url="~/ttm_sgm/Administracion/tipoEquipos.aspx" description="Administrar Tipos Equipos"  Value="TIPOS_EQUIPOS" ></siteMapNode>
+		  <siteMapNode img="usuario.jpg" title="Modo Falla" url="~/ttm_sgm/Administracion/checklist.aspx" description="Administrar Modo Falla"  Value="MODO_FALLA"></siteMapNode>
+		  <siteMapNode img="usuario.jpg" title="Modo Falla" url="~/ttm_sgm/Administracion/secciones.aspx" description="Administrar Secciones"  Value="SECCIONES"></siteMapNode>
+		  <siteMapNode img="usuario.jpg" title="Tipo Paradas" url="~/ttm_sgm/Administracion/tipoParadas.aspx" description="Administrar Tipo Paradas"  Value="TIPO_PARADA"></siteMapNode>
+		</siteMapNode>
+		<siteMapNode img="default.png" title="Operaciones" url="~/ttm_sgm/Operaciones/SubMenu.aspx" description="Operaciones" Value="OPERACIONES" roles="ADMIN">
+			<siteMapNode img="default.png" title="Bitacora" url="~/ttm_sgm/Operaciones/Bitacora.aspx" description="Administrar informacion de Bitacora"  Value="BITACORA"></siteMapNode>
+			<siteMapNode img="default.png" title="Paradas" url="~/ttm_sgm/Operaciones/Paradas.aspx" description="Administrar informacion de Paradas"  Value="PARADAS"></siteMapNode>
+			<siteMapNode img="usuario.jpg" title="Espesores 2.0" url="~/ttm_sgm/Operaciones/Espesores2.aspx" description="Administrar informacion de Espesores 2.0"  Value="ESPESORES2" ></siteMapNode>
+			<siteMapNode img="usuario.jpg" title="Proyeccion x Toneladas" url="~/ttm_sgm/Operaciones/proyecciones.aspx" description="Administrar informacion de Proyecciones x Toneladas"  Value="PROYECCIONES_TONELADAS"></siteMapNode>
+		</siteMapNode>
+		<siteMapNode img="default.png" title="Informes" url="~/ttm_sgm/Informes/SubMenu.aspx" description="Informes" Value="INFORMES" roles="ADMIN">
+			<siteMapNode img="default.png" title="Inspecciones" url="~/ttm_sgm/Informes/default1.aspx" description="Administrar informacion de Inspecciones"  Value="INSPECCIONES"></siteMapNode>
+			<siteMapNode img="default.png" title="Confiabilidad" url="~/ttm_sgm/Informes/default2.aspx" description="Administrar informacion de Confiabilidad"  Value="CONFIABILIDAD"></siteMapNode>
+			<siteMapNode img="default.png" title="Layout" url="~/ttm_sgm/Informes/default3.aspx" description="Administrar informacion de Layout"  Value="LAYOUT"></siteMapNode>
+			<siteMapNode img="default.png" title="Data Sheet" url="~/ttm_sgm/Informes/default4.aspx" description="Administrar informacion de Data Sheet"  Value="DATA_SHEET"></siteMapNode>
+			<siteMapNode img="default.png" title="Componentes" url="~/ttm_sgm/Informes/default5.aspx" description="Administrar informacion de Componentes"  Value="COMPONENTES"></siteMapNode>
+		</siteMapNode>
+	</siteMapNode>
+</siteMap>

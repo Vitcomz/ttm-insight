@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+
+
+
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+	<script type="text/javascript">
+function parseXML(txt){
+	var xmlDoc
+	if (window.DOMParser){
+		xmlDoc=(new DOMParser()).parseFromString(txt,"application/xml");
+	}else{
+		xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+		xmlDoc.async="false";
+		xmlDoc.loadXML(txt); 
+	}
+	return xmlDoc
+}
+function toStringXML(xmlObject){
+	if(window.XMLSerializer)
+		return (new XMLSerializer()).serializeToString(xmlObject)
+	else
+		return xmlObject.xml
+}
+function getCountries() {
+	return parseXML('<data><country name="USA"></country></data>')
+}
+    function writer(X){
+    	var dataUrl='data:application/xml,' + encodeURIComponent(
+    		'<?xml version="1.0" encoding="UTF-8"?>'
+    		+toStringXML(X) 
+    	)
+		document.open = dataUrl
+    }
+function doit(){
+	var data=getCountries()
+	// play with the XML DOM if needed
+	writer(data)
+}
+$(function(){
+	$('button').click(doit)
+})
+</script>
+	<title>writer</title>
+</head>
+<body>
+<button>doit</button>
+</body>
+</html>

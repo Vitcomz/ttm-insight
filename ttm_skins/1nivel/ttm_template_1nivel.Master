@@ -1,0 +1,714 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="ttm_template_1nivel.master.cs" Inherits="Insight.ttm_skins._1nivel.ttm_template_1nivel" %>
+
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <title>TTM - Insight</title>
+    
+    <link href="../css/style-ttm.css" rel="stylesheet" type="text/css"/>
+    <script src="../../ttm_js/jslide/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../../ttm_skins/css/colorbox.css" type="text/css" />
+    <script src="../../ttm_js/facebox.js" type="text/javascript"></script>
+    <link href="../../ttm_skins/css/facebox.css" rel="stylesheet" type="text/css" />
+    <script src="../../ttm_js/jquerycolorboxmin.js" type="text/javascript"></script>  
+    
+</head>
+
+<script type='text/javascript'>
+
+    $(document).ready(function () {
+        $("#linkGlosario").colorbox({ iframe: true, innerWidth: 900, innerHeight: "80%" });
+    });
+
+    //LLAMADO A PERFIL
+
+    function manejarPerfil(perfil) {
+        var gato = '#';
+        var idelem = gato + perfil;
+        $(idelem).show();
+    }
+
+//    function ActivaPerfil(perfil2, rols) {
+//        var gato = '#';
+//        var key = perfil2 + rols.charAt(0);
+//        var idelem = "#BtPfAdminA a"; //  gato + key + ' a';
+//        $(idelem).css("background-image", "url(../../images/_header/" + perfil2 + "-ov.png)");
+//    }
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+
+        return vars;
+    }
+
+
+    //MUESTRA - OCULTA
+
+    function toggleOtro(muestra, oculta) {
+        var miContenido = "miContenido";
+        var gato = "#";
+        var strSplitOculta = oculta.split(';');
+        var strSplitMuestra = muestra.split(';');
+
+        for (x = 0; x < strSplitMuestra.length; x++) {
+            var elemMuestra = gato + miContenido + strSplitMuestra[x];
+            $(elemMuestra).show();
+            $("#ctl00_SubMenusLayoutCenter").show();
+        }
+
+        for (y = 0; y < strSplitOculta.length; y++) {
+            var elemOculta = gato + miContenido + strSplitOculta[y];
+            $(elemOculta).hide();
+        }
+    }
+
+    Opciones = {
+        init: function () {
+            $('div.OptionLayoutTop').click(function () {
+                Opciones.toggle(this)
+            });
+        },
+        toggle: function (elt) {
+            $('div.SubMenusLayoutCenter').hide();
+            $(elt).siblings('div.OptionLayoutCenter').slideToggle('fast');
+            //$('div.InfoLayoutTop').trigger("click");
+        }
+    }
+
+
+    Info = {
+        init: function () {
+            $('div.InfoLayoutTop').click(function () {
+                Info.toggle(this)
+            });
+        },
+        toggle: function (elt) {
+            $('div.SubMenusLayoutCenter').hide();
+            $(elt).siblings('div.InfoLayoutCenter').slideToggle('fast');
+            //$('div.OptionLayoutTop').trigger("click");
+        }
+    }
+
+    $(function () {
+        Info.init();
+        Opciones.init();
+    });
+
+    $(document).ready(function () {
+
+        $(".signin").click(function (e) {
+            e.preventDefault();
+            $("fieldset#signin_menu").toggle();
+            $(".signin").toggleClass("menu-open");
+        });
+
+        $("fieldset#signin_menu").mouseup(function () {
+            return false
+        });
+        $(document).mouseup(function (e) {
+            if ($(e.target).parent("a.signin").length == 0) {
+                $(".signin").removeClass("menu-open");
+                $("fieldset#signin_menu").hide();
+            }
+        });
+        $("#ADMENU").click(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+        $("#ADMENU").mouseover(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+        $("#OPMENU").click(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+        $("#OPMENU").mouseover(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+        $("#INFMENU").click(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+        $("#INFMENU").mouseover(function () {
+            $('div.SubMenusLayoutCenter').show();
+        });
+    });
+    function setLocationHref() {
+        window.location.href = '/ttm_sgm/SubMenu.aspx';
+    }
+</script>
+<body style="background-color:#f5f5f5;">
+
+    <form id="form2" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" />
+    <div class="wrapLn01">
+        <!---- left ----->
+	        <div class="LogoTTM"  onclick="setLocationHref();">
+                
+            </div>
+        <!---- central ----->
+            
+            <div style="display:inline-block;">
+                    <asp:Panel ID="PanelMenu" runat="server" CssClass="TUsuario"></asp:Panel>
+                    <%--<telerik:RadMenu ID="RadMenu1" runat="server" DataSourceID="SiteMapDataSource1" EnableEmbeddedSkins="False"  onitemdatabound="RadMenu1_ItemDataBound" CssClass="mattmenu"></telerik:RadMenu>--%>
+                    <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" SiteMapProvider="sitemap" ShowStartingNode="False" />
+	        </div>
+        <!---- right ----->
+
+        <!---- PERFILES ----->
+        <div class="WpRgth" id="PanelPerfil" runat="server">
+            <!--usuario -->	
+	        <div id="USER" class="BgPerfDesa" style="display:none;">
+		        <div id="BtPfClienteU" class="BtPfCliente" style="float:left; width:83px; height:30px;" runat="server"><asp:LinkButton ID="LinkClienteU" runat="server" onclick="LinkAll_Click"><!---- Usuario -----></asp:LinkButton></div>
+		        <div class="BtPfAdmin" style="float:left; width:117px; height:30px;"><!---- Admin -----></div>
+		        <div class="BtPfIspector" style="float:left; width:83px; height:29px;"><!---- Inspector -----></div>
+		        <div class="BtPfCinterno" style="float:left; width:117px; height:29px;"><!---- C interno -----></div>
+	        </div>
+            <!--admin -->	
+	        <div id="ADMIN" class="BgPerfDesa" style="display:none;">
+		        <div id="BtPfClienteA" class="BtPfCliente" style="float:left; width:83px; height:30px;" runat="server"><asp:LinkButton ID="LinkClienteA" runat="server" onclick="LinkAll_Click"><!---- Usuario -----></asp:LinkButton></div>
+		        <div id="BtPfAdminA" class="BtPfAdmin" style="float:left; width:117px; height:30px;" runat="server"><asp:LinkButton ID="LinkAdminA" runat="server" onclick="LinkAll_Click"><!---- Admin -----></asp:LinkButton></div>
+		        <div id="BtPfIspectorA" class="BtPfIspector" style="float:left; width:83px; height:29px;" runat="server"><asp:LinkButton ID="LinkIspectorA" runat="server" onclick="LinkAll_Click"><!---- Inspector -----></asp:LinkButton></div>
+		        <div id="BtPfCinternoA" class="BtPfCinterno" style="float:left; width:117px; height:29px;" runat="server"><asp:LinkButton ID="LinkCinternoA" runat="server" onclick="LinkAll_Click"><!---- C interno -----></asp:LinkButton></div>
+	        </div>
+            <!--inspeccion -->		
+	        <div id="INSP" class="BgPerfDesa" style="display:none;">
+		        <div id="BtPfClienteI" class="BtPfCliente" style="float:left; width:83px; height:30px;" runat="server"><asp:LinkButton ID="LinkClienteI" runat="server" onclick="LinkAll_Click"><!---- Usuario -----></asp:LinkButton></div>
+		        <div class="BtPfAdmin" style="float:left; width:117px; height:30px;"><!---- Admin -----></div>
+		        <div id="BtPfIspectorI" class="BtPfIspector" style="float:left; width:83px; height:29px;" runat="server"><asp:LinkButton ID="LinkIspectorI" runat="server" onclick="LinkAll_Click"><!---- Inspector -----></asp:LinkButton></div>
+		        <div class="BtPfCinterno" style="float:left; width:117px; height:29px;"><!---- C interno -----></div>
+	        </div>
+            <!--cliente interno -->	
+	        <div id="CLINT" class="BgPerfDesa" style="display:none;">
+		        <div id="BtPfClienteC" class="BtPfCliente" style="float:left; width:83px; height:30px;" runat="server"><asp:LinkButton ID="LinkClienteC" runat="server" onclick="LinkAll_Click"><!---- Usuario -----></asp:LinkButton></div>
+		        <div class="BtPfAdmin" style="float:left; width:117px; height:30px;"><!---- Admin -----></div>
+		        <div class="BtPfIspector" style="float:left; width:83px; height:29px;"><!---- Inspector -----></div>
+		        <div  id="BtPfCinternoC" class="BtPfCinterno" style="float:left; width:117px; height:29px;" runat="server"><asp:LinkButton ID="LinkCinternoC" runat="server" onclick="LinkAll_Click"><!---- C interno -----></asp:LinkButton></div>
+	        </div>
+        </div>	
+        <div class="WpTNRgthsub2">
+                <asp:Panel ID="PanelComboEquipos" runat="server">
+                    <div class="TxtNameFaena" style="float:left;">Faena:&nbsp;&nbsp;<asp:Label ID="lblfaena" runat="server" Text="Label"></asp:Label>
+                    <telerik:RadComboBox ID="CmbFaenasFiltro" runat="server" Width="200px" Height="220px" DropDownWidth="250px"
+                                                            EmptyMessage="[-- Seleccione Faena --]" 
+                                                            DataTextField="description" DataValueField="value"
+                                                            onselectedindexchanged="CmbFaenasFiltro_SelectedIndexChanged" 
+                                                            Filter="Contains" LoadingMessage="Cargando..." MarkFirstMatch="True"
+                                                          AutoPostBack="True">
+                                                      </telerik:RadComboBox></div><br>
+		            <div class="TxtNameFaena" style="float:left; padding-top:3px;">Equipo: 
+                         <telerik:RadComboBox ID="cblequiposfiltros" runat="server"  Height="220px" Width="200px"  DropDownWidth="250px"
+                             EmptyMessage="[-- Seleccione Equipo --]" EnableLoadOnDemand="true" 
+                             ShowMoreResultsBox="false" EnableVirtualScrolling="true" CssClass="field3" 
+                             Filter="Contains" LoadingMessage="Cargando..." MarkFirstMatch="True" 
+                             onitemdatabound="cblequiposfiltros_ItemDataBound" 
+                             ondatabound="cblequiposfiltros_DataBound" 
+                             onitemsrequested="cblequiposfiltros_ItemsRequested" 
+                             ontextchanged="cblequiposfiltros_TextChanged" 
+                             onselectedindexchanged="cblequiposfiltros_SelectedIndexChanged" 
+                            AutoPostBack="True">
+                                <HeaderTemplate>
+                                     <h2>Equipos</h2>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                     <div class="imageWrap">
+                                          <img src="<%# BuscarFotoEquipo(Eval("IMAGEURL").ToString()) %>" alt=" <%# DataBinder.Eval(Container, "value")%> " />
+                                     </div>
+                                     <div>
+                                          <ul class="personDetails">
+                                               <li class="name"><span> <%# DataBinder.Eval(Container, "value")%> </span></li>
+                                               <li class="title"><span> <%# DataBinder.Eval(Container, "text")%> </span></li>
+                                          </ul>
+                                     </div>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    Total Equipos: <asp:literal runat="server" id="RadComboItemsCount" />
+                               </FooterTemplate>
+                        </telerik:RadComboBox>
+		            </div>
+                    <div style="float:left; padding-bottom:5px; padding-left:20px;height:22px;"></div>
+                </asp:Panel>
+            </div>
+        </div><div class="wrapLn03">
+                
+                <div class="WpTNCnt">
+                    <asp:Panel ID="PanelSubMenus" runat="server">
+                        <div class="SubMenusLayout">
+	                        <%--<div class="SubMenusLayoutTop"><a href="#"></a></div>        
+	                        <div class="limpiar"></div>--%>
+	                        <div id="SubMenusLayoutCenter" runat="server" class="SubMenusLayoutCenter" style="display:none;">
+		                        <div id="miContenido1000" style="display:none;"><!--- vacio ---></div>
+	                        <!--- de bt 01 --->
+		                        <div id="miContenido111" class="TIUsuario" style="display:none;">
+			                        <ul>
+				                        <li><a id="linkADministracion1" href="/ttm_sgm/Administracion/sgm_equipos.aspx">Equipos</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkADministracion2" href="/ttm_sgm/Administracion/sgm_equipos_usuarios.aspx">Equipos<br />Usuarios</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkADministracion3" href="/ttm_sgm/Administracion/sgm_tipos_equipos.aspx">Tipos<br />Equipos</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkADministracion4" href="/ttm_sgm/Administracion/sgm_modo_fallas.aspx">Modo<br />Falla</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkADministracion5" href="/ttm_sgm/Administracion/sgm_secciones.aspx">Secciones</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkADministracion6" href="/ttm_sgm/Administracion/sgm_tipos_paradas.aspx">Tipo<br />Paradas</a></li>
+				                        <%--<li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkCausaRaiz" href="paginas/usuario/3doCausaRaiz.html">Causa Raiz<br />RCA</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkPreliminar" href="paginas/usuario/3doPreliminar.html">Preliminar</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkFinal" href="paginas/usuario/3doFinal.html">Final</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkOtros" href="paginas/usuario/3doOtros.html">Otros</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkInformeRx" href="paginas/usuario/2doInformeRx.html">Informe<br />Rx</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkInformeScanner" href="paginas/usuario/2doInformeScanner.html">Informe<br />Scanner</a></li>--%>
+			                        </ul>
+		                        </div>
+		                        <div class="limpiar"></div>
+	                        <!--- de bt 02 --->
+		                        <div id="miContenido112" class="TIUsuario" style="display:none;">
+			                        <ul>
+				                        <li><a id="linkOperaciones1" href="/ttm_sgm/Operaciones/sgm_bitacoras.aspx">Bitacora</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkOperaciones2" href="/ttm_sgm/Operaciones/sgm_Paradas.aspx">Paradas</a></li>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkOperaciones3" href="/ttm_sgm/Operaciones/sgm_espesores.aspx">Espesores</a></li>
+				                        <%--<li class="SepUser"></li>
+				                        <li><a id="linkOperaciones4" href="/ttm_sgm/Operaciones/sgm_proy_toneladas.aspx">Proyecciones<br />por Toneladas</a></li>
+				                        <li class="SepUser"></li>
+                                        <li><a id="linkOperaciones5" href="/ttm_sgm/Operaciones/sgm_proy_espesores.aspx">Proyecciones<br />por Espesores</a></li>--%>
+			                        </ul>
+		                        </div>
+		                        <div class="limpiar"></div>
+	                        <!--- de bt 03 --->
+		                        <div id="miContenido113" class="TIUsuario" style="display:none;">
+			                        <ul>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1A" href="/ttm_sgm/Informes/List_InfInspecciones.aspx">Inspecciones</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkInformes1B" href="/ttm_sgm/Informes/List_InfDiario.aspx">Informe<br>Diario</a></li>
+				                        <li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1C" href="/ttm_sgm/Informes/List_InfSemanal.aspx">Informe<br>Semanal</a></li>
+				                        <li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1D" href="/ttm_sgm/Informes/List_GraficoCriticidad.aspx">Grafico<br>Criticidad</a></li>
+				                        <%--<li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1E" href="/ttm_sgm/Informes/List_Planificacion.aspx">Planificacion</a></li>
+				                        <li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1F" href="/ttm_sgm/Informes/List_TrenApilamiento.aspx">Tren<br>Apilamiento</a></li>
+				                        --%><li class="SepUser"></li>
+                                        <% if (Session["emp"].ToString().ToUpper() == "ANDINA" || Session["emp"].ToString().ToUpper() == "LOS PELAMBRES" || Session["emp"].ToString().ToUpper() == "LOS PELAMBRES CONCENTRADORA")
+                                           {  %>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1H" href="/ttm_sgm/Informes/List_InfPolines.aspx">Informe<br>Polines</a></li>
+				                        <li class="SepUser"></li>
+                                        <%} %>
+                                        <li class="TIUsuarioSN"><a id="linkInformes1G" href="/ttm_sgm/Informes/List_InfBitacora.aspx">Listado<br>Bitacoras</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkInformes2A" href="/ttm_sgm/Informes/List_InfParadas.aspx">Listado<br>Paradas</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkInformes2B" href="/ttm_sgm/Informes/List_InfTopTen.aspx">TopTen<br>Fallas</a></li>
+				                        <li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkInformes2C" href="/ttm_sgm/Informes/List_InfIndicadores.aspx">Indicadores</a></li>
+                                        <li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes2D" href="/ttm_sgm/Informes/List_InfPlanificacion.aspx">Planificacion</a></li>
+                                        <li class="SepUser"></li>
+                                        <li class="TIUsuarioSN"><a id="linkInformes2E" href="/ttm_sgm/Informes/List_InfProyEspesores.aspx">Proyecciones<br />por Espesores</a></li>
+				                        <%--<li class="SepUser"></li>
+				                        <li class="TIUsuarioSN"><a id="linkInformes2D" href="/ttm_sgm/Informes/List_GraficaAnalisis.aspx">Graficos<br>Analisis</a></li>--%>
+				                        <li class="SepUser"></li>
+				                        <li><a id="linkInformes3" href="/ttm_sgm/Informes/List_DataSheet.aspx">Data Sheet</a></li>
+				                        <li class="SepUser"></li>
+                                        <li><a id="linkInformes4" href="/ttm_sgm/Informes/List_Componentes.aspx">Componentes</a></li>
+			                        </ul>
+		                        </div>
+		                        <div class="limpiar"></div>
+	                        </div>
+	                        <div class="limpiar"></div>
+                        </div>
+                    </asp:Panel>
+	            </div>
+                <div class="WpSNRgth">
+                    <a href="#" class="signin">
+                        <div style="float:left;"><asp:Label ID="lbluser" runat="server" Text="Label"></asp:Label></div></br>
+                        <div  style="float:left;"><asp:Label ID="lblcargo" runat="server" Text="Label"></asp:Label></div>
+                    </a>
+                </div>
+                <%# DataBinder.Eval(Container, "value")%>
+                    <div id="container">
+                      <fieldset id="signin_menu">
+                          <div id="icon-log">
+                            <div id="icon-pic">
+                                <asp:LinkButton ID="lnk7" runat="server" onclick="lnk7_Click">
+                                    <asp:Image ID="imgProfile" runat="server"  Height="159px" Width="159px"/>
+                                    <asp:Label ID="lblimgprofile" runat="server" Text="Label" CssClass="gb_cax">Cambiar Imagen</asp:Label>
+                                </asp:LinkButton>
+                            </div>
+                          </div>
+                          
+                          <div id="menu-log" class="mattblackmenu">
+										<ul>
+											<li><asp:LinkButton id="link1" runat="server" OnClick="Link6_Click">Home</asp:LinkButton></li>
+											<li><asp:LinkButton id="link2" runat="server" OnClick="Link6_Click">SCI</asp:LinkButton></li>
+                                            <li><asp:LinkButton id="link3" runat="server" OnClick="Link6_Click">Cambio Faena</asp:LinkButton></li>
+                                            <li><asp:LinkButton id="link4" runat="server" OnClick="Link6_Click">Modificar Perfil</asp:LinkButton></li>
+                                            <li><asp:LinkButton id="link5" runat="server" OnClick="Link6_Click">Ayuda</asp:LinkButton></li>
+                                            <li><asp:LinkButton id="link6" runat="server" OnClick="Link6_Click">Cerrar Sesion</asp:LinkButton></li>
+										</ul>
+									</div>
+                      </fieldset>
+                    </div>
+                    <div id="container2"><asp:Panel ID="PanelCambiosFaenas" runat="server" Visible="False" Width="250px">
+                        <fieldset id="signin_menu2">
+                                    <div id="menu-log2"  class="mattblackmenu">
+                                                <div class="changefaena">
+                                                      Cambio Faena<img src="/ttm_skins/images/_header/3cambio_18x18-px.png" style="float:left; padding-right: 5px; "/>
+                                                 </div>
+                                                 <div  class="cblfaena3">
+
+                                                 </div>
+                                                 <div style="vertical-align: middle; text-align: center; width: 90%; padding-top:20px;">
+                                                     <asp:Button ID="btnCerrarCambioFaena" runat="server" Text="Cerrar" 
+                                                         BackColor="#0072C6" ForeColor="White" onclick="btnCerrarCambioFaena_Click" BorderStyle="None" />
+                                                 </div>
+                                   </div>
+                         </fieldset></asp:Panel>
+                        <asp:Panel ID="PanelCambiosFotos" runat="server" Visible="False" Width="250px"><fieldset id="signin_menu4">
+                                    <div id="menu-log4"  class="mattblackmenu">
+                                                <div class="changefaena2">
+                                                      Cambio Fotografia<img src="/ttm_skins/images/_header/7usuario_18x18_px.png" style="float:left; padding-right: 5px; "/>
+                                                 </div>
+                                                 <div  class="cblfaena2">
+                                                    <asp:Image ID="imgAvatar" runat="server" Height="120px" ImageUrl="~/ttm_skins/css/images/icon_people.png" Width="120px" />
+                                                    <asp:Label runat="server" ID="lblOutput"></asp:Label>
+                                                 </div>
+                                                 <div style="vertical-align: middle; text-align: left; width: 35%; float: right; padding-top: 5px;">
+                                                    <asp:Button ID="btnCerrarCambioFoto" runat="server" Text="Cerrar" BackColor="#0072C6" ForeColor="White" Width="70px" onclick="btnCerrarCambioFoto_Click"  BorderStyle="None"/>
+                                                    <asp:Button ID="btnBuscarCambioFoto" runat="server" Text="Buscar" 
+                                                         BackColor="#0072C6" ForeColor="White" Width="70px" 
+                                                         onclick="btnBuscarCambioFoto_Click"  BorderStyle="None"/>
+                                                 </div>
+                                                <asp:Panel ID="PanelUploadCambioFoto" runat="server" Visible="False">
+                                                 <div style=" position:absolute; vertical-align: middle; text-align: center; width: 100%; float: right; padding-top: 5px; top:155px; height:20px; visibility:visible;">
+                                                     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="conditional">
+                                                        <ContentTemplate>
+                                                           <asp:FileUpload ID="filUpload2" runat="server" Width="180px" /> 
+                                                           <asp:Button runat="server" ID="btnUpload" Text="Subir" BackColor="#0072C6" ForeColor="White" onclick="btnUpload_Click"/>
+                                                        </ContentTemplate>
+                                                        <Triggers><asp:PostBackTrigger ControlID="btnUpload" /> </Triggers>  
+                                                     </asp:UpdatePanel>
+                                                </div></asp:Panel>
+                                   </div>
+                         </fieldset></asp:Panel>
+                    </div>
+                    <div id="container3"><asp:Panel ID="PanelUpdateUsuario" runat="server" Visible="false" Width="410px">
+                        <fieldset id="signin_menu3">
+                                    <div id="menu-log3"  class="mattblackmenu">
+                                                <div class="changefaena">
+                                                      Modificacion Perfil<img src="/ttm_skins/images/_header/4config_18x18px.png" style="float:left; padding-right: 5px; "/></div>
+                                                 </div>
+                                                 <div  class="cblfaena">
+                                                     <table width="100%" class="tableupdateusuario">
+                                                      <tr>
+                                                        <td style="width: 93px;">Telefono</td>
+                                                        <td><asp:TextBox ID="txtUpdatefono" runat="server" CssClass="txtupdateusuario" ></asp:TextBox></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Celular</td>
+                                                        <td><asp:TextBox ID="txtUpdatecelular" runat="server" CssClass="txtupdateusuario"  ></asp:TextBox></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Email</td>
+                                                        <td><asp:TextBox ID="txtUpdateemail" runat="server" CssClass="txtupdateusuario"  ></asp:TextBox></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Cargo</td>
+                                                        <td><telerik:RadComboBox ID="CmbCargoFiltro" runat="server" Width="250px" 
+                                                                DataTextField="description" DataValueField="value" EmptyMessage="[-- Seleccione Cargo --]" 
+                                                                EnableLoadOnDemand="true" ShowMoreResultsBox="true" EnableVirtualScrolling="true" 
+                                                                Filter="Contains" LoadingMessage="Cargando..." 
+                                                                MarkFirstMatch="True" Font-Size="12px" CssClass="field22">
+                                                        </telerik:RadComboBox></td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Password</td>
+                                                        <td><asp:TextBox ID="txtUpdatepassword" runat="server" CssClass="txtupdateusuario" ></asp:TextBox></td>
+                                                      </tr>
+                                                    </table>
+                                                 </div>
+                                                 <div style="vertical-align: middle; text-align: right; width: 97%">
+                                                        <asp:Button ID="btnGrabarUpdateUsario" runat="server" Text="Modificar" 
+                                                            BackColor="#0072C6" ForeColor="White" onclick="btnGrabarUpdateUsario_Click" BorderStyle="None" />
+                                                        <asp:Button ID="btnCancelarUpdateUsuario" runat="server" Text="Cancelar" 
+                                                            BackColor="#0072C6" ForeColor="White" onclick="btnCancelarUpdateUsuario_Click" BorderStyle="None" />
+                                                 </div>
+                                   </div>
+                         </fieldset></asp:Panel>
+                    </div>
+            </div>
+            
+    <%# DataBinder.Eval(Container, "text")%>
+        <div style="margin: 0 auto; width: 100%;">
+            <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+                    <tr>
+                    	<td valign="top" align="center" style="background-color:#fff;">
+                            <asp:Panel ID="PanelNivelCentro" runat="server">
+                                <asp:contentplaceholder id="ContentPlaceHolder1" runat="server"></asp:contentplaceholder>
+                            </asp:Panel>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+        <!-------------------------------------- NIVEL INFO GENERAL ------------------------------------------->
+
+        <div class="wrapLn05" id="wrapLn05">
+	        <div class="txtProp">Sistema :: <span style="font-family:MyriadPro-Semibold, Helvetica, sans-serif;">TTM Insight</span></div>
+            <div class="ContTitDat">Símbolos de Layout</div>
+	        <div class="ImgSimbolos_1nivel" id="ImgSimbolos"  runat="server"></div>
+            <div class="ContInfDer"><a id="linkGlosario" class="cboxElement" href="/ttm_sgm/Informes/List_StatusComponentes.aspx">Estado Componentes</a></div>
+            <div class="txtDatco">TTM</div>
+            <div class="Close"><asp:LinkButton id="link7" runat="server" OnClick="Link6_Click" CssClass="Close"></asp:LinkButton></a></div>
+        </div>
+
+        <!-------------------------------------- opciones de layout -------------------------------------->
+        <asp:Panel ID="PanelAlertaEquipos" runat="server">
+            <div class="InfoLayout">
+	            <div class="InfoLayoutTop"><a href="#"></a></div>
+	            <div id="InfoLayoutCenter" runat="server" class="InfoLayoutCenter"  style="display:none;">
+		            <div class="SepInf">
+			            <div class="TitInfoALTA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoALTA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoALTA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoMEDIA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+                    <div class="SepInf">
+			            <div class="TitInfoMEDIA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoMEDIA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoMEDIA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoBAJA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+		            <div class="SepInf">
+			            <div class="TitInfoBAJA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+                    <div class="SepInf">
+			            <div class="TitInfoBAJA">Título información</div>
+			            <div>Detalle información</div>
+		            </div>
+	            </div>
+            </div>
+        </asp:Panel>
+        <asp:Panel ID="PanelOpcionEquipos" runat="server">
+        <script type='text/javascript'>
+                $(document).ready(function () {
+                    $("#OptionLayoutCenter-a").colorbox({ href: "Informes/List_InfBitacora_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>&idrl=<%= Session["rols"].ToString().ToUpper()%>", iframe: true, innerWidth: "49%", innerHeight: "80%" });
+                    $("#OptionLayoutCenter-b").colorbox({ href: "Informes/List_InfInspecciones_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>&idrl=<%= Session["rols"].ToString().ToUpper()%>", iframe: true, innerWidth: "49%", innerHeight: "80%" });
+                    $("#OptionLayoutCenter-c").colorbox({ href: "Informes/List_InfParadas_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>&idrl=<%= Session["rols"].ToString().ToUpper()%>", iframe: true, innerWidth: "49%", innerHeight: "85%" });
+                    $("#OptionLayoutCenter-d").colorbox({ href: "Informes/List_GraficoCriticidad_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>", iframe: true, innerWidth: "48%", innerHeight: "85%" });
+                    $("#OptionLayoutCenter-e").colorbox({ href: "Informes/List_Componentes_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>", iframe: true, innerWidth: "47%", innerHeight: "85%" });
+                    $("#OptionLayoutCenter-f").colorbox({ href: "Informes/List_DataSheet_auxiliar.aspx?ID=<%= Session["Eq"].ToString().ToUpper() %>", iframe: true, innerWidth: "49%", innerHeight: "85%" });
+                });
+            </script>
+            <div class="OptionLayout">
+	            <div class="OptionLayoutTop"><a href="#"></a></div>        
+	            <div class="limpiar"></div>
+	            <div id="OptionLayoutCenter" runat="server" class="OptionLayoutCenter" style="display:none;">
+		            <ul>
+			            <li><a id="OptionLayoutCenter-a" href="javascript:void();" class="cboxElement" >Bitacora</a></li>
+			            <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-b"  href="javascript:void();" class="cboxElement" >Inspeccion</a></li>
+			            <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-c"  href="javascript:void();" class="cboxElement" >Parada</a></li>
+                        <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-d"  href="javascript:void();" class="cboxElement" >Grafico<br />Criticidad</a></li>
+                        <li class="SepUser"></li>
+                        <li><a id="OptionLayoutCenter-e"  href="javascript:void();" class="cboxElement" >Componente</a></li>
+                        <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-f"  href="javascript:void();" class="cboxElement" >DataSheet</a></li>
+                        <%--<li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-g"  href="javascript:void();" class="cboxElement" >Stock<br />Correas</a></li>
+			            <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-h"  href="javascript:void();" class="cboxElement" >Scanner<br />en línea</a></li>
+			            <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-b"  href="javascript:void();" class="cboxElement" >Espesores</a></li>
+			            <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-c"  href="javascript:void();" class="cboxElement" >Informe<br />scanners</a></li>
+                        <li class="SepUser"></li>
+			            <li><a id="OptionLayoutCenter-e"  href="javascript:void();" class="cboxElement" >Informe<br />Rx</a></li>--%>
+			            <div class="limpiar"></div>
+		            </ul>
+	            </div>
+	            <div class="limpiar"></div>
+            </div>
+        </asp:Panel>
+    <telerik:RadWindowManager ID="RadWindowManager1" runat="server"></telerik:RadWindowManager>
+    <telerik:RadAjaxManager ID="RadAjaxManager1" runat="server" UpdatePanelsRenderMode="Inline">
+        <AjaxSettings>
+            <telerik:AjaxSetting AjaxControlID="LinkClienteU">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="PanelSubMenus" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkClienteA">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteA" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfAdminA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoA" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelSubMenus" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkAdminA">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfAdminA" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoA" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelSubMenus" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkIspectorA">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfAdminA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorA" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoA" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkCinternoA">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfAdminA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorA" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoA" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkClienteI">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteI" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorI"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkIspectorI">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteI"  />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfIspectorI" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkClienteC">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteC" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoC" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="LinkCinternoC">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelMenu" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfClienteC"  />
+                    <telerik:AjaxUpdatedControl ControlID="BtPfCinternoC" 
+                        LoadingPanelID="RadAjaxLoadingPanel1"  />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="CmbFaenasFiltro">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="cblequiposfiltros" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="ContentPlaceHolder1" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="lnk7">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFaenas" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFotos" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelUpdateUsuario" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" UpdatePanelCssClass="" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="link3">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFaenas" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFotos" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelUpdateUsuario" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="link4">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFaenas" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFotos" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" UpdatePanelCssClass="" />
+                    <telerik:AjaxUpdatedControl ControlID="PanelUpdateUsuario" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+            <telerik:AjaxSetting AjaxControlID="btnCerrarCambioFaena">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="PanelCambiosFaenas" 
+                        LoadingPanelID="RadAjaxLoadingPanel1" UpdatePanelCssClass="" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+        </AjaxSettings>
+    </telerik:RadAjaxManager>
+    <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanel1" runat="server" Skin="Default"></telerik:RadAjaxLoadingPanel>
+    </form>
+</body>
+</html>
+

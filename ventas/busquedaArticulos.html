@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Busqueda Articulos</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<LINK REL="stylesheet" HREF="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT TYPE="text/javascript" SRC="standard/Tabber/tabber.js"></SCRIPT>
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+		<!-- MENU -->
+		<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+		<!-- MENU -->
+        <STYLE TYPE="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </STYLE>
+</HEAD>
+
+<SCRIPT>
+function inicio(){
+//ListSolicitudes();
+buscar();
+}
+
+
+
+  
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabOC');
+Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="OrdenCompra.html?Folio=" + Folio;
+
+}
+
+
+function buscar(){
+	 
+
+if(formulario.tipoSolicitud[0].checked)
+						articulos="YES";
+else
+	articulos="NO";
+					
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=BuscarArticulos";
+		url += "&IND_ARTICULOS=" + articulos;
+		url += "&TXT=" + formulario.txtDescripcion.value;
+		url += "&EMPRESA=" + getEmpresa();
+
+//window.open(url);
+
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</SCRIPT>
+	<BODY>
+		<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+	</DIV>
+	
+<DIV ID="DivInsumos" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameInsumos" SRC="ArticulosOT.html" frameBorder="0" WIDTH="560" SCROLLING="no" HEIGHT="270">
+</IFRAME>
+</DIV>
+
+
+<DIV ID="DivOT" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameOT" SRC="generaOT.html" frameBorder="0" WIDTH="320" SCROLLING="no" HEIGHT="200"></IFRAME>
+</DIV>
+		
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+	<BR>
+	<BR>
+		<FORM NAME="formulario" >
+				  <H2 CLASS="titulo2">Busqueda de O.C por Articulos / Servicios.</H2>
+		          <TABLE>
+				  <TR><TD CLASS="input">Busqueda :
+								Articulos<INPUT TYPE="radio" CLASS="input" VALUE="ARTICULOS"
+										  checked="checked"  name="tipoSolicitud" >
+								Servicios<INPUT TYPE="radio" CLASS="input" VALUE="SERVICIOS" 
+											name="tipoSolicitud" >
+						</TD>
+						<TD CLASS="input">Descripci�n :
+						<INPUT TYPE="text" CLASS="input" NAME="txtDescripcion"  size="30">
+						<INPUT TYPE="button" CLASS="botonBlanco"  onClick="buscar();" VALUE="Buscar"  size="30">
+								
+						</TD>
+		          </TR></TABLE>
+			 						
+			<TABLE WIDTH="962" BORDER="0" CELLPADDING="0" CELLSPACING="3" DATAPAGESIZE="20" 
+				 id="tabOC" DATASRC="#xmlOC" CLASS="tablaBordesTitle">
+				<THEAD>
+				<TR CLASS="tablaBordesTitle">
+				  <TD WIDTH="31" >FOLIO</TD>
+				  <TD WIDTH="48" >MONEDA </TD>
+				  <TD WIDTH="208">PROVEEDOR</TD>
+				  <TD WIDTH="34" >FECHA</TD>
+				  <TD WIDTH="46" >SOLICITA</TD>
+				  <TD WIDTH="28" >AREA</TD>
+   				  <TD WIDTH="355">DESCRIPCION</TD>
+				  <TD WIDTH="50">CANTIDAD</TD>
+				  <TD WIDTH="61">VALOR UNIT.</TD>
+				  <TD WIDTH="66">TOTAL</TD>
+				  </TR>
+				</THEAD>
+			<TR BGCOLOR="#dee6eb" CLASS="tablaBordes" onClick="verOC(this.rowIndex);" STYLE="cursor:hand">
+				<TD ><SPAN DATAFLD="FOLIO"/></TD>
+				<TD ><SPAN DATAFLD="MONEDA"/></TD>
+				<TD ALIGN="left"><SPAN   datafld="PROVEEDOR"/></TD>
+				<TD ALIGN="center"><SPAN  datafld="FECHA"></SPAN></TD>
+				<TD ><SPAN   datafld="RESPONSABLE"></SPAN></TD>
+			    <TD ><SPAN   datafld="AREA"></SPAN></TD>
+		      	<TD ALIGN="left"><SPAN  datafld="DESCRIPCION"></SPAN></TD>
+				<TD ALIGN="center" ><SPAN  datafld="CANTIDAD"></SPAN></TD>
+				<TD ALIGN="right" ><SPAN  datafld="VALOR"></SPAN></TD>
+				<TD ALIGN="right">
+				 <SPAN  datafld="SUMA"></SPAN></TD>
+			</TR>
+			<TFOOT>
+			<TR ALIGN="left">
+					   <TD CLASS="input" COLSPAN="29">
+					   <INPUT  class="littleButton" TYPE="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" VALUE=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <SPAN ID="IDCantReg"></SPAN>
+					&nbsp;| Vista: <SPAN ID="IDFraccionReg"></SPAN>			</TD>
+			</TR>
+			</TFOOT>
+</TABLE>
+<BR>
+		</FORM>
+
+	</BODY>
+</HTML>

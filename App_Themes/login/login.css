@@ -1,0 +1,563 @@
+﻿/* Base Common Styles /---------------- */
+
+body {
+    font: 11px Arial, Verdana, Sans-serif;
+    color: #003366;
+    margin-top:0px;
+    margin-left:0px;
+    margin-right:0px;
+}
+table.header 
+{
+	width:955px;
+	height:70px;
+	background-image:url(../../Images/78t824j/Skin/00004558KJ.jpg);
+	background-repeat:no-repeat;
+	
+	}
+table.header td.header_td1
+{
+	width:32px;
+	height:70px;
+	}
+table.header td.header_td2
+{
+	width:186px;
+	height:70px;
+	}
+table.header td.header_td3
+{
+	width:469px;
+	height:70px;
+	}
+table.header td.header_td4
+{
+	width:23px;
+	height:70px;
+	}
+table.header_botones 
+{
+	width:245px;
+	height:70px;
+	}
+table.header_botones td.header_botones_td1
+{
+	width:245px;
+	height:54px;
+	}
+.ImgMenSup
+{
+	width:955px; 
+	height:31px; 
+	background-image:url(../../Images/78t824j/Skin/001214.jpg); 
+	background-repeat:no-repeat;
+	}
+table.TblMenSup
+{
+	width:955px; 
+	height:31px; 
+	}
+.ConRep 
+{
+	width:955px; 
+	height:400px; 
+	background-image:url(../../Images/78t824j/Skin/001218.jpg); 
+	background-repeat: repeat-y;
+	}
+.ImgFoo 
+{
+	
+	width:955px; 
+	height:48px; 
+	background-image:url(../../Images/45g875e/Skin/001219.jpg); 
+	background-repeat:no-repeat;
+	}
+
+table.TituloPrincipal{
+}
+
+table.TituloPrincipal th{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color:#424242;
+	width:739px;
+	
+}
+
+table.Formulario{
+	
+	
+}
+table.Formulario th{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#424242;
+	font-weight:bold;
+}
+table.Formulario td{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#424242;
+}
+
+table.Formulario td.obligatorio{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#424242;
+	font-weight:bold;
+}
+
+table.Historia {
+}
+table.Historia th{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#424242;
+	font-weight:normal;
+	text-align:justify;
+}
+table.Historia td{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#424242;
+	text-align:justify;
+}
+
+table.Empresas {
+}
+table.Empresas th{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color:#424242;
+	font-weight:bold;
+	text-align:justify;
+}
+table.Empresas td{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#424242;
+	text-align:justify;
+}
+
+.ayuda
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:9px;
+	color:#74AEF5;
+	}
+	
+table.ComentarioFormulario
+{
+	}
+
+table.ComentarioFormulario td
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#424242;
+	font-weight:bold;	
+	}
+
+
+a img {
+	border: 0px;
+}
+
+
+strong, b {
+	font-weight: bold;
+}
+
+em, i {
+	font-style: italic;
+}
+
+.clear {		clear: both; }
+
+
+h1, h2, h3, h4, h5, h6 {
+	display: block;
+}
+
+h4, h5, h6 {
+	font-weight: bold;
+}
+
+p {
+	margin: 0px 0px 18px 0px;
+}
+
+.container {
+	width: 960px;
+	margin: 0px auto;
+	clear: both;
+	z-index: 1;
+	position: relative;
+	padding-bottom: 40px;
+}
+
+.container_chico {
+	width: 720px;
+	margin: 0px auto;
+	clear: both;
+	z-index: 1;
+	position: relative;
+	padding-bottom: 40px;
+}
+
+
+/* Header Styles /---------------- */
+
+#header {
+	height: 114px;
+}
+
+
+
+/* External Site Links /---------------- */
+
+
+
+/* Login Area Styles /---------------- */
+
+#login #version {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	color: #bbbbbb;
+	padding: 10px;
+	z-index: 10;
+	top: 0px;
+}
+
+
+
+/* Main Area Styles /---------------- */
+
+#main {
+	height: 520px;
+	padding: 30px 30px 0px 30px;
+	background: transparent url('../plantillas/images/main_bg.gif') top left no-repeat;
+}
+
+#main_chico {
+	height: 520px;
+	padding: 30px 30px 0px 30px;
+	background: transparent url('../plantillas/images/main_bg2.gif') top left no-repeat;
+	left: 264px;
+	
+}
+
+#content {
+	height: 360px;
+	padding-bottom: 30px;
+	overflow: hidden;
+	position: relative;
+}
+
+#login-form {
+	width: 290px;
+	height: 280px;
+	top: 0px;
+	left: 264px;
+	position: absolute;
+	background: transparent url('../plantillas/images/login_box.gif') top left no-repeat;
+	color: #666666;
+	font-size: 12px;
+	padding: 80px 50px 0px 60px;
+}
+
+#login-form .label {
+	padding-bottom: 5px;
+}
+
+#login-form .field {
+	padding-bottom: 10px;
+}
+
+#login-form .field input {
+	width: 274px;
+	border: 1px inset #aaaaaa; 
+	padding: 0px;
+	font-size: 12px;
+}
+
+#login-form .field input.checkbox {
+	width: auto;
+	border: 0px; 
+	padding: 0px;
+	font-size: 12px;
+}
+
+#login-form .submit input {
+	width: auto;
+}
+
+#login-form #errorFrame {
+	font-weight: bold;
+	color: #ff0000;
+	text-align: center;
+	padding: 0px 0px 15px 0px;
+}
+
+
+
+
+
+#features {
+	width: 350px;
+	height: 275px;
+	top: 1px;
+	right: 191px;
+	position: absolute;
+	padding: 70px 20px 15px 100px;
+	background: transparent url('../plantillas/images/feature_bg.gif') top left no-repeat;
+}
+
+#features .feature a {
+	color: #ffdd00;
+	text-decoration: underline;
+}
+
+#features .feature a:hover {
+	color: #fdee8f;
+}
+
+#features .feature {
+	color: #bce0ff;
+}
+
+#features #first-feature {
+	padding-bottom: 30px;
+}
+
+#features .feature .title {
+	font-size: 14px;
+	font-weight: bold;
+	padding-bottom: 5px;
+	color: #ffffff;
+}
+
+#features #enquire-link {
+	width: 142px;
+	height: 39px;
+	display: block;
+	top: 273px;
+	left: 289px;
+	position: absolute;
+	text-indent: -9999px;
+}
+
+#windows-form {
+	width: 550px;
+	height: 410px;
+	top: 140px;
+	left: 30px;
+	position: absolute;
+	/*background: transparent url('../plantillas/images/box.gif') top left no-repeat; */
+	color: #333333;
+	font-size: 12px;
+	padding: 80px 50px 0px 60px;
+    background-color: #FFFFFF;
+
+}
+
+
+
+/* Homepage Specific Areas /---------------- */
+
+
+
+/* Level 2 Styles /---------------- */
+
+
+
+/* Feedback Area Styles /---------------- */
+
+.errorOK, .errorEXC {
+}
+
+.errorOK {
+	margin-bottom: 15px;
+}
+
+.errorEXC {
+	margin-bottom: 15px;
+}
+
+.errorInfoOK, .errorInfoEXC {
+	text-align: center;
+	padding: 8px;
+}
+
+.errorInfoOK {
+	border: 1px solid #197a30;
+	color: #197a30;
+	font-weight: bold;
+}
+
+.errorInfoEXC {
+	border: 1px solid #ff0000;
+	color: #ff0000;
+	font-weight: bold;
+}
+    
+
+
+/* Footer Styles /---------------- */
+
+#footer {
+	width: 900px;
+	height: 101px;
+	margin: 0px auto;
+	position: relative;
+	background: transparent url('../plantillas/images/bottom_bg.gif') top left no-repeat;
+}
+
+#footer2 {
+	width: 900px;
+	height: 101px;
+	margin: 0px auto;
+	position: absolute;
+	background: transparent url('../plantillas/images/footed.jpg') top left no-repeat;
+}
+
+#login #browser {
+	width: 175px;
+	height: 45px;
+	color: #535353;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	padding: 46px 200px 10px 55px;
+}
+
+#login a { 
+	color: #2463c6;
+	text-decoration: none;
+}
+
+#login a:hover {
+	color: #3493d1;
+}
+
+#login #browser .firefox {
+	right: 148px;
+	bottom: 10px;
+	position: absolute;
+}
+
+#login #browser .msie {
+	right: 100px;
+	bottom: 10px;
+	position: absolute;
+}
+
+#login #training {
+	width: 375px;
+	height: 45px;
+	color: #535353;
+	top: 0px;
+	left: 475px;
+	position: absolute;
+	padding: 46px 0px 10px 0px;
+}
+
+
+
+/* No Javascript Warning /---------------- */
+
+#noscript_bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0.85;
+	filter: alpha(opacity=85);
+    z-index: 99999;
+}
+
+#noscript_text {
+    position: absolute;
+    text-align: center;
+    left: 0;
+    width: 100%;
+    top: 30%;
+    font-size: 18px;
+    line-height: 1.5em;
+    z-index: 100000;
+    color: #ffffff;
+    padding-top: 70px;
+    background: url('../logo.gif') center top no-repeat;
+}
+table.titulo 
+{
+	}
+table.titulo th
+{
+	font-family:Verdana;
+	font-size:16px;
+	color:#424242;
+	text-align:left
+	
+	}	
+table.formulario
+{
+	}
+table.formulario td.obligatorio
+{
+	font-family:Verdana;
+	font-size:11px;
+	color:#424242;
+	text-align:left;
+	font-weight:bold;
+	}
+table.formulario td.noobligatorio
+{
+	font-family:Verdana;
+	font-size:11px;
+	color:#424242;
+	text-align:left;
+	}
+table.formulario td
+{
+	font-family:Verdana;
+	font-size:11px;
+	color:#424242;
+	text-align:left;
+	}
+	
+table.piepagina
+{
+	}
+table.piepagina th
+{
+	font-family:Verdana;
+	font-size:16px;
+	color:Yellow;
+	font-weight:bold;
+	}	
+table.piepagina td
+{
+	font-family:Verdana;
+	font-size:10px;
+	color:#424242;
+	font-weight:normal;
+	}
+	
+table.portada
+{
+	}
+	
+table.portada td
+{
+	font-family:Verdana;
+	font-size:10px;
+	color:#424242;
+	text-align:justify;
+	text-decoration:none;
+	
+	
+	}

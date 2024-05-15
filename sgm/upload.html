@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>Vitcomz Upload</TITLE>
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+</HEAD>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<xml id=xmlResponsables></xml>
+
+<SCRIPT LANGUAGE="javascript1.2">
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+
+function aceptar(){
+
+  url = "xml/archivos.asp?recurso=uploadFile";
+  url = url + "&PATH="+formulario.txtPath.value;
+  document.formulario.action=url;
+  formulario.submit();
+}
+
+
+
+</SCRIPT>
+
+<BODY >
+<DIV  align="right">
+<IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="popbox.style.visibility = 'hidden';"></DIV>	
+<DIV  class="titulo" STYLE="border-bottom: #A91905 2px solid;font-size:16">Utilidad para subir archivos al servidor</DIV>
+<DIV style='margin-left:5'>
+<FORM NAME="formulario" METHOD="POST" ENCTYPE="multipart/form-data" >
+ <TABLE WIDTH="559" BORDER="0">
+ 
+ <TR>
+      <TD WIDTH="117"><FONT CLASS="texto">Dir Destino :</FONT></TD>
+      <TD WIDTH="406"><INPUT NAME="txtPath" CLASS="input" SIZE="25" VALUE="/" />
+      <BR> </TD></TR>
+ <TR>
+      <TD><FONT CLASS="texto">Archivo:</FONT></TD>
+      <TD>
+		<FONT CLASS="texto">
+		<INPUT NAME="attach1" TYPE="file" CLASS="input" SIZE="65" >
+		 </FONT> </TD></TR></TABLE>
+<BR><BR>
+<INPUT type=submit CLASS="botonBlanco" VALUE="Adjuntar" onClick="aceptar();">
+<INPUT type=button CLASS="botonBlanco" VALUE="Sql Runner" onClick="window.location.href='sqlrunner.html'">
+</FORM>
+
+<BR></DIV>
+<A HREF="http:\\www.juliorojas.cl">Desarrollado por juliorojas.cl</A>
+</BODY>
+</HTML>

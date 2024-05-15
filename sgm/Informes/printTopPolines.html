@@ -1,0 +1,521 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<xml id = xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+<title>Informe de Polines</title>
+
+
+
+
+
+
+</head>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<script language="Javascript1.2" src="../Scripts/jquery.min.js"></script>
+<script src="../Scripts/highstock.js"></script>
+<script src="../Scripts/exporting.js"></script>
+<script src="../Scripts/jquery-ui-1.js"></script>
+
+
+<SCRIPT LANGUAGE="Javascript" SRC="FusionCharts.js"></SCRIPT>
+<style type="text/css">
+<!--
+.body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	font-family:Verdana, Tahoma, Arial;
+	font-size: 11px;
+	font-weight:normal;
+}
+
+.LitleText{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:8px;
+background-color:#FFF;
+}
+
+.LitleTextinv{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:8px;
+color:#FFF !important;
+}
+
+.LitleTextinvBlack{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:8px;
+color:#000 !important;
+}
+
+.LitleTextTit{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:8px;
+color:#FFF;
+background-color:#666;
+}
+
+.LitleTextTit2{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:10px;
+color:#FFF;
+background-color:#666;
+}
+
+.LitleTextTit3{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-weight:bold;
+font-size:11px;
+}
+
+.calibri {
+	
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	color:Black;
+}
+
+.titulo {
+	
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-weight:bold;
+	color:Black;
+}
+-->
+</style>
+
+<script>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+function ListBitacora(){
+
+   /*frameInforme.ListBitacora(document.getElementById("txtFechaIni").value,
+   document.getElementById("txtFechaFin").value,document.getElementById("ListEquipos").value); 
+   */
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+    var xmlDso = xmlDoc.XMLDocument;
+    var url = "../xml/Bitacoras.asp?RECURSO=InfBitPolines";
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+		url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+		url += "&EQUIPO="+document.getElementById("listEquipos").value;
+		url += "&FAENA="+document.getElementById("FAENA").value;
+		url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		url += "&RANX=" + document.getElementById("listRangos").value ;					
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	//	alert(url);
+	//xmlestado = xmlDso.load(url);
+	document.getElementById("frameInforme").style.display = "block";
+	document.getElementById('frameInforme').src= url;
+	//updateChart('chart1Id');
+}
+
+		var data = new Array();
+		var chartLoaded = false;
+		
+function generateXML(animate){	
+		
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Bitacoras.asp?RECURSO=InfBitPolinesSinxsl";
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+		url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+		url += "&EQUIPO="+document.getElementById("listEquipos").value;
+		url += "&FAENA="+document.getElementById("FAENA").value;
+		url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		url += "&RANX=" + document.getElementById("listRangos").value ;		
+		url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado)
+				window.open(url);
+				
+		var strXML = "";
+		var strXMLTit;
+		
+		var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+		var auxs = "";
+		var auxs2 = "</dataset>";
+		var posx = 0;
+		var posx2 = 0;
+		var totpos = 0;
+		var cssx = "";
+		var xs = 3;
+		var colors = new Array('a7c4f9','d64b54','46c97b','e6a081','ead421','6d0b66','2417cb','913c09','4ba4d2','fb8f8c','ef9cf1','f0ba0c','cc3829','c359b3','d156b3','8c2935');
+		for (i=0; i<x.length; i++) {	
+			if (auxs != x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue){
+				if (auxs != ""){ strXML = strXML + auxs2 }
+				cssx = Math.random().toString(16).slice(2, 8);
+				auxs = x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue;
+				strXML = strXML + "<dataset seriesName='" + x[i].getElementsByTagName("FALLAS")[0].childNodes[0].nodeValue + "' color='" + colors[xs] + "' anchorSides='" + xs + "' anchorRadius='5' anchorBorderThickness = '1' anchorBgColor='" + colors[xs] + "' >"; //anchorBorderColor='" + colors[xs] + "'
+				xs = xs + 1;
+				//color='009900' anchorSides='3' anchorRadius='4' anchorBgColor='D5FFD5' anchorBorderColor='009900'
+			}
+			// 	IZQ = 2.5; CEN = 1.5; DER = 0.5
+			posx2 = x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue;
+			if (parseInt(posx2) > posx){ 
+				posx = x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue;
+			} 
+			if (x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "IZQ"){
+				strXML = strXML + "<set y='0.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}else if(x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "CEN"){
+				strXML = strXML + "<set y='1.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}else if(x[i].getElementsByTagName("POS")[0].childNodes[0].nodeValue == "DER"){
+				strXML = strXML + "<set y='2.5' x='" + x[i].getElementsByTagName("MESA")[0].childNodes[0].nodeValue + "' />";
+			}
+//			strXML = strXML + "<set y='2.5' x='21' /><set y='2.5' x='32' /><set y='0.5' x='43' /><set y='1.5' x='48' /><set y='2.5' x='50' /><set y='1.5' x='56' /><set y='1.5' x='59' /><set y='0.5' x='73' /><set y='2.5' x='89' /><set y='1.5' x='93' />";
+
+			
+		}
+		strXML = strXML + auxs2;
+
+		//strXML = strXML + "<dataset seriesName='Dano Estructural' color='0000FF' anchorSides='4' anchorRadius='4' anchorBgColor='C6C6FF' anchorBorderColor='0000FF'><set y='1.5' x='23'/><set y='1.5' x='29'/><set y='1.5' x='33'/><set y='1.5' x='41'/><set y='1.5' x='47'/><set y='1.5' x='49'/><set y='0.5' x='51'/><set y='1.5' x='53'/><set y='0.5' x='57'/><set y='0.5' x='58'/><set y='1.5' x='61'/><set y='0.5' x='63'/><set y='1.5' x='64'/><set y='1.5' x='71'/><set y='2.5' x='77'/><set y='1.5' x='79'/><set y='1.5' x='83'/><set y='1.5' x='89'/><set y='2.5' x='91'/><set y='0.5' x='93'/>   </dataset>"
+		strXML = strXML + "<categories verticalLineColor='666666' verticalLineThickness='1'>";
+		var minval = 0;
+		if ( document.getElementById("listRangos").value == "TOD"){
+			if (posx <= 10){
+				totpos = 10;
+				strXML = strXML + "<category y='1' label='1' /><category label='2' x='2' showVerticalLine='0'/><category label='3' x='3' showVerticalLine='0'/><category label='4' x='4' showVerticalLine='0'/><category label='5' x='5' showVerticalLine='0'/><category label='6' x='6' showVerticalLine='0'/><category label='7' x='7' showVerticalLine='0'/><category label='8' x='8' showVerticalLine='0'/><category label='9' x='9' showVerticalLine='0'/><category label='10' x='10' showVerticalLine= '0'/>";
+			}else if (posx <= 30){
+				totpos = 30;
+				strXML = strXML + "<category y='1' label='1' /><category label='3' x='3' showVerticalLine='0'/><category label='6' x='6' showVerticalLine='0'/><category label='9' x='9' showVerticalLine='0'/><category label='12' x='12' showVerticalLine='0'/><category label='15' x='15' showVerticalLine='0'/><category label='18' x='18' showVerticalLine='0'/><category label='21' x='21' showVerticalLine='0'/><category label='24' x='24' showVerticalLine='0'/><category label='27' x='27' showVerticalLine='0'/><category label='30' x='30' showVerticalLine= '0'/>";
+			}else if (posx <= 50){
+				totpos = 50;
+				strXML = strXML + "<category y='1' label='1' /><category label='5' x='5' showVerticalLine='0'/><category label='10' x='10' showVerticalLine='0'/><category label='15' x='15' showVerticalLine='0'/><category label='20' x='20' showVerticalLine='0'/><category label='25' x='25' showVerticalLine='0'/><category label='30' x='30' showVerticalLine='0'/><category label='35' x='35' showVerticalLine='0'/><category label='40' x='40' showVerticalLine='0'/><category label='45' x='45' showVerticalLine='0'/><category label='50' x='50' showVerticalLine= '0'/>";
+			}else if (posx <= 100){
+				totpos = 100;
+				strXML = strXML + "<category y='1' label='1' /><category label='10' x='10' showVerticalLine='0'/><category label='20' x='20' showVerticalLine='0'/><category label='30' x='30' showVerticalLine='0'/><category label='40' x='40' showVerticalLine='0'/><category label='50' x='50' showVerticalLine='0'/><category label='60' x='60' showVerticalLine='0'/><category label='70' x='70' showVerticalLine='0'/><category label='80' x='80' showVerticalLine='0'/><category label='90' x='90' showVerticalLine='0'/><category label='100' x='100' showVerticalLine= '0'/>";
+			}else if (posx <= 500){
+				totpos = 500;
+				strXML = strXML + "<category y='1' label='1' /><category label='50' x='50' showVerticalLine='0'/><category label='100' x='100' showVerticalLine='0'/><category label='150' x='150' showVerticalLine='0'/><category label='200' x='200' showVerticalLine='0'/><category label='250' x='250' showVerticalLine='0'/><category label='300' x='300' showVerticalLine='0'/><category label='350' x='350' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='450' x='450' showVerticalLine='0'/><category label='500' x='500' showVerticalLine= '0'/>";
+			
+			}else if (posx <= 1000){	
+				totpos = 1000;		
+				strXML = strXML + "<category y='1' label='1' showVerticalLine='0' /><category label='100' x='100' showVerticalLine='0'/><category label='200' x='200' showVerticalLine='0'/><category label='300' x='300' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='500' x='500' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='700' x='700' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='900' x='900' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine= '0'/>";
+			}else if (posx <= 2000){	
+				totpos = 2000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='200' x='200' showVerticalLine='0'/><category label='400' x='400' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1400' x='1400' showVerticalLine='0'/><category label='1600' x='1600' showVerticalLine='0'/><category label='1800' x='1800' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine= '0'/>";
+				
+			}else if (posx <= 3000){	
+				totpos = 3000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='300' x='300' showVerticalLine='0'/><category label='600' x='600' showVerticalLine='0'/><category label='900' x='900' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1500' x='1500' showVerticalLine='0'/><category label='1800' x='1800' showVerticalLine='0'/><category label='2100' x='2100' showVerticalLine='0'/><category label='2400' x='2400' showVerticalLine='0'/><category label='2700' x='2700' showVerticalLine='0'/><category label='3000' x='3000' showVerticalLine= '0'/>";
+				
+			}else if (posx <= 4000){	
+				totpos = 4000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='400' x='400' showVerticalLine='0'/><category label='800' x='800' showVerticalLine='0'/><category label='1200' x='1200' showVerticalLine='0'/><category label='1600' x='1600' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine='0'/><category label='2400' x='2400' showVerticalLine='0'/><category label='2800' x='2800' showVerticalLine='0'/><category label='3200' x='3200' showVerticalLine='0'/><category label='3600' x='3600' showVerticalLine='0'/><category label='4000' x='4000' showVerticalLine= '0'/>";
+					
+					
+			}else if (posx <= 5000){	
+				totpos = 5000;	
+				strXML = strXML + "<category y='1' label='1' /><category label='500' x='500' showVerticalLine='0'/><category label='1000' x='1000' showVerticalLine='0'/><category label='1500' x='1500' showVerticalLine='0'/><category label='2000' x='2000' showVerticalLine='0'/><category label='2500' x='2500' showVerticalLine='0'/><category label='3000' x='3000' showVerticalLine='0'/><category label='3500' x='3500' showVerticalLine='0'/><category label='4000' x='4000' showVerticalLine='0'/><category label='4500' x='4500' showVerticalLine='0'/><category label='5000' x='5000' showVerticalLine= '0'/>";
+				
+			}
+			minval = 0;
+		}else{
+			var rang = document.getElementById("listRangos").value;
+			var arrang = rang.split("-");
+			var id1 = arrang[0];
+			var id2 = arrang[1];
+			totpos = ((id2 - (id1-1)) / 10);
+			strXML = strXML + "<category y='1' label='1' />";
+			for (i = (id1-1); i <= id2; i += totpos) { 
+				strXML = strXML + "<category label='" + i + "' x='" + i + "' showVerticalLine='0'/>";
+			}
+			totpos = totpos + 1;
+			minval = id1 - 1;
+		}
+				
+		strXMLTit = "<chart palette='2' caption='Eventos' yAxisName='IZQ          CEN          DER' xAxisName='Cinta Transportadora' xAxisMaxValue='" + totpos + "'  xAxisMinValue='" + minval + "'  yAxisMaxValue='3'  >";
+
+		strXML = strXML + "</categories>";
+		strXML = strXML + "</chart>";
+
+		//alert(strXML);
+		return strXMLTit+strXML;			
+}
+
+
+	
+///**
+// * FC_Rendered method is invoked when the chart has completed rendering for the first time.
+// * It's a pre-defined method name. 
+// *	@param	domId	Dom ID of the chart object
+//*/
+//function FC_Rendered(domId){			
+//	//It is in this method that you can update chart's data using JS methods.
+//	//Check if this is the chart that we want to update
+//	if (domId=="chart1Id"){			
+//		//Set chartLoaded flag to true
+//		chartLoaded = true;
+//		
+//		//Get reference to chart object using Dom ID
+//		//var chartObj = getChartFromId(domId);
+//		//Update it's XML - set animate Flag to true
+//		//chartObj.setXMLData(generateXML(true)); //setDataXML
+//		///chartObj.render("chart1div");
+//		
+//	}			
+//	return true;			
+//}
+//
+//function updateChart(domId){		
+//	//Update only if chart has loaded
+//	if (chartLoaded){
+//		//Get reference to chart object using Dom ID
+//		var chartObj = getChartFromId(domId);
+//		//Update it's XML - set animate Flag from AnimateChart checkbox in form
+//		chartObj.setDataXML(generateXML(true));
+//		//chartObj.render("chart1div");
+//		
+//							FusionCharts.printManager.enabled(true);
+//                            FusionCharts.addEventListener (
+//                            FusionChartsEvents.PrintReadyStateChange ,
+//                            function (identifier, parameter) {
+//                                if(parameter.ready) {
+//                                    alert("Chart is now ready for printing.");
+//                                }
+//                            });
+//
+//	}
+//	
+////			FusionCharts.printManager.enabled(true);
+////			FusionCharts.addEventListener (
+////			FusionChartsEvents.PrintReadyStateChange ,
+////			function (identifier, parameter) {
+////				if(parameter.ready) {
+////					alert("Chart is now ready for printing.");
+////				}
+////			});
+//	
+//
+//}
+
+
+ 
+ 
+function Inicio(){
+	ListBitacora();
+	
+	
+}
+
+function hiddenFrm(){ with (document.getElementById("divWait").style){visibility = "hidden";}}
+
+
+function setIframeHeight(iframe) {
+    if (iframe) {
+        var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+        if (iframeWin.document.body) {
+            iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+        }
+    }
+};
+
+function resizeIframe(iframe) {
+//	document.getElementById("divInforme").style.height = (iframe.contentWindow.document.body.scrollHeight + 50) + "px";
+//    iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+	document.getElementById("divInforme").innerHTML = iframe.contentWindow.document.body.innerHTML;
+	document.getElementById("frameInforme").style.display = "none";
+	
+  }
+</script>
+
+<body  onload="Inicio();">
+<!--<form name="formulario" id="formulario">
+--><p>
+  <input type="hidden" value="" name="IdUsuario" id="IdUsuario">
+  <input type="hidden" value="" name="txtFechaIni" id="txtFechaIni">
+  <input type="hidden" value="" name="txtFechaFin" id="txtFechaFin">
+  <input type="hidden" value="" name="listCriticidad" id="listCriticidad">
+  <input type="hidden" value="" name="listSecciones" id="listSecciones">
+  <input type="hidden" value="" name="listEquipos" id="listEquipos">
+  <input type="hidden" value="" name="listRangos" id="listRangos">
+  <input type="hidden" value="" name="FAENA" id="FAENA">
+  
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+  <tr>
+    <td align="center"><table width="100%" border="0" cellspacing="1" cellpadding="4">
+    <tr>
+	     <td WIDTH="290" ROWSPAN="2" colspan="1"  align="center"><img SRC="../Images/Logo1.jpg"/></td>
+    	 <td WIDTH="90%" HEIGHT="45" colspan="2" ALIGN="CENTER" VALIGN="middle" CLASS="titulo">
+         	SISTEMA DE GESTION INTEGRADO<br />
+   	      INFORME POLINES</td>
+	</tr>
+	<tr>
+	     <td WIDTH="50%" HEIGHT="25" colspan="1" align="center" CLASS="calibri">
+         			FAENA: 
+         			<script type="text/javascript"> document.write(getParametro("FAENA")); </script>
+ 
+          </td>
+          <td WIDTH="50%" HEIGHT="25" colspan="1" CLASS="calibri">
+         			FECHA DE INSPECCION <br />
+   			  DESDE:
+<script type="text/javascript"> document.write(getParametro("F1")); </script>
+                    HASTA: 
+                    <script type="text/javascript"> document.write(getParametro("F2")); </script>
+          </td>
+     </tr>
+	 <tr BGCOLOR="#666666">
+	     <td HEIGHT="15" colspan="10" align="center" class="LitleTextTit2">
+         	POLINES - EQUIPO: <script type="text/javascript"> document.write(getParametro("EQ")); </script>
+         </td>
+     </tr>
+</table>
+</td>
+  </tr>
+  <tr>
+    <td>&nbsp;<div id="divInformeGrafico" onClick="event.cancelBubble=true" 
+style="position: absolute;  width: 99%; z-index: 90; top: 5; height: 289px; border-style: ridge; border-width: 0px">
+		<div id="chart1div">
+			FusionCharts
+		</div>
+</div><br />
+<br /></td>
+  </tr>
+  <tr>
+    <td>&nbsp;<div id="divInforme" onClick="event.cancelBubble=true" style="position: absolute; top: 460px; width: 99%; z-index: 91;  border-width: 0px"></div><!-- border-style: ridge;-->
+  <iframe frameBorder="0" id="frameInforme" name="frameInforme" scrolling="no" src="" width="100%"  onload="resizeIframe(this)"></iframe>
+<br />
+<br />
+<img SRC="../images/pie2.jpg"/>
+</td>
+  </tr>
+</table>
+		<script language="JavaScript">				
+	document.getElementById("txtFechaIni").value = getParametro("F1");
+	document.getElementById("txtFechaFin").value = getParametro("F2");
+	document.getElementById("listCriticidad").value = getParametro("CR");
+	document.getElementById("listSecciones").value = getParametro("SC");
+	document.getElementById("listEquipos").value = getParametro("EQ");
+	document.getElementById("listRangos").value = getParametro("RG");
+	document.getElementById("FAENA").value = getParametro("FAENA");
+	
+			FusionCharts.printManager.enabled(true);
+			 
+			FusionCharts.setCurrentRenderer('javascript');
+			var chart1 = new FusionCharts("Scatter.swf", "chart1Id", "990", "300", "0", "1");		   
+			//Initialize chart with empty data. We'll feed it data on the chart's FC_Rendered event.
+			
+			chart1.setDataXML("<chart></chart>");
+			//chart1.setDataXML(generateXML(true));
+			chart1.render("chart1div");
+
+							
+		   FusionCharts.addEventListener ( 
+			  FusionChartsEvents.PrintReadyStateChange , 
+			  function (identifier, parameter) {
+				if(parameter.ready){ 
+				   //alert("Chart is now ready for printing.");
+				}
+			});
+		   
+		function FC_Rendered(domId){			
+			//It is in this method that you can update chart's data using JS methods.
+			//Check if this is the chart that we want to update
+			if (domId=="chart1Id"){			
+				//Set chartLoaded flag to true
+				chartLoaded = true;
+				
+				//Get reference to chart object using Dom ID
+				var chartObj = getChartFromId(domId);
+				//Update it's XML - set animate Flag to true
+				chartObj.setDataXML(generateXML(true));
+			}			
+			setTimeout(function(){ FusionCharts.printManager.managedPrint(); setTimeout(function(){ window.close(); }, 8000);}, 2000);
+			
+			return true;
+			
+			
+		}					
+			
+		</script>
+
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni","txtFechaFin"]);
+		myCalendar.setSkin("dhx_web");
+
+if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+	var heightx = window.innerHeight;
+	//document.getElementById("frameinforme").height = heightx-160;
+	setIframeHeight(document.getElementById('frameinforme'));
+}
+
+</script>
+<!--</form>-->
+</body>
+</html>

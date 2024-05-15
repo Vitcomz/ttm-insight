@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+
+
+
+
+
+
+</HEAD>
+<XML id="XMLTemp"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var functionName;
+
+function popsearchbox(_codeobj, _nameobj, _popbox, _function){
+  parent.event.cancelBubble=true;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj
+  functionName = _function
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 10;
+    visibility = "visible";
+  }
+   search();
+}
+
+function setcodeandname(code, name){
+
+	codeobj.value = code;
+  
+	if (nameobj.tagName =='SPAN'){
+		nameobj.innerText = name;
+	}
+	else
+		nameobj.value = name;
+	popbox.style.visibility = "hidden";
+	event.cancelBubble=true;
+	setTimeout("parent." + functionName, 400);
+}
+
+function close(){
+  popbox.style.visibility = "hidden";
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+
+function search(){
+  XMLTemp.async = false;
+  var xmlDso = XMLTemp.XMLDocument;
+  var cr = 0;
+  var url = "xml/observaciones.asp?RECURSO=listObservacionesChu";
+ 	 url +="&CODIGO=NULL";
+  	 url +="&USUARIO="+GetSession();
+	 url +="&FAENA="+getEmpresa();
+	 url += "&HSA=" + Math.random();
+  var res = xmlDso.load(url);
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+}
+
+function set(itr){
+	setcodeandname(itr.children[0].children[0].innerText,
+	itr.children[1].children[0].innerText);
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"
+ bgcolor="#dee6eb" SCROLL="no" onLoad="">
+
+<CENTER>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda de Observaciones</TD>
+    <TD ALIGN="right">
+	<IMG SRC="images/refresh.gif" ALT="Inicio" STYLE="CURSOR: hand" onclick="search();">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="popbox.style.visibility = 'hidden';">
+    </TD>
+  </TR>
+</TABLE>
+
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+
+<SPAN ID="cont" STYLE="height:270px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLTemp" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+  <!--tr bgcolor="#c0ceda">
+    <td class="text" align="center" style="border-bottom:solid 1px #6587a3;">ID</td>
+  </tr-->
+  </THEAD>
+  <TR  STYLE="cursor:hand;" onMouseOver="mOvr(this,'#ABCCE5')" 
+  			onMouseOut="mOut(this,'#dee6eb')" HEIGHT="9">
+    <TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="FOLIO" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="FECHA" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="OBSERVADOR" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="ESTADO" CLASS="text"></SPAN>&nbsp;
+    </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+</BODY>
+
+</HTML>

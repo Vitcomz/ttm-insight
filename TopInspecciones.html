@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<xml id = xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+
+<title>Informe de Inspecciones - Semanal</title>
+</head>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+-->
+</style>
+<script>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+function ListBitacora(){
+
+   /*frameInforme.ListBitacora(document.getElementById("txtFechaIni").value,
+   document.getElementById("txtFechaFin").value,document.getElementById("ListEquipos").value); 
+   */
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+   var xmlDso = xmlDoc.XMLDocument;
+	var url = "../xml/Bitacoras.asp?RECURSO=InfSemInspec";
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+		url += "&RESPONSABLE=TOD";
+		url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+		url += "&EQUIPO="+document.getElementById("listEquipos").value;
+		url += "&TIPO="+document.getElementById("listTipos").value;
+		url += "&TURNO=TOD";
+		url += "&FAENA="+emp;
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_DANO=TOD";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		url += "&DESC_SECCION=" + document.getElementById("listSecciones").options[document.getElementById("listSecciones").selectedIndex].text;
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	//	alert(url);
+	//xmlestado = xmlDso.load(url);
+
+	document.getElementById('frameInforme').src= url;
+	with (document.getElementById('divWait').style){visibility = "visible";} 
+	
+}
+
+function Graficos(){
+
+   window.open("../chart/index.html");
+   	
+//if(!xmlestado)
+//		window.open(url);	
+
+}
+
+ 
+ function listEquipos(){
+		if (id_br == "IE")
+		{
+			var xmlEquipos = document.getElementById("xmlEquipos");
+			xmlEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipos = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+emp;
+	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+
+  if (xmlestado){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            document.getElementById("listEquipos").options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            document.getElementById("listEquipos").options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+
+
+function listTipos(){
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =  xmlTemp.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListTipos";
+ 	  url += "&VTZ=" + Math.random();
+	  	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"");
+				if (opcion.value == "") opcion.selected = true;
+	            document.getElementById("listTipos").options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            document.getElementById("listTipos").options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+
+function excel(){
+
+   //frameInforme.ListBitacora(document.getElementById("txtFechaIni.value,document.getElementById("txtFechaFin.value,document.getElementById("ListEquipos.value); 
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+   var xmlDso = xmlDoc.XMLDocument;
+	var url = "../xml/Bitacoras.asp?RECURSO=InfSemInspec";
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value;
+		url += "&RESPONSABLE=TOD";
+		url += "&CRITICIDAD="+document.getElementById("listCriticidad").value;
+		url += "&EQUIPO="+document.getElementById("listEquipos").value;
+		url += "&TIPO="+document.getElementById("listTipos").value;
+		url += "&TURNO=TOD";
+		url += "&FAENA="+emp;
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_DANO=TOD";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&EXCEL=YES";
+		url += "&SECCION='" + document.getElementById("listSecciones").value + "'";
+		url += "&DESC_SECCION=" + document.getElementById("listSecciones").options[document.getElementById("listSecciones").selectedIndex].text;
+		url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+	//	window.open(url);
+		
+	//xmlestado = xmlDso.load(url);
+
+		document.getElementById('frameInforme').src= url;
+		with (document.getElementById('divWait').style){visibility = "visible";} 
+		var t=setTimeout("hiddenFrm()",2000);
+	
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();
+  day       = mydate.getDay();  
+
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+document.getElementById("txtFechaFin").value = day_month + "/" + month +"/"+ year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+ day_month=dateIni.getDate();
+ month=dateIni.getMonth()+1;
+ 
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+document.getElementById("txtFechaIni").value = "01/" + month +"/"+ year;
+
+listEquipos();
+listTipos();
+listSecciones();
+
+ListBitacora();
+
+}
+
+function listSecciones(){
+
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url+= "&VTZ=" + Math.random();
+			
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	document.getElementById("listSecciones").options[i] = opcion;   
+          	}
+			
+			opcion = new Option("PLANTA 1" , "CHAPRI1','CHASEC1','AGLO1','API1");
+			document.getElementById("listSecciones").options[i] = opcion; 
+			
+			opcion = new Option("PLANTA 2" , "CHAPRI2','CHASEC2','AGLO2','API2");
+			document.getElementById("listSecciones").options[i+1] = opcion; 
+			
+			opcion = new Option("TODOS" ,"TOD");
+			document.getElementById("listSecciones").options[i+2] = opcion; 
+					
+		  }
+		 else
+		 	window.open(url); 
+}
+function hiddenFrm(){ with (document.getElementById("divWait").style){visibility = "hidden";}}
+
+
+</script>
+
+<body  onload="Inicio();">
+<form name="formulario" id="formulario">
+<input type="hidden" value="" name="IdUsuario" id="IdUsuario">
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 58px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="../images/cargando.gif" />	</div>
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br><br><br>
+<table width="972" id="tableTitulo">
+     <!--DWLayoutTable-->
+     <tr>
+          <td width="353"  height="21" class="titulo">INFORME DE INSPECCIONES</td>
+          <td width="194">&nbsp;</td>
+       <td width="199">&nbsp;</td>
+       <td width="132">&nbsp;</td>
+     </tr>
+     <tr>
+          <td height="29" valign="middle" class="titulo">Desde :
+<input type="text" class="input" name="txtFechaIni" id="txtFechaIni" size="12" />&nbsp;&nbsp;&nbsp;&nbsp;
+               Hasta :
+		<input type="text" class="input" name="txtFechaFin" id="txtFechaFin" size="12" /></td>
+          <td class="titulo">CRITICIDAD :
+            <select name="listCriticidad"  id="listCriticidad" onchange="ListBitacora();">
+              <option value="TOD" selected="selected">TODOS</option>
+              <option value="ALTA">ALTA</option>
+              <option value="MEDIA">MEDIA</option>
+              <option value="BAJA">BAJA</option>
+              <option value="MEDALTA">MEDIA - ALTA</option>
+            </select></td>
+			<td>&nbsp;
+                <input type="button" class="botonBlanco" value="Buscar" onclick="ListBitacora();" />
+               <input type="button" class="botonBlanco" value="Exportar Excel" onclick="excel();" />               </td>
+          <td >&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="button" class="botonBlanco" value="Imprimir" 
+                    onclick="frameInforme.focus();frameInforme.print();" /></td>
+          </tr>
+     <tr>
+       <td height="29" colspan="4" valign="middle" class="calibri">SECCION / PLANTA :
+         <select name="listSecciones" id="listSecciones" datafld="SECCION" onchange="ListBitacora();">
+         </select>&nbsp;&nbsp;EQUIPO:
+         <select name="listEquipos" id="listEquipos" onchange="ListBitacora();">
+         </select>
+         TIPO DE EQUIPO:
+         <select name="listTipos" id="listTipos" onchange="ListBitacora();">
+         </select>         </td>
+     </tr>
+</table><br />
+<div id="divInforme" onClick="event.cancelBubble=true" 
+style="position: absolute;  width: 100%; z-index: 90; left: 0; top: 5; height: 450px; border-style: ridge; border-width: 1px">
+<iframe frameBorder="0" height="100%" id="frameInforme" name="frameInforme" 
+          onload="with (divWait.style){visibility = 'hidden';}" scrolling="yes" src="" width="100%"></iframe>
+</div>
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni","txtFechaFin"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+</form>
+</body>
+</html>

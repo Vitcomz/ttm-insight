@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >   
+
+
+
+
+
+
+<script type="text/javascript" src="cookie.js"></script>  
+<script type="text/javascript" src="deteccion.js"></script>           
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+
+var divBox = new Object();
+var recomen = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function showWin(_code,  _divBox){
+
+
+// alert(_code.value);
+
+ document.getElementById("formulario").txtFecha.value = _hoy();
+ codeobj = _code;
+ divBox = _divBox;
+ divBox.style.visibility = 'visible'
+
+  getData();
+ 
+}
+
+function getData(){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "historial.asp?RECURSO=listHisBit";
+		url += "&ID=" + ID; //codeobj.value;
+		url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		window.open(url);
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				
+				var tbody = document.getElementById("tblHistorial").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}		
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				var tbody = document.getElementById("tblHistorial").getElementsByTagName("tbody")[0];
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						var row = document.createElement("TR");
+						row.innerHTML =   " bgcolor='#EEEEEE' class='calibri'";
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML =   x[i].getElementsByTagName("NRO")[0].childNodes[0].nodeValue;
+						var cell2 = document.createElement("TD");
+						if (x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0] != null){
+							cell2.innerHTML =   x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue;
+						}else{
+							cell2.innerHTML = "&nbsp;";
+						}										
+						var cell3 = document.createElement("TD");
+						if (x[i].getElementsByTagName("FECHA")[0].childNodes[0] != null){
+							cell3.innerHTML =   x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+						}else{
+							cell3.innerHTML = "&nbsp;";
+						 }						
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML =   x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue;
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						tbody.appendChild(row);
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell3 = document.createElement("TD");
+						cell3.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell3);
+						row.appendChild(cell4);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[1].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr bgcolor='#EEEEEE' class='calibri'>";
+				  context = context +  "<td>"+  x[i].getElementsByTagName("NRO")[0].childNodes[0].nodeValue + "</td>";
+				  context = context +  "<td>"+  x[i].getElementsByTagName("INSPECTOR")[0].childNodes[0].nodeValue + "</td>";
+						if (x[i].getElementsByTagName("FECHA")[0].childNodes[0] != null){
+							context = context +  "<td>"+  x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</td>";
+						}else{
+							context = context +  "<td>&nbsp;";
+						 }				  
+				  context = context +  "<td>"+  x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue + "</td>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[1].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[1].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+				
+		}
+
+	  mydate = new Date();
+	  hour      = mydate.getHours();
+	  minute    = mydate.getMinutes();
+	  day_month = mydate.getDate();
+	  month     = mydate.getMonth()+1;
+	  year      = mydate.getFullYear();    
+	  day       = mydate.getDay(); 
+	  if ((day_month+"").length==1) day_month ='0'+day_month;
+	  if ((month+"").length==1) month ='0' + month;
+	  document.getElementById("formulario").txtFecha.value = day_month + "/" + month +"/"+ year;
+				
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function guardar(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	if (ID){
+		if (document.getElementById("txtFecha").value == ''){
+			alert("Debe ingresar fecha");
+			return;
+		}
+		var xmlDso = xmlTemp.XMLDocument;
+		var url = "historial.asp?RECURSO=newHisBit";
+			url += "&ID=" + ID; // codeobj.value;
+						<!--adding-->
+						if (id_br == "IE")
+						{
+							url += "&INSPECTOR=" + GetSession();
+						}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+							url += "&INSPECTOR=" + GetSessionMoz();
+						}
+						<!---->
+			url += "&FECHA=" + document.getElementById("formulario").txtFecha.value;
+			url += "&ESTATUS=" + document.getElementById("formulario").listStatus.value;
+			url += "&VTZ=" + Math.random();
+			if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+						if (window.XMLHttpRequest)
+						  {// code for IE7+, Firefox, Chrome, Opera, Safari
+						  xmlhttp=new XMLHttpRequest();
+						  }
+						else
+						  {// code for IE6, IE5
+						  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						  }
+						xmlhttp.open("GET",url,false);
+						xmlhttp.send();
+						xmlDoc=xmlhttp.responseText;
+						parser = new DOMParser();
+						xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+						res = parser.parseFromString(xmlDoc, "text/xml"); 
+						//alert(xmlDso);
+						//window.open(url);
+			}
+			else if (id_br == "IE")
+			{
+				res = xmlDso.load(url);
+			}
+		if (!res)
+			window.open(url);
+			
+	 getData(); 
+	}else{
+		alert("No se permite usar hasta crear el N� de Inspeccion");
+	}
+ } 
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+<body>
+<form name="formulario" id="formulario">
+<table width="100%" align="center" cellpadding="0" cellspacing="0" class="blueTr">
+    <tr >
+	  <TD width="18" align="left">&nbsp;</td>
+	  <TD width="50" align="left">Fecha</td>
+	  <TD width="130" align="left">
+      <input type="text" class="tinyInput" size="12" name="txtFecha" id="txtFecha"/></td>
+	  <TD width="57" align="left">Estado</td>
+	  <TD width="228" align="left">
+        <SELECT NAME="listStatus" CLASS="input" id="listStatus">
+          <OPTION VALUE="1">DISMINUYE CRITICIDAD</OPTION>
+          <OPTION VALUE="2" selected>SE MANTIENE CONDICION</OPTION>
+          <OPTION VALUE="3">AUMENTA CRITICIDAD</OPTION>
+          <OPTION VALUE="4">NO SE REALIZA INSPECCION</OPTION>
+      </SELECT></td>
+	  <TD width="723" align="left"><input type="button" class="tinyInput" 
+		  	onClick="guardar();" value="Guardar"></td>
+    </tr>
+				<tr>
+				<td colspan="6" align="center">
+                	<div id="context_historial" style="overflow-x:hidden; overflow-y:auto; height:175px">
+                	<table width="100%" id="tblHistorial" class="CampoBold">
+                    <thead>
+                    	<tr bgcolor="#EEEEEE" class="calibri">
+                    	  <td>N&ordm;</td>
+                        	<td>Inspector</td>
+                            <td>Fecha</td>
+                            <td>Condici�n</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+					  </tbody>
+                	</TABLE>    
+                    </div>
+                 </td>
+    			</tr>
+  </table>
+    <link rel="stylesheet" type="text/css" href="dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFecha"]);
+		myCalendar.setSkin("dhx_web");
+		myCalendar.setPosition('right');
+	</script>
+
+</form>
+<script language="JavaScript1.2" >
+	var ID = getParametro("ID");
+	if (ID != false){
+		getData();
+	}
+</script>
+
+</body>
+</HTML>

@@ -1,0 +1,97 @@
+
+/* CoolMenus 4 - default styles - do not edit */
+.clCMAbs{
+position:absolute; 
+visibility:hidden;
+left:0;
+top:0;
+}
+/* CoolMenus 4 - default styles - end */
+  
+/*Style for the background-bar*/
+.clBar{
+position:absolute; 
+width:10; height:10;
+background-color:#7E95BD;/*Azul*/
+/*background-color:#D07474;Rojo*/
+layer-background-color:#7E95BD;
+}
+
+/*Styles for level 0*/
+.clLevel0,.clLevel0over{
+position:absolute;
+padding:4px; 
+font: 11px tahoma,verdana,sans-serif;
+background-color:#dde3eb; /*azul*/
+/*background-color:#EAC0C0;Rojo Claro*/
+color:black;
+/*font-weight:bold;*/
+}
+
+.clLevel0over{
+background-color:#7E95BD;/*Azul*/
+/*background-color:#D07474;Rojo*/
+color:#FFFFFF;
+cursor:hand;
+}
+
+/*Bordes del Menu */
+.clLevel0border{
+position:absolute;
+visibility:hidden; 
+background-color: #000;
+layer-background-color:#eef1f7;
+}
+
+/*Styles for level 1*/
+.clLevel1, .clLevel1over{
+position:absolute;
+padding:4px; 
+font: 11px tahoma,verdana,sans-serif;
+}
+
+/*Letras del Menu 1*/
+.clLevel1{
+background-color:#dde3eb;/* azul*/
+/*background-color:#EAC0C0;Rojo Claro*/
+color:black;
+}
+
+.clLevel1over{
+background-color:#7E95BD;/*Azul*/
+/*background-color:#D07474;Rojo*/
+color:#FFFFFF;
+cursor:pointer; cursor:hand;
+}
+
+.clLevel1border{
+position:absolute; 
+visibility:hidden;
+background-color:#000;
+layer-background-color:#999999}
+
+/*Styles for level 2*/
+.clLevel2, .clLevel2over{
+position:absolute;
+padding:4px; 
+font: 11px tahoma,verdana,sans-serif;
+}
+
+.clLevel2{
+background-color:#dde3eb;/* azul*/
+/*background-color:#EAC0C0;/*Rojo Claro*/
+color:black;
+}
+ 
+.clLevel2over{
+/*background-color:#7E95BD;Azul*/
+background-color:#D07474;/*Rojo*/
+color:#FFFFFF;
+cursor:pointer; cursor:hand; }
+
+.clLevel2border{
+position:absolute; 
+visibility:hidden;
+background-color:#000;
+layer-background-color:#999999
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+<head> 
+
+<title>Proyecciones Espesores</title>
+
+
+
+<script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+<script language="Javascript1.2" src="/sgm/windowfiles/dhtmlwindow.js"></script>
+<script src="js/highstock.js"></script>
+<!--script src="js/modules/exporting.js"></script-->
+ 
+	<script language="JavaScript1.2" src="/sgm/js/main.js"></script>
+
+
+ 
+<style>
+img 
+  {
+    position: absolute; 
+    width: 100%;
+    margin: auto; 
+    min-width: 50%;
+    min-height: 50%;
+    }
+</style>
+
+<script type="text/javascript">
+
+//<![CDATA[
+
+function inicio(){
+
+gr6();
+//gr1();
+
+}
+
+
+function gr6(){
+
+	var equipo="";
+	var equipos="";
+	var desgastes="";
+	var rema="";
+	var segs="";
+	
+var tbl= parent.document.getElementById('idTbl2');
+	nrows = tbl.rows.length;
+
+i=1;
+	
+
+while (i<nrows){
+	
+
+	//alert(tbl.rows[i].children[0].children[0].checked);
+		if(tbl.rows[i].children[0].children[0].checked){
+			
+		//	alert(tbl.rows[i].children[1].innerHTML);
+			
+			equipo = tbl.rows[i].children[1].innerText;
+			equipos = equipos + ";" + equipo;
+			desgastes = desgastes +  ";" + tbl.rows[i].children[5].innerHTML;
+			rema = rema	+  ";" + tbl.rows[i].children[6].innerHTML;
+			segs = segs	+  ";" + tbl.rows[i].children[3].innerHTML;
+		}
+
+	i=i+1;
+	}
+	
+	
+
+var options = {
+		chart: {renderTo: 'chart6', type: 'column'}, //, inverted: true
+		title: { text: 'ESPESOR EN CINTAS TRANSPORTADORAS' },
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+		yAxis: { title: { text: '[mm]' }  },
+		
+	    plotOptions: { column: {stacking: 'normal'}    },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = '/sgm/js/graphics.asp?RECURSO=grEspesor3';
+				url += '&SEGS=' + segs;
+				url += '&REMA=' + rema;
+				url += '&EQUIPOS=' + equipos;
+				url += '&DESGASTES=' + desgastes;
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();
+		
+	//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				});//end series
+			
+				
+			var chart6 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+}
+
+
+function gr1(){
+
+var options = {
+		chart: {renderTo: 'chart1', zoomtype: 'xy'}, //, inverted: true
+		title: { text: 'Criticidades por Equipos.' },
+		colors: ['#FF3300'],
+		plotOptions: {
+            series: {    dataLabels: {  enabled: false  }
+            },
+			
+			column: { events: { legendItemClick: function(){return false}}
+			},
+        },
+		
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+		
+		yAxis: [{ title: { text: 'Nro Avisos' } ,   min:0, dataLabels:{ enabled: true}   } ,
+			    { title: { text: 'Acumulado' }, min:0 , max:70 ,  opposite: true, dataLabels:{ enabled: false} }
+			
+			] ,
+			
+			 
+		
+			series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = '/sgm/js/graphics.asp?RECURSO=nroAvisos';
+				url += '&AREA=' ;
+
+				url += '&HIST=' ;
+				url += '&EQUIPO=' ;
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+		//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var cri =$(series).find('cri').text();
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						yAxis: parseInt($(series).find('yAx').text()),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category, cri, 1);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				});  //end series
+
+			
+				
+			var chart1 = new Highcharts.Chart(options);
+					
+			});
+		
+	 //end get
+			
+}
+
+function hideFrm(){
+
+}
+
+jQuery(document).ready(function($){ 
+	inicio();
+});
+
+//]]> 
+</script>
+</head>
+
+<body onLoad="" >
+<br />
+
+<table width="95%" border="1" cellpadding="5" cellspacing="5">
+  <tr><td>    <div id="chart6" style="width:600px; margin: 0 auto"></div>   
+    </td>
+  </tr>
+   
+  
+</table>
+ 
+
+
+  
+</body>
+</html>

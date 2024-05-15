@@ -1,0 +1,534 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="X-UA-Compatible" content="IE=8" >
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+
+<link rel="stylesheet" href="layout.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+<script type="text/javascript" src="/Scripts/stayontop.js"></script>
+<style>
+BODY{margin:0};
+	.contentSlider {
+	  width: 100%;
+	  height: 100%;
+	}
+	.contentSlider,
+	.contentSlider .rsOverflow,
+	.contentSlider .rsSlide,
+	.contentSlider .rsVideoFrameHolder,
+	.contentSlider .rsThumbs {
+	  background: #eee;
+	  color: #000;
+	}
+	
+	.contentSlider .rsSlide,
+	.contentSlider .rsOverflow {
+	  background: #eee;
+	}
+	.contentSlider h3 {
+	  font-size: 24px;
+	  line-height: 31px;
+	  margin: 12px 0 8px;
+	  font-weight: bold;
+	}
+	.contentSlider img {
+	  max-width: 100%;
+	  height: auto;
+	  display: block;
+	}
+	.content-slider-bg {
+	  width: 100%; height: 100%;
+	  /*padding: 1px 1px 1px;*/
+	}
+	#moviles1 li {display:inline-block; height:61px; width:155px; background:white; margin:1px; vertical-align: top; position: relative; z-index: 1; float: left;}
+	#moviles2 li {display:inline-block; height:61px; width:155px; background:white; margin:1px; vertical-align: top; position: relative; z-index: 1; float: left;}
+	#moviles1 {margin: 0px; background:white; overflow: auto; width:100%; border: 1px solid silver;}
+	#moviles2 {margin: 0px; background:white; overflow: auto; width:100%; border: 1px solid silver;}
+	#zone_moviles1 {position:absolute; top:70%; left:16%; height:30%; width:66%;  z-index:1000;margin: 1px;}
+	#zone_moviles2 {position:absolute; top:70%; left:16%; height:30%; width:66%; z-index:1000;margin: 1px;}
+	
+	
+	.machine {position:relative; height:60px; width:90px; background-image:url(../Scripts/MOVIL.png)}
+	.group {position:relative; height:61px; width:155px; background-image:url(../Scripts/MOVIL_GRUPO_V1.png)}
+	
+	.codemachine {position:absolute; height:15px; width:70px; left: 2px; top: 1px; font-family:Arial, Helvetica, sans-serif; color:#666; font-size:12px; font-weight:600; font-stretch: ultra-condensed;}
+	.codegroup {position:absolute; height:25px; width:56px; left: 93px; top: 1px; font-family:Arial, Helvetica, sans-serif; color:#666; font-size:12px; font-weight:600; font-stretch: ultra-condensed;}
+	.status {position:absolute; height:18px; width:18px; left: 93px; top: 40px; font-family:Arial, Helvetica, sans-serif; font-size:9px; font-weight:bold; text-align:center;}
+	.serie {position:absolute; height:12px; width:17px; left: 116px; top: 41px; font-family:Arial, Helvetica, sans-serif; color:#666;font-size:13px; font-weight:bold;text-align:center;}
+	#tabEquipos li {display:inline-block; height:61px; width:100px; background:white; margin:1px; vertical-align: top; position: relative; z-index: 1; float: left;}
+	#tabEquipos li .status {position:absolute; height:18px; width:18px; left: 71px; top: 1px; font-family:Arial, Helvetica, sans-serif; font-size:9px; font-weight:bold; text-align:center;}
+	#tabEquipos li .serie {position:absolute; height:12px; width:17px; left: 71px; top: 41px; font-family:Arial, Helvetica, sans-serif; color:#666;font-size:13px; font-weight:bold;text-align:center;}
+	
+</style>
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+</head>
+<script type="text/javascript" language="javascript">
+
+var layout = new Array();
+var t;
+function roundNumber(number, decimals) { // Arguments: number to round, number of decimal places
+	var newnumber = new Number(number+'').toFixed(parseInt(decimals));
+	return parseFloat(newnumber); // Output the result to the form field (change for your purposes)
+}
+//**********************************************************************/
+function verBitacora(equipo){
+	//var url ="Layout.html?EQUIPO=" + equipo;
+	var EMPRESA = getEmpresa();
+				if (EMPRESA == 'ANDINA')
+					var url ="LayoutAndina.html?EQUIPO=" + equipo
+//				else if (EMPRESA == 'LOS PELAMBRES CHANCADO' && (equipo == '120-CV-005' || equipo == '120-CV-006' || equipo == '120-CV-007'))
+//					var url ="layoutXtra.html?EQUIPO=" + equipo
+				else
+					var url ="Layout.html?EQUIPO=" + equipo;
+		this.location.href=url;
+		this.location.href=url;
+}
+//**********************************************************************/
+function cargaBitacora(){
+	var faena = getEmpresa();
+	getBitacora(faena);
+}
+//**********************************************************************/
+function getBitacora(f){
+	//document.getElementById("holder").style.background="url(ly/" + getEmpresa() + ".jpg) no-repeat";
+	//document.getElementById("imagin").innerHTML = "<IMG id='x2x' src='" + "ly/" + getEmpresa() + ".jpg" + "' id='layouts' height='100%'>"
+	
+	//document.getElementById("x2x").style.height= "100%";
+	// remuevo todos los elementos del mapa
+
+	// **************** cargo las maquinas principales ****************
+		//f = "CERRO COLORADO";
+		if (id_br == "IE")
+		{
+			var xmlTemp2 = document.getElementById("xmlTemp2");
+			xmlTemp2.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlTemp2 = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlTemp2.XMLDocument;
+		//	alert(id_br); 
+		if (id_br == 'IE'){
+			var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = getEmpresaMoz();
+		}
+		var url = "../xml/Bitacoras.asp?RECURSO=LayoutFaenaPlanta";
+	 	url += "&FAENA=" + f;
+		url += "&USUARIO=" + Usuario;
+		url += "&TIPO=" + document.getElementById('idTipo').value;
+		url += "&VTZ=" + Math.random();
+
+		//alert(url);
+		//window.open(url);
+		
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (xmlestado){
+    	     var tree = xmlDso.documentElement;	
+			 var _largo = tree.childNodes.length;
+			 //var _largo=1;
+				//alert(document.getElementById("x2x").width+' '+document.getElementById("x2x").height);
+			  var sw1 = 0;
+			  var sw2 = 0;
+	          for(var i = 0; i < _largo; i++){
+    	        var node = tree.childNodes.item(i);
+				planta = getChildNodeValue(node,"PLANTA");
+				//alert(planta);
+				if (sw1 == 0){
+						var n = 1;
+						var lay = "x2x" + n;
+						var m = "idMap" + n;
+						planta = "PLANTA_1";
+						document.getElementById(lay).src = "ly/" + getEmpresa() + ".jpg";
+						console.log( "ly/" + getEmpresa() + ".jpg")
+						//document.getElementById(lay).src = "ly/ESCONDIDA.jpg";
+						var element = document.getElementById(m);
+						while (element.firstChild) {
+							element.removeChild(element.firstChild);
+						}
+						
+						sw1 = 1;
+						if(window.outerWidth){
+							deltaW = window.outerWidth-window.innerWidth;
+							deltaH = window.outerHeight-window.innerHeight;
+						}
+						else{
+							deltaW = 18;
+							deltaH = 110;//110; modificado
+						}
+						//1500*950
+						var heig = 0;
+						if ($(window).height() == 1080){
+							$("#x2x1").css("height", ($(window).height()/100)*92 + 'px'); 
+							heig = ($(window).height()/100)*92;
+						}else if ($(window).height() > 1082){
+							$("#x2x1").css("height", ($(window).height()/100)*93.5 + 'px'); 
+							heig = ($(window).height()/100)*93.5;
+						}else if ($(window).height() > 900 && $(window).height() < 1080){
+							$("#x2x1").css("height", ($(window).height()/100)*93.5 + 'px'); 
+							heig = ($(window).height()/100)*93.5;
+						}else if ($(window).height() < 900){
+							$("#x2x1").css("height", ($(window).height()/100)*88 + 'px'); 	
+							heig = ($(window).height()/100)*88;
+						}
+						
+						var ancho = (($(window).width()/100)*100);
+						//-deltaW;
+						//-18;
+						if ($(window).height() > 1050){
+							var alto = (($(window).height()/100)*95);
+						}else{
+							var alto = (($(window).height()/100)*86.5);
+						}
+						//-deltaH
+						//-110;
+						//alert(alto +' ' + $("#x2x1").css("height"));
+				//-------------------------------------------------modificado--------------------------------------------
+					//ancho=alto*(1500/950);
+					//ancho=alto*(1800/923);
+					document.getElementById(lay).width = ancho;
+					document.getElementById(lay).height = alto;
+				//--------------------------------------------------------------------------------------------------------
+								
+					//alert('BASE '+screen.width+' '+screen.height+' - DELTA '+deltaW+' '+deltaH+' - IMAGEN'+document.getElementById("x2x").width+' '+document.getElementById("x2x").height);
+					  //if (alto >  880){
+							var xalt =  20;
+							alto = heig;
+					  //}else{
+//							var xalt = 0;
+//					  }
+				}				
+					//alert('BASE '+screen.width+' '+screen.height+' - DELTA '+deltaW+' '+deltaH+' - alto '+alto+' ancho '+ancho);
+				equipo = getChildNodeValue(node,"EQUIPO");
+				//imagen = getChildNodeValue(node,"EQUIPO") + ".png";
+				switch(getChildNodeValue(node,"COLOR")) {
+					case 'BAJA':
+						//ColorFondo = '#3366FF';
+						if (alto >  1050){
+							imagen = "icon_baja.png"; // pantallas grandes
+						}else{
+							imagen = "icon_baja_800.png";
+						}
+						break
+					case 'MEDIA':
+						//ColorFondo = '#CCCC00';
+						if (alto >  1050){
+							imagen = "icon_media.png"; // pantallas grandes
+						}else{
+							imagen = "icon_media_800.png";
+						}
+						break
+					case 'ALTA':
+						//ColorFondo = '#CC0000';
+						if (alto >  1050){
+							imagen = "icon_alta.png"; // pantallas grandes
+						}else{
+							imagen = "icon_alta_800.png";
+						}
+						break
+					default:
+						//ColorFondo = '#00CC00';
+						if (alto >  1050){
+							imagen = "icon_normal.png"; // pantallas grandes
+						}else{
+							imagen = "icon_normal_800.png";
+						}
+					}
+				var idMap = document.getElementById(m);
+				var miDt = new Element('dt',{'id': equipo+'dt'}).injectInside(idMap);
+				var miIMG = new Element('img', {
+
+						//'src' : "ly/L"+imagen, 
+						'src' : "ly/"+imagen, 
+						'class': 'polLnk',
+						'title': equipo + " CRITICIDAD:" + getChildNodeValue(node,"COLOR") ,
+						'id': equipo,
+						styles: {
+							'left' : (getChildNodeValue(node,"X")*(ancho)/100) + 'px',
+							'top'  : ((getChildNodeValue(node,"Y")*(alto)+xalt)/100) + 'px'
+							// ESCALA ALTO: 110 PC, 195 LCD, 130 IPAD							
+						},
+						events: {
+							click: function(){
+								//alert(this.id);
+								//fade('fadeBlock',1);
+									//deplacer();
+								verBitacora(this.id);
+								//alert(document.getElementById("x2x").height);
+							},
+							mouseover: function(){ 
+								//alert(this.id);
+								this.style.opacity=1;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=100;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=100)';
+								}
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=65;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=65)';
+								}
+							}
+						}
+					}).injectInside(equipo+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+'Title',
+						html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+					}).injectInside(idMap);
+ 			 }//end for
+			 equipo=null;
+    	  }//end If
+	else
+	  window.open(url);
+	  
+	 // t=setTimeout("loadPage();",60000);
+	  
+}
+
+
+function loadPage(){
+
+clearTimeout(t);
+window.document.location = 'NewIndexvx.html';
+
+}
+
+var TimeToFade = 400;
+
+function fade(eid,swit)
+{
+  var element = document.getElementById(eid);
+  if(element == null)
+    return;
+    
+   
+  if(element.FadeState == null)
+  {
+    if(element.style.opacity == null || element.style.opacity == '' 
+       || element.style.opacity == '1')
+      element.FadeState = 2;
+    else
+      element.FadeState = -2;
+  }
+    
+  if(element.FadeState == 1 || element.FadeState == -1)
+  {
+    element.FadeState = element.FadeState == 1 ? -1 : 1;
+    element.FadeTimeLeft = TimeToFade - element.FadeTimeLeft;
+  }
+  else
+  {
+    element.FadeState = element.FadeState == 2 ? -1 : 1;
+    element.FadeTimeLeft = TimeToFade;
+	if (swit == 1){
+		element.style.visibility = 'visible';
+	}else{
+		element.style.visibility = 'hidden'
+	}
+    setTimeout("animateFade(" + new Date().getTime() + ",'" + eid + "')", 33);
+  }  
+}
+
+function animateFade(lastTick, eid)
+{  
+  var curTick = new Date().getTime();
+  var elapsedTicks = curTick - lastTick;
+  
+  var element = document.getElementById(eid);
+ 
+  if(element.FadeTimeLeft <= elapsedTicks)
+  {
+//    element.style.visibility = element.FadeState == 1 ? 'visible' : 'hidden';
+    element.style.opacity = element.FadeState == 1 ? '1' : '0';
+    element.style.filter = 'alpha(opacity = ' + (element.FadeState == 1 ? '100' : '0') + ')';
+    element.FadeState = element.FadeState == 1 ? 2 : -2;
+    return;
+  }
+ 
+  element.FadeTimeLeft -= elapsedTicks;
+  var newOpVal = element.FadeTimeLeft/TimeToFade;
+  if(element.FadeState == 1)
+    newOpVal = 1 - newOpVal;
+
+  element.style.opacity = newOpVal;
+  element.style.filter = 'alpha(opacity = ' + (newOpVal*100) + ')';
+  
+  setTimeout("animateFade(" + curTick + ",'" + eid + "')", 33);
+}
+
+
+//-->
+var xOffset=6
+var yOffset=15    
+
+var affiche = false; // La variable i nous dit si le bloc est visible ou non
+var w3c=document.getElementById && !document.all;
+var ie=document.all;
+
+if (ie||w3c) {
+  	//var laBulle = document.all ? document.all["fadeBlock"] : document.getElementById ? document.getElementById("fadeBlock") : "";
+	var laBulle = document.getElementById("fadeBlock");
+}
+
+function ietruebody(){  // retourne le bon corps...
+  return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+
+function listEquipos_images(equipo){	
+		if (id_br == "IE")
+		{
+			var xmlTempx = document.getElementById("xmlTempx");
+			xmlTempx.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlTempx = document.implementation.createDocument("", "", null);
+		}
+		if (id_br == 'IE'){
+			var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = getEmpresaMoz();
+		}
+	
+		var xmlDso =  xmlTempx.XMLDocument;
+		var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+			url += "&FAENA="+emp;
+			url +="&VTZ="+Math.random();
+		
+	//alert(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}	
+//	var res = xmlDso.load(url);
+//	 window.open(url);
+	if (res){
+			var tree = xmlDso.documentElement;				
+			for(var i = 0; i < tree.childNodes.length; i++){
+				var node = tree.childNodes.item(i);
+				if (getChildNodeValue(node,"CODIGO") == equipo){
+				return getChildNodeValue(node,"LAYOUT");
+				}
+			}
+		}
+	else
+		window.open(url);
+		
+//			if (getEmpresa()=='CERRO COLORADO')
+//					formulario.listEquipos.value='010-FE-001';
+} 
+
+//------------------------------------------bottombar----------------------------------------------------------------
+
+function iecompattest(){
+return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+</script>
+<body onload="cargaBitacora();" >
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<LINK rel="stylesheet" href="jslide/royalslider.css">
+<SCRIPT src="jslide/jquery-1.8.3.min.js"></SCRIPT>
+<SCRIPT src="jslide/jquery.royalslider.min.js"></SCRIPT>
+<LINK rel="stylesheet" href="jslide/rs-default.css">
+<br/><br /><br />
+<select id="idTipo" onchange="cargaBitacora();">
+	<option value=''>Todos</option>
+	<option value='5,22,23'>Cintas</option>
+	<option value='9'>Poleas</option>
+	<option value='10'>Raspadores</option>
+	<option value='12,82'>Aseo</option>
+</select>
+
+<form name="formulario">
+                <div id="holder" align="left" style="position:absolute; width:100%">
+                    <div id="imagin"  style="position:absolute; width:100%"><img id="x2x1" /></div>
+                        <dl class="map" id="idMap1">
+                            <dt><a onclick="verOT('semilla');" class="polLnk" id="semilla" target="_blank"></a></dt>
+                            <dd id="pol1Title"></dd>
+                        </dl>
+                </div>
+          
+<div id="bottombar" style="position:absolute; z-index: 150; border: 0px;	padding: 0px;	background-color: #fff;	width: 470px; height:20px">
+	<img src="CRITICIDADES_colorado.png"/></div>
+</form>
+<SCRIPT>
+
+$("#bottombar").css("top", ($(window).height()/100)*96 + 'px'); 
+
+</SCRIPT>
+
+</body>
+</html>

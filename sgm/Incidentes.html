@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Incidentes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlResponsables></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script>
+
+var newEvent = false;
+xmlDoc.async = false;
+
+
+function GetInsumo()
+{
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=GetInsumo&CODIGO=" + formulario.TxtCodigo.value;
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.ListResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.ListResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.ListResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+ 
+function ListInsumo()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=ListInsumo";
+    window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+function DelInsumo()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=DelInsumo&CODIGO=" + formulario.TxtCodigo.value;
+    //window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+function Nuevo(){
+
+window.event.cancelBubble=true;
+newEvent=true;
+formulario.TxtCodigo.readOnly=false;
+formulario.btnNew.className='hidden';
+LimpiarForm();
+setTimeout("formulario.TxtCodigo.focus();",800);
+}
+
+function Guardar(){
+
+if (newEvent) NewInsumo();
+else  UpdateInsumo();
+newEvent =false;
+formulario.TxtCodigo.readOnly = true;
+formulario.btnNew.className='botonBlanco';
+}
+
+function NewInsumo()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=NewInsumo&CODIGO=" + formulario.TxtCodigo.value;
+		url += "&NOMBRE=" + formulario.TxtNombre.value;
+		url += "&MARCA=" + formulario.TxtMarca.value;
+		url += "&MODELO=" + formulario.TxtModelo.value;
+		url += "&RUT_PROVEEDOR=" + formulario.TxtRut.value;
+		url += "&SECCION=" + formulario.TxtSeccion.value;
+		url += "&UBICACION=" + formulario.TxtUbicacion.value;
+		url += "&VALOR=" + formulario.TxtValor.value;	
+		xmlestado = xmlDso.load(url);
+		if (!xmlestado)
+			    window.open(url);
+	   //alert(xmlestado);'
+}
+
+function UpdateInsumo()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=UpdateInsumo&CODIGO=" + formulario.TxtCodigo.value;
+		url += "&NOMBRE=" + formulario.TxtNombre.value;
+		url += "&MARCA=" + formulario.ListMarca.value;
+		url += "&MODELO=" + formulario.ListModelo.value;
+		url += "&SECCION=" + formulario.TxtSeccion.value;
+		url += "&UBICACION=" + formulario.TxtUbicacion.value;
+		url += "&RUT_PROVEEDOR=" + formulario.TxtRut.value;
+		url += "&VALOR=" + formulario.TxtValor.value;		
+		//window.open(url);
+	    xmlestado = xmlDso.load(url);
+		if (!xmlestado)
+			    window.open(url);
+		else
+				GetInsumo();
+}
+
+
+function GetProv()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=GetProv";
+    //window.open(url);
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+}
+
+
+function GetEquipo()
+{
+}
+
+</script>
+
+<body onLoad="ListResponsables();">
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<div id="divCalendar" onClick="event.cancelBubble=true" style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivEquipo" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameEquipo" src="ListEquipos.html" frameBorder="0" width="250" scrolling="no"	height="180"></IFRAME>
+</DIV>
+
+<DIV id="DivInsumo" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameInsumo" src="ListInsumos.html" frameBorder="0" width="250" scrolling="no"	height="180"></IFRAME>
+</DIV>
+<br><br><br>
+<table width="1031">
+<tr>
+  <td width="1023" height="31" class="titulo">INCIDENTES</td>
+</tr>
+<tr><td>
+	<table width="747"  height="147" border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlDoc">
+	  <!--DWLayoutTable-->
+	<tr class="texto" > 
+		<td height="32" align="right">Fecha:</td> 
+		<td width="134" align="left">
+			<input name="TxtFecha" type="text" class="input" id="TxtFecha" size="16"
+					maxlength="15" datafld="CODIGO" />
+			<IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+									  onclick="FrameCalendar.fPopCalendar(TxtFecha,TxtFecha,divCalendar);return false">	</td>
+		<td colspan="2" align="right">Equipo :</td>
+		<td width="418" align="left">
+			<input class="input" name="TxtDescripcion" type="text"  size="25" maxlength="25" datafld="NOMBRE">
+			<input class="input" name="TxtCodigo" type="hidden"  size="1" datafld="COD_EQUIPO">
+		   <img src="images/lupa.jpg" align="top"
+				style="cursor:hand" onClick="ListFrameEquipo.popsearchbox(10,  TxtCodigo, TxtDescripcion, DivEquipo, 'GetEquipo();');" /></td>
+	</tr>
+	<tr class="texto" >
+	  <td height="31" align="right" valign="middle">Responsable:</td>
+	  <td align="left">
+			<select name="ListResponsables" class="input" id="listMarca" datafld="MARCA">
+            </select>
+	  </td>
+	  <td colspan="2" align="right">Descripcion : </td>
+	  <td align="left">
+	  	<textarea name="TxtUbicacion" type="text" class="input" id="TxtUbicacion" row="8" cols="50"
+				 maxlength="30" datafld="UBICACION"></textarea>
+		</td>
+	  </tr>
+	<tr class="texto" >
+		<td width="102" height="18" align="right" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+		<td align="left"><!--DWLayoutEmptyCell-->&nbsp;</td>
+		<td colspan="2" align="right"><!--DWLayoutEmptyCell-->&nbsp;</td>
+		<td align="left"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	</tr>
+	
+	<tr align="center" valign="middle">
+	  <td height="5" colspan="5"><p>&nbsp;
+	    </p>
+	    <p>
+              <input name="btnNew" type="button" class="botonBlanco" onClick="NewInsumo();" value="Nuevo"> 
+              <input name="button" type="button" class="botonBlanco" onClick="UpdateInsumo();" value="Guardar">
+               <input name="button" type="button" class="botonBlanco" 
+			  		onClick="window.open('Informes/InformeInsumos.html');;" value="Informe">        
+        </p></td>
+	  </tr>
+	</table>
+</td></tr>
+</table>
+</form>
+<br>
+
+</body>
+</html>

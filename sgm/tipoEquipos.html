@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Tipos de Equipos</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlGrupos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT>
+
+xmlTemp.async = false;
+
+function creaTipo(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	
+	var nomTipo = prompt("Nombre del Tipo de Equipo","");
+	var url = "xml/Equipos.asp?RECURSO=NewTipo";
+			url += "&DESCRIPCION=" + nomTipo;
+
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		
+		
+	ListTipos();	
+}
+
+
+
+ 
+function ListTipos(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListTipos";
+ 	  url += "&VTZ=" + Math.random();
+  
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+ 
+function EliminarTipo(Index){
+
+	var tabla = document.getElementById('tabTipos');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var Descripcion =  tabla.rows[Index].children[1].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "xml/Equipos.asp?RECURSO=DelTipo&CODIGO=" + Codigo;
+		
+	//window.open(url);
+	if(confirm("Eliminar Tipo de Equipo " + Descripcion)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListTipos();
+	}
+}
+
+
+
+
+</SCRIPT>
+
+
+<BODY onLoad="ListTipos();" >
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+
+<TABLE width="710" border="0" cellpadding="5" cellspacing="5">
+  <TR><TD width="513" valign="top" class="td">
+	<TABLE width="477" cellpadding="0" cellspacing="4" class="texto" id="tabTipos"  DATASRC="#xmlGrupos">
+			<THEAD>
+			<TR class="HeaderLista" >
+			  <TD colspan="4">TIPOS DE EQUIPOS</TD>
+			</TR>
+			<TR class="HeaderLista" >
+			  <TD width="75">CODIGO</TD>
+			  <TD width="263">NOMBRE</TD>
+			  <TD width="99">% CRITICIDAD</TD>
+			  <TD width="18" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaTipo();" 
+									src="images/add.gif"></TD>
+			 </TR>
+			</th>
+		</THEAD>
+		<TR onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dde3eb')" 
+			 bgcolor="#dde3eb" >
+			<TD align="center"><SPAN name="TxtCodigo" datafld="CODIGO"/></TD>
+			<TD><SPAN name="TxtNombre" datafld="DESCRIPCION"/></TD>
+			<TD align="center"><SPAN name="txtCriticidad" datafld="CRITICIDAD"/></TD>
+			<TD align="center" onClick="EliminarTipo(this.parentElement.rowIndex);">
+				<IMG src="images/trash.jpg" style="cursor:hand;"></TD>
+		</TR>
+	</TABLE>
+	</TD>
+	<TD width="66">&nbsp;&nbsp;</TD>
+	<TD width="81" align="center" valign="top" class="td"></TD>
+  </TR></TABLE>
+</FORM>
+
+<DIV align="left" >
+  <INPUT type="button" onClick="window.location.href='index.html';" value="Salir" class="botonBlanco">
+</DIV>
+</BODY>
+</HTML>

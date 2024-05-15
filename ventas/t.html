@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Usuarios</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlMenu></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+var newEvent = false;
+xmlDoc.async = false;
+
+function Get()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=GetUsuario&ID=" + formulario.TxtID.value;
+  //  window.open(url);
+	xmlestado = xmlDso.load(url);
+	formulario.btnNew.className='botonBlanco';
+}
+
+function Nuevo(){
+
+formulario.btnNew.className='hidden';
+formulario.TxtID.readOnly=false;
+newEvent=true;
+LimpiarForm();
+setTimeout("formulario.TxtID.focus();",400);
+}
+
+function NewUser()
+{
+if (!validaRut(formulario.TxtRUT.value))
+							return false;
+
+	
+	Rut = getRut(formulario.TxtRUT.value);
+	Dv = getDv(formulario.TxtRUT.value);
+	
+var xmlDso = xmlDoc.XMLDocument;
+	xmlDso.async = false;
+	
+	var url = "xml/usuarios.asp?RECURSO=ExisteUsuario&ID=" + formulario.TxtID.value;
+//	window.open(url);
+	  xmlestado = xmlDso.load(url);
+	  
+	  if(xmlestado){
+  			var Nro = xmlDso.documentElement.childNodes.item(0).text;//length;
+		
+			}
+	
+			
+	var url = "xml/usuarios.asp?RECURSO=NewUsuario&ID=" + formulario.TxtID.value;
+		url += "&RUT=" + Rut;
+		url += "&DV=" + Dv;
+		url += "&NOMBRES=" + formulario.TxtNOMBRES.value;
+		url += "&APELLIDOS=" + formulario.TxtAPELLIDOS.value;
+		url += "&ESTADO=" + formulario.ListEstado.value;
+ 	    url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&EMAIL=" + formulario.TxtEmail.value;
+		url += "&FONO=" + formulario.TxtFono.value;
+		url += "&CELULAR=" + formulario.TxtCelular.value;
+		url += "&AREA=" + formulario.TxtArea.value;
+		url += "&LUGAR=" + formulario.TxtLugar.value;
+		url += "&CARGO=" + formulario.ListCargo.value;
+		url += "&ROL=" + formulario.ListRoles.value;
+		
+		//window.open(url);
+		if (Nro=="False"){
+		    xmlestado = xmlDso.load(url);
+			if (xmlestado)
+					alert("Usuario ingresado..");
+			else
+				window.open(url);
+					}
+		else
+			alert("ya existe id de usuario!");
+	
+}
+
+function Guardar(){
+
+if (newEvent) NewUser();
+else  UpdateUser();
+newEvent =false;
+formulario.TxtID.readOnly = true;
+formulario.btnNew.className='botonBlanco';
+}
+
+
+function UpdateUser()
+{
+
+	if (!validaRut(formulario.TxtRUT.value))
+							return false;
+
+	
+	Rut = getRut(formulario.TxtRUT.value);
+	Dv = getDv(formulario.TxtRUT.value);
+
+	
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=UpdateUsuario&ID=" + formulario.TxtID.value;
+		  url += "&RUT=" + Rut;
+	  	  url += "&DV=" + Dv;
+		  url += "&NOMBRES=" + formulario.TxtNOMBRES.value;
+		  url += "&APELLIDOS=" + formulario.TxtAPELLIDOS.value;
+		  url += "&ESTADO=" + formulario.ListEstado.value;
+		  url += "&FECHA=" + formulario.TxtFecha.value;
+		  url += "&EMAIL=" + formulario.TxtEmail.value;
+		  url += "&FONO=" + formulario.TxtFono.value;
+		  url += "&CELULAR=" + formulario.TxtCelular.value;
+		  url += "&AREA=" + formulario.TxtArea.value;
+		  url += "&LUGAR=" + formulario.TxtLugar.value;
+		  url += "&CARGO=" + formulario.ListCargo.value;
+		  url += "&ROL=" + formulario.ListRoles.value;
+		// window.open(url);
+		  xmlEstado = xmlDso.load(url);
+		  if(!xmlEstado)
+		  		window.open(url);
+		  Get();
+}
+
+function List()
+{
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=ListUsuarios";
+	window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function ListUsuarios(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/usuarios.asp?RECURSO=ListUsuarios");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListRoles.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+function ListRoles(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/Roles.asp?RECURSO=ListRol");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListRoles.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+function ListCargos(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/Usuarios.asp?RECURSO=ListCargos");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListCargo.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+
+</script>
+
+<body onLoad="formulario.TxtID.focus();ListRoles();ListCargos();">
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+
+<DIV id="DivUsuarios" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 250px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 50px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="200" scrolling="no"	height="170"></IFRAME>
+</DIV>
+<br>
+<table>
+<tr>
+  <td height="31" class="titulo">Registro de Usuarios</td>
+</tr>
+<tr><td>
+	<table width="730"  border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlDoc">
+	  <!--DWLayoutTable-->
+	  <tr class="texto" >
+	    <td height="15" colspan="2" align="left" valign="top" class="txtVineta" >Datos del Trabajador </td>
+	    <td width="40" ></td>
+	    <td width="2" ></td>
+	    <td width="63" ></td>
+	    <td width="2" ></td>
+	    <td width="7" ></td>
+	    <td width="52" ></td>
+	    <td width="39" ></td>
+	    <td width="34" ></td>
+	    <td width="67" ></td>
+	    <td width="16" ></td>
+	    <td width="7"></td>
+	    <td width="29"></td>
+	    <td width="63"></td>
+	    <td width="47"></td>
+	    </tr>
+	  <tr class="texto" > 
+		<td width="70" height="25" align="right">ID:</td> 
+		<td colspan="3" align="left" >
+			<input type="text" name="TxtID" datafld="ID" class="input" readonly="true"/>
+          	<img onclick="ListFrame.popsearchbox(10, TxtID, TxtID, DivUsuarios)" src="images/lupa.jpg" style="cursor:hand"/>		</td>
+		<td align="right" >RUT: </td>
+		<td colspan="7" align="left" >
+			<input type="text" name="TxtRUT" datafld="RUT" class="input" size="15"/>
+			Ej. 12666124-k
+		</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	</tr>
+	<tr class="texto" >
+		<td height="35" align="right">Nombres:</td>
+		<td colspan="2" align="left" ><input type="text"  name="TxtNOMBRES" datafld="NOMBRES" class="input"/></td>
+		<td colspan="2" align="right" >Apellidos:</td>
+		<td colspan="8" align="left" ><input type="text"  name="TxtAPELLIDOS" datafld="APELLIDOS" class="input"/></td>
+		<td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    </tr>
+	<tr class="texto" >
+	  <td height="35" align="right">E-Mail:</td>
+	    <td colspan="6" align="left" ><input  name="TxtEmail" type="text" class="input" id="TxtEmail" size="50" datafld="E_MAIL"/></td>
+	    <td align="right" >Fono: </td>
+	  <td colspan="2" align="left" ><input  name="TxtFono" type="text" class="input" size="15" datafld="FONO"/></td>
+	  <td align="right" >Celular :</td>
+	  <td colspan="4" align="left" ><input  name="TxtCelular" type="text" class="input" datafld="CELULAR"/></td>
+	  <td>&nbsp;</td>
+	  </tr>
+	<tr class="texto" >
+	  <td height="10" colspan="2" align="left" class="txtVineta">Datos de la Empresa</td>
+	  <td colspan="3" align="right" ><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  <td colspan="9" align="left" ><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  </tr>
+	<tr class="texto" >
+	  <td height="30" align="right">Estado:</td>
+	    <td width="143" align="left" >
+		  <select name="ListEstado" datafld="ESTADO" class="input">
+                <option value="ACTIVO">ACTIVO</option>
+                <option value="INACTIVO">INACTIVO</option>
+          </select>
+		</td>
+	    <td colspan="3" align="right" >Fecha Ingreso: </td>
+	    <td colspan="9" align="left" ><input  name="TxtFecha" type="text" class="input" id="TxtFecha" datafld="FECHA"/></td>
+	    <td>&nbsp;</td>
+	    <td>&nbsp;</td>
+	    </tr>
+	<tr class="texto">
+	  <td height="30" align="right">Area:</td>
+	  <td colspan="5" align="left" ><input  name="TxtArea" type="text" class="input" size="40" datafld="AREA"/></td>
+	  <td colspan="3" align="right" >Lugar Fisico : </td>
+	  <td colspan="6" align="left" ><input  name="TxtLugar" type="text" class="input" datafld="LUGAR"/></td>
+	  <td>&nbsp;</td>
+	  </tr>
+	<tr class="texto">
+	  <td height="32" align="right">Cargo:</td>
+		<td colspan="5" align="left" >
+											<select name="ListCargo" datafld="CARGO" class="input">
+											</select>
+		</td>
+		<td colspan="3" align="right" >Rol:</td>
+		<td colspan="6" align="left" >
+		  <SELECT name="ListRoles" id="ListRoles" datafld="ROL" style="size:auto" class="input">
+              <OPTION selected></OPTION>
+              </SELECT>	</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr align="center" valign="middle">
+	  <td height="36" colspan="15" valign="middle">
+            <input name="btnNew" type="button" class="botonBlanco" onClick="Nuevo();" value="Nuevo">
+            <input name="btnUpdate" type="button" class="botonBlanco" onClick="Guardar();" value="Guardar">
+            <input name="button" type="button" class="botonBlanco" onClick="List();" value="Listar">	  </td>
+	  <td>&nbsp;</td>
+	</tr>
+	</table>
+</td></tr>
+</table>
+</form>
+</body>
+</html>

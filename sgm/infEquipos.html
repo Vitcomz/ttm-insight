@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=8" >
+<title>Informe de Equipos</title>
+<style type="text/css">
+<!--
+.style8 {	color: #c00000;
+	font-weight: bold;
+	font-size: 18px;
+}
+-->
+</style>
+
+
+
+
+
+
+</head>
+<link REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<link rel="stylesheet" href="/standard/menu.css" type="text/css">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+<style>
+
+.rowTitle{
+
+	color:#ffffff;
+	font-weight:bold;
+	font-size: 14px;
+	cursor:pointer;
+	text-align: left;
+ 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.tinyText{
+
+	color:#000000;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	text-align: left;
+ 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.menu {
+	color: #FFFFFF;
+	font-size: 16px;
+	font-weight: bold;
+	vertical-align:bottom;
+	cursor:pointer;
+	
+}
+
+.menu:hover {
+text-decoration:underline;
+
+}
+
+a{color:#FFFFFF; text-decoration:none;}
+
+</style>
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<SCRIPT language="JavaScript1.2" src="js/main.js"></SCRIPT>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<script>
+
+function chFaena(obj){
+
+var val = obj.options[obj.selectedIndex].text;
+//alert(val);
+
+crearSessionEmpresa(val);
+list();
+}
+
+function infEquipos() {   
+
+	with (divWait.style){visibility = "visible";} 
+
+ var url = "xml/informes.asp?RECURSO=infEquipos";
+ 	 url += "&EQUIPO="+document.getElementById("idListEquipos").value;
+	// url += "&IND_FAC="+document.getElementById("idFac").checked;
+	 url += "&FAENA=" + getEmpresa();
+	 url += "&USERNAME=" + getSession();
+     url += "&VTZ=" + Math.random();
+ 
+//alert(url);
+		var data = ""; var j;
+		var tbl = document.getElementById('tblAvisos');
+		
+		limpiarTabla2(tbl);				
+
+	//window.open(url);
+
+		row = tbl.insertRow(-1);
+					
+													
+					row.bgColor= "#cccccc";
+					row.heigth="10px";
+					row.className = "titulo";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "N� ";
+					cell.width = "30px";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Codigo"
+					cell.width = "250px";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Descripcion"
+					cell.width = "320px";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Tipo Equipo"
+					cell.width = "150";
+ 					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Fecha Instalaci�n"
+					cell.width = "80";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Marca/ Modelo"
+					cell.width = "80";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Carga/Retorno"
+					cell.width = "80";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Area"
+					cell.width = "80";
+					
+  					cell = row.insertCell(-1);
+					cell.innerHTML = "Imagen "
+					cell.width = "120";
+					  					cell = row.insertCell(-1);
+					cell.innerHTML = "Docs."
+					cell.width = "30";
+
+  					 
+
+					
+		total=0;total2=0;total3=0;	
+		var j=1;var n=0;
+		
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(i){
+				
+					 
+					 n = n +1 ;	
+					var codigo= $(this).find("CODIGO").text();
+					var color = $(this).find("COLOR").text();
+					
+					row = tbl.insertRow(-1);
+					row.style.cursor = 'pointer';
+					row.className = 'tinyText';
+					row.onclick = function (){verEquipo(codigo)};
+												
+					if (j==1){row.bgColor= "#CCCCCC";j=2;}
+					else{row.bgColor= "#FFFFFF";j=1;}
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML =  n;
+					cell.align='left';
+					
+								
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("COD").text();
+					cell.align='left';
+								
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("DES").text() + " ";
+					cell.align='left';
+ 
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("TP").text() + " ";
+					cell.align='left';
+				
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("FE").text() + " ";
+					cell.align='left';
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("MA").text() + " ";
+					cell.align='left';
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("ES").text() + " ";
+					cell.align='left'
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("AR").text() + " ";
+					cell.align='left';
+						 
+				   cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("LY").text() + " ";
+					cell.align='left';
+				 
+					
+				var	lnk =$(this).find("FILEID").text();
+				 
+				var	img =$(this).find("FILE_IMG").text();
+			 
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML = "<img src='" + img + "' style='cursor:pointer;' />";
+				cell.align="center";cell.onclick = function (){showFile(lnk)};
+								  
+					i=i+1;
+			 
+			}) , hidFrm();//end each
+		})//end $get
+					
+}
+		
+ 
+function _excel() {   
+
+ 
+
+ var url = "js/mail.asp?RECURSO=listTickets";
+ 	 url += "&CLIENTE="+document.getElementById("idClientes").value;
+	 url += "&IND_SOL="+document.getElementById("idSol").checked;
+	 url += "&EXCEL=YES";
+	 url += "&EMPRESA=" + getEmpresa();
+	 url += "&USERNAME=" + getSession();
+     url += "&VTZ=" + Math.random();
+	 
+	 window.open(url);
+	 
+}
+	
+function salir(){
+parent.document.getElementById('boxMTicket').close();
+}
+
+
+
+
+function fn(){
+alert(1);
+}
+
+function inicio(){
+
+if (rol=='ADMIN'){
+document.getElementById("btnExcel").className = 'BotonBlanco';
+document.getElementById("btnNew").className = 'BotonBlanco';
+}
+
+//document.getElementById("idUsuario").innerText = getSession();
+//document.getElementById("idRol").innerText = getRol();
+document.getElementById("idListEquipos").focus();
+}
+
+function verEquipo(codigo){
+
+var url = "boxEquipos.html";
+	url += "?CODIGO=" + codigo;
+	url += "&VTZ=" + Math.random();
+	//alert(url);
+		
+winCfg = "width=950px,height=400px,left=" + 25 + "px,top=" + 75 +"px,resize=1,scrolling=0";	
+var inlinewin6 = dhtmlwindow.open("explorerBox", "iframe", url , "EQUIPO", winCfg);
+
+
+}
+
+function newEquipo(){
+
+var url = "boxEquipos.html";
+	url += "?COD_PADRE="+document.getElementById("idListEquipos").value;
+	url += "&VTZ=" + Math.random();
+	//alert(url);
+		
+winCfg = "width=680px,height=360px,left=" + 25 + "px,top=" + 55 +"px,resize=1,scrolling=0";	
+var inlinewin6 = dhtmlwindow.open("explorerBox", "iframe", url , "EQUIPO", winCfg);
+
+
+}
+
+function showClientes(){
+frameClientes.showWin(divClientes);
+}
+
+function setCliente(_rut, _nombre){
+//	alert(_rut +" " + _nombre);
+document.getElementById("idCliente").innerText = _nombre;
+document.getElementById("idRutCliente").innerText = _rut;
+listTicket();
+}
+
+function excel(){
+ 
+var url = "xml/informes.asp?RECURSO=infEquipos";
+ 	 url += "&EQUIPO="+document.getElementById("idListEquipos").value;
+	 url += "&EXCEL=YES";
+	 url += "&FAENA=" + getEmpresa();
+	 url += "&USERNAME=" + getSession();
+     url += "&VTZ=" + Math.random();
+	 
+	 window.open(url);
+	 
+
+}
+	
+	 
+	 
+function hidFrm(){
+with (divWait.style){visibility = "hidden"};
+}
+
+function listFaenas(){
+	
+	var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+		url += "&ID=" + getSession();
+	 	url += "&EMPRESA=" + getEmpresa();
+		url += "&USERNAME=" + getSession();
+		url += "&VTZ=" + Math.random();
+	//	window.open(url);
+	var i=0;
+	
+	opcion = new Option("--" ,"0");
+	 
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+					i=i+1;
+        	   		opcion = new Option(descripcion, codigo);
+					if(descripcion==getEmpresa()){opcion.selected = true;}	
+	          		document.getElementById("idFaena").options[i] = opcion;	
+					
+		})  //end each
+	})//end $get
+
+
+}	
+
+
+function listEquipos(){
+
+ 
+				
+	var EQUIPO = getParametro("EQUIPO");
+	
+	var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+		url += "&FAENA="+getEmpresa();
+		url +="&VTZ="+Math.random();
+		
+		//window.open(url);
+  	opcion = new Option("--TODOS--" ,"");
+				document.getElementById("idListEquipos").options[0] = opcion;
+		var i=1;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("CODIGO").text() + " " + $(this).find("DESCRIPCION").text();
+					var ly = $(this).find("LAYOUT").text();
+					
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+				opcion.selected=true;
+	          	document.getElementById("idListEquipos").options[i] = opcion;
+			 
+				i=i+1;	
+			})			,infEquipos();
+				
+		})//end $get
+	
+ 
+					
+} 
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0">
+
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+    
+<div id="divClientes" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameClientes" src="listClientes.html?X=2" frameBorder="0" width="350" height="280"></IFRAME>
+</div>
+
+<DIV ID="divEquipos" STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 55px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 49px; width: 375px; height: 290px;"	onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameEquipos" id="frameEquipos" SRC="ListEquiposPadresv2.html" FRAMEBORDER="0" WIDTH="375" SCROLLING="no" HEIGHT="320">
+  </IFRAME>
+</DIV>
+<br /><br /><br />
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+ 
+<table width="99%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="29" colspan="2" class="titulo" >Equipos y Componentes </td>
+    <td width="160">&nbsp;</td>
+    <td width="117">&nbsp;</td>
+    <td width="4">&nbsp;</td>
+    <td width="111">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="207" height="0"></td>
+    <td width="410"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  <tr class="titulo">
+     <td height="39" align="center">Equipo Principal :</td>
+		<td align="left"><input id="idListEquipos"  size="30" onKeyPress="if(event.keyCode==13)infEquipos();" />
+ 
+		<span class="tituloBlanco"  id="idEquipo"></span>&nbsp;<span id="idNombre"></span>
+            &nbsp;Enter para buscar.</td>
+  <td align="right" valign="middle"><input type="button" value="Actualizar" onClick="infEquipos();" /> </td>
+      <td align="center">
+      <!--img src="mg/excelIcon.png" width="22" height="22" style="cursor:pointer" onClick="_excel();"-->   
+          <input type="button" id="btnExcel" class="hidden" value="Excel" onClick="excel();" />
+          <input type="button" id="btnNew" class="hidden" value="Nuevo Componente" onClick="newEquipo();" /></td>
+      <td align="center">&nbsp;</td>
+      <td align="right" valign="top">&nbsp;</td>
+  </tr>
+    <tr><td height="282" colspan="6" valign="top">&nbsp; 
+    
+    <table width="90%"  id="tblAvisos" cellpadding="5" cellspacing="3"  align="center" > 
+	</table>  </td>
+    </tr>
+  <tr>
+    <td height="39" colspan="2" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+ 
+ 
+</body>
+</html>

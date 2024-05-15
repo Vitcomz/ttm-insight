@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+ 
+
+
+
+
+
+
+</head>
+ 
+ <style>
+  .text{ 
+font-size:9px;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+ 
+
+ .text:hover{
+ cursor:pointer; 
+ text-decoration:underline;
+ }
+ </style>
+<link REL="stylesheet" HREF="sci.css" TYPE="text/css" />
+  
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<script language="JavaScript1.2" src="js/main.js"></script>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var strs;
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+
+function inicio(){
+  //alert("hi");
+ 
+ 
+  
+}
+
+function popsearchbox(_servstr, _codeobj, _nameobj, _popbox, _function){
+  parent.event.cancelBubble=true;
+  strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj
+  functionName = _function
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 10;
+    visibility = "visible";
+  }
+  
+   search();
+
+}
+
+function setcodeandname(code, name){
+
+  codeobj.value = code;
+  
+  if (nameobj.tagName =='SPAN'){
+  		  nameobj.innerText = name;
+		  }
+	else
+	  nameobj.value = name;
+ popbox.style.visibility = "hidden";
+  event.cancelBubble=true;
+ runFunction();
+}
+
+function close(){
+  //nameobj.focus();
+
+parent.document.getElementById('boxObs').close();
+
+
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+
+
+
+  var cr = 0;
+  var url = "xml/observaciones.asp?RECURSO=listObservaciones";
+ 	 url +="&CODIGO=NULL";
+  	 url +="&USUARIO="+getSession();
+	 url +="&FAENA="+getEmpresa();
+	 url += "&HSA=" + Math.random();
+	 
+  
+  // window.open(url);
+       
+				
+				//window.open(url);
+	var tbl = document.getElementById('tbl');
+	limpiarTabla2(tbl);
+	
+	var j=0;
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			var fecha = $(this).find("FECHA").text();
+			var obs = $(this).find("OBSERVADOR").text();
+			var folio = $(this).find("FOLIO").text() 
+			
+			var row = tbl.insertRow(-1);
+				row.className = "titulo"
+				row.style.cursor = "pointer";
+				row.onclick = function (){set(folio)};
+												 			 
+			if (j==1){row.bgColor= "#ffffff";j=2;}
+					 else{row.bgColor= "#ecf2f6";j=1;}
+			
+			var cell = row.insertCell(0);
+				cell.innerHTML =  "<span>" + $(this).find("FOLIO").text() + "</span>";
+						
+			var cell = row.insertCell(1);
+				cell.innerHTML = "<span>" + fecha +"</span>";
+					
+				var cell = row.insertCell(2);
+				cell.innerHTML = "<span>" + obs +"</span>";
+				
+		})//End each
+	});//end $.get
+	
+   
+   
+}
+
+
+
+function setNom(itr){
+
+	var x = itr.children[0].innerText;
+	//alert(x)
+	parent.setObservador(x);
+close();
+}
+
+function runFunction(){
+//alert(functionName);
+setTimeout("parent." + functionName, 400);
+
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<body leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" bgcolor="#dee6eb" SCROLL="no" onLoad="inicio();">
+
+<CENTER>
+ <table width="100%"  border=0 cellpadding=5 id="tbl" cellspacing=0 bordercolor="#6587a3">
+ <tr onClick="setNom(this);"><td class="text">Cesar Iba�ez</td></tr>
+ <tr onClick="setNom(this);"><td class="text">Jose Mondaca</td></tr>
+ <tr onClick="setNom(this);"><td class="text">Gabriel Rojas</td></tr>
+ <tr onClick="setNom(this);"><td class="text">Francisco Esquivel</td></tr>
+</table>
+
+</CENTER>
+</body>
+
+</html>

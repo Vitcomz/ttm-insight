@@ -1,0 +1,344 @@
+
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM</title>
+<xml id = xmlMenu></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlTemp1></xml>
+<xml id = xmlTemp2></xml>
+<xml id = xmlDoc></xml>
+
+
+
+
+
+
+</head>
+<link REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+<link REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+<style TYPE="text/css">
+<!--
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</style>
+
+<script LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></script>
+<script LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" src="/Scripts/logeo.js"></script>
+<script type="text/javascript" language="javascript">
+
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+var newEvent = false;
+
+
+		if (id_br == 'IE'){
+			var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+		}
+		
+function inicio(){
+
+
+ 
+	  url='Chart/newindexV2.html';
+     this.location.href=url;
+								 
+
+}
+		
+
+function mostrarBitacora(){
+
+//Equipo = formulario.txtCodEquipo.value;
+var tbl = document.getElementById('tabEquipos');
+
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}	
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=listEquiposAlta";
+	if (document.getElementById("txtFechaIni").value != ''){
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value;		
+	}else{
+		  mydate = new Date();
+		  day_month = mydate.getDate();
+		  month     = mydate.getMonth()+1;
+		  year      = mydate.getFullYear();    
+		  day       = mydate.getDay(); 
+		
+		if ((day_month+"").length==1) day_month ='0'+day_month;
+		if ((month+"").length==1) month ='0' + month;
+		var fechaActual = "01" + "/" + month +"/"+ year;
+		
+		var dFecha = new Date(fechaActual.substr(6,4), 
+							  fechaActual.substr(3,2)-1,
+							  fechaActual.substr(0,2));	
+							  	
+		  day_month = dFecha.getDate();
+		  month     = dFecha.getMonth()+1;
+		  year      = dFecha.getFullYear();    
+		  day       = dFecha.getDay(); 
+		
+		if ((day_month+"").length==1) day_month ='0'+day_month;
+		if ((month+"").length==1) month ='0' + month;
+		var fechaActual2 = "01" + "/" + month +"/"+ year;
+		url += "&FECHA_INI=" + fechaActual2;		
+		document.getElementById("txtFechaIni").value = fechaActual2;
+	}
+		url += "&FECHA_FIN=01/12/2018";
+		url += "&USUARIO=" + Usuario;
+		url += "&SECCION='TOD'";
+		url += "&CRITICIDAD=ALTA";
+		url += "&FAENA=" + emp;
+		url += "&TIPO="+document.getElementById("listTipos").value;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN=TOD";
+		url += "&EQUIPO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		if (res){
+				var context = ""
+				context = context + "<table CELLPADDING='5' CELLSPACING='3' CLASS='blueTr' BORDER='1' >";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  context = context +  "<td WIDTH='210' VALIGN='TOP' >CORRELATIVO: <span class='titulo'>" + x[i].getElementsByTagName("N")[0].childNodes[0].nodeValue + "</span><br>ID BITACORA: <span class='titulo'>" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span><br>EQUIPO: <span class='titulo'>" + x[i].getElementsByTagName("EQUIPO_PRIN")[0].childNodes[0].nodeValue + "</span><br>COMPONENTE: <span class='titulo'>" + x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</span><br>F. INSPECCION <span class='normal'>" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</span><br>DIAS PENDIENTE <span class='normal'>" + x[i].getElementsByTagName("DIAS")[0].childNodes[0].nodeValue + "</span><br><strong CLASS='style1'>CRITICIDAD <span class='style1'>" + x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + "</span></strong></td>";
+				  context = context +  "<td WIDTH='466'><span class='normal'>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span></br>RECOMENDACION :<span class='normal'>" + x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</span></td>";
+				  context = context +  "<td WIDTH='106'><p><a href='" + x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue + "'  rel='facebox'>";
+				  context = context + "<img src='Informes/imagen.aspx?image=../"+  x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue;
+				  context = context +  "' WIDTH='100' border='1'  ONERROR='this.src='images/noDisponible.png;''/>";
+				  context = context +  "</a></p></td>";
+				  context = context +  "</tr>";
+				}
+				context = context +  "</table>";
+				document.getElementById("tabEquipos").innerHTML= context;
+		}
+
+		if(!res)
+			window.open(url);
+			
+//			xmlTemp1.async = false;
+//			var xmlDso = xmlTemp1.XMLDocument;
+//		
+//			var url = "xml/Informes.asp?RECURSO=backupCriticidad";
+//					
+//			var res =xmlDso.load(url);
+//			if(!res)
+//				window.open(url);
+	
+}//end function
+
+ 
+function listTipos(){
+
+		if (id_br == "IE")
+		{
+			var xmlTemp1 = document.getElementById("xmlTemp1");
+			xmlTemp1.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp1 = document.implementation.createDocument("", "", null);
+		}
+  
+  	 
+  		var url = "xml/Equipos.asp?RECURSO=ListTipos";
+ 		url += "&VTZ=" + Math.random();
+	  	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		if (res){
+			 var tree = xmlDso.documentElement;
+			 opcion = new Option("TODOS" ,"");
+			 if (opcion.value == "") opcion.selected = true;
+				document.getElementById("listTipos").options[0] = opcion; 
+				
+			  	for(var i = 1; i < tree.childNodes.length+1; i++){
+				var node = tree.childNodes.item(i-1);
+				opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+				document.getElementById("listTipos").options[i] = opcion;
+			 	}
+			 }else{
+			window.open(url); 
+		}
+}
+ 
+ 
+function excel(){
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+    var xmlDso = xmlTemp.XMLDocument;
+	 
+	var url = "xml/Bitacoras.asp?RECURSO=ListBitacora";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2018";
+		url += "&USUARIO=" + Usuario;
+		url += "&CRITICIDAD=ALTA";
+		url += "&TIPO="+document.getElementById("listTipos").value;
+		url += "&FAENA=" + emp;
+		url += ("&VTZ=" + Math.random()).substr(0,8);
+		//url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN=TOD";
+		url += "&EQUIPO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&EXCEL=YES";
+		
+    
+		window.open(url);
+}//end function
+
+</script>
+
+<body onload="inicio();">
+<br>
+<br>
+<script LANGUAGE="JavaScript" type="text/javascript" SRC="standard/menudata.js"></script>
+<script src="standard/jquery-1.2.2.pack.js" type="text/javascript"></script>
+<script src="standard/facebox.js" type="text/javascript"></script>
+<link href="standard/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox() 
+    })
+</script>
+<br>
+<form name="formulario">
+<table width="70%" border="0" cellpadding="0" >
+  <!--DWLayoutTable-->
+  <tr>
+    <td width="6" height="29"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td width="270" height="29"><font class="titulo">COMPONENTES EN RIESGO</font></td>
+    <td width="305" align="right" class="calibri"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+  </tr>
+  <tr>
+    <td height="29"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td align="center" class="calibri">DESDE :
+      <input type="text" class="input" name="txtFechaIni" id="txtFechaIni" size="12" />
+      &nbsp;&nbsp;</td>
+    <td align="center" class="calibri">TIPO DE EQUIPO:
+      <select name="listTipos" id="listTipos" onChange="mostrarBitacora();">
+        </select>
+      &nbsp;
+      </td>
+    <td width="271" align="center"><div align="center">
+      <input type="button" class="botonBlanco" value="Buscar" onclick="mostrarBitacora();" />&nbsp;&nbsp;
+      <input type="button" class="botonBlancoLargo" value="Exportar a Excel"  onClick="excel();">
+      </div></td>
+  </tr>
+  </table>
+<br>
+<!--<table ID="tabEquipos" CELLPADDING="5" CELLSPACING="3" 
+	  CLASS="blueTr" BORDER="1" DATASRC="#xmlTemp">
+<tr>
+	<td WIDTH="210" VALIGN="TOP" >
+    				CORRELATIVO: <span class='titulo' id='N' datafld='N'></span><br>
+                    ID BITACORA: <span class='titulo' id='ID' datafld='ID'></span><br>
+    				EQUIPO: <span class='titulo' id='EQUIPO_PRIN' datafld='EQUIPO_PRIN'></span><br>
+                    COMPONENTE: <span class='titulo' id='EQUIPO' datafld='EQUIPO'></span><br>
+    				F. INSPECCION <span class='normal' id='FECHA' datafld='FECHA'></span><br>
+                    DIAS PENDIENTE <span class='normal' id='DIAS' datafld='DIAS'></span><br>
+                    <strong CLASS="style1">CRITICIDAD <span class='style1' id='COLOR' datafld='COLOR'></span></strong>
+    </td>
+    <td WIDTH="466">
+    <span class='normal' id='DESCRIPCION' datafld='DESCRIPCION'></span></br>
+    RECOMENDACION :<span class='normal' id='RECOMENDACION' datafld='RECOMENDACION'></span>
+    </td>
+  <td WIDTH="106"><p><a DATAFLD="FILE" rel="facebox">
+    	<img STYLE="border-color:#000000" BORDER="1" WIDTH="100" ALIGN="middle" DATAFLD="FILE" ONERROR="this.src='images/noDisponible.png';">
+         </a></p></td>
+</tr>
+</table>-->
+<!--<table ID="tabEquipos" CELLPADDING="5" CELLSPACING="3" CLASS="blueTr" BORDER="1">
+</table>-->
+<div  ID="tabEquipos" ></div>
+<br>
+
+<!--<input type=button VALUE="Salir" class=boton onClick="window.location.href='login.html?Modo=1'">-->
+  <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar.css"></link>
+  <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+  <script src="Scripts/dhtmlxcalendar.js"></script>
+  <script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+
+</form>
+</body>
+
+</html>

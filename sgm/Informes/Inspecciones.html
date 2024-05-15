@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Bitacora de Inspecciones</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<style type="text/css" MEDIA="PRINT">
+<!--
+
+@page { 
+	size:landscape;
+	margin:10%;
+ 	}
+ 
+html {
+margin: 0;
+margin-left:0px;
+margin-right:0px;
+border: 1px solid black;
+size:landscape;
+}
+
+table#tabBitacora{
+background-color:#0033CC;
+display:table-cell;
+}
+
+.noScreen {display:normal }
+
+div {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	font-size:7em;
+	
+}
+-->
+</style>
+<SCRIPT>
+
+ function ListBitacora(Inicio, Fin, Equipo){
+	var xmlDso = xmlDoc.XMLDocument;
+	xmlDoc.async = false;
+	var url = "../xml/Bitacoras.asp?RECURSO=InfSemInspec";
+		url += "&FECHA_INI=" + Inicio;
+		url += "&FECHA_FIN=" + Fin;
+		url += "&RESPONSABLE=TOD";
+		url += "&EQUIPO_PRIN=" + Equipo;
+		url += "&EQUIPO=TOD";
+		url += "&TURNO=TOD";
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_DANO=TOD";
+		url += "&IND_INCIDENTE=TOD";
+		
+	xmlestado = xmlDso.load(url);
+	this.document.getElementById('txtInicio').innerText = Inicio;
+	this.document.getElementById('txtFin').innerText = Fin;
+	
+if(!xmlestado)
+		window.open(url);
+		
+setTimeout("color();",200);
+}
+
+function color(){
+var tbl = document.getElementById('tabBitacora');
+
+
+for (i=1; i<tbl.rows.length; i++){
+
+
+if(trim(tbl.rows[i].children[6].innerText)=='ALTA')
+	tbl.rows[i].children[6].bgColor="#FF0000;";
+	
+if(trim(tbl.rows[i].children[6].innerText)=="MEDIA")
+	tbl.rows[i].children[6].bgColor="#FFFF00;";
+
+if(trim(tbl.rows[i].children[6].innerText)=="BAJA")
+	tbl.rows[i].children[6].bgColor="#00FF33;";
+					
+			
+	 }
+
+}
+
+</SCRIPT>
+
+
+
+
+
+
+</head>
+
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="1" CELLPADDING="2" CELLSPACING="1" BORDERCOLOR="#000000">
+     <!--DWLayoutTable-->
+	<tr>
+	     <td WIDTH="188" ROWSPAN="2"><IMG SRC="Images/Logo1.jpg"></td>
+    	 <td WIDTH="405" HEIGHT="45" ALIGN="CENTER" VALIGN="TOP" CLASS="titulo">SISTEMA DE GESTION INTEGRADO<BR>
+   	      INFORME SEMANAL DE INPECCIONES</td>
+    	 <td WIDTH="402" VALIGN="TOP" CLASS="calibri">
+         			FECHA DE INSPECCION DESDE&nbsp;:<span id='txtInicio'></span>
+                    HASTA&nbsp;:<span id='txtFin'></span></td>
+	</tr>
+	<tr>
+	     <td HEIGHT="25" CLASS="calibri">PROYECTO : 
+          <SCRIPT>this.document.write(getEmpresa());</SCRIPT></td>
+	     <td>&nbsp;</td>
+     </tr>
+</TABLE>
+<!--div style="height:450px; overflow-y:auto;"-->
+		<table cellpadding="2" cellspacing="1"  BORDER="1" BORDERCOLOR="#000000"
+        	 	class="texto" id="tabBitacora"  datasrc=#xmlDoc >
+				<thead>
+				<tr BGCOLOR="#666666">
+				  <td WIDTH="31"><STRONG>ID</STRONG></td>
+   				  <td WIDTH="81"><STRONG>&nbsp;FECHA</STRONG></td>
+   				  <td WIDTH="100"><STRONG>&nbsp;EQUIPO</STRONG></td>
+				  <td WIDTH="200"><STRONG>OBSERVACION</STRONG></td>
+                  <td WIDTH="200"><STRONG>CAUSA RAIZ</STRONG></td>
+				  <td WIDTH="150"><STRONG>ORIGENES DE LAS FALLAS</STRONG></td>
+				  <td WIDTH="70"><STRONG>GRADO DE CRITICIDAD</STRONG></td>
+  				  <td WIDTH="50"><STRONG>TRATAMIENTO TECNICO TTM</STRONG></td>
+   				  <td WIDTH="80"><STRONG>FECHA ULTIMA INTERVENCION</STRONG></td>
+   				  <td WIDTH="80"><STRONG>TIPO DE INTERVENCI&Oacute;N</STRONG></td>
+			 </tr>
+				</thead>
+			<tr >
+				<td valign="top" onClick="return;"><SPAN name="TxtID"  datafld="ID"/></td>
+				<td valign="top"><SPAN  name="txtFecha" datafld="FECHA"/></td>
+				<td valign="top"><SPAN  name="txtCodEquipo" datafld="EQUIPO"/></td>
+				<td><span name="TxtDescripcion" class="texto" datafld="DESCRIPCION"/>&nbsp;</td>
+				<td valign="top"><SPAN  name="txtResponsable" datafld="CAUSA">&nbsp;</SPAN>&nbsp;</td>
+				<td  ALIGN="LEFT" valign="top">
+                				<SPAN CLASS="LitleText" datafld="DESC_FALLA"></SPAN>&nbsp;
+                </td>
+				<td align="center" valign="top"><SPAN  name="txtColor" datafld="COLOR"></SPAN>&nbsp;</td>
+			    <td align="center" valign="top">&nbsp;</td>
+				<td ALIGN="LEFT" valign="top"><SPAN  name="txtFecha" datafld="FECHA"/>&nbsp;</td>
+                <td ALIGN="CENTER" valign="top">&nbsp;</td>
+			</tr>
+</table>
+
+<!--/div-->
+
+</form>
+</body>
+</html>

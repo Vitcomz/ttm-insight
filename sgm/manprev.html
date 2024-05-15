@@ -1,0 +1,466 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Mantenci�n Preventiva</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlEquipos></xml>
+		<xml id=xmlAsignar></xml>
+		<xml id=xmlOT></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+		<script type="text/javascript" src="standard/Tabber/tabber.js"></script>
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+</HEAD>
+
+<script>
+
+function inicio(){
+ListEquipos();
+ListEquiposMan();
+ListEquiposManOT();
+ListResponsables();
+}
+
+function listar(){
+ListEquiposMan();
+ListEquiposManOT();
+}
+
+function verOT(Index){
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[6].children[0].value;
+window.location.href="OT.html?Folio=" + Folio;
+
+}
+
+function verInsumos(Index){
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[6].children[0].value;
+document.FrameInsumos.mostrarVentana(Folio,10, DivInsumos);
+}
+
+function ListEquiposMan(){
+
+	xmlAsignar.async = false;
+	var xmlDso = xmlAsignar.XMLDocument;
+	
+	if (formulario.tipoHorometro.value=='CRO')
+		var url = "xml/Equipos.asp?RECURSO=ListEquiposManCro";
+	else
+		var url = "xml/Equipos.asp?RECURSO=ListEquiposMan";
+	
+		url += "&CODIGO=" + formulario.ListEquipos.value;
+		url += "&USUARIO=" + GetSession();
+		
+	xmlEstado = xmlDso.load(url);
+	
+		//BLOQUE DE NAVEGACION
+	if (xmlEstado){
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/12);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;}
+	else
+		window.open(url);
+			
+setTimeout('color();',1000);
+				
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+
+
+function ListEquiposManOT()
+{
+
+	xmlOT.async = false;
+    var xmlDso = xmlOT.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=ListOT";
+		url += "&TIPO=PRE";
+		url += "&EQUIPO=" + formulario.ListEquipos.value;
+		url += "&ESTADO=" + formulario.listEstados.value;
+		url += "&TURNO=" + formulario.listTurnos.value;
+		url += "&RESPONSABLE=" + formulario.listResponsables.value;
+		
+	var res = xmlDso.load(url);
+		//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/12);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		
+	if (!res)
+		window.open(url);
+				
+}
+
+
+  
+function GeneraOT(Index){
+
+var table = document.getElementById('tabHorometros');
+var Equipo = table.rows[Index].children[0].children[0];
+var imgUrl =table.rows[Index].children[6].children[0].src;
+									
+if (imgUrl.substr(imgUrl.length-10,10)=="nerado.gif"){
+				alert("OT ya fue generada!");
+				return;
+				}		
+
+document.FrameOT.mostrarVentana(Equipo,Equipo,'PRE',DivOT,'listar();');
+
+}
+
+function verActividades(Index){
+
+var table = document.getElementById('tabHorometros');
+var Equipo = table.rows[Index].children[0].children[0];
+var desEquipo = table.rows[Index].children[1].children[0];
+				
+document.FrameActividades.mostrarVentana(Equipo,desEquipo,'PRE',DivActividades,'inicio();');
+
+}
+
+function verPrioridad(Index){
+
+var table = document.getElementById('tabHorometros');
+var Equipo = table.rows[Index].children[0].children[0];
+var desEquipo = table.rows[Index].children[1].children[0];
+				
+document.FramePrioridad.mostrarVentana(Equipo,desEquipo,'PRE',DivPrioridad,'ListEquiposMan();');
+
+}
+
+function imprimir(Index){
+		
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[6].children[0].value;
+var url = "ImprOT.html?OT=" + Folio;
+
+window.open(url);
+
+}
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+//  var url = "xml/equipos.asp?RECURSO=ListEquiposxUsuario";
+	  url += "&USUARIO="+GetSession();
+      url += "&TIPO_HOR=" + formulario.tipoHorometro.value;	
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+				if (opcion.value == "G1.0.0") opcion.selected = true;
+				 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ 
+ 
+function color(){
+
+var tabla = document.getElementById('tabHorometros');
+
+//alert(tabla.rows.length);
+for (i=1; i< tabla.rows.length; i++){
+			if (parseInt(tabla.rows[i].children[5].children[0].value)>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+			
+	tabla.rows[i].children[0].children[0].style.color='#000000';
+	tabla.rows[i].children[1].children[0].style.color='#000000';
+	
+			if (tabla.rows[i].children[8].children[0].value=='A'){
+					tabla.rows[i].children[0].children[0].style.color='#FF0000';
+					tabla.rows[i].children[1].children[0].style.color='#FF0000';
+							}
+			else{
+				if (tabla.rows[i].children[8].children[0].value=='B'){
+					tabla.rows[i].children[0].children[0].style.color='#FFCC00';
+					tabla.rows[i].children[1].children[0].style.color='#FFCC00';
+					}
+				}
+				
+			if (formulario.tipoHorometro.value=='CRO'){
+						var myDate = new Date()
+						//myDate.setTime(tabla.rows[i].children[3].children[0].value);
+						tabla.rows[i].children[3].children[0].value = formatoFechaCorta(myDate);
+						myDate.setTime(tabla.rows[i].children[4].children[0].value);
+						tabla.rows[i].children[4].children[0].value = formatoFechaCorta(myDate);
+						myDate.setTime(tabla.rows[i].children[5].children[0].value);
+						tabla.rows[i].children[5].children[0].value=
+												Math.round(tabla.rows[i].children[5].children[0].value/1000/60/60/24)+" Dias";
+						}
+	 }
+
+}
+
+function selEquipos(){
+formulario.ListEquipos.length =0;
+inicio();
+}
+
+function GetInsumo(){
+}
+
+function _inicio(){
+setTimeout("inicio();",500);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+	
+<DIV id="DivOT" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameOT" src="generaOT.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+
+<DIV id="DivActividades" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 268px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 182px" onClick="event.cancelBubble=true">
+<IFRAME name="FrameActividades" src="boxActividades.html" frameBorder="0" width="300" scrolling="no" height="300"></IFRAME>
+</DIV>
+
+<DIV id="DivPrioridad" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px" onClick="event.cancelBubble=true">
+<IFRAME name="FramePrioridad" src="boxPrioridad.html" frameBorder="0" width="250" scrolling="no" height="230"></IFRAME>
+</DIV>
+			
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR><BR><BR>
+		<form name="formulario">
+		  <table border="0" id="tableTitulo">
+			  <tr class="titulo">
+			    <td>Mantenci�n Preventiva.</td>
+			    <td>&nbsp;</td>
+		    </tr>
+			<TR  class="Campo">
+			  <TD align="center">EQUIPO PRINCIPAL  :</TD>
+				<TD><select name="ListEquipos"  class="Campo"  
+						onChange="ListEquiposMan();ListEquiposManOT();getElementById('tableTitulo').focus();">
+					</select>
+					
+				</TD>
+				<td><span class="titulo">&nbsp;&nbsp;&nbsp;TIPO DE EQUIPO:
+                    <select name="tipoHorometro" class="input"  onChange="selEquipos();">
+                      <option value="SEC">SECUENCIAL</option>
+                      <option value="CRO">CRONOLOGICO</option>
+                    </select>
+				</span></td>
+			</TR>
+		  </table>
+<div style="height:450px; overflow-y:auto;">
+			<div class="tabber">
+				     <div class="tabbertab" >
+					  <h2 alt="hola">Equipos en riesgo </h2>
+					  <table><tr>
+					   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicio('tabHorometros');setTimeout('color();',300);">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtras('tabHorometros');setTimeout('color();',300);">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelante('tabHorometros');setTimeout('color();',300);">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinal('tabHorometros');setTimeout('color();',300);">&nbsp;&nbsp;
+				Registros: <span id="ID_list_cant_reg"></span>
+					&nbsp;| Vista: <span id="ID_list_fraccion_reg"></span>
+						</td></tr></table>
+						
+					  <table width="843" cellpadding="2" cellspacing="1" class="texto"
+					   id="tabHorometros" datasrc=#xmlAsignar datapagesize="12">
+						<thead>
+						<tr class="HeaderLista">
+						  <td width="48">Codigo</td>
+						  <td width="180">Descripci�n</td>
+						  <td width="106" align="center">Ultima Mantenci�n	</td>
+  						  <td width="90">Horometro	</td>
+   						  <td width="108">Venc. Horometro</td>
+   						  <td width="88">Diferencia</td>
+   						  <td width="87">Generar OT</td>
+   						  <td width="113">Actividades</td>
+   						  <td width="0">Prioridad</td>
+						</thead>
+						<tr class="ItemLista" align="center">
+						  <td align="center"><input name="TxtCodigo" type="text" class="inputBold" size="8" datafld="CODIGO"/></td>
+							<td align="center"><input  name="TxtNombre" type="text" class="inputBold" size="40" datafld="DESCRIPCION"/></td>
+							<td align="center"><input  name="TxtFecha" type="text" class="input" size="10" datafld="FECHA"/></td>
+							<td align="center"><input  name="TxtHorometro" type="text" class="input" size="10" datafld="HOROMETRO"/></td>
+							<td align="center"><input  name="TxtHorometroVen" type="text" class="input" size="10" datafld="HOROMETRO_VEN"/></td>
+							<td align="center"><input  name="TxtHorometroDifer" type="text" class="inputBold" size="10" datafld="DIFERENCIA"  /></td>
+							<td align="center">
+						<IMG style="CURSOR:hand"  datafld="IMAGE"
+							onclick="GeneraOT(this.parentElement.parentElement.rowIndex);"
+							src="" align="middle">
+						</td>
+						<td style="CURSOR:hand"  align="center" 
+								onClick="verActividades(this.parentElement.rowIndex);">
+						 Actividades
+						</td>
+						<td align="center" style="CURSOR:hand"
+								onClick="verPrioridad(this.parentElement.rowIndex);">Prioridad
+						  <input  name="TxtPrioridad" type="hidden" datafld="PRIORIDAD" size="2" />
+						</td>					
+						</tr>
+				</table>
+					  <br>
+				  </div>
+	     	<div class="tabbertab">
+			  <h2>Consulta de O.T.</h2>
+			   <table><tr>
+				   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabPlanifica');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabPlanifica');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabPlanifica');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabPlanifica');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>
+			</td></tr></table>
+               <table cellpadding="2" cellspacing="1" class="texto"
+			   	 id="tabPlanifica"  datasrc=#xmlOT datapagesize="12">
+				<thead>
+				<tr class="HeaderLista">
+				  <td>Equipo</td>
+				  <td>Responsable&nbsp;OT</td>
+   				  <td>Programada</td>
+   				  <td>Ejecutada</td>
+  				  <td>&nbsp;Turno&nbsp;</td>
+   				  <td>Estado</td>
+   				  <td>&nbsp;FolioOT&nbsp;</td>
+   				  <td>Ver O.T.</td>
+				  <td>Insumos</td>
+  				  <td></td>
+				</tr>
+				<tr class="HeaderLista">
+				  <td></td>
+				   <td>
+				  	<select name="listResponsables" class="Campo" onChange="ListEquiposManOT();">
+				  	</select>
+				  </td>
+				  <td></td>
+				  <td></td>
+  				 <td>
+				  	<select name="listTurnos" class="Campo" onChange="ListEquiposManOT();">
+						<option value="TOD" selected="selected">TOD</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+				  	</select>
+				 </td>
+  				 <td>
+				  	<select name="listEstados" class="Campo" onChange="ListEquiposManOT();">
+						<option value="TOD" selected="selected">TODOS</option>
+						<option value="PRO">PROGRAMADA</option>
+						<option value="PEN">PENDIENTE</option>
+						<option value="EJE">EJECUTADAS</option>
+				  	</select>
+				 </td>
+ 				  <td></td>
+				  <td></td>
+  				  <td></td>
+				  <td></td>
+  			 	</tr>
+				</thead>
+			<tr bgcolor="#dee6eb">
+				<td><input  name="TxtCodEquipo" type="text" class="inputT" size="8" datafld="COD_EQUIPO"/>
+					<input  name="TxtDescEquipo" type="text" class="inputT" size="30" datafld="DESC_EQUIPO"/>
+				</td>
+				<td align="center"><span  class="texto" datafld="RESPONSABLE"></span></td>
+				<td>
+				 <span  class="texto" datafld="FECHA_PROGRAMADA"></span></td>
+				<td>
+				 <span  class="texto" datafld="FECHA"></span></td>
+					<td align="center">
+					<span  class="texto" datafld="TURNO"></span></td>
+				    <td align="center"><span  class="texto" datafld="ESTADO"></td>
+			    <td align="center">
+				 <input class="inputBold" type="text" size="2" name="txtOT" datafld="FOLIO_OT"></input>				</td>
+				<td align="center">
+				 <IMG style="CURSOR: hand" 
+							onclick="verOT(this.parentElement.parentElement.rowIndex);"
+							src="images/table.png" align="middle">				</td>
+				<td align="center">
+				 <IMG style="CURSOR: hand" 
+							 onclick="verInsumos(this.parentElement.parentElement.rowIndex);"
+							src="images/tools.png" align="middle"></td>
+				<td align="center" style="CURSOR:hand"
+								onClick="imprimir(this.parentElement.rowIndex);">
+						 Imprimir
+						 <input  name="TxtPrioridad" type="hidden" datafld="PRIORIDAD" />
+			  </td>
+			</tr>
+</table>
+				    </div>
+		  </div>
+	
+</form>
+
+	</body>
+</HTML>

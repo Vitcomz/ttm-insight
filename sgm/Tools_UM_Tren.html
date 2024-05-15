@@ -1,0 +1,3098 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="initial-scale = 1.0, user-scalable = no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <title>Mantencion de Trenes</title>
+
+
+
+
+
+
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script language="JavaScript1.2" src="/standard/vitcomz.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+	if (id_br == 'IE'){
+				var emp = getEmpresa();
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+				var emp = getEmpresaMoz();
+	}
+	
+</script>
+    
+        <script src="Scripts/jquery-1.js" type="text/javascript"></script>
+	    <script src="Scripts/jquery-ui-1.js" type="text/javascript"></script>
+        <script src="Scripts/jquery.msgBox.js" type="text/javascript"></script>
+        <script type="text/javascript" src="Scripts/jquery.print-preview.js"></script>	 
+        <script type="text/javascript" src="/Scripts/stayontop.js"></script>
+       
+         <link href="Scripts/msgBoxLight.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+	
+        .listdragable{ background:#ffffff; border-color: #CCC; border: inset; list-style-type: none; width:200px; margin-bottom:1px; margin-top:1px; margin-left:10px; margin-right:10px; padding: 5px; }
+	    .listdragable li { cursor:pointer; border:1px solid #DADADA; padding:3px 5px;	margin-bottom:3px;	margin-top:3px;	width:150px; font-family:Arial, Helvetica; font-size:13px; position:relative;}
+		.listdragable li:hover {background-color:#FFF; color:#333333;}
+	    .itemSort1{background:#E5E5E5; color:#000000;}
+		.list0_color { background-color:#E5E5E5; color:#000000;}
+		.list1_color { background-color:#E5E5E5; color:#000000;}
+		.list2_color { background-color:#8eb4e3; color:#FFFFFF;}
+		.list4_color { background-color:#c4bd97; color:#FFFFFF;}
+		.list6_color { background-color:#D1817E; color:#FFFFFF;}
+		.list7_color { background-color:#D1817E; color:#FFFFFF;}
+		
+		#list0 ul {overflow-y:auto; height:110px; }
+		#list1 ul {overflow-y:auto; height:300px; -webkit-overflow-scrolling: touch;}
+		#list2 ul {overflow-y:auto; height:410px; }
+		#list4 ul {overflow-y:auto; height:410px; }
+		#list6 ul {overflow-y:auto; height:380px; }
+		#list7 ul {overflow-y:auto; height:380px; }
+		.loading {position:absolute; height:20px; width:40px; z-index: 9999999; opacity: 0.7;
+                filter: alpha(opacity=70); -moz-opacity: 0.7; display:none;}
+		.loading2 {position:absolute; height:20px; width:24px; z-index: 9999999; opacity: 0.7;
+                filter: alpha(opacity=70); -moz-opacity: 0.7; display:none;}
+		.tooltipx2 {
+			border-bottom: 1px dotted #000000; color: #000000; outline: none;
+			cursor: pointer; text-decoration: none;
+			position: relative;
+		}
+		.tooltipx2 span {
+			margin-left: -999em;
+			position: absolute;
+		}
+		.tooltipx2:hover span {
+			border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+			font-family: Calibri, Tahoma, Geneva, sans-serif;
+			position:absolute; left: -50px; top: -100px; z-index: 999999;
+			margin-left: 0; width: 200px;
+		}
+		.tooltipx2:hover img {
+			border: 0; margin: -10px 0 0 -55px;
+			float: left; position: absolute;
+		}
+		.tooltipx2:hover em {
+			font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+			display: block; padding: 0.2em 0 0.6em 0;
+		}
+		.modal-backdrop
+		{
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1040;
+			background-color: #000000;
+			opacity: 0.3;
+			filter: alpha(opacity=30);
+		}
+		.modal
+		{
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			z-index: 9999999;
+			overflow: auto;
+			/* this width is your loading img's width */
+			width: 300px;
+			/* please change the margin-top and margin-left here 
+			 * make sure the margin-top equals 1/2 loading img's height 
+			 * and the margin-left equals 1/2 loading img's width */
+			margin: -50px 0 0 -50px; 
+		}		
+		
+		
+		.classic { padding: 0.8em 1em; }
+		.customx { padding: 0.5em 0.8em 0.8em 2em; }
+		* html a:hover { background: transparent; }
+		.classic {background: #FFFFFF; border: 1px solid #FFAD33;}
+		.critical { background: #FFCCAA; border: 1px solid #FF3334;	}
+		.help { background: #9FDAEE; border: 1px solid #2BB0D7;	}
+		.infox { background: #F4F4F4; border: 1px solid #2BB0D7;	opacity:0.8; filter:alpha(opacity=80);}
+		.warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+		
+		#btn_cargar.post1{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_carga.png) no-repeat 0 0;}
+		#btn_nuevo.post2{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_new.png) no-repeat 0 0;}
+		#btn_Print.post3{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_print_movil.png) no-repeat 0 0;}
+		#btn_Mant.post4{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_mant.png) no-repeat 0 0;}
+		#btn_hist.post8{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_hist.png) no-repeat 0 0;}
+		#btn_find_hist.post9{outline: medium none; text-decoration: underline; display: block; width: 60px; height: 18px; background:url(images/btn_find_hist.png) no-repeat 0 0; cursor:pointer}
+		.post5{outline: medium none; text-decoration: underline; display: block; width: 80px; height: 20px; background:url(images/btn_del.png) no-repeat 0 0; cursor:pointer}
+		#imageField2.post5{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_save.png) no-repeat 0 0;}
+		#imageField3.post6{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_save.png) no-repeat 0 0;}
+		#imageField.post7{outline: medium none; text-decoration: underline; display: block; width: 40px; height: 40px; background:url(images/btn_save.png) no-repeat 0 0;}
+		#print-modal {
+			background: #FFF;
+			position: absolute;
+			left: 50%;
+			margin: 0 0 0 -465px;
+			padding: 0 18px;
+			width: 890px;
+			box-shadow: 0 0 20px #000;
+				-moz-box-shadow: 0 0 20px #000;
+				-webkit-box-shadow: 0 0 10px #000;
+		}
+		
+		#print-modal-content {
+			margin: 68px 0;
+			border: none;
+			height: 100%;
+			overflow: hidden;
+			width: 100%;
+			border-collapse:collapse;
+			border: 1px solid black;
+		}
+		
+		#print-modal-controls {
+			border: 1px solid #ccc;
+			border-radius: 8px;
+				-webkit-border-radius: 8px;
+				-moz-border-radius: 8px;
+			top: 15px;
+			left: 50%;
+			margin: 0 0 0 -81px;
+			position: fixed;
+			padding: 5px 0;
+			background: rgba(250, 250, 250, 0.75);
+		}
+	
+		#print-modal-controls a {
+			color: #FFF;
+			display: block;
+			float: left;
+			height: 32px;
+			text-decoration: none;
+			text-indent: -999em;
+			width: 80px;
+		}
+		
+		#print-modal-controls a:hover {
+			opacity: 0.75;
+		}
+		
+		#print-modal-controls a.print {
+			background: url(images/icon-print.png) no-repeat 50% 50%;
+		}
+		#print-modal-controls a.close {
+			background: url(images/icon-close.png) no-repeat 50% 50%;
+		}
+/*		#tabEquipos li {display:inline-block; height:20px; width:99%; background:white; margin:1px; vertical-align: top; position: relative; z-index: 1; float: left;}
+*/
+		#tabEquipos {
+		   margin: 10px;
+		   }
+		
+		#tabEquipos ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		}
+		
+		#tabEquipos img {
+		border: none;
+		}
+		
+		#tabEquipos li a {
+		   color: #000;
+		   height: 32px;
+			 voice-family: "\"}\"";
+			 voice-family: inherit;
+			 height: 24px;
+		   text-decoration: none;
+		   }
+		
+		#tabEquipos li a:link, #menu14 li a:visited {
+		   color: #000;
+		   display: block;
+		   background:  url(images/fondo_li.gif);
+		   padding: 8px 0 0 10px;
+		   }
+		
+		#tabEquipos li a:hover, #menu14 li #current {
+		   color: #FFF;
+		   background:  url(images/fondo_li.gif) 0 -32px;
+		   padding: 8px 0 0 10px;
+		   }		
+/*		#list2 {
+		  position:relative;
+		}	
+		.transfer {
+		  position:absolute;
+		  bottom: 0;
+  		  right: 0;
+		  visibility:hidden;
+		}	
+*/
+		#mark{
+			position: absolute;
+			top:-2px;
+			left:143px;
+		    border:1px solid #fff;
+		    box-shadow: 0 3px 3px rgba(100, 100, 100, 0.5);
+			height:12px;
+			width:24px;
+			}
+			
+	</style>
+	<script type="text/javascript">
+	var username=GetSession();
+	var faena = getEmpresa();
+	function ajax_app(){
+			$(function() {
+				var oldselected;
+	
+				$('#list0 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list0 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('id', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('#list1 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list1 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('id', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('#list2 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list2 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('id', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('#list4 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list4 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('draggingContainer', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('#list6 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list6 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('draggingContainer', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('#list7 li').draggable({
+					helper: function() {
+						//drag selected items
+						var selected = $('#list7 input:checked').parents('li');
+						//drag item that is under pointer if there is no selected item 
+						if (selected.length === 0) {
+							selected = $(this);
+						}
+						var container = $('<div/>').attr('draggingContainer', 'draggingContainer');
+						container.append(selected.clone());
+						oldselected = selected;
+						return container;
+					}
+				});
+				$('.listdragable').droppable({
+					tolerance: 'pointer',
+					activeClass: "active",
+					hoverClass: "hover",
+//					accept: function (draggable) {
+//						var droppable = $(this);
+//						var draggablesDropable = draggable.parent();
+//						if (droppable.parent().is(draggablesDropable.parent())) {
+//						   return true;
+//						}
+//						else if (droppable.parent().find(".draggable").size() < droppable.parent().find(".droppable").size()) {
+//							return true;
+//						}
+//						return false;
+//					},
+					drop: function(event, ui) {
+						// get target list name
+						var newList = $(this).parent().attr("id");
+						if (newList != 'list0' && newList != 'list1'){
+							if (($("#" + newList +" li").length + $(ui.helper.children()).length) <= 30){
+								var listx = $(ui.helper.parent().parent()).attr("id");
+								var passx = 0;
+								//alert($(ui.helper.children()).length);
+								if ($(ui.helper.children()).length > 1){
+									$("#" + listx +" li").each(function(i)
+									{
+										if ($(this).children("#hd").val() == 'F' && $(this).children("#chk").is(":checked") && $(this).children("#hd").val() == $('select#cbl_planta01').val()){
+											passx = 1;
+										}
+									});
+								}else{
+									if ($(ui.helper.children()).children("#hd").val() == 'F' && $(this).children("#hd").val() == $('select#cbl_planta01').val()){
+										passx = 1;
+									}
+								}
+								//alert(passx + ' ' + newList);
+								if (passx == 1 && (newList == 'list2' || newList == 'list4')){
+									if (newList != listx){
+					//-------------------------------------------------------------------------------------------------------
+										$(this).append($(ui.helper.children()).clone().draggable({
+											helper: function() {
+												var selected = $('#' + newList + ' input:checked').parents('li');
+												if (selected.length === 0) {
+													selected = $(this);
+												}
+												var container = $('<div/>').attr('id', 'draggingContainer');
+													container.append(selected.clone());
+													oldselected = selected;
+												return container;
+											}
+										}));
+										var older = (oldselected.parent().parent().attr("id"));
+										oldselected.remove();
+										$("#" + newList + " #reOrder li").click(function() {
+											var aux1 = $("#hddpila01").val();
+											if (aux1 == ''){
+												aux1 = $("#" + newList + " #reOrder li").index(this);
+												$("#hddpila01").val(aux1);
+											}else{
+												var index = $("#" + newList + " #reOrder li").index(this);
+												if (index > -1 && aux1 != index) {
+													if (index > aux1){
+														$("#" + newList + " #reOrder li:eq(" + (index) + ")").after($("#" + newList + " #reOrder li:eq(" + (aux1) + ")"));
+													}else{
+														$("#" + newList + " #reOrder li:eq(" + (index) + ")").before($("#" + newList + " #reOrder li:eq(" + (aux1) + ")"));
+													}
+													$("#hddpila01").val("");
+												}
+											}
+											//var index = $("#reOrder li").index(this);
+										});
+										
+					//-------------------------------------------------------------------------------------------------------										
+									}
+								}else if (passx == 0){
+									if (newList != listx){
+					//-------------------------------------------------------------------------------------------------------		
+										$(this).append($(ui.helper.children()).clone().draggable({
+											helper: function() {
+												var selected = $('#' + newList + ' input:checked').parents('li');
+												if (selected.length === 0) {
+													selected = $(this);
+												}
+												var container = $('<div/>').attr('id', 'draggingContainer');
+													container.append(selected.clone());
+													oldselected = selected;
+												return container;
+											}
+										}));
+										var older = (oldselected.parent().parent().attr("id"));
+										oldselected.remove();
+										//alert('orden');
+										$("#" + newList + " #reOrder li").click(function() {
+											var aux1 = $("#hddpila01").val();
+											if (aux1 == ''){
+												aux1 = $("#" + newList + " #reOrder li").index(this);
+												$("#hddpila01").val(aux1);
+											}else{
+												var index = $("#" + newList + " #reOrder li").index(this);
+												if (index > -1 && aux1 != index) {
+													if (index > aux1){
+														$("#" + newList + " #reOrder li:eq(" + (index) + ")").after($("#" + newList + " #reOrder li:eq(" + (aux1) + ")"));
+													}else{
+														$("#" + newList + " #reOrder li:eq(" + (index) + ")").before($("#" + newList + " #reOrder li:eq(" + (aux1) + ")"));
+													}
+													$("#hddpila01").val("");
+												}
+												var y = 1;
+												$("#" + newList + " #reOrder li").each(function(i)
+												{
+														$(this).removeClass(older + '_color');
+														if ($(this).children("#hd").val() == 'M'){
+															$(this).children('label').text(y++);
+														}							
+														$(this).addClass(newList + '_color');
+												});
+											}
+											//var index = $("#reOrder li").index(this);
+										});
+										
+
+					//-------------------------------------------------------------------------------------------------------																			
+									}else{
+										
+									}
+								}else{
+									alert('Solo Equipos Moviles !!!')
+								}
+							}else{
+								alert('Se excede la cantidad de equipos !!!')
+							}
+						}else{
+							if (newList == 'list0'){
+								if ($(ui.helper.children()).children("#hd").val() == 'F'){
+									$(this).append($(ui.helper.children()).clone().draggable({
+										//make dropped items in new list draggable
+										helper: function() {
+											var selected = $('#' + newList + ' input:checked').parents('li');
+											if (selected.length === 0) {
+												selected = $(this);
+											}
+											var container = $('<div/>').attr('id', 'draggingContainer');
+				//							if (selected.length <= 10) {
+												container.append(selected.clone());
+												oldselected = selected;
+				//							}else{
+				//								selected = $(this);
+				//							}
+											
+											return container;
+										}
+									}));
+									
+									//remove dropped items from old list
+									var older = (oldselected.parent().parent().attr("id"));
+									oldselected.remove();
+								}else{
+									alert('Solo Equipos Fijos !!!')
+								}
+							}else if (newList == 'list1'){
+								if ($(ui.helper.children()).children("#hd").val() == 'M'){
+									$(this).append($(ui.helper.children()).clone().draggable({
+										//make dropped items in new list draggable
+										helper: function() {
+											var selected = $('#' + newList + ' input:checked').parents('li');
+											if (selected.length === 0) {
+												selected = $(this);
+											}
+											var container = $('<div/>').attr('id', 'draggingContainer');
+				//							if (selected.length <= 10) {
+												container.append(selected.clone());
+												oldselected = selected;
+				//							}else{
+				//								selected = $(this);
+				//							}
+											
+											return container;
+										}
+									}));
+									
+									//remove dropped items from old list
+									var older = (oldselected.parent().parent().attr("id"));
+									oldselected.remove();
+								}else{
+									alert('Solo Equipos Moviles !!!')
+								}
+							}
+							
+						}
+	
+						var count = $("#" + newList +" li").length;
+						//alert($("#" + older +" li").length - $("#" + newList +" li").length +' '+ $("#" + newList +" li").length); 
+						var x = 1;
+						$("#" + older +" li").each(function(i)
+						{
+							if ($(this).children("#hd").val() == 'M'){
+								$(this).children('label').text(x++);
+							}
+						});
+						var y = 1;
+						$("#" + newList +" li").each(function(i)
+						{
+							
+								$(this).removeClass(older + '_color');
+								$(this).children('input:checkbox').removeAttr("checked");
+								if ($(this).children("#hd").val() == 'M'){
+									$(this).children('label').text(y++);
+								}							
+								$(this).addClass(newList + '_color');
+								$('#all_list0').removeAttr('checked');
+								$('#all_list1').removeAttr('checked');
+								$('#all_list2').removeAttr('checked');
+								$('#all_list4').removeAttr('checked');
+								$('#all_list6').removeAttr('checked');
+								$('#all_list7').removeAttr('checked');
+						});
+					}
+				});
+				$("#all_list0").click(function(event){
+					 var checkboxes0 = $('#list0 ul li').find('#chk');
+					 var checked0 = $('#list0 ul li').find('#chk').filter(':checked').length; 
+					 if($(this).is(":checked")) {
+						 checkboxes0.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes0.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});			
+				$("#all_list1").click(function(event){
+					 var checkboxes1 = $('#list1 ul li').find('#chk');
+					 var checked1 = $('#list1 ul li').find('#chk').filter(':checked').length; 
+					 if($(this).is(":checked")) {
+						 checkboxes1.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes1.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});			
+				$("#all_list2").click(function(event){
+					 var checkboxes2 = $('#list2 ul li').find('#chk');
+					 if($(this).is(":checked")) {
+						 checkboxes2.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes2.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});			
+				$("#all_list4").click(function(event){
+					 var checkboxes4 = $('#list4 ul li').find('#chk');
+					 if($(this).is(":checked")) {
+						 checkboxes4.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes4.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});		
+				$("#all_list6").click(function(event){
+					 var checkboxes6 = $('#list6 ul li').find('#chk');
+					 if($(this).is(":checked")) {
+						 checkboxes6.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes6.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});		
+				$("#all_list7").click(function(event){
+					 var checkboxes7 = $('#list7 ul li').find('#chk');
+					 if($(this).is(":checked")) {
+						 checkboxes7.attr('checked', 'true');
+						//$("#chk").attr("checked", "checked");
+					 }else{
+						 checkboxes7.removeAttr('checked');
+						 //$("#chk").removeAttr("checked");
+					 }
+				});		
+				
+				$('#list0 ul li').find('#chk').click(function () {
+					 var checkbox0 = $('#list0 ul li').find('#chk');
+					 var checked0 = $('#list0 ul li').find('#chk').filter(':checked'); 
+					 if (checked0.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});			
+				$('#list1 ul li').find('#chk').click(function () {
+					 var checkbox1 = $('#list1 ul li').find('#chk');
+					 var checked1 = $('#list1 ul li').find('#chk').filter(':checked'); 
+					 if (checked1.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});			
+				$('#list2 ul li').find('#chk').click(function () {
+					 var checkbox2 = $('#list2 ul li').find('#chk');
+					 var checked2 = $('#list2 ul li').find('#chk').filter(':checked'); 
+					 if (checked2.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});			
+				$('#list4 ul li').find('#chk').click(function () {
+					 var checkbox4 = $('#list4 ul li').find('#chk');
+					 var checked4 = $('#list4 ul li').find('#chk').filter(':checked'); 
+					 if (checked4.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});			
+				$('#list6 ul li').find('#chk').click(function () {
+					 var checkbox6 = $('#list6 ul li').find('#chk');
+					 var checked6 = $('#list6 ul li').find('#chk').filter(':checked'); 
+					 if (checked6.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});		
+				$('#list7 ul li').find('#chk').click(function () {
+					 var checkbox7 = $('#list7 ul li').find('#chk');
+					 var checked7 = $('#list7 ul li').find('#chk').filter(':checked'); 
+					 if (checked7.length > 30) {
+						$(this).removeAttr('checked');
+					 }
+				});		
+				$("#list2 #reOrder li").click(function() {
+											var aux1 = $("#hddpila01").val();
+											if (aux1 == ''){
+												//$('#transfer').show();
+												aux1 = $("#list2 #reOrder li").index(this);
+												$("#hddpila01").val(aux1);
+											}else{
+												//$('#transfer').hide();
+												var index = $("#list2 #reOrder li").index(this);
+												if (index > -1 && aux1 != index) {
+													if (index > aux1){
+														$("#list2 #reOrder li:eq(" + (index) + ")").after($("#list2 #reOrder li:eq(" + (aux1) + ")"));
+													}else{
+														$("#list2 #reOrder li:eq(" + (index) + ")").before($("#list2 #reOrder li:eq(" + (aux1) + ")"));
+													}
+													$("#hddpila01").val("");
+												}
+												var y = 1;
+												$("#list2 #reOrder li").each(function(i)
+												{
+														$(this).removeClass('list2_color');
+														if ($(this).children("#hd").val() == 'M'){
+															$(this).children('label').text(y++);
+														}							
+														$(this).addClass('list2_color');
+												});
+											}
+											//var index = $("#reOrder li").index(this);
+				});
+				$("#list4 #reOrder li").click(function() {
+											var aux1 = $("#hddpila01").val();
+											if (aux1 == ''){
+												aux1 = $("#list4 #reOrder li").index(this);
+												$("#hddpila01").val(aux1);
+											}else{
+												var index = $("#list4 #reOrder li").index(this);
+												if (index > -1 && aux1 != index) {
+													if (index > aux1){
+														$("#list4 #reOrder li:eq(" + (index) + ")").after($("#list4 #reOrder li:eq(" + (aux1) + ")"));
+													}else{
+														$("#list4 #reOrder li:eq(" + (index) + ")").before($("#list4 #reOrder li:eq(" + (aux1) + ")"));
+													}
+													$("#hddpila01").val("");
+												}
+												var y = 1;
+												$("#list4 #reOrder li").each(function(i)
+												{
+														$(this).removeClass('list4_color');
+														if ($(this).children("#hd").val() == 'M'){
+															$(this).children('label').text(y++);
+														}							
+														$(this).addClass('list4_color');
+												});
+											}
+											//var index = $("#reOrder li").index(this);
+				});
+				$('#btn_cargar').html("<input name='btn_cargar' type='image' id='btn_cargar' src='images/btn_carga.png' align='middle'/><span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Cargar</em>Carga las lineas de Trenes Apilamientos con el folio creado</span>");
+				$('#btn_cargar').addClass('tooltipx2');	
+				$('#btn_nuevo').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Nuevo</em>Limpia todas las lineas de Trenes de Apilamiento</span>");
+				$('#btn_nuevo').addClass('tooltipx2');	
+				$('#btn_Print').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Impresion</em>Genera Reporte de Tren de Apilamiento Operativo e Imprime</span>");
+				$('#btn_Print').addClass('tooltipx2');	
+				$('#btn_Mant').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Mantenedor Equipos Moviles</em>Ir al Sistema de Manejo y Control de Mantenedor de Equipos Moviles de Trenes de Apilamientos</span>");
+				$('#btn_Mant').addClass('tooltipx2');	
+				$('#imageField2').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Grabar Linea 1</em>Graba Esta linea de Tren Aplimientos juntos con Fuera de Lineas</span>");
+				$('#imageField2').addClass('tooltipx2');	
+				$('#imageField3').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Grabar Linea 2</em>Graba Esta linea de Tren Aplimientos juntos con Fuera de Lineas</span>");
+				$('#imageField3').addClass('tooltipx2');	
+				$('#imageField').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Grabar Todos</em>Grabar Todas las lineas Operativos y Fuera de Lineas</span>");
+				$('#imageField').addClass('tooltipx2');	
+				$('#btn_hist').html("<span class='customx help'><img src='Scripts/Info.png' alt='' height='48' width='48' /><em>Historial</em>Historial de Registros de Trenes de Apilamientos</span>");
+				$('#btn_hist').addClass('tooltipx2');	
+				
+			});
+			setTimeout(function(){$("#panel_load").hide();},1000);
+		}
+		var ASP = "xml/eq_moviles.asp?recurso=listFijos&Z=" +  Math.random();
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list0').children('ul').html(data);
+             },'html'
+
+          );	
+		var ASP = "xml/eq_moviles.asp?recurso=listMoviles&Z=" +  Math.random();
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list1').children('ul').html(data);
+             },'html'
+
+          );	
+//	  	  jQuery(window).load(function () {
+//				setTimeout(function(){ajax_app();},2000);
+//		  });
+		  
+function rev_pilas(){
+	if ($('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#txt_pila02').attr('value') == '' && $('#txt_pila06').attr('value') == ''){
+		if ($('#txt_pila01').attr('value') != $('#txt_pila05').attr('value') != ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Las Pilas deben ser iguales entre Tren Apilamiento y Fuera de Linea !!!",
+				type: "alert",
+				showButtons: false,
+				autoClose:true
+			});
+			return 'ERR';
+		}
+	}else if ($('#txt_pila01').attr('value') == '' && $('#txt_pila05').attr('value') == '' && $('#txt_pila02').attr('value') != '' && $('#txt_pila06').attr('value') != ''){
+		if ($('#txt_pila02').attr('value') != $('#txt_pila06').attr('value') != ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Las Pilas deben ser iguales entre Tren Apilamiento y Fuera de Linea !!!",
+				type: "alert",
+				showButtons: false,
+				autoClose:true
+			});
+			return 'ERR';
+		}
+	}
+	//else if ($('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#txt_pila02').attr('value') != '' && $('#txt_pila06').attr('value') == ''){
+//		var ver = 0;
+//		if ($('#txt_pila01').attr('value') == $('#txt_pila05').attr('value')){
+//			ver = 0;
+//		}else if ($('#txt_pila01').attr('value') == $('#txt_pila02').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila02').attr('value') == $('#txt_pila05').attr('value')){
+//			ver = 1;
+//		}
+//		if (ver == 1){
+//			$.msgBox({
+//				title: "Advertencia",
+//				content: "Las Pilas no deben ser iguales entre Tren Apilamiento y Fuera de Linea !!!",
+//				type: "alert",
+//				showButtons: false,
+//				autoClose:true
+//			});
+//			return 'ERR';
+//		}
+//	}else if ($('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#txt_pila02').attr('value') != '' && $('#txt_pila06').attr('value') != ''){
+//		var ver = 0;
+//		if ($('#txt_pila01').attr('value') == $('#txt_pila05').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila01').attr('value') == $('#txt_pila02').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila01').attr('value') == $('#txt_pila06').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila02').attr('value') == $('#txt_pila05').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila02').attr('value') == $('#txt_pila06').attr('value')){
+//			ver = 1;
+//		}else if ($('#txt_pila05').attr('value') == $('#txt_pila06').attr('value')){
+//			ver = 1;
+//		}
+//		if (ver == 1){
+//			$.msgBox({
+//				title: "Advertencia",
+//				content: "Las Pilas no deben ser iguales entre Tren Apilamiento y Fuera de Linea !!!",
+//				type: "alert",
+//				showButtons: false,
+//				autoClose:true
+//			});
+//			return 'ERR';
+//		}
+//	}
+}
+function replic(){
+	if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != ''){
+		$('#txt_linea03').val($('#txt_linea01').attr('value'));
+		$('#txt_pila05').val($('#txt_pila01').attr('value'));
+		
+		$('#txt_linea02').text($('#txt_linea01').attr('value'));
+		$('#txt_pila02').text($('#txt_pila01').attr('value'));
+		$('#cbl_planta02').text($('select#cbl_planta01').val());
+		
+		$('#txt_linea04').val($('#txt_linea01').attr('value'));
+		$('#txt_pila06').val($('#txt_pila01').attr('value'));
+		
+		if ($("#list2 li").length > 0){
+			$("#list2 #reOrder li").each(function(i)
+			{
+			if ($(this).children("#hd").val() == 'F'){
+				if ($(this).children("#pt").val() != $('select#cbl_planta01').val() && $('select#cbl_planta01').val() != ''){
+					$.msgBox({
+						title: "Advertencia",
+						content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  "!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+					$('select#cbl_planta01').val('');
+					return false;
+				}							
+			}
+			});
+		}
+		var ASP = "xml/eq_moviles.asp?recurso=listFijos&Z=" +  Math.random();
+		if ($('select#cbl_planta01').val() != ''){
+			ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+		}		
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list0').children('ul').html(data);
+             },'html'
+
+          );	
+		var t=setTimeout(function(){ajax_app();},800);
+		$("#load1").hide();
+	}else{
+		$.msgBox({
+			title: "Advertencia",
+			content: "Ingrese Datos de Linea y de Pila!!!",
+			type: "alert",
+			showButtons: false,
+			
+			autoClose:true
+		});
+		$('select#cbl_planta01').val('');
+	}
+}
+function replic2(){
+	if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != ''){
+		$('#txt_linea04').val($('#txt_linea01').attr('value'));
+		$('#txt_linea02').val($('#txt_linea01').attr('value'));
+		$('#txt_pila02').val($('#txt_pila01').attr('value'));
+		$('#txt_pila06').val($('#txt_pila01').attr('value'));
+		if ($("#list4 li").length > 0){
+			$("#list4 #reOrder li").each(function(i)
+			{
+			if ($(this).children("#hd").val() == 'F'){
+				if ($(this).children("#pt").val() != $('select#cbl_planta02').val() && $('select#cbl_planta02').val() != ''){
+					$.msgBox({
+						title: "Advertencia",
+						content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  "!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+					$('select#cbl_planta02').val('');
+					return false;
+				}							
+			}
+			});
+		}
+		var ASP = "xml/eq_moviles.asp?recurso=listFijos&Z=" +  Math.random();
+		if ($('select#cbl_planta02').val() != ''){
+			ASP = ASP + "&PLANTA=" + $('select#cbl_planta02').val()
+		}		
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list0').children('ul').html(data);
+             },'html'
+
+          );			
+		var t=setTimeout(function(){ajax_app();},800); 
+		$("#load2").hide();
+	}else{
+		$.msgBox({
+			title: "Advertencia",
+			content: "Ingrese Datos de Linea y de Pila!!!",
+			type: "alert",
+			showButtons: false,
+			
+			autoClose:true
+		});
+		$('select#cbl_planta02').val('');
+	}
+}
+function call_grabar1(){
+	if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0){
+		var z1 = 0;
+		var solx = "";
+		$("#list2 #reOrder li").each(function(i)
+		{
+			if ($(this).children("#hd").val() == 'M'){
+				z1++;
+			}else{
+				if ($(this).children("#pt").val() != $('select#cbl_planta01').val() && $('select#cbl_planta01').val() != ''){
+					$.msgBox({
+						title: "Advertencia",
+						content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  "!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+					$('select#cbl_planta01').val('');
+					solx = 'ERR1';
+				}		
+			}
+		});
+		sol = rev_pilas();
+		var mess2 = "";
+		if (sol != 'ERR' && solx != 'ERR1'){
+			var mess = "";
+			var mensaje1 = "Se grabará los datos de la linea " + $('#txt_linea01').attr('value') + " y pilas '" + $('#txt_pila01').attr('value') +  ", " + $('#txt_pila05').attr('value') + "'";
+			$.msgBox({
+				title: "Estas seguro(a) de Grabar?",
+				content: mensaje1,
+				type: "confirm",
+				buttons: [{ value: "Si" }, { value: "No" }],
+				success: function (result1) {
+					if (result1 == "Si") {
+						//  ELIMINAR SEGUN LINEA Y PILA Y SU RELACION
+						//  GRABAR EL TREN DE APILAMINETO COMPLETO Y LO QUE ESTAN FUERA DE LINEA
+						$.ajax({
+								url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila05').attr('value')+ "&PLANTA=" + $('select#cbl_planta01').val() + "&JERARQUIA=PRIM&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									$("#load1").show(); 
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+										});
+									}
+								}
+						});
+						if (mess2 == "OK"){
+							save_linea1();
+							var t1=setTimeout(function(){$("#load1").hide();},800);
+						}											
+					}
+				}
+			});
+		}else if (z1 == 0 && sol != 'ERR'){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese al menos un equipo movil a linea" + $('#txt_linea01').attr('value') +" !!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}
+	}else{
+		if ($('#txt_linea01').attr('value') == '' || $('#txt_pila01').attr('value') == ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese Datos de Linea y de Pila!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}else if ($('#cbl_planta01').prop('selectedIndex') == 0){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Seleccione Planta!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}else if ($('#txt_pila05').attr('value') == ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese Pila de Fuera de Linea!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+			$('select#cbl_planta01').val('');
+		}
+	}
+	
+}
+function call_grabar2(){
+	if ($('#txt_linea02').attr('value') != '' && $('#txt_pila02').attr('value') != '' && $('#txt_pila06').attr('value') != '' && $('#cbl_planta02').prop('selectedIndex') != 0){
+		var z2 = 0;
+		var sol2x = "";
+		$("#list4 #reOrder li").each(function(i)
+		{
+			if ($(this).children("#hd").val() == 'M'){
+				z2++;
+			}else{
+				if ($(this).children("#pt").val() != $('select#cbl_planta02').val() && $('select#cbl_planta02').val() != ''){
+					$.msgBox({
+						title: "Advertencia",
+						content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  "!!!",
+						type: "alert",
+						showButtons: false,
+						autoClose:true
+					});
+					$('select#cbl_planta02').val('');
+					sol2x = 'ERR1';
+				}		
+				
+			}							
+		});
+		sol2 = rev_pilas();
+		var mess2 = "";
+		if (sol2 != 'ERR' && sol2x != 'ERR1'){
+			var mess = "";
+			var mensaje2 = "Se grabará los datos de la linea " + $('#txt_linea02').attr('value') + " y pilas '" + $('#txt_pila02').attr('value') +  ", " + $('#txt_pila06').attr('value') + "'";
+			$.msgBox({
+				title: "Estas seguro(a) de Grabar?",
+				content: mensaje2,
+				type: "confirm",
+				buttons: [{ value: "Si" }, { value: "No" }],
+				success: function (result2) {
+					if (result2 == "Si") {
+						//  ELIMINAR SEGUN LINEA Y PILA Y SU RELACION
+						//  GRABAR EL TREN DE APILAMINETO COMPLETO Y LO QUE ESTAN FUERA DE LINEA
+						$.ajax({
+								url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea02').attr('value') + "&PILA1=" + $('#txt_pila02').attr('value') + "&PILA2=" + $('#txt_pila06').attr('value') + "&PLANTA=" + $('select#cbl_planta02').val() + "&JERARQUIA=AUX&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									$("#load2").show(); //gif... just feed back
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+										});
+										var t1=setTimeout(function(){$("#load2").hide();},800);
+									}
+								}
+						});
+						if (mess2 == "OK"){
+							save_linea2();
+							var t1=setTimeout(function(){$("#load2").hide();},800);
+						}					
+					}
+				}
+			});
+		}else if (sol2 != 'ERR'){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese al menos un equipo movil a linea" + $('#txt_linea02').attr('value') +" !!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}
+			
+	}else{
+		if ($('#txt_linea02').attr('value') == '' || $('#txt_pila02').attr('value') == ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese Datos de Linea y de Pila!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}else if ($('#cbl_planta02').prop('selectedIndex') == 0){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Seleccione Planta!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+		}else if ($('#txt_pila06').attr('value') == ''){
+			$.msgBox({
+				title: "Advertencia",
+				content: "Ingrese Pila de Fuera de Linea!!!",
+				type: "alert",
+				showButtons: false,
+				
+				autoClose:true
+			});
+			$('select#cbl_planta02').val('');		
+		}
+	}
+}
+
+function call_grabartodo(){
+	var paso_1 = 0;
+	var paso_2 = 0;
+//	var faena = getEmpresa();
+//	if (faena == "DESCONOCIDO"){
+//				$.msgBox({
+//					title: "Advertencia",
+//					content: "La sesion esta cerrada!!!",
+//					type: "alert",
+//					showButtons: true,
+//					beforeClose: function () {  window.location.href="http://www.ttminsight.cl/index.html?logs=out"; },
+//					autoClose:false
+//				});
+//	}
+	if ($('#txt_linea01').attr('value') != '') {
+		if ($('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0){
+			paso_1 = 1;
+		}else{
+			if ($('#txt_linea01').attr('value') == '' || $('#txt_pila01').attr('value') == ''){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Ingrese Datos de Linea y de Pila!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+			}else if ($('#cbl_planta01').prop('selectedIndex') == 0){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Seleccione Planta!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+			}else if ($('#txt_pila05').attr('value') == ''){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Ingrese Pila de Fuera de Linea!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+				$('select#cbl_planta01').val('');			
+			}
+		}
+	}else{
+		paso_1 = 1;		
+	}
+	if ($('#txt_linea02').attr('value') != '') {
+		if ($('#txt_pila02').attr('value') != '' && $('#txt_pila06').attr('value') != '' && $('#cbl_planta02').prop('selectedIndex') != 0){
+			paso_2 = 1;		
+		}else{
+			if ($('#txt_linea02').attr('value') == '' || $('#txt_pila02').attr('value') == ''){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Ingrese Datos de Linea y de Pila!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+			}else if ($('#cbl_planta02').prop('selectedIndex') == 0){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Seleccione Planta!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+			}else if ($('#txt_pila06').attr('value') == ''){
+				$.msgBox({
+					title: "Advertencia",
+					content: "Ingrese Pila de Fuera de Linea!!!",
+					type: "alert",
+					showButtons: false,
+					
+					autoClose:true
+				});
+				$('select#cbl_planta02').val('');
+			}
+		}
+	}else{
+		paso_2 = 1;		
+	}
+	if (paso_1 == 1 && paso_2 == 1){
+		var z1 = 0;
+		var sol3x = "";
+		if ($("#list2 li").length > 0){
+				$("#list2 #reOrder li").each(function(i)
+				{
+					if ($(this).children("#hd").val() == 'M'){
+						z1++;
+					}else{
+						if ($(this).children("#pt").val() != $('select#cbl_planta01').val() && $('select#cbl_planta01').val() != ''){
+							$.msgBox({
+								title: "Advertencia",
+								content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  " en Tren Principal!!!",
+								type: "alert",
+								showButtons: false,
+								autoClose:true
+							});
+							$('select#cbl_planta01').val('');
+							sol3x = 'ERR1';
+						}		
+					}							
+				});
+		}else{
+			z1 = 0;
+		}
+				var z2 = 0;
+				$("#list4 #reOrder li").each(function(i)
+				{
+					if ($(this).children("#hd").val() == 'M'){
+						z2++;
+					}else{
+						if ($(this).children("#pt").val() != $('select#cbl_planta01').val() && $('select#cbl_planta01').val() != ''){
+							$.msgBox({
+								title: "Advertencia",
+								content: "Este equipos " + $(this).text() +  " no pertenece a planta seleccionada, PERTENECE A " + $(this).children("#pt").val() +  " en Tren Auxiliar!!!",
+								type: "alert",
+								showButtons: false,
+								autoClose:true
+							});
+							$('select#cbl_planta01').val('');
+							sol3x = 'ERR1';
+						}		
+					}							
+				});
+				var sol3 = rev_pilas();
+				var mess2 = "";
+				if (sol3 != 'ERR' && sol3x != 'ERR1'){
+					var mensaje = "Se grabará los datos de la lineas " 
+					if ($("#list2 li").length > 0 && $("#list4 li").length == 0){
+						mensaje = mensaje + " '" + $('#txt_linea01').attr('value') +  " Principal "
+					}
+					if ($("#list4 li").length > 0 && $("#list2 li").length == 0){
+						mensaje = mensaje + " '" + $('#txt_linea04').attr('value') +  " Auxiliar"
+					}
+					$.msgBox({
+						title: "Estas seguro(a) de Grabar?",
+						content: mensaje,
+						type: "confirm",
+						buttons: [{ value: "Si" }, { value: "No" }],
+						success: function (result) {
+							if (result == "Si") {
+								$.ajax({ 
+									url: "xml/eq_moviles.asp?recurso=IdHistTren&Z=" +  Math.random(), 
+										type: "GET",
+										dataType: "html",
+										async: false,										
+										success: function (obj) {
+										folio = obj;
+										$('#hddidhistorial').val(folio);
+									}
+								});		
+						//  ELIMINAR TODOS SEGUN LINEA Y PILA Y SU RELACION
+						//  GRABAR TODOS LOS TRENES DE APILAMINETO COMPLETO Y LO QUE ESTAN FUERA DE LINEA	
+								if ($('#hddstatus').attr('value') == 'STB' && !$("#id_stby1").attr('checked') == true){
+									$.ajax({
+											url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&ESTADO=ACT&FAENA=CERRO COLORADO&Z=" +  Math.random(),
+											type: "POST",
+											dataType: "html",
+											async: false,
+											beforeSend : function(){
+												$("#load3").show(); //gif... just feed back
+											},
+											success: function (obj) {
+												mess2 = obj;
+												if (obj == "ERR"){
+													$.msgBox({
+														title: "Advertencia",
+														content: "No se realizo el proceso  !!!",
+														type: "error",
+														showButtons: false,
+														autoClose:true
+													});
+												}
+											}
+									});
+									$('#hddstatus_op').val('TRASPASO PROPUESTA A OPERATIVO');
+								}else{
+									if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0){
+										if ($("#id_stby1").is(":checked")){
+											var estado1 = "STB"
+										}else{
+											var estado1 = "ACT"
+										}	
+										$.ajax({
+												url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila05').attr('value')+ "&PLANTA=" + $('select#cbl_planta01').val() + "&JERARQUIA=PRIM&ESTADO=" + estado1 + "&Z=" +  Math.random(),
+												type: "POST",
+												dataType: "html",
+												async: false,
+												beforeSend : function(){
+													$("#load3").show(); //gif... just feed back
+												},
+												success: function (obj) {
+													mess2 = obj;
+													if (obj == "ERR"){
+														$.msgBox({
+															title: "Advertencia",
+															content: "No se realizo el proceso  !!!",
+															type: "error",
+															showButtons: false,
+															autoClose:true
+														});
+													}
+												}
+										});
+										if ($('#txt_fol1').val() == ''){
+											$('#hddstatus_op').val('CREA OPERATIVO');
+										}else{
+											$('#hddstatus_op').val('CAMBIOS');
+										}
+									}
+									if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0){
+										if ($("#id_stby1").is(":checked")){
+											var estado2 = "STB"
+										}else{
+											var estado2 = "ACT"
+										}									
+										$.ajax({
+												url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila05').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&JERARQUIA=AUX&ESTADO=" + estado2 + "&Z=" +  Math.random(),
+												type: "POST",
+												dataType: "html",
+												async: false,
+												beforeSend : function(){
+													$("#load3").show(); //gif... just feed back
+												},
+												success: function (obj) {
+													mess2 = obj;
+													if (obj == "ERR"){
+														$.msgBox({
+															title: "Advertencia",
+															content: "No se realizo el proceso  !!!",
+															type: "error",
+															showButtons: false,
+															autoClose:true
+														});
+														var t1=setTimeout(function(){$("#load2").hide();},800);
+													}
+												}
+										});
+										if ($('#txt_fol1').val() == ''){
+											$('#hddstatus_op').val('CREA OPERATIVO');
+										}else{
+											$('#hddstatus_op').val('CAMBIOS');
+										}
+									}
+								}
+								if (mess2 == "OK"){
+									if ($('#hddstatus').attr('value') == 'STB' && !$("#id_stby1").attr('checked') == true){
+										$('#hddstatus_op').val('TRASPASO PROPUESTA A OPERATIVO');
+										//window.open("xml/eq_moviles.asp?recurso=UpdTrenSTBtoACT&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&ESTADO=STB&ACCION=" + $('#hddstatus_op').attr('value') + "&FAENA=CERRO COLORADO&Z=" +  Math.random());
+										$.ajax({
+												url: "xml/eq_moviles.asp?recurso=UpdTrenSTBtoACT&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&ESTADO=STB&ACCION=" + $('#hddstatus_op').attr('value') + "&FAENA=CERRO COLORADO&Z=" +  Math.random(),
+												type: "POST",
+												dataType: "html",
+												async: false,
+												beforeSend : function(){
+													$("#load3").show(); //gif... just feed back
+												},
+												success: function (obj) {
+													mess2 = obj;
+													if (obj == "ERR"){
+														$.msgBox({
+															title: "Advertencia",
+															content: "No se realizo el proceso  !!!",
+															type: "error",
+															showButtons: false,
+															autoClose:true
+														});
+													}
+												}
+										});
+									}else{
+										save_linea1();
+										save_linea2();
+									}
+									var t1=setTimeout(function(){$("#load3").hide();},800);
+									$('#btn_nuevo').click();
+								}											
+							}
+						}
+					});
+				}else if(z1 <= 0 && sol3 != 'ERR'){
+					$.msgBox({
+						title: "Advertencia",
+						content: "Ingrese al menos un equipo movil a linea" + $('#txt_linea01').attr('value') +" !!!",
+						type: "alert",
+						showButtons: false,
+						
+						autoClose:true
+					});
+//				}else if (z2 <= 0 && sol3 != 'ERR'){
+//					$.msgBox({
+//						title: "Advertencia",
+//						content: "Ingrese al menos un equipo movil a linea" + $('#txt_linea02').attr('value') +" !!!",
+//						type: "alert",
+//						showButtons: false,
+//						
+//						autoClose:true
+//					});
+				}
+	}
+}
+function save_linea1(){
+	var mess2 = "";
+	var folio = "";
+	var key1 = "";
+	var key2 = "";
+	var mess = "";
+	var estado = "";
+	if ($("#id_stby1").is(":checked")){
+		estado = "STB"
+	}else{
+		estado = "ACT"
+	}
+	mess = mess + "Pila " + $('#txt_pila01').attr('value') + " de Tren de Apilamiento Grabados!!!<br>";
+//	if ($("#list3 #reOrder li").length > 0){
+//		key1 = $('#txt_pila05').attr('value');
+//	}
+//	if ($("#list6 #reOrder li").length > 0){
+//		key2 = $('#txt_pila05').attr('value');
+//	}
+//	if (key1 != "" && key2 != ""){
+//		mess = mess + "Pilas " + key1 + ", " + key2 + " de Fuera de Linea Grabados!!!<br>";
+//	}else if (key1 != "" && key2 == ""){
+//		mess = mess + "Pila " + key1 + " de Fuera de Linea Grabados!!!<br>";
+//	}else if (key1 == "" && key2 != ""){
+//		mess = mess + "Pila " + key2 + " de Fuera de Linea Grabados!!!<br>";
+//	}	
+	if ($('#txt_fol1').val() == ''){
+		$.ajax({ 
+			url: "xml/eq_moviles.asp?recurso=FolioTren&Z=" +  Math.random(), 
+				type: "GET",
+				dataType: "html",
+				async: false,										
+				success: function (obj) {
+				folio = obj;
+				$('#txt_fol1').val(folio);
+			}
+		});		
+	}else if ($('#hddstatus').attr('value') == '' && $("#id_stby1").is(":checked")){
+		$('#hddstatus_op').val('CREA PROPUESTA');
+		$.ajax({ 
+			url: "xml/eq_moviles.asp?recurso=FolioTren&Z=" +  Math.random(), 
+				type: "GET",
+				dataType: "html",
+				async: false,										
+				success: function (obj) {
+				folio = obj;
+				$('#txt_fol1').val(folio);
+			}
+		});		
+	}
+	//if ($("#list2 li").length > 0){
+		$("#list2 li").each(function(i)
+		{	
+						var cod = $(this).children("#hd_cod").val();
+						var tipo = $(this).children("#hd").val();
+						var pl = $('select#cbl_planta01').val();
+						//window.open("xml/eq_moviles.asp?recurso=SaveTren&FOLIO=" + $('#txt_fol1').attr('value') + "&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila05').attr('value') + "&CODIGO=" + cod + "&SEC=" + (i+1) + "&IND_OP=OP&FAENA=" + faena + "&PLANTA=" + pl + "&USER=" + username + "&TIPO_EQUIPO=" + tipo + "&ESTADO=" + estado + "&JERARQUIA=PRIM&ACCION=" + $('#hddstatus_op').attr('value') + "&IDHISTORIAL=" + $('#hddidhistorial').attr('value') + "&Z=" +  Math.random());
+						$.ajax({ 
+							url: "xml/eq_moviles.asp?recurso=SaveTren&FOLIO=" + $('#txt_fol1').attr('value') + "&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila05').attr('value') + "&CODIGO=" + cod + "&SEC=" + (i+1) + "&IND_OP=OP&FAENA=" + faena + "&PLANTA=" + pl + "&USER=" + username + "&TIPO_EQUIPO=" + tipo + "&ESTADO=" + estado + "&JERARQUIA=PRIM&ACCION=" + $('#hddstatus_op').attr('value') + "&IDHISTORIAL=" + $('#hddidhistorial').attr('value') + "&Z=" +  Math.random(), 
+								type: "GET",
+								dataType: "html",
+								async: false,							
+								success: function (obj) {
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso Codigo " + cod + " en Pila " + $('#txt_pila01').attr('value') + " !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+										var t1=setTimeout(function(){$("#load1").hide();},800);
+									}else if (obj == "OK"){
+										mess2 = obj;
+										$('#lblfolio1').text('Folio ' + $('#txt_fol1').val());
+									}
+								}
+						});
+		});
+	//}
+	//if ( mess2 == "OK"){//$("#list6 li").length > 0 &&
+		$("#list6 li").each(function(i)
+		{	
+						var cod = $(this).children("#hd_cod").val();
+						var tipo = $(this).children("#hd").val();
+						var pl = $('select#cbl_planta01').val();
+						
+						$.ajax({ 
+							url: "xml/eq_moviles.asp?recurso=SaveTren&FOLIO=" + $('#txt_fol1').attr('value') + "&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila05').attr('value') + "&CODIGO=" + cod + "&SEC=" + (i+1) + "&IND_OP=FL&FAENA=" + faena + "&PLANTA=" + pl + "&USER=" + username + "&TIPO_EQUIPO=" + tipo + "&ESTADO=" + estado + "&JERARQUIA=PRIM&ACCION=" + $('#hddstatus_op').attr('value') + "&IDHISTORIAL=" + $('#hddidhistorial').attr('value') + "&Z=" +  Math.random(), 
+								type: "GET",
+								dataType: "html",
+								async: false,							
+								success: function (obj) {
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso Codigo " + cod + " en Pila " + $('#txt_pila05').attr('value') + " de Fuera de Linea !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+										var t1=setTimeout(function(){$("#load1").hide();},800);
+									}else if (obj == "OK"){
+										mess2 = obj;
+									}
+								}
+						});
+		});
+	//}	
+	//--------------------------------------------------------------------------------------------------------
+	if (mess2 == "OK"){
+		$.msgBox({
+			title: "Aviso",
+			content: mess,
+			type: "info",
+			showButtons: false,
+			autoClose:true
+		});
+		var t1=setTimeout(function(){$("#load1").hide();},800);
+	}		
+}
+function save_linea2(){
+	var mess2 = "";
+	var folio = "";
+	var key1 = "";
+	var key2 = "";
+	var mess = "";
+	var estado = "";
+	if ($("#id_stby1").is(":checked")){
+		estado = "STB"
+	}else{
+		estado = "ACT"
+	}
+	mess = mess + "Pila " + $('#txt_pila01').attr('value') + " de Tren de Apilamiento Grabados!!!<br>";
+//	if ($("#list5 #reOrder li").length > 0){
+//		key1 = $('#txt_pila06').attr('value');
+//	}
+//	if ($("#list7 #reOrder li").length > 0){
+//		key2 = $('#txt_pila06').attr('value');
+//	}
+//	if (key1 != "" && key2 != ""){
+//		mess = mess + "Pilas " + key1 + ", " + key2 + " de Fuera de Linea Grabados!!!<br>";
+//	}else if (key1 != "" && key2 == ""){
+//		mess = mess + "Pila " + key1 + " de Fuera de Linea Grabados!!!<br>";
+//		}else if (key1 == "" && key2 != ""){
+//		mess = mess + "Pila " + key2 + " de Fuera de Linea Grabados!!!<br>";
+//	}	
+	if ($('#txt_fol1').val() != '') {
+			$('#lblfolio2').text('Folio ' + $('#txt_fol1').val());
+			$('#txt_fol2').val($('#txt_fol1').val());
+	}
+	if ($('#txt_fol2').val() == ''){
+		$.ajax({ 
+			url: "xml/eq_moviles.asp?recurso=FolioTren&Z=" +  Math.random(), 
+				type: "GET",
+				dataType: "html",
+				async: false,										
+				success: function (obj) {
+				folio = obj;
+				$('#txt_fol2').val(folio);
+			}
+		});		
+	}
+	//if ($("#list4 li").length > 0){
+		$("#list4 li").each(function(i)
+		{	
+						var cod = $(this).children("#hd_cod").val();
+						var tipo = $(this).children("#hd").val();
+						var pl = $('select#cbl_planta01').val();
+						$.ajax({ 
+							url: "xml/eq_moviles.asp?recurso=SaveTren&FOLIO=" + $('#txt_fol2').attr('value') + "&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PILA2=" + $('#txt_pila06').attr('value') + "&CODIGO=" + cod + "&SEC=" + (i+1) + "&IND_OP=OP&FAENA=" + faena + "&PLANTA=" + pl + "&USER=" + username + "&TIPO_EQUIPO=" + tipo + "&ESTADO=" + estado + "&JERARQUIA=AUX&ACCION=" + $('#hddstatus_op').attr('value') + "&IDHISTORIAL=" + $('#hddidhistorial').attr('value') + "&Z=" +  Math.random(), 
+								type: "GET",
+								dataType: "html",
+								async: false,							
+								success: function (obj) {
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso Codigo " + cod + " en Pila " + $('#txt_pila02').attr('value') + " !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+										var t1=setTimeout(function(){$("#load2").hide();},800);
+									}else if (obj == "OK"){
+										mess2 = obj;
+										$('#lblfolio2').text('Folio ' + $('#txt_fol2').val());
+									}
+								}
+						});
+		});
+	//}
+	//if ($("#list7 li").length > 0 && mess2 == "OK"){
+		$("#list7 li").each(function(i)
+		{	
+						var cod = $(this).children("#hd_cod").val();
+						var tipo = $(this).children("#hd").val();
+						var pl = $('select#cbl_planta01').val();
+						$.ajax({ 
+							url: "xml/eq_moviles.asp?recurso=SaveTren&FOLIO=" + $('#txt_fol2').attr('value') + "&LINEA=" + $('#txt_linea04').attr('value') + "&PILA1=" + $('#txt_pila06').attr('value') + "&CODIGO=" + cod + "&SEC=" + (i+1) + "&IND_OP=FL&FAENA=" + faena + "&PLANTA=" + pl + "&USER=" + username + "&TIPO_EQUIPO=" + tipo + "&ESTADO=" + estado + "&JERARQUIA=AUX&ACCION=" + $('#hddstatus_op').attr('value') + "&IDHISTORIAL=" + $('#hddidhistorial').attr('value') + "&Z=" +  Math.random(), 
+								type: "GET",
+								dataType: "html",
+								async: false,							
+								success: function (obj) {
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso Codigo " + cod + " en Pila " + $('#txt_pila06').attr('value') + " de Fuera de Linea !!!",
+											type: "error",
+											showButtons: true,
+											autoClose:false
+										});
+										var t1=setTimeout(function(){$("#load2").hide();},800);
+									}else if (obj == "OK"){
+										mess2 = obj;
+									}
+								}
+						});
+		});
+	//}	
+	//--------------------------------------------------------------------------------------------------------
+//	if (mess2 == "OK"){
+//		$.msgBox({
+//			title: "Aviso",
+//			content: mess,
+//			type: "info",
+//			showButtons: false,
+//			autoClose:true
+//		});
+//		var t1=setTimeout(function(){$("#load2").hide();},800);
+//	}		
+}
+
+function loadrisk(FL1,LN1,PL1,PL_X1,PLT1,ST1,FCH1,FL2,LN2,PL2,PL_X2,PLT2,ST2,FCH2){
+			$("#panel_load").show();
+					$('#txt_fol1').val(FL1);
+					$('#txt_linea01').val(LN1);
+					$('#txt_pila01').val(PL1);
+					$('#txt_pila05').val(PL_X1);
+					$('select#cbl_planta01').val(PLT1);
+					$('#lblfolio1').text(' Folio ' + FL1);
+					if (ST1 == 'STB'){
+						$('#id_stby1').attr("checked", "checked")
+						$('#hddstatus').val('STB')
+					}else{
+						$('#id_stby1').removeAttr("checked")
+						$('#hddstatus').val('')
+					}
+					$('#txt_fol2').val(FL2);
+					$('#txt_linea02').text(LN2);
+					$('#txt_linea04').val(LN2);
+					$('#txt_pila02').text(PL2);
+					$('#txt_pila06').val(PL_X2);
+					$('#cbl_planta02').text(PLT2);
+					$('#lblfolio2').text(' Folio ' + FL2);
+					$('#hddfech1').val(FCH1);
+					$('#hddfech2').val(FCH1);
+					$('#hddstatus_op').val('CAMBIOS');
+//					$.ajax({
+//								url: "xml/eq_moviles.asp?recurso=LoadFolio&FOLIO=" + $('#txt_fol1').attr('value') + "&PLANTA=" + PLT1 + "&IND_OP=OP",
+//								type: "POST",
+//								dataType: "html",
+//								async: false,
+//								beforeSend : function(){
+//									$("#load4").show(); //gif... just feed back
+//								},
+//								success: function (obj) {
+//									mess2 = obj;
+//									if (obj == "ERR"){
+//										$.msgBox({
+//											title: "Advertencia",
+//											content: "No se realizo el proceso  !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta01').val('');
+//										$('#txt_linea01').val('');
+//										$('#txt_pila01').val('');
+//										$('#txt_pila05').val('');
+//										$('#txt_linea03').val('');
+//										$('#txt_pila05').val('');
+//										$('#lblfolio1').text('');
+//										$('#list2').children('ul').html('');
+//									}else if (obj == "EMPTY"){
+////										$.msgBox({
+////											title: "Aviso",
+////											content: "No hay datos encontrado de planta 1 !!!",
+////											type: "error",
+////											showButtons: false,
+////											autoClose:true
+////											});
+//										$('select#cbl_planta01').val('');
+//										$('#txt_linea01').val('');
+//										$('#txt_pila01').val('');
+//										$('#txt_pila05').val('');
+//										$('#txt_linea03').val('');
+//										$('#txt_pila05').val('');
+//										$('#lblfolio1').text('');
+//										$('#list2').children('ul').html('');
+//										
+//									}else{
+//										$('#txt_linea01').val($(obj).find("#LINEA").val());
+//										$('#txt_pila01').val($(obj).find("#PILA").val());
+//										$('#txt_pila05').val($(obj).find("#PILA_REL").val());
+//										$('#txt_linea03').val($(obj).find("#LINEA").val());
+//										$('#txt_pila05').val($(obj).find("#PILA").val());
+//										$('#txtfolio1').val($(obj).find("#FOLIO").val());
+//										$('#cbl_planta01').val($(obj).find("#PLANTA").val()).attr('selected',true);
+//										$('#lblfolio1').text('Folio ' + $('#txtfolio').val());
+//										$("#load4").hide();
+//									}
+//								}
+//					});
+					//$.ajax({
+//								url: "xml/eq_moviles.asp?recurso=LoadFolio&FOLIO=" + $('#txt_fol1').attr('value') + "&PLANTA=" + PLT1 + "&IND_OP=FL",
+//								type: "POST",
+//								dataType: "html",
+//								async: false,
+//								beforeSend : function(){
+//									$("#load4").show(); //gif... just feed back
+//								},
+//								success: function (obj) {
+//									mess2 = obj;
+//									if (obj == "ERR"){
+//										$.msgBox({
+//											title: "Advertencia",
+//											content: "No se realizo el proceso  !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta01').val('');
+//										$('#txt_linea01').val('');
+//										$('#txt_pila01').val('');
+//										$('#txt_pila05').val('');
+//										$('#txt_linea03').val('');
+//										$('#txt_pila05').val('');
+//										$('#lblfolio1').text('');
+//										$('#list2').children('ul').html('');
+//									}else if (obj == "EMPTY"){
+////										$.msgBox({
+////											title: "Aviso",
+////											content: "No hay datos encontrado de planta 1 !!!",
+////											type: "error",
+////											showButtons: false,
+////											autoClose:true
+////											});
+//										$('select#cbl_planta01').val('');
+//										$('#txt_linea01').val('');
+//										$('#txt_pila01').val('');
+//										$('#txt_pila05').val('');
+//										$('#txt_linea03').val('');
+//										$('#txt_pila05').val('');
+//										$('#lblfolio1').text('');
+//										$('#list2').children('ul').html('');
+//										
+//									}else{
+//										$('#txt_pila05').val($(obj).find("#PILA_REL").val());
+//										$('#txt_linea03').val($(obj).find("#LINEA").val());
+//										$('#txt_pila05').val($(obj).find("#PILA").val());
+//										$('#txtfolio1').val($(obj).find("#FOLIO").val());
+//										$('#cbl_planta01').val($(obj).find("#PLANTA").val()).attr('selected',true);
+//										$('#lblfolio1').text('Folio ' + $('#txtfolio').val());
+//										$("#load4").hide();
+//									}
+//								}
+//					});
+					//if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=OP&ESTADO=" + ST1 + "&Z=" +  Math.random());
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=OP&ESTADO=" + ST1 + "&JERARQUIA=PRIM&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									$("#load1").show(); //gif... just feed back
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+											});
+										$('select#cbl_planta01').val('');
+									}else if (obj == "EMPTY"){
+//										$.msgBox({
+//											title: "Aviso",
+//											content: "Datos no encontrado  !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta01').val('');
+//										
+									}else{
+										$('#list2').children('ul').html(obj);
+										//$('#txt_pila05').val($(obj).find("#pila_aux").val());
+									}
+								}
+						});
+					//}
+					//	if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL");
+						
+					$.ajax({
+									url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL&ESTADO=" + ST1 + "&JERARQUIA=PRIM&Z=" +  Math.random(),
+									type: "POST",
+									dataType: "html",
+									async: false,
+									beforeSend : function(){
+										$("#load1").show(); //gif... just feed back
+									},
+									success: function (obj) {
+										mess2 = obj;
+										if (obj == "ERR"){
+											$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											$('select#cbl_planta01').val('');
+										}else if (obj == "EMPTY"){
+//											$.msgBox({
+//												title: "Aviso",
+//												content: "Datos no encontrado  !!!",
+//												type: "error",
+//												showButtons: false,
+//												autoClose:true
+//												});
+//											$('select#cbl_planta01').val('');
+//											
+										}else{
+											$('#list6').children('ul').html(obj);
+										}
+									}
+							});			
+					//	}
+					//if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&PILA1=" + $('#txt_pila05').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL");
+						
+					//}
+// ---------------------------------------------------------------   SEGUNDA COLUMNA	----------------------------------------------
+				if (FL2 != ""){
+					//window.open("xml/eq_moviles.asp?recurso=LoadFolio&FOLIO=" + $('#txt_fol2').attr('value') + "&PLANTA=" + PLT2 + "&IND_OP=OP");
+//					$.ajax({
+//								url: "xml/eq_moviles.asp?recurso=LoadFolio&FOLIO=" + $('#txt_fol2').attr('value') + "&PLANTA=" + PLT2 + "&IND_OP=OP",
+//								type: "POST",
+//								dataType: "html",
+//								async: false,
+//								beforeSend : function(){
+//									$("#load4").show(); //gif... just feed back
+//								},
+//								success: function (obj) {
+//									mess2 = obj;
+//									if (obj == "ERR"){
+//										$.msgBox({
+//											title: "Advertencia",
+//											content: "No se realizo el proceso  !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta02').val('');
+//										$('#txt_linea02').val('');
+//										$('#txt_pila02').val('');
+//										$('#txt_pila06').val('');
+//										$('#txt_linea04').val('');
+//										$('#txt_pila06').val('');
+//										$('#lblfolio2').text('');
+//										$('#list4').children('ul').html('');
+//									}else if (obj == "EMPTY"){
+//										$.msgBox({
+//											title: "Aviso",
+//											content: "No hay datos encontrado de planta 2 !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta02').val('');
+//										$('#txt_linea02').val('');
+//										$('#txt_pila02').val('');
+//										$('#txt_pila06').val('');
+//										$('#txt_linea04').val('');
+//										$('#txt_pila06').val('');
+//										$('#lblfolio2').text('');
+//										$('#list4').children('ul').html('');
+//									}else{
+//										$('#txt_linea02').val($(obj).find("#LINEA").val());
+//										$('#txt_pila02').val($(obj).find("#PILA").val());
+//										$('#txt_pila06').val($(obj).find("#PILA_REL").val());
+//										$('#txt_linea04').val($(obj).find("#LINEA").val());
+//										$('#txt_pila06').val($(obj).find("#PILA").val());
+//										$('#txtfolio2').val($(obj).find("#FOLIO").val());
+//										$('#cbl_planta02').val($(obj).find("#PLANTA").val()).attr('selected',true);
+//										$('#lblfolio2').text('Folio ' + $('#txtfolio').val());
+//										$("#load4").hide();
+//									}
+//								}
+//					});
+					//if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea02').attr('value') + "&PILA1=" + $('#txt_pila02').attr('value') + "&PLANTA=" + $('select#cbl_planta02').val() + "&IND_OP=OP");
+						
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=OP&ESTADO=" + ST1 + "&JERARQUIA=AUX&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									$("#load4").show(); //gif... just feed back
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+											});
+									//	$('select#cbl_planta02').val('');
+									}else if (obj == "EMPTY"){
+//										$.msgBox({
+//											title: "Aviso",
+//											content: "Datos no encontrado  !!!",
+//											type: "error",
+//											showButtons: false,
+//											autoClose:true
+//											});
+//										$('select#cbl_planta01').val('');
+//										
+									}else{
+										//$('#txt_pila06').val($(obj).find("#pila_aux").val());
+										$('#list4').children('ul').html(obj);
+									}
+								}
+						});
+					//}
+					//if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea02').attr('value') + "&PILA1=" + $('#txt_pila02').attr('value') + "&PLANTA=" + $('select#cbl_planta02').val() + "&IND_OP=FL");
+						
+					$.ajax({
+									url: "xml/eq_moviles.asp?recurso=LoadTren&LINEA=" + $('#txt_linea04').attr('value') + "&PILA1=" + $('#txt_pila06').attr('value') + "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL&ESTADO=" + ST1 + "&JERARQUIA=AUX&Z=" +  Math.random(),
+									type: "POST",
+									dataType: "html",
+									async: false,
+									beforeSend : function(){
+										$("#load4").show(); //gif... just feed back
+									},
+									success: function (obj) {
+										mess2 = obj;
+										if (obj == "ERR"){
+											$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											//$('select#cbl_planta02').val('');
+										}else if (obj == "EMPTY"){
+//											$.msgBox({
+//												title: "Aviso",
+//												content: "Datos no encontrado  !!!",
+//												type: "error",
+//												showButtons: false,
+//												autoClose:true
+//												});
+//											$('select#cbl_planta01').val('');
+//											
+										}else{
+											$('#list7').children('ul').html(obj);
+										}
+									}
+							});			
+					//}
+					//if (mess2 != "ERR" && mess2 != "EMPTY"){
+					//window.open("xml/eq_moviles.asp?recurso=LoadTren&PILA1=" + $('#txt_pila06').attr('value') + "&PLANTA=" + $('select#cbl_planta02').val() + "&IND_OP=FL");
+						
+					//	}
+					$("#load4").hide();
+				}
+//					}
+//				}
+//			});
+			$("#load1").hide();
+			var ASP = "xml/eq_moviles.asp?recurso=UpdlistFijos";
+			if ($('#txt_fol1').val() != ''){
+				ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+			}
+			if ($('select#cbl_planta01').val() != ''){
+				ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+			}
+			ASP = ASP + "&Z=" +  Math.random()
+			//window.open(ASP);
+			$.post( 
+				 ASP,
+				 function(data) {
+						$('#list0').children('ul').html(data);
+				 },'html'
+	
+			  );	
+			var ASP = "xml/eq_moviles.asp?recurso=UpdListMoviles";
+			if ($('#txt_fol1').val() != ''){
+				ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+			}
+			ASP = ASP + "&Z=" +  Math.random()
+			$.post( 
+				 ASP,
+				 function(data) {
+						$('#list1').children('ul').html(data);
+				 },'html'
+	
+			  );	
+			//replic();
+			var t=setTimeout(function(){ajax_app();},3000);
+			alwaysOnTop.hidediv('ajaxdiv');
+			//setTimeout(function(){$("#panel_load").hide();},1000);
+			$('#txt_linea01').attr('disabled', 'disabled');
+			$('#txt_pila01').attr('disabled', 'disabled');
+			$('select#cbl_planta01').attr('disabled', 'disabled');
+			
+}
+
+function loadHistorico(IDH,FL1,LN1,PL1,PLT1,ST1,FCH1,ACC1,US1){
+		$.printPreview.loadPrintPreview();
+		$('#print-modal-content').contents().find('body').append("<style type='text/css'>body {cursor: auto; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;}.listdrag{ background:#ffffff; border-color: #CCC; border: inset; list-style-type: none; margin-bottom:1px; margin-top:1px; margin-left:10px; margin-right:10px; padding: 5px; }.listdrag li { cursor:pointer; border:1px solid #DADADA; padding:3px 5px;	margin-bottom:3px;	margin-top:3px;	width:150px; font-family:Arial, Helvetica; font-size:13px;}.listdrag li:hover {background-color:#FFF; color:#333333;}.itemSort1{background:#E5E5E5; color:#000000;}.list0_color { background-color:#E5E5E5; color:#000000;}.list1_color { background-color:#E5E5E5; color:#000000;}.list2_color { background-color:#8eb4e3; color:#FFFFFF;}.list3_color { background-color:#D1817E; color:#FFFFFF;}.list4_color { background-color:#c4bd97; color:#FFFFFF;}.list5_color { background-color:#D1817E; color:#FFFFFF;}.list6_color { background-color:#D1817E; color:#FFFFFF;}.list7_color { background-color:#D1817E; color:#FFFFFF;}.page-break	{ display: block; page-break-before: always; }.twhite { font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-style: normal; font-weight: bold; color: #FFF; background-image: url(images/image_tren_2.png); } .linegrid {font-size: 12px;font-family: Arial, Helvetica, sans-serif;font-weight: bold;font-variant: normal; background-color: #FFF; border: thin solid #333; padding: 2px;margin: 1px;}</style>");
+		if (ST1 == "STB"){
+			var est = "Propuesta"
+		}else{
+			var est = "Operativa"
+		}	
+		$('#print-modal-content').contents().find('body').append("<table id='TblRegHist' width='100%' cellspacing='1' cellpadding='1' style='border-collapse: collapse;page-break-after: always;'><tr><td colspan='4' align='center' valign='top'><img src='Images/tit_trenHist.png' /></td></tr><tr><td colspan='4'><table border='0' cellspacing='1' cellpadding='1' width='100%'><tr> <td><table width='100%' border='0' cellpadding='1' cellspacing='1'><tr><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' width='20%' >Usuario Registrado</td><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' id='log_US1'>&nbsp;</td><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' width='20%' >Accion Registrado</td><td align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>&nbsp;"+ ACC1 +"</td></tr><tr><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' width='20%' >Fecha Registrada</td><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>&nbsp;"+ FCH1 +"</td><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'  width='20%' >Estado Registrado</td><td  align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' id='log_print2'>&nbsp;" + est +  "</td></tr></table></td></tr></table></td></tr><tr><td height='20' colspan='4'>&nbsp;</td></tr><tr><td width='25%'  align='center'  valign='top' id='T1'><table id='L2' border='0' cellpadding='1' cellspacing='0'><tbody><tr><td colspan='2' height='24' align='center' bgcolor='#FFFFFF'>&nbsp;&nbsp;LINEA -&nbsp;"+ LN1 +"</td></tr><tr><td colspan='2' align='center' bgcolor='#FFFFFF'>Tren de Apilamiento Principal</td></tr><tr><td colspan='2' height='20' align='center' bgcolor='#FFFFFF'>Pila &nbsp;&nbsp;"+ PL1 +"&nbsp;&nbsp;&nbsp;"+ PLT1 +"</td></tr><tr><td colspan='2' bgcolor='#FFFFFF'><div><ul id='reOrder1' class='listdrag'></ul></div></td></tr><tr><td style='text-align:right; font-family: Arial, Helvetica, sans-serif;' height='23' align='left' bgcolor='#FFFFFF' valign='top'></td><td height='23' bgcolor='#FFFFFF' valign='top'></td></tr><tr><td style='text-align:right; font-family: Arial, Helvetica, sans-serif;' height='23' align='left' bgcolor='#FFFFFF' valign='middle'></td><td height='23' bgcolor='#FFFFFF' valign='top'></td></tr></tbody></table></td><td width='25%' align='center'  valign='top' id='T1B'><table id='L1B' border='0' cellpadding='0' cellspacing='0'><tbody><tr><td colspan='2' align='center' valign='top'><img src='images/image_tren_1.png' alt=''></td></tr><tr><td colspan='2'  height='32' align='center' valign='middle'><img src='images/image_tren_2.png' alt=''></td></tr><tr><td colspan='2' align='center' valign='top'><img src='images/image_tren_3.png' alt=''></td></tr><tr><td colspan='2' bgcolor='#FFFFFF'><div><ul id='reOrder2' class='listdrag'></ul></div></td></tr><tr><td style='text-align:right' height='23' align='left' bgcolor='#FFFFFF' valign='top'></td><td style='text-align:right' align='right' bgcolor='#FFFFFF' valign='top'></td></tr><tr><td colspan='2' height='22' align='center' valign='top'>&nbsp;</td></tr><tr><td colspan='2' align='center' valign='top'>&nbsp;</td></tr></tbody></table></td><td width='25%' align='center'  valign='top' id='T2'><table id='L2' border='0' cellpadding='1' cellspacing='0'><tbody><tr><td colspan='2' height='24' align='center' bgcolor='#FFFFFF'>&nbsp;&nbsp;LINEA -&nbsp;"+ LN1 +"</td></tr><tr><td colspan='2' align='center' bgcolor='#FFFFFF'>Tren de Apilamiento Auxiliar</td></tr><tr><td colspan='2' height='20' align='center' bgcolor='#FFFFFF'>Pila &nbsp;&nbsp;"+ PL1 +"&nbsp;&nbsp;&nbsp;"+ PLT1 +"</td></tr><tr><td colspan='2' bgcolor='#FFFFFF'><div><ul id='reOrder3' class='listdrag'></ul></div></td></tr><tr><td style='text-align:right; font-family: Arial, Helvetica, sans-serif;' height='23' align='left' bgcolor='#FFFFFF' valign='top'></td><td height='23' bgcolor='#FFFFFF' valign='top'></td></tr><tr><td style='text-align:right; font-family: Arial, Helvetica, sans-serif;' height='23' align='left' bgcolor='#FFFFFF' valign='middle'></td><td height='23' bgcolor='#FFFFFF' valign='top'></td></tr></tbody></table></td><td width='25%' align='center'  valign='top' id='T2B'><table id='L1B' border='0' cellpadding='0' cellspacing='0'><tbody><tr><td colspan='2' align='center' valign='top'><img src='images/image_tren_1.png' alt=''></td></tr><tr><td colspan='2'  height='32' align='center' valign='middle'><img src='images/image_tren_2.png' alt=''></td></tr><tr><td colspan='2' align='center' valign='top'><img src='images/image_tren_3.png' alt=''></td></tr><tr><td colspan='2' bgcolor='#FFFFFF'><div><ul id='reOrder4' class='listdrag'></ul></div></td></tr><tr><td style='text-align:right' height='23' align='left' bgcolor='#FFFFFF' valign='top'></td><td style='text-align:right' align='right' bgcolor='#FFFFFF' valign='top'></td></tr><tr><td colspan='2' height='22' align='center' valign='top'>&nbsp;</td></tr><tr><td colspan='2' align='center' valign='top'>&nbsp;</td></tr></tbody></table></td></tr></table>");
+
+		if (US1 != ''){
+			$.ajax({ 
+					url: "xml/Usuarios.asp?RECURSO=GetUsuario&ID=" + US1 + "&Z=" +  Math.random(), 
+						type: "GET",
+						dataType: "html",
+						async: false,										
+						success: function (obj) {
+						xmlDoc = $.parseXML( obj );
+						$xml = $( xmlDoc );
+						var count=$($xml).find("ROW").size();
+						if (count == 0){
+								var nomb = "";
+								var apel = "";
+						}else{
+							$($xml).find("ROW").each(function(){
+								var nomb = $(this).find("NOMBRES").text();
+								var apel = $(this).find("APELLIDOS").text();
+								$('#print-modal-content').contents().find('body').find('#log_US1').append('&nbsp;' + nomb + ' '+ apel);
+							});
+						}
+						
+					}
+			});		
+		}
+        $('#print-modal-content').height($('#TblRegHist').contents().height());
+		//window.open("xml/eq_moviles.asp?recurso=LoadHistorialTren&IDHISTORIAL=" + IDH + "&FOLIO=" + FL1 + "&LINEA=" + LN1 + "&PILA1=" + PL1 + "&PLANTA=" + PLT1 + "&IND_OP=OP&ESTADO=" + ST1 + "&JERARQUIA=PRIM&ACCION=" + ACC1 + "&Z=" +  Math.random());
+
+//-----------------------------------------------------------------------------------------------------					
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadHistorialTren&IDHISTORIAL=" + IDH + "&FOLIO=" + FL1 + "&LINEA=" + LN1 + "&PILA1=" + PL1 + "&PLANTA=" + PLT1 + "&IND_OP=OP&ESTADO=" + ST1 + "&JERARQUIA=PRIM&ACCION=" + ACC1 + "&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									//$("#load1").show(); //gif... just feed back
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+											});
+									}else if (obj == "EMPTY"){
+										$('#print-modal-content').contents().find('body').find('#T1').html('');
+									}else{
+										//$('#list2').children('ul').html(obj);
+										$('#print-modal-content').contents().find('body').find('#reOrder1').append(obj);
+										//$('#txt_pila05').val($(obj).find("#pila_aux").val());
+									}
+								}
+						});
+					$.ajax({
+									url: "xml/eq_moviles.asp?recurso=LoadHistorialTren&IDHISTORIAL=" + IDH + "&FOLIO=" + FL1 + "&LINEA=" + LN1 + "&PILA1=" + PL1 + "&PLANTA=" + PLT1 + "&IND_OP=FL&ESTADO=" + ST1 + "&JERARQUIA=PRIM&ACCION=" + ACC1 + "&Z=" +  Math.random(),
+									
+									type: "POST",
+									dataType: "html",
+									async: false,
+									beforeSend : function(){
+										//$("#load1").show(); //gif... just feed back
+									},
+									success: function (obj) {
+										mess2 = obj;
+										if (obj == "ERR"){
+											$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+										}else if (obj == "EMPTY"){
+											$('#print-modal-content').contents().find('body').find('#T1B').html('');
+										}else{
+//											$('#list6').children('ul').html(obj);
+											$('#print-modal-content').contents().find('body').find('#reOrder2').append(obj);
+										}
+									}
+							});			
+//				if (FL2 != ""){
+//						
+					$.ajax({
+								url: "xml/eq_moviles.asp?recurso=LoadHistorialTren&IDHISTORIAL=" + IDH + "&FOLIO=" + FL1 + "&LINEA=" + LN1 + "&PILA1=" + PL1 + "&PLANTA=" + PLT1 + "&IND_OP=OP&ESTADO=" + ST1 + "&JERARQUIA=AUX&ACCION=" + ACC1 + "&Z=" +  Math.random(),
+								type: "POST",
+								dataType: "html",
+								async: false,
+								beforeSend : function(){
+									//$("#load1").show(); //gif... just feed back
+								},
+								success: function (obj) {
+									mess2 = obj;
+									if (obj == "ERR"){
+										$.msgBox({
+											title: "Advertencia",
+											content: "No se realizo el proceso  !!!",
+											type: "error",
+											showButtons: false,
+											autoClose:true
+											});
+									}else if (obj == "EMPTY"){
+										$('#print-modal-content').contents().find('body').find('#T2').html('');
+									}else{
+										//$('#list2').children('ul').html(obj);
+										$('#print-modal-content').contents().find('body').find('#reOrder3').append(obj);
+										//$('#txt_pila05').val($(obj).find("#pila_aux").val());
+									}
+								}
+						});
+					$.ajax({
+									url: "xml/eq_moviles.asp?recurso=LoadHistorialTren&IDHISTORIAL=" + IDH + "&FOLIO=" + FL1 + "&LINEA=" + LN1 + "&PILA1=" + PL1 + "&PLANTA=" + PLT1 + "&IND_OP=FL&ESTADO=" + ST1 + "&JERARQUIA=AUX&ACCION=" + ACC1 + "&Z=" +  Math.random(),
+									
+									type: "POST",
+									dataType: "html",
+									async: false,
+									beforeSend : function(){
+										//$("#load1").show(); //gif... just feed back
+									},
+									success: function (obj) {
+										mess2 = obj;
+										if (obj == "ERR"){
+											$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+										}else if (obj == "EMPTY"){
+											$('#print-modal-content').contents().find('body').find('#T2B').html('');
+										}else{
+//											$('#list6').children('ul').html(obj);
+											$('#print-modal-content').contents().find('body').find('#reOrder4').append(obj);
+										}
+									}
+							});			
+//					$("#load4").hide();
+//				}
+			//alwaysOnTop.hidediv('ajaxdiv2');
+}
+
+$(function(){
+    $("#btn_cargar").click(function(){
+		//if ($('#txt_fol').val() != ''){
+				$('#txtfolio').val('');
+				$('select#cbl_planta01').val('');
+				$('#txt_linea01').val('');
+				$('#txt_pila01').val('');
+				$('#txt_linea03').val('');
+				$('#txt_pila05').val('');
+				$('#lblfolio1').text('');
+				
+				$('#cbl_planta02').text('');
+				$('#txt_linea02').text('');
+				$('#txt_pila02').text('');
+				$('#txt_linea04').val('');
+				$('#txt_pila06').val('');
+				$('#lblfolio2').text('');
+				$('#hddstatus_op').val('CAMBIOS');
+				$('#list2').children('ul').html('');
+				$('#list6').children('ul').html('');
+				$('#list4').children('ul').html('');
+				$('#list7').children('ul').html('');
+			
+//			var mensaje1 = "Datos de la linea " + $('#txt_linea01').attr('value') + ", pila " + $('#txt_pila01').attr('value') +  " y " + $('select#cbl_planta01').val();
+//			$.msgBox({
+//				title: "Deseas Recuperar ?",
+//				content: mensaje1,
+//				type: "confirm",
+//				buttons: [{ value: "Si" }, { value: "No" }],
+//				success: function (result1) {
+//					if (result1 == "Si") {
+
+			var url ="xml/eq_moviles.asp?RECURSO=listExistentes&Z=" +  Math.random()
+			//window.open(url);
+			if ($(window).height() > 1050){
+				var top = (($(window).height()/100)*78)-300
+			}else{
+				var top = (($(window).height()/100)*69)-300
+			}
+			var left = ($(window).width() - 850) /2
+			alwaysOnTop.init({
+				targetid: 'ajaxdiv',
+				orientation: 1,
+				position: [left, top],
+				fadeduration: [200, 200],
+				frequency: 0.95,
+				hideafter: 90000
+			})
+			jQuery.get(url, {}, function(data){
+				jQuery('#tabEquipos_ul').html(data);
+			});
+			$('#txt_linea01').removeAttr('disabled');
+			$('#txt_pila01').removeAttr('disabled');
+			$('select#cbl_planta01').removeAttr('disabled');	
+
+//		}else{
+//											$.msgBox({
+//												title: "Advertencia",
+//												content: "Ingrese Folio a cargar  !!!",
+//												type: "advise",
+//												showButtons: false,
+//												autoClose:true
+//												});
+//		}
+    });
+	$("#btn_nuevo").click(function(){
+		$('#txtfolio').val('');
+		$('#txt_fol1').val('');
+		$('select#cbl_planta01').val('');
+		$('#txt_linea01').val('');
+		$('#txt_pila01').val('');
+		$('#txt_linea03').val('');
+		$('#txt_pila05').val('');
+		$('#lblfolio1').text('');
+		
+		$('#cbl_planta02').text('');
+		$('#txt_linea02').text('');
+		$('#txt_pila02').text('');
+		$('#txt_linea04').val('');
+		$('#txt_pila06').val('');
+		$('#lblfolio2').text('');
+		$('#list2').children('ul').html('');
+		$('#list6').children('ul').html('');
+		$('#list4').children('ul').html('');
+		$('#list7').children('ul').html('');
+		$('#id_stby1').removeAttr('checked');
+		$('#hddstatus_op').val('CREA OPERATIVO');
+		var ASP = "xml/eq_moviles.asp?recurso=listFijos&Z=" +  Math.random();
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list0').children('ul').html(data);
+             },'html'
+
+          );	
+		var ASP = "xml/eq_moviles.asp?recurso=listMoviles&Z=" +  Math.random();
+		$.post( 
+             ASP,
+             function(data) {
+               		$('#list1').children('ul').html(data);
+             },'html'
+
+          );	
+//		  var t=setTimeout(function(){ajax_app();},2000);
+			setTimeout(function(){ajax_app();},3000);
+			//alwaysOnTop.hidediv('ajaxdiv');
+			$('#txt_linea01').removeAttr('disabled');
+			$('#txt_pila01').removeAttr('disabled');
+			$('select#cbl_planta01').removeAttr('disabled');	
+			
+
+	});
+	$("#btn_Mant").click(function(){
+		$(window.location).attr('href', "Tools_UM_Eq.html");
+	});	
+	$("#btn_Print").click(function(){
+		
+		$.printPreview.loadPrintPreview();
+
+		$('#print-modal-content').contents().find('body').append("<style type='text/css'>body {cursor: auto; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;}.listdragable{ background:#ffffff; border-color: #CCC; border: inset; list-style-type: none; width:200px; margin-bottom:1px; margin-top:1px; margin-left:10px; margin-right:10px; padding: 5px; }.listdragable li { cursor:pointer; border:1px solid #DADADA; padding:3px 5px;	margin-bottom:3px;	margin-top:3px;	width:150px; font-family:Arial, Helvetica; font-size:13px;}.listdragable li:hover {background-color:#FFF; color:#333333;}.itemSort1{background:#E5E5E5; color:#000000;}.list0_color { background-color:#E5E5E5; color:#000000;}.list1_color { background-color:#E5E5E5; color:#000000;}.list2_color { background-color:#8eb4e3; color:#FFFFFF;}.list3_color { background-color:#D1817E; color:#FFFFFF;}.list4_color { background-color:#c4bd97; color:#FFFFFF;}.list5_color { background-color:#D1817E; color:#FFFFFF;}.list6_color { background-color:#D1817E; color:#FFFFFF;}.list7_color { background-color:#D1817E; color:#FFFFFF;}.page-break	{ display: block; page-break-before: always; }.twhite { font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-style: normal; font-weight: bold; color: #FFF; background-image: url(images/image_tren_2.png); } .linegrid {font-size: 12px;font-family: Arial, Helvetica, sans-serif;font-weight: bold;font-variant: normal; background-color: #FFF; border: thin solid #333; padding: 2px;margin: 1px;}</style>");
+		if (($("#list2 li").length > 0) || ($("#list6 li").length > 0)){
+			if ($("#id_stby1").is(":checked")){
+				var est = "Propuesta"
+			}else{
+				var est = "Operativa"
+			}	
+			$('#print-modal-content').contents().find('body').append("<table width='50%' cellspacing='1' cellpadding='1' style='border-collapse: collapse;page-break-after: always;'><tr><td colspan='4' align='center' valign='top'><img src='Images/tit_moviles.png' width='900' height='235' /></td></tr><tr><td colspan='4'><table border='0' cellspacing='1' cellpadding='1'><tr><td><table width='400' border='0' cellpadding='1' cellspacing='1'><tr><td width='40%' align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>Fecha Actualizacion</td><td width='60%' align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' id='log_print1'>&nbsp;</td></tr><tr><td align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>Inspector TTM</td><td align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid' id='log_print2'>&nbsp;</td></tr></table></td></tr></table></td></tr><tr><td height='20' colspan='4'>&nbsp;</td></tr><tr>  <td width='25%' height='900' align='center'  valign='top' id='T1'>&nbsp;</td>  <td width='25%' align='center'  valign='top' id='T1B'>&nbsp;</td><td width='25%' align='center'  valign='top' id='T2'>&nbsp;</td><td width='25%' align='center'  valign='top' id='T2B'>&nbsp;</td></tr><tr>  <td colspan='4'><table id='principal' width='96%' border='0' cellpadding='1' cellspacing='1'><tr><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/up.png' alt='' width='18' height='18' /></td> <td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right_up.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa Regular</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right_down.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa Bajo Condiciones</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/down.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Fuera de Servicio</td></tr><tr><td bgcolor='#FFFFFF' class='linegrid'>Buen estado</td><td bgcolor='#FFFFFF' class='linegrid'>Estado con Observaciones</td><td bgcolor='#FFFFFF' class='linegrid'>Programar Mantenimiento</td><td bgcolor='#FFFFFF' class='linegrid'>Fallas 'Relevantes'</td><td bgcolor='#FFFFFF' class='linegrid'>Fallas sin solucionar / Deteccion por Falla</td></tr><tr><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 6 a 7</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 5</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 4</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 3</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 1 a 2</td></tr></table></td></tr></table>");
+
+			$('#print-modal-content').contents().find('body').find('#T1').html('<table>' + $('#L1').html() + '</table>');
+			$('#print-modal-content').contents().find('body').find('#T1 :checkbox').remove();
+			$('#print-modal-content').contents().find('body').find('#T1').find("tr:first td").html($('#L1').find("tr:first td").find('#lblfolio1').text() + ' LINEA ' + $('#L1').find("tr:first td").find('#txt_linea01').val());
+			$('#print-modal-content').contents().find('body').find('#T1').find("tr:nth-child(2) td").html('Tren de Apilamiento ' + est);
+			$('#print-modal-content').contents().find('body').find('#T1').find("tr:nth-child(3) td").html('Pila ' + $('#L1').find("tr:nth-child(3) td").find('#txt_pila01').val() + ' ' + $('#L1').find("tr:nth-child(3) td").find('select#cbl_planta01').val());
+			$('#print-modal-content').contents().find('body').find('#T1').find("tr:nth-child(5) td").html('&nbsp;');
+			$('#print-modal-content').contents().find('body').find('#T1B').html('<table border="0" cellspacing="0" cellpadding="0">' + $('#L1B').html() + '</table>');
+			$('#print-modal-content').contents().find('body').find('#T1B :checkbox').remove();
+			$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(2) td").addClass('twhite');
+			//$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(2) td").html('Pila ' + $('#L1B').find("tr:nth-child(2) td").find('#txt_pila05').val());
+			$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(5) td").html('&nbsp;');
+			$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(6) td").html('&nbsp;');
+			//$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(8) td").addClass('twhite');
+			//$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(8) td").html(' Suspendidos ');
+			$('#print-modal-content').contents().find('body').find('#T1B').find("tr:nth-child(11) td").html('&nbsp;');
+			
+		}
+		if (($("#list4 li").length > 0) || ($("#list7 li").length > 0)){
+			if ($("#id_stby1").is(":checked")){
+				var est = "Propuesta"
+			}else{
+				var est = "Operativa"
+			}				
+			//$('#print-modal-content').contents().find('body').append("<table width='95%' border='0' cellspacing='1' cellpadding='1' style='page-break-after: always;'><tr><td colspan='2' align='center' valign='top'><img src='Images/tit_moviles.png' width='900' height='235' /></td></tr><tr><td colspan='2'><table border='0' cellspacing='1' cellpadding='1'><tr><td><table width='400' border='0' cellpadding='1' cellspacing='1'><tr><td width='40%' align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>Fecha Actualizacion</td><td width='60%' align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'  id='log_print1'>&nbsp;</td></tr><tr><td align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'>Inspector TTM</td><td align='center' valign='top' bgcolor='#FFFFFF'  class='linegrid'  id='log_print2'>&nbsp;</td></tr></table></td></tr></table></td></tr><tr><td height='20' colspan='2'>&nbsp;</td></tr><tr>  <td width='50%' height='900' align='center'  valign='top' id='T2'>&nbsp;</td>  <td width='50%' align='center'  valign='top' id='T2B'>&nbsp;</td></tr><tr>  <td colspan='2'><table id='principal' width='96%' border='0' cellpadding='1' cellspacing='1'><tr><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/up.png' alt='' width='18' height='18' /></td> <td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right_up.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa Regular</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/right_down.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Operativa Bajo Condiciones</td><td width='18' rowspan='3' bgcolor='#FFFFFF' class='linegrid'><img src='Scripts/down.png' alt='' width='18' height='18' /></td><td align='center' bgcolor='#FFFFFF' class='linegrid'>Fuera de Servicio</td></tr><tr><td bgcolor='#FFFFFF' class='linegrid'>Buen estado</td><td bgcolor='#FFFFFF' class='linegrid'>Estado con Observaciones</td><td bgcolor='#FFFFFF' class='linegrid'>Programar Mantenimiento</td><td bgcolor='#FFFFFF' class='linegrid'>Fallas 'Relevantes'</td><td bgcolor='#FFFFFF' class='linegrid'>Fallas sin solucionar / Deteccion por Falla</td></tr><tr><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 6 a 7</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 5</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 4</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 3</td><td bgcolor='#FFFFFF' class='linegrid'>Puntaje = 1 a 2</td></tr></table></td></tr></table>");
+			
+			$('#print-modal-content').contents().find('body').find('#T2').html('<table>' + $('#L2').html() + '</table>');
+			$('#print-modal-content').contents().find('body').find('#T2 :checkbox').remove();
+			$('#print-modal-content').contents().find('body').find('#T2').find("tr:first td").html($('#L2').find("tr:first td").find('#lblfolio2').text() + ' LINEA ' + $('#L2').find("tr:first td").find('#txt_linea02').val());
+			$('#print-modal-content').contents().find('body').find('#T2').find("tr:nth-child(2) td").html('Tren de Apilamiento ' + est);			
+			$('#print-modal-content').contents().find('body').find('#T2').find("tr:nth-child(3) td").html('Pila ' + $('#L2').find("tr:nth-child(3) td").find('#txt_pila02').val() + ' ' + $('#L2').find("tr:nth-child(3) td").find('select#cbl_planta02').val());
+			$('#print-modal-content').contents().find('body').find('#T2').find("tr:nth-child(5) td").html('&nbsp;');
+			$('#print-modal-content').contents().find('body').find('#T2B').html('<table border="0" cellspacing="0" cellpadding="0">' + $('#L2B').html() + '</table>');
+			$('#print-modal-content').contents().find('body').find('#T2B :checkbox').remove();
+			$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(2) td").addClass('twhite');			
+			//$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(2) td").html('Pila ' + $('#L2B').find("tr:nth-child(2) td").find('#txt_pila06').val());
+			$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(5) td").html('&nbsp;');
+			$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(6) td").html('&nbsp;');
+			//$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(8) td").addClass('twhite');
+			//$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(8) td").html(' Suspendidos ');
+			$('#print-modal-content').contents().find('body').find('#T2B').find("tr:nth-child(11) td").html('&nbsp;');
+			
+		}
+
+		//$('#print-modal-content').contents().find('body').find('#T1').html($('#L1').find("td:nth-child(2)").find('#lblfolio1').text() + ' LINEA ' + $('#L1').find("td:first").find('#txt_linea01').val());
+//		$('#print-modal-content').contents().find('body').find('#T1B').html($('#L1B').html());
+//		$('#print-modal-content').contents().find('body').find('#T2').html($('#L2').html());
+//		$('#print-modal-content').contents().find('body').find('#T2B').html($('#L2B').html());
+		 $('#print-modal-content').height($('#print-modal-content').contents().height());
+		//$('#print-modal-content').height($('#print-modal-content').contentWindow.document.body.offsetHeight + 'px');
+ 		$('#print-modal-content').contents().find('body').find('#log_print2').html($('#log_key1').html().replace('Usuario:',''));
+		$('#print-modal-content').contents().find('body').find('#log_print1').html($('#hddfech1').val());
+		
+
+	});		
+
+	$("#btn_del1").click(function(){
+		if ($("#id_stby1").is(":checked")){
+			var estado = "STB"
+		}else{
+			var estado = "ACT"
+		}	
+		if ($('#txt_linea01').attr('value') != '' && $('#txt_pila05').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0 && $("#list6 li").length > 0){
+					var mensaje = " Fuera de Linea Principal de Linea " + $('#txt_linea01').val();
+					$.msgBox({
+						title: "Estas seguro(a) de Eliminar?",
+						content: mensaje,
+						type: "confirm",
+						buttons: [{ value: "Si" }, { value: "No" }],
+						success: function (result) {
+							if (result == "Si") {
+								$('#hddstatus_op').val('ELIMINA');
+//								$.ajax({ 
+//									url: "xml/eq_moviles.asp?recurso=IdHistTren&Z=" +  Math.random(), 
+//										type: "GET",
+//										dataType: "html",
+//										async: false,										
+//										success: function (obj) {
+//										$('#hddidhistorial').val(obj);
+//									}
+//								});										
+								$.ajax({
+										url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA2=''&PILA1=" + $('#txt_pila05').attr('value')+ "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL&FAENA=" + faena + "&ESTADO=" + estado + "&JERARQUIA=PRIM&ACCION=ELIMINA " + estado + "&Z=" +  Math.random(),
+										type: "POST",
+										dataType: "html",
+										async: false,
+										beforeSend : function(){
+										$("#load3").show(); //gif... just feed back
+										},
+										success: function (obj) {
+											mess2 = obj;
+											if (obj == "ERR"){
+												$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											}
+										}
+								});
+								//$('#txt_pila05').val('');
+								$('#list6').children('ul').html('');
+								var ASP = "xml/eq_moviles.asp?recurso=UpdlistFijos";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								if ($('select#cbl_planta01').val() != ''){
+									ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								//window.open(ASP);
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list0').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var ASP = "xml/eq_moviles.asp?recurso=UpdListMoviles";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list1').children('ul').html(data);
+									 },'html'
+						
+								  );	
+
+								var t=setTimeout(function(){ajax_app();},3000);
+								$("#load3").hide();
+							}
+						}
+					});
+		}
+	});	
+	$("#btn_del2").click(function(){
+		if ($("#id_stby1").is(":checked")){
+			var estado = "STB"
+		}else{
+			var estado = "ACT"
+		}	
+		
+		if ($('#txt_linea01').attr('value') != '' && $('#txt_pila06').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0 && $("#list7 li").length > 0){
+					var mensaje = " Fuera de Linea Auxiliar de Linea " + $('#txt_linea01').val();
+					$.msgBox({
+						title: "Estas seguro(a) de Eliminar?",
+						content: mensaje,
+						type: "confirm",
+						buttons: [{ value: "Si" }, { value: "No" }],
+						success: function (result) {
+							if (result == "Si") {
+								$('#hddstatus_op').val('ELIMINA');
+//								$.ajax({ 
+//									url: "xml/eq_moviles.asp?recurso=IdHistTren&Z=" +  Math.random(), 
+//										type: "GET",
+//										dataType: "html",
+//										async: false,										
+//										success: function (obj) {
+//										$('#hddidhistorial').val(obj);
+//									}
+//								});		
+								
+								$.ajax({
+										url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA2=''&PILA1=" + $('#txt_pila06').attr('value')+ "&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=FL&FAENA=" + faena + "&ESTADO=" + estado + "&JERARQUIA=AUX&ACCION=ELIMINA " + estado + "&Z=" +  Math.random(),
+										type: "POST",
+										dataType: "html",
+										async: false,
+										beforeSend : function(){
+										$("#load3").show(); //gif... just feed back
+										},
+										success: function (obj) {
+											mess2 = obj;
+											if (obj == "ERR"){
+												$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											}
+										}
+								});
+								//$('#txt_pila06').val('');
+								$('#list7').children('ul').html('');
+								var ASP = "xml/eq_moviles.asp?recurso=UpdlistFijos";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								if ($('select#cbl_planta01').val() != ''){
+									ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								//window.open(ASP);
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list0').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var ASP = "xml/eq_moviles.asp?recurso=UpdListMoviles";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list1').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var t=setTimeout(function(){ajax_app();},3000);
+								$("#load3").hide();
+							}
+						}
+					});
+		}
+	});	
+	$("#btn_del3").click(function(){
+		if ($("#id_stby1").is(":checked")){
+			var estado = "STB"
+			var est = "Propuesta"
+		}else{
+			var estado = "ACT"
+			var est = "Operativa"
+		}	
+		if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0 && $("#list2 li").length > 0){
+					var mensaje = " Pila " + $('#txt_pila01').val() + " - Linea " + $('#txt_linea01').val() + " Principal " + est + " de " + $('select#cbl_planta01').val();
+					$.msgBox({
+						title: "Estas seguro(a) de eliminar equipos?",
+						content: mensaje,
+						type: "confirm",
+						buttons: [{ value: "Si" }, { value: "No" }],
+						success: function (result) {
+							if (result == "Si") {
+								$('#hddstatus_op').val('ELIMINA');
+//								$.ajax({ 
+//									url: "xml/eq_moviles.asp?recurso=IdHistTren&Z=" +  Math.random(), 
+//										type: "GET",
+//										dataType: "html",
+//										async: false,										
+//										success: function (obj) {
+//										$('#hddidhistorial').val(obj);
+//									}
+//								});			
+								$.ajax({
+										url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value')+ "&PILA2=''&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=OP&FAENA=" + faena + "&ESTADO=" + estado + "&JERARQUIA=PRIM&ACCION=ELIMINA " + estado + "&Z=" +  Math.random(),
+										type: "POST",
+										dataType: "html",
+										async: false,
+										beforeSend : function(){
+										$("#load3").show(); //gif... just feed back
+										},
+										success: function (obj) {
+											mess2 = obj;
+											if (obj == "ERR"){
+												$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											}
+										}
+								});
+								//$('#txt_pila01').val('');
+								$('#list2').children('ul').html('');
+								var ASP = "xml/eq_moviles.asp?recurso=UpdlistFijos";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								if ($('select#cbl_planta01').val() != ''){
+									ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								//window.open(ASP);
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list0').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var ASP = "xml/eq_moviles.asp?recurso=UpdListMoviles";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list1').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var t=setTimeout(function(){ajax_app();},3000);
+								$("#load3").hide();
+							}
+						}
+					});
+		}
+	});	
+	$("#btn_del4").click(function(){
+		if ($("#id_stby1").is(":checked")){
+			var estado = "STB"
+			var est = "Stand BY"
+		}else{
+			var estado = "ACT"
+			var est = "Operativa"
+		}	
+		if ($('#txt_linea01').attr('value') != '' && $('#txt_pila01').attr('value') != '' && $('#cbl_planta01').prop('selectedIndex') != 0 && $("#list4 li").length > 0){
+					var mensaje = " Pila " + $('#txt_pila01').val() + " - Linea " + $('#txt_linea01').val() + " Auxiliar " + est + " de " + $('select#cbl_planta01').val();
+					$.msgBox({
+						title: "Estas seguro(a) de eliminar equipos?",
+						content: mensaje,
+						type: "confirm",
+						buttons: [{ value: "Si" }, { value: "No" }],
+						success: function (result) {
+							if (result == "Si") {
+								$('#hddstatus_op').val('ELIMINA');
+								$.ajax({
+										url: "xml/eq_moviles.asp?recurso=DelTren&LINEA=" + $('#txt_linea01').attr('value') + "&PILA1=" + $('#txt_pila01').attr('value')+ "&PILA2=''&PLANTA=" + $('select#cbl_planta01').val() + "&IND_OP=OP&FAENA=" + faena + "&ESTADO=" + estado + "&JERARQUIA=AUX&ACCION=ELIMINA " + estado + "&Z=" +  Math.random(),
+										type: "POST",
+										dataType: "html",
+										async: false,
+										beforeSend : function(){
+										$("#load3").show(); //gif... just feed back
+										},
+										success: function (obj) {
+											mess2 = obj;
+											if (obj == "ERR"){
+												$.msgBox({
+												title: "Advertencia",
+												content: "No se realizo el proceso  !!!",
+												type: "error",
+												showButtons: false,
+												autoClose:true
+												});
+											}
+										}
+								});
+								//$('#txt_pila01').val('');
+								$('#list4').children('ul').html('');
+								var ASP = "xml/eq_moviles.asp?recurso=UpdlistFijos";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								if ($('select#cbl_planta01').val() != ''){
+									ASP = ASP + "&PLANTA=" + $('select#cbl_planta01').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								//window.open(ASP);
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list0').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var ASP = "xml/eq_moviles.asp?recurso=UpdListMoviles";
+								if ($('#txt_fol1').val() != ''){
+									ASP = ASP + "&FOLIO1=" + $('#txt_fol1').val()
+								}
+								ASP = ASP + "&Z=" +  Math.random()
+								$.post( 
+									 ASP,
+									 function(data) {
+											$('#list1').children('ul').html(data);
+									 },'html'
+						
+								  );	
+								var t=setTimeout(function(){ajax_app();},3000);
+								$("#load3").hide();
+							}
+						}
+					});
+		}
+	});	
+    $("#btn_hist").click(function(){
+			var url ="xml/eq_moviles.asp?RECURSO=listHistorial&Z=" +  Math.random()
+			//window.open(url);
+			if ($(window).height() > 1050){
+				var top = (($(window).height()/100)*78)-300
+			}else{
+				var top = (($(window).height()/100)*69)-300
+			}
+			var left = ($(window).width() - 850) /2
+			alwaysOnTop.init({
+				targetid: 'ajaxdiv2',
+				orientation: 1,
+				position: [left, top],
+				fadeduration: [200, 200],
+				frequency: 0.95,
+				hideafter: 90000
+			})
+			$('select#cblfindtipo').val('');
+			$('select#cblfindplanta').val('');
+			$('#txtfindfolio').val('');
+			$('#txtfindlinea').val('');
+			$('#txtfindpila').val('');
+			$('#txtfindfecha').val('');
+
+			jQuery.get(url, {}, function(data){
+				jQuery('#tabEquipos_ul_hist').html(data);
+			});
+    });	
+    $("#btn_find_hist").click(function(){
+			var url ="xml/eq_moviles.asp?RECURSO=listHistorial"
+			if ($('select#cblfindtipo').val() != "[ Seleccionar ]"){
+				url += "&ESTADO=" + $('select#cblfindtipo').val();
+			}
+			if ($('select#cblfindplanta').val() != "[ Seleccionar ]"){
+				url += "&PLANTA=" + $('select#cblfindplanta').val();
+			}
+			url += "&FOLIO=" + $('#txtfindfolio').val();
+			url += "&LINEA=" + $('#txtfindlinea').val();
+			url += "&PILA1=" + $('#txtfindpila').val();
+			url += "&FECHA_INI=" + $('#txtfindfecha').val()
+			url += "&Z=" +  Math.random()
+			//window.open(url);
+			jQuery.get(url, {}, function(data){
+				jQuery('#tabEquipos_ul_hist').html(data);
+			});
+    });	
+	$.ajax({ 
+			url: "xml/Usuarios.asp?RECURSO=GetUsuario&ID=" + username + "&Z=" +  Math.random(), 
+				type: "GET",
+				dataType: "html",
+				async: false,										
+				success: function (obj) {
+				xmlDoc = $.parseXML( obj );
+				$xml = $( xmlDoc );
+				var count=$($xml).find("ROW").size();
+		 		if (count == 0){
+						var nomb = "";
+						var apel = "";
+						var carg = "";
+				}else{
+					$($xml).find("ROW").each(function(){
+						var nomb = $(this).find("NOMBRES").text();
+						var apel = $(this).find("APELLIDOS").text();
+						$("#log_key1").html('&nbsp;Usuario:&nbsp;' + nomb + ' '+ apel);
+						$("#log_key2").html('&nbsp;Faena:&nbsp;' + faena);
+					});
+				}
+				
+			}
+	});		
+});
+
+jQuery(document).ready(function () {
+	setTimeout(function(){ajax_app();},3000);
+	//setTimeout(function(){$("#panel_load").hide();},1500);
+	//alwaysOnTop.hidediv('ajaxdiv');
+});
+
+	</script>
+</head>
+<body style="cursor: auto; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;">
+<div id="panel_load"><div class="modal-backdrop"></div><div class="modal"><img src="images/Icon-Search-loader.gif" alt="" title="" /></div></div>
+<div id="ajaxdiv" style="position:absolute; width:850px; height:300px; overflow:auto; border:1px solid black; padding: 2px; background:#D7D7D7; visibility:hidden; z-index:50;"><table width="100%" border="0" align="center" cellpadding="1" cellspacing="2"><tr><td width="981" align="center" bgcolor="#FFFFFF"><font class="titulo">Registros de Tren de Apilamiento</font></td><td width="81" align="center" bgcolor="#FFFFFF"><a href="javascript:alwaysOnTop.hidediv('ajaxdiv')">CERRAR</a></td></tr><tr><td colspan="2" align="center" bgcolor="#FFFFFF"><div  ID="tabEquipos"  style=" visibility:visible"><ul id="tabEquipos_ul"></ul></div></td></tr></table></div>
+<div id="ajaxdiv2" style="position:absolute; width:850px; height:300px; overflow:auto; border:1px solid black; padding: 2px; background:#D7D7D7; visibility:hidden; z-index:50;"><table width='100%' border='0' align='center' cellpadding='1' cellspacing='2'><tr><td width='981' align='center' bgcolor='#FFFFFF'><font class='titulo'>Registros Historial de Tren de Apilamiento</font></td><td width='81' align='center' bgcolor='#FFFFFF'><a href="javascript:alwaysOnTop.hidediv('ajaxdiv2');">CERRAR</a></td></tr><tr><td colspan="2" align='center' bgcolor='#FFFFFF'><table width='100%' border='0' cellspacing='1' cellpadding='1'>
+  <tr>
+    <td align='center'>Folio&nbsp;
+      <input name='txtfindfolio' type='text' id='txtfindfolio' size='3' /></td>
+    <td align='center'>Linea&nbsp;
+      <input name='txtfindlinea' type='text' id='txtfindlinea' size='3' /></td>
+    <td align='center'>Tipo&nbsp;
+      <select name='cblfindtipo' id='cblfindtipo'>
+        <option value=''>[ Seleccionar ]</option>
+        <option value='ACT'>OPERATIVO</option>
+        <option value='STB'>PROPUESTA</option>
+      </select></td>
+    <td align='center'>Pila&nbsp;
+      <input name='txtfindpila' type='text' id='txtfindpila' size='4' /></td>
+    <td align='center'>Planta&nbsp;
+      <select name='cblfindplanta' id='cblfindplanta'>
+        <option>[ Seleccionar ]</option>
+        <option value='PLANTA 1'>PLANTA 1</option>
+        <option value='PLANTA 2'>PLANTA 2</option>
+      </select></td>
+    <td align='center'>Fecha&nbsp;
+      <input name='txtfindfecha' type='text' id='txtfindfecha' size='9' /></td>
+    <td align='center'><a id="btn_find_hist" class="post9"></a></td>
+  </tr>
+</table></td></tr><tr><td colspan='2' align='center' bgcolor='#FFFFFF'><div  ID='tabEquipos'  style=' visibility:visible'><ul id='tabEquipos_ul_hist'></ul></div></td></tr></table></div>
+<div style="position:absolute; top:0; left:0;">
+
+            <table border="0" cellpadding="2" cellspacing="0">
+              <tr>
+                <td id="log_key1">&nbsp;</td>
+                <td width="2" rowspan="4">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td width="2" rowspan="2">&nbsp;</td>
+                <td>&nbsp;</td>
+                <td width="2" rowspan="2">&nbsp;</td>
+                <td width="2">&nbsp;</td>
+                <td width="2" rowspan="2">&nbsp;</td>
+                <td id="log_key2" align="right">&nbsp;</td>
+              </tr>
+              <tr>
+                <td rowspan="3" valign="top"><table border="0" cellspacing="1" cellpadding="1">
+                  <tr>
+                    <td align="center" valign="top"><table border="0" cellspacing="1" cellpadding="1">
+                      <tr>
+                        <td align="center" valign="top">Equipos Fijos</td>
+                      </tr>
+                      <tr>
+                        <td><div id="list0">
+                          <ul class="listdragable ui-droppable">
+                          </ul>
+                        </div></td>
+                      </tr>
+                      <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;<input id="all_list0" type="checkbox" value="1" class="check_todos"/>Seleccionar</td>
+                      </tr>
+                    </table></td>
+                  </tr>
+                  <tr>
+                    <td align="center" valign="top">Equipos Moviles</td>
+                  </tr>
+                  <tr>
+                    <td><div id="list1">
+                      <ul class="listdragable ui-droppable">
+                      </ul>
+                    </div></td>
+                    
+                  </tr>
+                  <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;<input id="all_list1" type="checkbox" value="1" class="check_todos"/>Seleccionar</td>
+                  </tr>
+                  <tr>
+                    <td bgcolor="#333333"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td bgcolor="#FFFFFF"><table width="100%" border="0" cellspacing="1" cellpadding="1">
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;<a id="btn_cargar" class="post1"></a></td>
+    <td>&nbsp;<a id="btn_nuevo" class="post2"></a></td>
+    <td>&nbsp;<a id="btn_Print" class="post3"></a></td>
+    <td>&nbsp;<a id="btn_hist" class="post8"></a></td>
+    <td>&nbsp;<a id="btn_Mant" class="post4"></a></td>
+  </tr>
+</table>
+
+                      </tr>
+                    </table></td>
+                  </tr>
+                </table></td>
+                <td valign="top" bgcolor="#666666"><table id="L1" border="0" cellspacing="0" cellpadding="1">
+                  <tr>
+                    <td colspan="2" align="center" bgcolor="#FFFFFF"><input name="hddidhistorial" type="hidden" id="hddidhistorial"/>
+                      <input name="hddstatus_op" type="hidden" id="hddstatus_op"/>
+                      <input name="txt_fol1" type="hidden" id="txt_fol1" size="3" /><label id="lblfolio1"></label>                     &nbsp;&nbsp;LINEA -&nbsp;
+                    <input name="txt_linea01" type="text" class="list1_color" id="txt_linea01" size="5" maxlength="5" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" bgcolor="#FFFFFF">Tren de Apilamiento Principal</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" bgcolor="#FFFFFF">Pila &nbsp;&nbsp;<input name="txt_pila01" type="text" class="list1_color" id="txt_pila01" size="4" maxlength="5" />&nbsp;&nbsp;&nbsp;<select name="cbl_planta01" id="cbl_planta01" onchange="replic();">
+                        <option value="">Seleccione Planta</option>
+                        <option value="PLANTA 1">PLANTA 1</option>
+                        <option value="PLANTA 2">PLANTA 2</option>
+                    </select>
+                    <input type="hidden" name="hddpila01" id="hddpila01" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><div id="list2">
+                      <ul id="reOrder" class="listdragable ui-droppable">
+                      </ul><!--<div class="transfer" id="transfer"><img src="images/transfer.png"/></div>-->
+                    </div></td>
+                  </tr>
+                  <tr>
+                    <td height="23" align="left" valign="top" bgcolor="#FFFFFF" style="text-align:right"><input id="all_list2" type="checkbox" value="1" class="check_todos"/>
+Seleccionar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td height="23" valign="top" bgcolor="#FFFFFF"><input id="id_stby1" type="checkbox" value="1" class="check_todos"/>Propuesta</td>
+                  </tr>
+                  <tr>
+                    <td height="23" align="left" valign="middle" bgcolor="#FFFFFF" style="text-align:right"><input type="hidden" name="hddstatus" id="hddstatus" />                      <input type="hidden" name="hddfech1" id="hddfech1" /></td>
+                    <td height="23" valign="top" bgcolor="#FFFFFF"><a id="btn_del3" class="post5"></a></td>
+                  </tr>
+                </table></td>
+                <td rowspan="3" valign="top"><table id="L1B" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td colspan="2" align="center" valign="top"><img src="images/image_tren_1.png" alt=""/></td>
+                  </tr>
+                  <tr>
+                    <td height="32" colspan="2" align="center" valign="middle" background="images/image_tren_2.png" style="background-image:url(images/image_tren_2.png); background-repeat:no-repeat; background-position:center;"><input name="txt_linea03" type="hidden" class="list3_color" id="txt_linea03" size="2" maxlength="2" /><input name="txt_pila05" type="hidden" class="list3_color" id="txt_pila05" size="2" maxlength="5" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" valign="top"><img src="images/image_tren_3.png" alt=""/></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><div id="list6">
+                      <ul id="reOrder" class="listdragable ui-droppable">
+                      </ul>
+                    </div></td>
+                  </tr>
+                  <tr>
+                    <td height="23" align="left" valign="top" bgcolor="#FFFFFF" style="text-align:right"><input id="all_list6" type="checkbox" value="1" class="check_todos"/>Seleccionar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td  align="right" valign="top" bgcolor="#FFFFFF" style="text-align:right"><a id="btn_del1" class="post5"></a></td>
+                  </tr>
+                  <tr>
+                    <td height="22" colspan="2" align="center" valign="top">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" valign="top">&nbsp;</td>
+                  </tr>                  
+                </table></td>
+                <td valign="top" bgcolor="#666666"><table id="L2" border="0" cellpadding="1" cellspacing="0">
+                  <tr>
+                    <td height="24" colspan="2" align="center" bgcolor="#FFFFFF"><input name="txt_fol2" type="hidden" id="txt_fol2" size="3" /><label id="lblfolio2"></label>&nbsp;&nbsp;LINEA -&nbsp;<label id="txt_linea02"></label></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" bgcolor="#FFFFFF">Tren de Apilamiento Auxiliar</td>
+                  </tr>
+                  <tr>
+                    <td height="20"  colspan="2" align="center" bgcolor="#FFFFFF">Pila &nbsp;&nbsp;<label id="txt_pila02"></label>&nbsp;&nbsp;&nbsp;<label id="cbl_planta02"></label></td>
+                  </tr>
+              <tr>
+                <td colspan="2" bgcolor="#FFFFFF">
+                     <div id="list4">
+                        <ul id="reOrder" class="listdragable ui-droppable">
+                        </ul>
+                    </div>
+                </td>
+                </tr>
+              <tr>
+                <td height="23" align="left" valign="top" bgcolor="#FFFFFF" style="text-align:right; font-family: Arial, Helvetica, sans-serif;"><input id="all_list4" type="checkbox" value="1" class="check_todos"/>
+                Seleccionar<span style="text-align:right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                <td height="23" valign="top" bgcolor="#FFFFFF"><a id="btn_del4" class="post5"></a></td>
+                </tr>
+              <tr>
+                <td height="23" align="left" valign="middle" bgcolor="#FFFFFF" style="text-align:right; font-family: Arial, Helvetica, sans-serif;"><span style="text-align:right">
+                  <input type="hidden" name="hddfech2" id="hddfech2" />
+                </span></td>
+                <td height="23" valign="top" bgcolor="#FFFFFF"></td>
+                </tr>
+                </table></td>
+                <td rowspan="3" valign="top"><table id="L2B" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td colspan="2" align="center" valign="top"><img src="images/image_tren_1.png" alt=""/></td>
+                  </tr>
+                  <tr>
+                    <td height="32" colspan="2" align="center" valign="middle" background="images/image_tren_2.png" style="background-image:url(images/image_tren_2.png); background-repeat:no-repeat; background-position:center;"><input name="txt_linea04" type="hidden" class="list3_color" id="txt_linea04" size="2" maxlength="2" /><input name="txt_pila06" type="hidden" class="list3_color" id="txt_pila06" size="2" maxlength="5" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" valign="top"><img src="images/image_tren_3.png" alt=""/></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" bgcolor="#FFFFFF"><div id="list7">
+                      <ul id="reOrder" class="listdragable ui-droppable">
+                      </ul>
+                    </div></td>
+                  </tr>
+                  <tr>
+                    <td height="23" align="left" valign="top" bgcolor="#FFFFFF" style="text-align:right"><input id="all_list7" type="checkbox" value="1" class="check_todos"/>
+                      Seleccionar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td  align="right" valign="top" bgcolor="#FFFFFF" style="text-align:right"><a id="btn_del2" class="post5"></a></td>
+                  </tr>
+                  <tr>                    
+                    <td rowspan="2" valign="top" bgcolor="#FFFFFF">
+                    <a id="imageField" class="post7" onclick="call_grabartodo();"></a><div class="loading2" id="load3" align="right"><img src="images/ajax-loader.gif" height="20px" width="20px"/></div></td>
+                  </tr>
+                  <tr>
+                    <td align="left" valign="middle" bgcolor="#FFFFFF" style="text-align:right">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td height="22" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input name="txtfolio" type="hidden" id="txtfolio" size="5" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" align="center" valign="top">&nbsp;</td>
+                  </tr>
+                </table>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="8" height="1">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="8" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="1" cellspacing="1">
+                  <tr>
+                    <td width="18" rowspan="3" bgcolor="#FFFFFF"><img src="Scripts/up.png" alt="" width="18" height="18" /></td>
+                    <td align="center" bgcolor="#FFFFFF">Operativa</td>
+                    <td width="18" rowspan="3" bgcolor="#FFFFFF"><img src="Scripts/right_up.png" alt="" width="18" height="18" /></td>
+                    <td align="center" bgcolor="#FFFFFF">Operativa</td>
+                    <td width="18" rowspan="3" bgcolor="#FFFFFF"><img src="Scripts/right.png" alt="" width="18" height="18" /></td>
+                    <td align="center" bgcolor="#FFFFFF">Operativa Regular</td>
+                    <td width="18" rowspan="3" bgcolor="#FFFFFF"><img src="Scripts/right_down.png" alt="" width="18" height="18" /></td>
+                    <td align="center" bgcolor="#FFFFFF">Operativa Bajo Condiciones</td>
+                    <td width="18" rowspan="3" bgcolor="#FFFFFF"><img src="Scripts/down.png" alt="" width="18" height="18" /></td>
+                    <td align="center" bgcolor="#FFFFFF">Fuera de Servicio</td>
+                  </tr>
+                  <tr>
+                    <td bgcolor="#FFFFFF">Buen estado</td>
+                    <td bgcolor="#FFFFFF">Estado con Observaciones</td>
+                    <td bgcolor="#FFFFFF">Programar Mantenimiento</td>
+                    <td bgcolor="#FFFFFF">Fallas "Relevantes"</td>
+                    <td bgcolor="#FFFFFF">Fallas sin solucionar / Deteccion por Falla</td>
+                  </tr>
+                  <tr>
+                    <td bgcolor="#FFFFFF">Puntaje = 6 a 7</td>
+                    <td bgcolor="#FFFFFF">Puntaje = 5</td>
+                    <td bgcolor="#FFFFFF">Puntaje = 4</td>
+                    <td bgcolor="#FFFFFF">Puntaje = 3</td>
+                    <td bgcolor="#FFFFFF">Puntaje = 1 a 2</td>
+                  </tr>
+                </table></td>
+              </tr>
+            </table>
+            
+</div>
+    <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar.css" />
+	<link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar_dhx_web.css" />     
+	<script src="Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtfindfecha"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+
+</body></html>

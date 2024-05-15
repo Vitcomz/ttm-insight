@@ -1,0 +1,173 @@
+<html><head><title>Ubicacion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<title>Faenas</title>
+
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<script language="Javascript1.2" src="script/jquery.js"></script>
+<script language="JavaScript1.2" src="script/main.js"></script>
+</head>
+
+<style>
+body{background-color: #4C4C4C;}
+.style2 {
+	font-size: 14px;
+	color: #ffffff;
+	margin-left: 20px;
+	margin-top: 20px;
+	font: Verdana, Arial, Helvetica, sans-serif;
+	cursor:pointer;
+}
+
+</style>
+
+<script type="text/javascript">
+
+var codeobj = new Object();
+
+function showWin(_popbox, _codeobj){
+ // parent.event.cancelBubble=true;
+  //strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+   point = getXY(codeobj);
+ // point = getPost(codeobj);
+  with (popbox.style){
+  	    visibility = "visible";  }
+ 
+}
+
+function selFaena(v){
+ 
+ parent.setFaena(v);
+
+salir();
+
+
+}
+
+ 
+
+
+ function newUbi(){
+
+
+	var name = prompt("Ingrese un nombre", "ej. SPENCE");
+	
+	if(!name)return;
+	
+	 var url = "js/admin.asp?RECURSO=newUbi";
+			url += "&EMPRESA="+getEmpresa();
+			url += "&NOMBRE="+ name;
+			url += "&VTZ=" + Math.random();
+	
+	//window.open(url);
+	
+		$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){	
+					alert("Ubicacion Registrado.");
+					inicio();
+			}) //end each
+		})//end $get			
+}
+
+
+
+function inicio(){            
+            
+	document.getElementById('idEmpresa').innerText=getEmpresa();
+	
+	if(getParametro("noBtn")==1){
+		document.getElementById('idBtn').className="hidden";
+	}
+	
+	var url = "js/clientes.asp?RECURSO=listFaenas";
+		url += "&P=" + getParametro("P");
+		url += "&USUARIO=" + getParametro("USUARIO");
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+
+	//window.open(url);
+	//alert(getParametro("P"));
+
+	var tbl = document.getElementById('tbl');
+	limpiarTabla2(tbl);
+	
+	var j=0;
+  	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+						
+					row = tbl.insertRow(-1);
+					row.className = "style2"
+					 
+					var _text = $(this).find("CODIGO").text();	
+					if (getParametro("P")==1){				
+						row.onclick = function (){ set( _text ) };
+					}else{
+						row.onclick = function (){ selFaena( _text ) };
+					}
+	
+					var cell = row.insertCell(0);
+					cell.innerHTML = "<span>" +  $(this).find("CODIGO").text() + "</span>";
+				//	cell.className='hidden';
+					cell.width='300px';
+						//cell.setAttribute("onclick", "javascript:set(this);");
+						
+					var cell = row.insertCell(1);
+					cell.innerHTML =  "<span >" + $(this).find("NOMBRE").text() + "</span>";
+					cell.width='300px';
+					if (getParametro("P")==1){
+						 
+						var cell = row.insertCell(2);
+							if ($(this).find("USUARIO").text()){
+								cell.innerHTML =  "<input type='checkbox' checked=true />";}
+							else{
+								cell.innerHTML =  "<input type='checkbox'  />";
+							}
+							cell.width='300px';
+					}
+          
+			}) //end each
+		})//end $get	
+			
+}
+
+function set(_cod){            
+            
+			document.getElementById('idEmpresa').innerText=getEmpresa();
+			
+			if(getParametro("noBtn")==1){
+				document.getElementById('idBtn').className="hidden";
+			}
+			
+			  var 	url = "js/clientes.asp?RECURSO=setFaena";
+					url += "&FAENA=" + _cod;
+					url += "&USUARIO=" + getParametro("USUARIO");
+					url += "&EMPRESA=" + getEmpresa();
+					url += "&VTZ=" + Math.random();
+			
+			//window.open(url);
+					
+			var j=0;
+			  $.get(url, function(theXML){
+					$('ROW',theXML).each(function(i){
+								alert($(this).find("CODIGO").text())				  
+					}) //end each
+				})//end $get	
+					
+		}
+
+function salir(){
+parent.document.getElementById('boxFaenas').close();
+}
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0">
+<br/>  <span id="idEmpresa" class="hidden"></span>
+<table width="100%" class="texto" cellpadding=2 id="tbl" cellspacing=0 bordercolor="#6587a3">
+ 
+</table>
+	<input  type="button" class="input" id="idBtn" onClick="newUbi();" value="Nuevo " />
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Untitled</title>
+<XML id="XMLDoc"></XML>
+
+
+
+
+
+
+<script>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var strs;
+
+function popsearchbox(_servstr, _codeobj, _nameobj, _popbox){
+  parent.event.cancelBubble=true;
+  strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 1;
+    visibility = "visible";
+  }
+  popbox.focus();
+//  calle.focus();
+search();
+}
+function setcodeandname(code, name){
+  codeobj.value = code;
+  nameobj.value = name;
+}
+function close(){
+  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</script>
+
+<script>
+//<!-- 
+function search(strc,strn){
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var res = xmlDso.load("xml/Roles.asp?RECURSO=ListRol&s="+strs+"&c="+strc+"&n="+strn);
+ //window.open("xml/ListRoles.asp?s="+strs+"&c="+strc+"&n="+strn);
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+  }
+}
+function set(itr){
+  if (itr){
+  	setcodeandname(itr.children[0].children[0].innerText, itr.children[0].children[1].innerText);
+	parent.Get();
+	parent.ListMenuRol();
+	}
+  else setcodeandname("","");
+  close();
+}
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+//-->
+</script>
+
+<style>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</style>
+
+<body leftmargin=0 topmargin=0 style="font:normal 100% tahoma;" bgcolor="#dee6eb" scroll="no"  
+onLoad="">
+
+<center>
+
+<table width="100%" border=0 cellpadding=0 cellspacing=0>
+  <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;">&nbsp;B�squeda</td>
+    <td align="right">
+      <img src="images/close.gif" width="16" height="14" onclick="set();">
+    </td>
+  </tr>
+</table>
+
+<!--table width="90%" border=0 cellpadding=0 cellspacing=0>
+  <tr>
+    <td style="font-size:75%;">ID</td>
+    <td style="font-size:75%;">Descripci�n</td>
+    <td style="font-size:75%;"></td>
+  </tr>
+  <tr>
+    <td><input type="text" class="input0" id="strc" name="calle"></td>
+    <td><input type="text" class="input1" id="strn"></td>
+    <td><input type="button" class="buttom" onclick="search(strc.value,strn.value);" value="Buscar"></td>
+  </tr>
+</table-->
+
+<span id="msg" class="text" style="display:none;"></span>
+
+<span id="cont" style="height:160px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<table width="100%" datasrc="#XMLDoc" border=0 cellpadding=2 cellspacing=0 bordercolor="#6587a3">
+  <thead>
+  <!--tr bgcolor="#c0ceda">
+    <td class="text" align="center" style="border-bottom:solid 1px #6587a3;">ID</td>
+  </tr-->
+  </thead>
+  <tr onclick="set(this);" style="cursor:default;" onMouseOver="">
+    <td style="border-bottom:solid 1px #6587a3;">
+      <span datafld="ID" class="text"></span>&nbsp;
+      <span datafld="NOMBRE" class="text"></span>
+    </td>
+  </tr>
+</table>
+</span>
+
+</center>
+</body>
+
+</html>

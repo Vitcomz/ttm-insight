@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Biblioteca Virtual</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+-->
+</STYLE>
+
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+var newEvent = false;
+xmlDoc.async = false;
+
+
+function GetBitacora(){
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Insumos.asp?RECURSO=GetInsumo&CODIGO=" + formulario.TxtCodigo.value;
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+}
+
+ 
+function ListTemas(){
+	var xmlDso = xmlDoc.XMLDocument;
+	xmlDoc.async = false;
+	var url = "xml/temas.asp?RECURSO=ListTemas";
+	    url += "&CATEGORIA=NEGOCIOS";
+		 url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+	xmlestado = xmlDso.load(url);
+	
+if(xmlestado){	
+			//BLOQUE DE NAVEGACION
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/15);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		
+	}
+	else
+		window.open(url);
+
+}
+
+
+function newTema(){
+var url ="dlgTema.html";
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:650px;dialogHeight:400px;scroll:yes");
+ListTemas();	
+}
+
+
+function verTema(Index){
+var tabla = document.getElementById('tabBitacora');
+var id =  tabla.rows[Index].children[0].innerText;
+
+	
+var url ="dlgTema.html?ID=" + id ;
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:650px;dialogHeight:400px;scroll:yes");
+ListTemas();
+
+
+
+}
+
+
+
+function Inicio(){
+
+ListTemas();
+
+}
+
+function color(){
+var tbl = document.getElementById('tabBitacora');
+
+
+
+for (i=1; i<tbl.rows.length-1; i++){
+
+
+if(trim(tbl.rows[i].children[6].innerText)=='ALTA'){
+	tbl.rows[i].children[6].bgColor="#FF0000;";
+	}
+
+if(trim(tbl.rows[i].children[6].innerText)=="MEDIA")
+	tbl.rows[i].children[6].bgColor="#FFFF00;";
+
+if(trim(tbl.rows[i].children[6].innerText)=="BAJA")
+	tbl.rows[i].children[6].bgColor="#00FF33;";
+	
+	
+				
+			
+	 }
+
+}
+
+
+</SCRIPT>
+
+<BODY onLoad="Inicio();">
+	<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+	</DIV>
+<FORM name="formulario">
+<INPUT type="hidden" value="" name="IdUsuario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<BR><BR><BR>
+<TABLE WIDTH="298" id="tableTitulo">
+<TR>
+  <TD WIDTH="417"  height="31" class="titulo">INTELIGENCIA DE NEGOCIOS</TD>
+</TR>
+
+<TR>
+  <TD  height="31" ALIGN="LEFT" class="titulo">
+    <INPUT  type="button" class="botonBlanco" 
+                    onClick="newTema();" value="Nuevo Tema">
+  </TD>
+</TR>
+</TABLE>
+
+<TABLE width="922" cellpadding="2" cellspacing="1"  BORDER="1" BORDERCOLOR="#000000" 
+				id="tabBitacora"  datasrc=#xmlDoc datapagesize="15">
+<THEAD>
+				<TR CLASS="Rotulo">
+				  <TD WIDTH="56">ID</TD>
+   				  <TD WIDTH="137">&nbsp;Fecha</TD>
+   				  <TD WIDTH="120">&nbsp;Autor&nbsp;</TD>
+   				  <TD WIDTH="379">Descripci&oacute;n</TD>
+				  <TD WIDTH="137">Sucursal</TD>
+  				  <TD WIDTH="48">&nbsp;</TD>
+				</TR>
+				</THEAD>
+			<TR onMouseOver="mOvr(this,'#dee6eb')"	onMouseOut="mOut(this,'#FFFFFF')" 
+            onclick="verTema(this.rowIndex);" CLASS="texto">
+				<TD valign="top" onClick="return;"><SPAN name="TxtID"  datafld="ID"/></TD>
+				<TD valign="top"><SPAN  name="txtFecha" datafld="FECHA"/></TD>
+				<TD valign="top"><SPAN  name="txtAutor" datafld="AUTOR"/></TD>
+				<TD><SPAN  name="txtResponsable" datafld="DESCRIPCION"/></TD>
+				<TD align="center" valign="top"><SPAN  name="txtResponsable" datafld="SUCURSAL"/></TD>
+			  <TD ALIGN="CENTER" valign="top">
+                <IMG style="CURSOR: hand" src="images/lupa2.gif" align="middle"></TD>
+			</TR>
+      		<TFOOT>
+             <TR CLASS="rotulo">
+      		 <TD COLSPAN="6">
+      		<INPUT  class="littleButton" type="button" value=" << " onClick="irInicio('tabBitacora');">
+			<INPUT  class="littleButton" type="button" value="  <  " onClick="irAtras('tabBitacora');">
+			<INPUT  class="littleButton" type="button" value="  >  " 
+                            onClick="irAdelante('tabBitacora');">
+			<INPUT  class="littleButton" type="button" value=" >> " onClick="irFinal('tabBitacora');">&nbsp;&nbsp;
+			Registros: <SPAN id="ID_list_cant_reg"></SPAN>&nbsp;| Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>
+            </TD></TR>
+</TABLE>
+
+
+
+</FORM>
+</BODY>
+</HTML>

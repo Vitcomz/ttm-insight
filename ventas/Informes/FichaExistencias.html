@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Consulta </title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlTemp"></xml>
+		<xml id="xmlArticulo"></xml>
+		
+		<LINK href="../AW/grid.css" type="text/css" rel="stylesheet">
+		<link rel="stylesheet" href="/sci/sci.css" type="text/css">
+
+
+
+
+
+
+		<script lang="es-cl" src="../AW/grid.js"></script>
+		<script lang="es-cl" src="../AW/paging1.js"></script>
+		<script src="../general.js"></script>
+	<style> 
+	.active-grid-column {border-right: 1px solid threedshadow;}
+	.active-grid-row {border-bottom: 1px solid threedlightshadow;}
+	.active-controls-grid {height: 100%; font: menu;}
+	.active-column-0 {width: 70px;}
+	.active-column-1 {width: 50px;}
+	.active-column-2 {width: 200px;}
+	.active-column-3 {width: 70px;}
+	.active-column-4 {width: 70px;}
+	.active-column-5 {width: 70px;}
+	.active-column-6 {width: 70px;}
+	.active-column-7 {width: 100px;}
+	.active-column-8 {width: 100px;}
+/*	.active-column-4 {text-align: left;}
+	.active-column-5 {text-align: left;}
+	.active-column-6 {text-align: left;}
+	.active-column-7 {text-align: left;}*/
+</style>
+
+<script>
+	
+  	  var grid = new Active.Controls.Grid;
+	  var table = new Active.XML.Table;
+
+
+function GetArticulo(){
+
+	xmlArticulo.async = false;
+	var xmlDso = xmlArticulo.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=GetArticulo&ID=" + formulario.txtID.value;;
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+				
+}
+
+      function setXmlGrid(xmlTemp, url){
+       xmlTemp.async = false;
+       var res = xmlTemp.load(url);
+	 //  window.open(url);
+       var xml, node = xmlTemp; 
+
+       if (window.ActiveXObject){//	IE
+		xml = node;
+	   }
+	  else{//	Mozilla
+	    xml = document.implementation.createDocument("","", null);
+	    xml.appendChild(node.selectSingleNode("*"));
+	   }
+	   //	provide data XML
+       var nRows = xml.childNodes.item(1).childNodes.length;
+       //alert(nRows);
+       table.setXML(xml);
+	   grid.setModel("row", new Active.Rows.Page);
+	   grid.setProperty("row/count", nRows);
+	   grid.setProperty("column/count",8);
+	   grid.setProperty("row/pageSize", 35);
+	   grid.setDataModel(table);
+     }
+
+     function setGrid(){
+      //	create data formats
+	  var string = new Active.Formats.String;
+	  var number1 = new Active.Formats.Number;
+	  var number2 = new Active.Formats.Number;
+	  var date = new Active.Formats.Date;
+
+      // define formatting rule for text output
+	  // number1.setTextFormat("#.###,##");
+	  // number2.setTextFormat("");
+
+    	xmlTemp.async = false;
+	  var xmlDso = xmlTemp.XMLDocument;
+	  var Url = "../xml/Existencias.asp?RECURSO=Existencia";
+	 /* Url = Url + "&CCosto=" + Form1.idCodCCosto.value;
+	  Url = Url + "&TipoPpto=" + Form1.listConsumo.value; 
+	  Url = Url + "&Descripcion=" + Form1.txtDescripcion.value;
+	  Url = Url + "&Anho=" + Form1.txtAnho.value; 
+	  Url = Url + "&Estado=" + Form1.listEstados.value;
+	  Url = Url + "&Opcion=0";*/
+   	  setXmlGrid(xmlDso, Url);
+      //define column labels
+	  var columns = ["Bodega","Codigo", "Descripci�n","Cantidad", "Valor", "Total", "Ubicacion","Seccion"];
+	  grid.setColumnProperty("texts", columns);
+
+      grid.setAction("click", function(src)
+       {
+        var row = src.getRowProperty("index");
+        var count = this.getColumnProperty("count");
+        var column, result;
+        result = this.getDataProperty("text", row, 0);
+        result1 = this.getDataProperty("text", row, 1);
+        
+	   }
+	  );
+
+      //row.setEvent("ondblclick", function(){this.action("dblClickAction")});
+      grid.setAction("dblClickAction", function(src){
+      var i = src.getProperty("item/index");
+      alert(this.getDataText(i,0) + ' ' + this.getItemProperty("text"));
+      });
+
+      //grid.getColumnTemplate(4).setStyle("color", myColor);
+	  document.write(grid);
+     }
+      
+      function ActualizaGrid(){
+       xmlConsSolicitud.async = false;
+	  var xmlDso = xmlConsSolicitud.XMLDocument;
+	  var Url = "../xml/Existencias.asp?RECURSO=Existencia";
+	   setXmlGrid(xmlDso, Url);
+	   grid.refresh();
+	   goToPage(0);
+      }
+      
+		</script>
+	</HEAD>
+		
+<DIV id="divArticulos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 99px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 98px; width: 450px; height: 235px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameArticulos" src="../ListArticulos.html" frameBorder="0" width="450" scrolling="no" height="235"></IFRAME>
+</DIV>
+	<body >
+		<form  name="formulario" method="post" >
+			<table height="46" cellSpacing="0" cellPadding="0" width="750" border="0"  DATASRC="#xmlArticulo">		
+				<tr>
+					<th vAlign="top" width="15" background="images/tag_left.jpg" height="23"><!--DWLayoutEmptyCell-->&nbsp;  </th>
+					<th  class="titulo" vAlign="bottom" align="left" width="750" background="images/tag_center.jpg">
+							INFORME DE EXISTENCIA
+					</th>
+					<th vAlign="top" width="26" background="images/tag_right.jpg" height="23"><!--DWLayoutEmptyCell-->&nbsp;  </th></tr>
+				<tr>
+				  <th vAlign="top" background="images/tag_left.jpg" height="23"><!--DWLayoutEmptyCell-->&nbsp;</th>
+				  <th  class="titulo" vAlign="bottom" align="left" background="images/tag_center.jpg">
+				  ARTICULO : 
+				  <INPUT NAME="txtID" size="5" class="input" >
+				  <INPUT NAME="txtCodigo" size="5" class="hidden" >
+				  <img src="../images/lupa.jpg" alt="Buscar" width="19" height="19" align="middle" style="CURSOR: hand" 
+									onClick="frameArticulos.popsearchbox(txtID,txtCodigo,
+									 divArticulos,'GetArticulo()','EXISTENCIA'); return false;">
+				  <input class="input" name="TxtNombre" type="text" id="TxtNombre" size="80" datafld="NOMBRE">
+				  			      </th>
+				  <th vAlign="top" background="images/tag_right.jpg" height="23"><!--DWLayoutEmptyCell-->&nbsp;</th>
+			  </tr>
+			</table>
+			<br>
+			<table height="355" cellSpacing="0" cellPadding="0" width="752" border="0">
+				<tr>
+	
+				<tr>
+					<th>
+						<table id="tabSolicitud" height="421" cellSpacing="0" cellPadding="0" width="750" border="0">
+							<TR>
+								<td height="421">
+							  <script>
+											setGrid();
+									</script>							  </td>
+							</TR>
+					  </table>
+					</th>
+				</tr>
+				<tr>
+					<th>
+						<!--//botonera para avanzar por paginas-->
+						<table>
+							<tr height="20">
+								<td width="1" background="images/BorderTable.jpg"></td>
+								<td class="controlButon" align="right">
+									<input class="littleButton" onClick="goToPage(-Infinity)" type="button" value="<<">
+									<input class="littleButton" onClick="goToPage(-1)" type="button" value="<"> <span id="pageLabel">
+									</span><input class="littleButton" onClick="goToPage(1);" type="button" value=">">
+									<input class="littleButton" onClick="goToPage(Infinity);" type="button" value=">>">
+								</td>
+								<td width="1" background="images/BorderTable.jpg"></td>
+							</tr>
+						</table>
+					</th>
+				</tr>
+			</table>
+		</form>
+		<script>
+		
+	function goToPage(delta){
+		var count = grid.getProperty("row/pageCount");
+		var number = grid.getProperty("row/pageNumber");
+		number += delta;
+		if (number < 0) {number = 0}
+		if (number > count-1) {number = count-1}
+		document.getElementById('pageLabel').innerHTML = "P�gina " + (number + 1) + " de " + count + " ";
+
+		grid.setProperty("row/pageNumber", number);
+		grid.refresh();
+	}
+	goToPage(0);
+		</script>
+	</body>
+</HTML>

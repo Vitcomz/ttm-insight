@@ -1,0 +1,31 @@
+/*Este archivo contiene los estilos de 
+nuestra página html*/
+
+body{
+     font-family:Arial;	
+	 background:#518900;
+	
+}
+#header{
+     height:100px;
+}
+#content{
+     background-color:#FBF5EF;
+     height:260px;
+}
+#main{
+     background-color:#E3F6CE;
+     width:80%;
+     float:right;
+     height:260px;
+}
+#menu{
+     background-color:#F5D0A9;
+     width:20%;
+     float:left;
+     height:260px;
+}
+#footer{
+     background-color:#EFFBF5;
+     height:50px;
+}

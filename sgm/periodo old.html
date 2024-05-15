@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var fechaIni = new Object();
+var fechaFin = new Object();
+var functionName;
+
+mydate = new Date();
+hour      = mydate.getHours();
+if ((hour+"").length==1) hour = '0' + hour;
+minute    = mydate.getMinutes();
+day_month = mydate.getDate();
+month     = mydate.getMonth()+1;
+year      = mydate.getYear();    
+day       = mydate.getDay(); 
+
+function mostrarVentana(_fechaIni, _fechaFin, _divBox, _function)
+{
+  fechaIni = _fechaIni;
+  fechaFin = _fechaFin;
+  divBox = _divBox;
+  functionName = _function
+  with (divBox.style){visibility = "visible";} 
+  if(!_fechaIni.value){
+	var fiveMin=minute/5;		
+	fiveMin=parseInt(fiveMin)*5;		
+	if ((day_month+"").length==1) day_month ='0'+day_month;
+	if ((month+"").length==1) month ='0' + month;
+	if ((fiveMin+"").length==1) fiveMin ='0'+fiveMin;
+  	formulario.ListHoraIni.value = hour;
+	formulario.ListMinIni.value = fiveMin;
+  	formulario.ListHoraFin.value = hour;
+	formulario.ListMinFin.value = fiveMin;
+	formulario.TxtFechaIni.value = day_month + "/" + month +"/"+ year;
+	formulario.TxtFechaFin.value = day_month + "/" + month +"/"+ year;
+	}
+else{
+	  formulario.TxtFechaIni.value = _fechaIni.value.substr(0,10);
+	  formulario.ListHoraIni.value = _fechaIni.value.substr(11,2);  	  
+	  formulario.ListMinIni.value = _fechaIni.value.substr(14,2);
+  
+	  formulario.TxtFechaFin.value = _fechaFin.value.substr(0,10);
+	  formulario.ListHoraFin.value = _fechaFin.value.substr(11,2);
+	  formulario.ListMinFin.value = _fechaFin.value.substr(14,2);
+	}
+}
+
+
+function ListHoras(){
+
+var sHora="";
+
+var Hora = 0
+ for(var i = 0; i < 24; i++){
+	   if ((Hora+"").length==1) sHora = '0' + Hora;
+	   else	sHora = Hora;
+       opcion = new Option(sHora,sHora);
+	   formulario.ListHoraIni.options[i] = opcion; 
+       opcion = new Option(sHora,sHora);
+   	   formulario.ListHoraFin.options[i] = opcion; 
+	   Hora = Hora +1;
+	}
+
+var sMin ="";
+var Min=0;
+
+for(var i = 0; i < 12; i++){
+	   if ((Min+"").length==1) sMin = '0' + Min;
+	   else	sMin = Min;
+       opcion = new Option(sMin,sMin);
+	   formulario.ListMinIni.options[i] = opcion; 
+       opcion = new Option(sMin,sMin);
+  	   formulario.ListMinFin.options[i] = opcion; 
+		Min = Min + 5;
+	}
+	
+
+ } 
+  
+function aceptar(Index){
+
+var f = formulario.TxtFechaIni.value;
+var Hora = formulario.ListHoraIni.value
+var Minuto = formulario.ListMinIni.value
+
+	dia = f.split("/")[0];
+	mes = f.split("/")[1];
+	anho = f.split("/")[2];
+
+				
+var dateIni = new Date(anho,mes-1,dia,Hora,Minuto); 
+
+//Fin Fecha Inicio
+
+var f = formulario.TxtFechaFin.value;
+var Hora = formulario.ListHoraFin.value
+var Minuto = formulario.ListMinFin.value
+
+	dia = f.split("/")[0];
+	mes = f.split("/")[1];
+	anho = f.split("/")[2];
+	
+			
+var dateFin = new Date(anho,mes-1,dia,Hora,Minuto); 
+
+if (dateIni.getTime()>dateFin.getTime()){
+		alert("Periodo Incorrecto.");
+		return;}
+else{
+	fechaIni.value = formatoFecha(dateIni);
+	fechaFin.value = formatoFecha(dateFin);
+	}
+
+//alert (dateIni); 
+//alert (dateFin);
+
+
+divBox.style.visibility = 'hidden';
+
+}
+
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body  onLoad="ListHoras();">
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+		<form name="formulario">
+		<table><tr><td width="50"></td><td>
+			<input type="hidden" size="0" name="txtIni">
+		</td></tr></table>
+			
+			<table border="0">
+						  <tr class="titulo">
+						    <td width="132" height="26" align="center">Periodo de Ejecuci&oacute;n</td>
+						    <td width="152" height="26" align="center"></td>
+						    <td width="16" height="26" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table>  
+			<table width="234" align="center" cellpadding="0" cellspacing="3" class="texto" id="tabPlanifica"  datasrc=#xmlIncidentesOT>
+				<thead>
+				<tr class="HeaderLista">
+				  <td width="116">Inicio</td>
+				  <td width="107">Hora </td>
+			    </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" height="27">
+				  <input class="inputT" type="text" size="12" name="TxtFechaIni"/>
+		          <img style='CURSOR: hand'  src='images/calendar.jpg' align='top'
+						  onClick="FrameCalendar.fPopCalendar(txtIni, TxtFechaIni,
+								  divCalendar,this.parentElement.parentElement.rowIndex);return false;"></td>
+			      <td align="center">
+				<select name="ListHoraIni" class="Input">
+                </select>
+				<select name="ListMinIni" class="Input">
+                </select>
+				</td>
+		      </tr>
+		        <tr bgcolor="#EEEEEE">
+		          <td height="13" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+		        <tr bgcolor="#dee6eb" class="HeaderLista">
+		          <td onClick="return;">Fin</td>
+		          <td align="center">Hora</td>
+	          </tr>
+	          <tr bgcolor="#dee6eb">
+				<td height="27" align="center" onClick="return;">
+				<input class="inputT" type="text" size="12" name="TxtFechaFin"/>
+			    <img  src='images/calendar.jpg' alt="Fecha Fin" align='top' style='CURSOR: hand'
+						  onClick="FrameCalendar.fPopCalendar(txtIni, TxtFechaFin,
+								  divCalendar,this.parentElement.parentElement.rowIndex);return false;"></td>
+				<td align="center">
+				<select name="ListHoraFin" class="Input">
+                </select>
+				<select name="ListMinFin" class="Input">
+                </select>
+				</td>
+			  </tr>
+</table>
+	      </div><br>
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="aceptar();" value="Aceptar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

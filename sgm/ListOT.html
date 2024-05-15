@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLDoc"></XML>
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var rol = new Object();
+var usuario = new Object();
+var strs;
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+//function mostrarVentana(_Obj1, _Obj2, _popbox){
+
+function mostrarVentana(_codeobj, _nameobj,  _popbox, _function, _usuario, _rol){
+  //alert("hi");
+  parent.event.cancelBubble=true;
+   popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  rol = _rol;
+  usuario = _usuario;
+  popbox = _popbox;
+  functionName = _function
+  with (popbox.style){visibility = "visible";}
+ // Form1.txtCentroCosto.focus();
+ search();
+ 
+}
+
+function popsearchbox(_servstr, _codeobj, _nameobj, _popbox, _function){
+  parent.event.cancelBubble=true;
+  strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj
+  functionName = _function
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 1;
+    visibility = "visible";
+  }
+  popbox.focus();
+//  calle.focus();
+search();
+}
+
+function setcodeandname(code, name){
+  codeobj.value = code;
+  nameobj.value = name;
+}
+
+function close(){
+  //nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+
+function search(){
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var 	url = "xml/OT.asp?RECURSO=ListOTPen";
+  		url += "&USUARIO="+usuario.value;
+	 	url += "&ROL="+rol.value;
+		url += "&FAENA="+getEmpresa();
+		url += "&VTZ=" + Math.random();
+	//	alert(url);
+  var res = xmlDso.load(url);
+		 
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+  	window.open(url);
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+  }
+}
+
+function set(itr){
+  if (itr){
+  	setcodeandname(itr.children[0].children[0].innerText, itr.children[2].children[0].innerText);
+	//alert("parent." + functionName);
+	eval("parent." + functionName);
+	}
+  else setcodeandname("","");
+  close();
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" BGCOLOR="#dee6eb" SCROLL="no"  
+onLoad="">
+
+<CENTER>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="set();">
+    </TD>
+  </TR>
+</TABLE>
+
+<!--table width="90%" border=0 cellpadding=0 cellspacing=0>
+  <tr>
+    <td style="font-size:75%;">ID</td>
+    <td style="font-size:75%;">Descripci�n</td>
+    <td style="font-size:75%;"></td>
+  </tr>
+  <tr>
+    <td><input type="text" class="input0" id="strc" name="calle"></td>
+    <td><input type="text" class="input1" id="strn"></td>
+    <td><input type="button" class="buttom" onclick="search(strc.value,strn.value);" value="Buscar"></td>
+  </tr>
+</table-->
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+
+<SPAN ID="cont" STYLE="height:190px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLDoc" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+  <TR BGCOLOR="#c0ceda">
+    <TD CLASS="text">
+      FOLIO
+    </TD>
+	<TD CLASS="text">
+      PROGRAMADA
+    </TD>
+	<TD CLASS="text">
+      EQUIPO
+    </TD>
+  </TR>
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:hand;" onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#dee6eb')" HEIGHT="9">
+    <TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="FOLIO_OT" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="FECHA" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="EQUIPO" CLASS="text"></SPAN>&nbsp;
+    </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+</BODY>
+
+</HTML>

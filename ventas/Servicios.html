@@ -1,0 +1,156 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Servicios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</HEAD>
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+</HEAD>
+<xml id = XMLDoc></xml>
+<xml id = xmlRoles></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+
+
+function search(strc){
+	
+if(strc.length<3)
+			 {alert("debe ser ingresar mas de 3 caracteres");
+			 return;
+			 }
+			 
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url = "xml/servicios.asp?RECURSO=ListServicios&SRCTEXT="+strc;
+  url += "&VTZ=" + Math.random();
+  
+  var res = xmlDso.load(url);
+ 
+  if (res){
+  	total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/8);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+	else
+	   	 window.open(url);
+		 
+
+}
+
+
+
+function Eliminar(Index){
+
+	var tabla = document.getElementById('tabServicios');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = XMLDoc.XMLDocument;
+	var url = "xml/servicios.asp?RECURSO=DelServicio&CODIGO=" + Codigo;
+	url += "&VTZ=" + Math.random();
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Servicio Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	}
+	
+	search(formulario.strc.value);
+}
+
+
+
+function newServicio(){
+
+document.frameNew.mostrarVentana(formulario.strc,formulario.strc,'PRE',divNew,'buscar()');
+
+}
+
+function buscar(){
+setTimeout("search(formulario.strc.value)",100);
+}
+
+</SCRIPT>
+
+<BODY onLoad="formulario.strc.focus();">
+
+<DIV id="divNew" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameNew" src="newServicio.html" frameBorder="0" width="350"
+		 scrolling="no" height="200"></IFRAME>
+</DIV>
+
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<FORM name="formulario" method="post" action="">
+
+  <P>&nbsp;</P>
+  <P class="titulo">&nbsp;</P>
+  <TABLE width="673" border="0" class="texto">
+    <TR>
+      <TD width="342" class="titulo">SERVICIOS</TD>
+      <TD width="158">&nbsp;</TD>
+    </TR>
+	 <TR align="center">
+    <TD colspan="2" align="left" class="text" style="color:#000000; font-weight:bold;">&nbsp;
+	<INPUT type="text" class="input" name="strc" size="35" onKeyPress="if(event.keyCode==13)search(strc.value);">
+    <INPUT type="button"  class="BotonBlanco" value="Buscar" onClick="search(strc.value);">
+    Ingrese 3 o mas caracteres para buscar los servicios.
+    </TD>
+  </TR>
+	 <TR align="center">
+	   <TD class="input">&nbsp;&nbsp;&nbsp;&nbsp;
+ 			<INPUT  class="littleButton" type="button" value=" << " onClick="irInicio('tabServicios');">
+			<INPUT  class="littleButton" type="button" value="  <  " onClick="irAtras('tabServicios');">
+			<INPUT  class="littleButton" type="button" value="  >  " onClick="irAdelante('tabServicios');">
+			<INPUT  class="littleButton" type="button" value=" >> " onClick="irFinal('tabServicios');">&nbsp;&nbsp;
+			Registros: <SPAN id="ID_list_cant_reg"></SPAN>&nbsp;| Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>
+	 </TD>
+    </TR>
+</TABLE>
+  <TABLE width="292" border="0"  class="texto"
+	  datapagesize="8"	datasrc="#XMLDoc" id="tabServicios" >
+    <THEAD>
+      <TR class="HeaderLista">
+        <TD>Codigo </TD>
+        <TD>Descripcion</TD>
+		<TD>Valor</TD>
+		<TD><IMG src="images/add.gif" onClick="newServicio();"
+				style="cursor:hand" /></TD>
+      </TR>
+    </THEAD>
+    <TR>
+      <TD><INPUT type="text" class="input" id="TxtRol" size="15" datafld="CODIGO"/></TD>
+      <TD><TEXTAREA cols="80" rows="3" class="input" datafld="DESCRIPCION"></TEXTAREA></TD>
+	  <TD><INPUT name="text" type="text" class="input"  size="15" datafld="VALOR"/></TD>
+	  <TD onClick="Eliminar(this.parentElement.rowIndex);">
+	  				<IMG src="images/trash.jpg" style="cursor:hand;"></TD>
+    </TR>
+  </TABLE>
+
+</FORM>
+</BODY>
+</HTML>

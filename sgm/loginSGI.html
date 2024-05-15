@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Autenticar</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV='Expires' CONTENT='Tue, 01 Jan 1980 1:00:00 GMT'>
+<META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	/*background-image:url(correa_ttm.jpg);*/
+}
+-->
+</STYLE>
+<XML id="XMLDoc"></XML>
+<XML id="xmlListFaenas"></XML>
+
+
+
+
+
+
+</HEAD>
+
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+function ValidaSession(){
+	if (getParametro("modo")){
+			DelSession(formulario.TxtID.value);
+			DelSessionEmpresa(formulario.TxtID.value);
+			this.location.href="login.html";
+			}
+}
+	
+	function _close(){
+
+	this.location.href="/index.html";
+			
+}
+	
+function Login(){
+
+	XMLDoc.async = false;
+	var xmlDso = XMLDoc.XMLDocument;
+	var url="/sci/xml/usuarios.asp?RECURSO=ValidaPass&ID=" + formulario.TxtID.value;
+		url += "&PASSWORD=" + formulario.TxtPassWord.value;
+		res = xmlDso.load(url);
+		
+		//alert(formulario.ListFaenas.value);
+	
+		if (res){
+            var tree = xmlDso.documentElement;
+            if (tree.childNodes(0).childNodes(0).text == 'True'){
+					CrearSession(formulario.TxtID.value);
+					//CrearSessionEmpresa(formulario.ListFaenas.value);			
+					this.location.href="objetivos.html";
+					}
+			else{
+			   alert("Usuario o Password Invalidos!");
+			   formulario.TxtID.focus();
+			   }
+	  }
+}
+
+function listFaenas(){
+       xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+        xmlDso = loadxml(url);
+		//alert(xmlDso);
+        if (xmlDso){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"DESCRIPCION"));
+            if (opcion.value == "0") opcion.selected = true;
+          	formulario.ListFaenas.options[i] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+}
+
+</SCRIPT>
+
+<BODY onload="formulario.TxtID.focus();ValidaSession();">
+<FORM name="formulario"  >
+  <TABLE width="292" border="0" align="center" class="texto">
+    <TR align="center">	
+	<TD height="23" colspan="2" class="input">
+		SGI Sistema de Gesti&oacute;n Integrado TTM <BR>Identificaci�n de Usuario.</TD>	
+    </TR>
+    <TR align="center">	
+	<TD height="16" colspan="2">
+	  <P class="titulo">
+	  <SCRIPT>
+	  	document.write("Session Actual <b>" + GetSession() + "</b>");
+	  </SCRIPT>
+	  </P>
+   </TD>
+   </TR>
+       
+    
+    <TR>
+	<TD  align="right">USUARIO :</TD>
+      <TD width="176">
+	  <INPUT name="TxtID" type="text"  class="input" 
+	  onClick="mensaje.style.visibility = 'hidden'" onkeyup=fn(this.form,this)>
+      </TD>
+	</TR>
+    <TR>
+      <TD align="right">PASSWORD :</TD>
+      <TD>
+	  <INPUT class="input" name="TxtPassWord"  type="password"
+	   onClick="this.value='';mensaje.style.visibility = 'hidden'" 
+	   			 onkeyup=fn(this.form,this) >
+	  </TD>
+    </TR>
+    <TR valign="middle">
+      <TD height="45" colspan="2"  align="center">
+			<INPUT type="button" class="botonBlanco" onClick="Login();" value="Aceptar">&nbsp;&nbsp;
+			<INPUT type="button" class="botonBlanco" onClick="_close();" value="Volver al Home">
+      </TD>
+	</TABLE>
+<TABLE width="230" align="center">
+	  <TR><TD>
+	  <SPAN class="mensaje" id="mensaje">
+	   Usuario o Contrase�a Invalido.</SPAN>
+	  </TD> </TR>
+	 </TABLE>
+     <DIV ALIGN="CENTER"><IMG SRC="images/logoNew.jpg" BORDER="0" />
+       <!--p class="texto">
+	Para ingresar de forma limitada utilice : USUARIO : demo , PASSWORD :123<br-->
+      </DIV>
+  <CENTER>
+  </CENTER>
+</FORM>
+</BODY>
+</HTML>

@@ -1,0 +1,656 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//ES" "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+
+<link rel="stylesheet" href="css/style-ttm.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+<style>
+.textoNormal{
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:12px;
+text-align:left;
+}
+
+</style>
+
+
+
+
+
+
+
+    <script language="Javascript1.2" src="js/jquery.js"></script>
+    <!--script language="Javascript1.2" src="script/ajax.js"></script-->
+    <script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+	<SCRIPT language="JavaScript1.2" src="js/main.js"></SCRIPT>
+    
+<script>
+
+
+function listAvisos(){
+
+
+	var _equipo="";
+	var tipo = getParametro("TIPO");
+	var area = getParametro("AREA");
+	var comp = getParametro("COMP");
+	
+	 if(getParametro("EQUIPO")){
+	 	_equipo = getParametro("EQUIPO");
+	 }
+
+
+
+	var url = "js/avisos.asp?RECURSO=listAvisosInd";
+		url += "&UBICACION=" + getEmpresa();
+	
+		 if(getParametro("HIST")=="true"){
+	 				url += "&HIST=True";
+				 }
+		
+		switch(getParametro("CRI")) {
+			case "ALTA":
+		 		url += "&CRITICIDAD=1";
+   				 break;
+				 
+			case "MEDIA":
+		 		url += "&CRITICIDAD=2";
+   				 break;
+		
+			case "BAJA":
+		 		url += "&CRITICIDAD=3";
+   				 break;
+				 
+			case "BUENA":
+		 		url += "&CRITICIDAD=4";
+   				 break;
+		}
+		
+	switch(getParametro("TIPO")) {
+	
+		case "1":
+   			 url += "&EQUIPO_PRIN=" + _equipo;
+			 
+   			 break;
+			 
+		case "2":
+    		 url += "&EQUIPO_PRIN="+_equipo;
+			 url += "&AREA=" + area;
+  		 break;
+	 
+	 	case "3":
+    		 url += "&EQUIPO_PRIN=";
+			 url += "&EQUIPO=" + _equipo;
+			 url += "&AREA=" + area;
+  		 break;
+		 
+		case "4":
+    		 url += "&EQUIPO_PRIN=";
+			 url += "&EQUIPO=" + _equipo;
+			 url += "&COMPONENTE=" + comp;
+			 url += "&AREA=" + area;
+  		 break;
+		 
+		 default:
+		  url += "&EQUIPO=" + _equipo;
+		   url += "&AREA=" + area;
+		   url += "&TIPO=5";
+   			 break;
+		 
+		}
+				
+	url += "&VTZ=" + Math.random();
+	
+	//alert(url);
+	 
+	//window.open(url);
+		
+   		var data = ""; var j;
+		var tbl = document.getElementById('tbl');
+		
+	//	limpiarTabla2(tbl);
+								
+			 
+
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+					//var title = $(this).find("firstname").attr("title");
+					var _item = i +1 ;
+					var _folio = $(this).find("FOLIO").text();
+					var fecha = $(this).find("FECHA").text();
+					
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+													
+					if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					var cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Folio</strong>";
+					cell.width = "100";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  $(this).find("ID").text();
+					cell.width = "200";
+					
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					cell.width = "50";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<strong>Observaci�n</strong>";
+					cell.width = "550";
+					
+					cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";	
+					
+					cell = row.insertCell(6);
+					cell.innerHTML = " <IMG BORDER='0' STYLE='cursor:pointer' valing='bottom' aling='middle' src='" +
+									 	$(this).find("IMG_EST").text() + "' />&nbsp;<SPAN valing='bottom'>" + 
+									 	$(this).find("IMG_TEXT").text() + "</SPAN>";
+									 
+									  
+							  	
+					cell.align="center";
+					cell.vAlign="bottom";
+					
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";
+								
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+					
+					if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Equipo </strong>";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  $(this).find("EQUIPO_PRIN").text();
+					 
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<span >" + $(this).find("DESCRIPCION").text() + "</span>";
+					cell.rowSpan ="3";
+					
+					cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					cell.rowSpan ="5";
+					
+					cell = row.insertCell(6);
+					cell.innerHTML = "<A target='_blank' onclick='visor(this);' >" +
+									 "<IMG style='cursor:pointer' WIDTH='180' BORDER='0' ALIGN='middle' src='" + 
+									 	$(this).find("FILE").text()  + "'  /> </A>"
+					cell.rowSpan ="5";
+					cell.vAlign="top"
+					
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";
+					
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+					
+					
+					if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Componente </strong>";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("EQUIPO").text() + "</span>";
+			 					
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "&nbsp;";
+															  
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+				
+				if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Fecha </strong>";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("FECHA").text() + "</span>";
+					cell.className="textosNormal";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					
+					
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+					
+					if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Responsable :</strong>";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("RESPONSABLE").text() + "</span>";
+					cell.className="textosNormal";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<strong>Tratamiento T�cnico </strong>";					  					  
+					
+					var cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+					if (j==1){row.bgColor= "#cccccc";}
+					else{row.bgColor= "#FFFFFF";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					cell = row.insertCell(1);
+					cell.innerHTML =  "<strong>Criticidad :</strong>";		  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("CRITICIDAD").text() + "</span>";
+				 
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<span >" + $(this).find("TRATAMIENTO").text() + "</span>";
+				 
+					
+					var cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					
+					row = tbl.insertRow(-1);
+					row.className="textoNormal";
+					
+					if (j==1){row.bgColor= "#cccccc";j=0;}
+					else{row.bgColor= "#ffffff";j=1;}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					cell = row.insertCell(1);
+					cell.innerHTML =  " ";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span > </span>";
+					cell.className="textosNormal";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+
+					cell = row.insertCell(4);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(6);
+					/*cell.innerHTML =  "<span  style='cursor:pointer' onclick='verAviso(" + 
+										$(this).find("ID").text() + ")' > Ver Aviso...</span>";	*/
+										
+										
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";			
+
+					//$(cell).click(function(event) {verAviso(this);});
+					
+					
+									  										  					  
+					i=i+1;
+			
+			}) //end each
+		})//end $get
+		
+}
+
+
+
+
+function verAviso(id){
+
+var url ="boxAviso2.html?ID=" + id ;
+	url += "&VTZ=" + Math.random();
+	
+	//alert(id);
+	
+winCfg = "width=900px,height=430px,left=" + 120 + "px,top=" + 20 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxDetAvisos", "iframe", url , "DETALLE AVISOS", winCfg);
+
+inlinewin2.onclose=function(){listAvisos();}
+
+}
+
+function verOT(obj){
+
+var id;
+
+var url ="OT.html?ID=" + id ;
+	//url +="&UBICACION="+formulario.listUbicaciones.value;
+	
+winCfg = "width=960px,height=530px,left=" + 70 + "px,top=" + 20 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxDetAvisos", "iframe", url , "DETALLE OT", winCfg);
+
+}
+
+function editOT(Index){
+
+var tabla = document.getElementById('tabBitacora');
+var folio =  tabla.rows[Index].children[8].children[0].innerText;
+var responsable =  tabla.rows[Index].children[5].children[0].innerText;
+
+if(!folio){
+	alert("Bitacora sin OT.");
+	return;
+	}
+
+if(accesoDB=="true"){;
+		window.location.href="OT.html?Folio=" + folio;
+		}
+else{
+	if(responsable==Usuario)
+			window.location.href="OT.html?Folio=" + folio;
+	else
+		window.open("ImprOT.html?OT=" + folio);
+}
+
+
+}
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+    var url = "/sci/xml/usuarios.asp?RECURSO=UsuariosSistemas";
+  	    url += "&SISTEMA=SGM";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+ 
+var xmlDoc = null;
+
+  
+  function LoadXML () {
+            xmlDoc = CreateXMLDocumentObject ();    // defined in ajax.js
+            if (!xmlDoc) {
+                return;
+            }
+
+            if (typeof (xmlDoc.load) === "undefined") { // Google Chrome and Safari
+                alert ("Your browser does not support the load method for XML documents!");
+                return;
+            }
+
+            var url = "script/news.xml";
+			
+            xmlDoc.async = true;
+            if (xmlDoc.addEventListener) {  // all browsers except IE
+                xmlDoc.addEventListener("load", OnLoadXML, false);
+            }
+            else {  // IE
+                xmlDoc.onreadystatechange = OnStateChange;
+            }
+            xmlDoc.load (url);
+        }
+
+        function OnLoadXML () {
+            FillTable ();
+        }
+
+        function OnStateChange () {
+            if (xmlDoc.readyState == 0 || xmlDoc.readyState == 4) {
+                FillTable ();
+            }
+        }
+
+        function FillTable () {
+            var errorMsg = null;
+            if (xmlDoc.parseError && xmlDoc.parseError.errorCode != 0) {
+                errorMsg = "XML Parsing Error: " + xmlDoc.parseError.reason
+                          + " at line " + xmlDoc.parseError.line
+                          + " at position " + xmlDoc.parseError.linepos;
+            }
+            else {
+                if (xmlDoc.documentElement) {
+                    if (xmlDoc.documentElement.nodeName == "parsererror") {
+                        errorMsg = xmlDoc.documentElement.childNodes[0].nodeValue;
+                    }
+                }
+            }
+            if (errorMsg) {
+                alert (errorMsg);
+                return null;
+            }
+
+            var resTable = document.getElementById ("resTable");
+            var xmlNodes = ["title", "description", "pubDate", "link"];
+
+            var itemTags = xmlDoc.getElementsByTagName ("item");
+            for (i = 0; i < itemTags.length; i++) {
+                resTable.insertRow (i);
+                for (j = 0; j < xmlNodes.length; j++) {
+                    var recordNode = itemTags[i].getElementsByTagName (xmlNodes[j])[0];
+                    resTable.rows[i].insertCell (j);
+                    if ('textContent' in recordNode)
+                        resTable.rows[i].cells[j].innerHTML = recordNode.textContent;
+                    else
+                        resTable.rows[i].cells[j].innerHTML = recordNode.text;
+                }
+            }
+        }
+		
+ 
+ function listUbicaciones(){
+
+       xmlUbicaciones.async = false;
+        var xmlDso =  xmlUbicaciones.XMLDocument;
+		var url = "xml/Ciudades.asp?RECURSO=listUbicaciones";
+			url += "&EMPRESA=" + getEmpresa();
+			url += "&VTZ=" + Math.random();
+			
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	formulario.listUbicaciones.options[i] = opcion; 
+			
+          	}
+			
+			opcion = new Option("TODOS" ,"TOD");
+			formulario.listUbicaciones.options[i] = opcion; 		
+		  }
+		 else
+		 	window.open(url); 
+}
+
+ function listEquipos(){
+
+   var i=0;
+   
+   var url = "js/equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		//url += "&USUARIO="+GetSession();
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+ 		url += "&VTZ=" + Math.random();
+	  	
+	//window.open(url);
+						  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(codigo,codigo);
+	          	formulario.selectEquipos.options[i] = opcion;
+				i=i+1;
+			}) //end each
+	           	opcion = new Option("TODOS","TOD");
+				opcion.selected = true;
+	          	formulario.selectEquipos.options[i] = opcion;
+				
+		})//end $get
+		
+		
+	
+ } 
+
+function listTipos(){
+
+  var url = "script/equipos.asp?RECURSO=listTipos";
+      url += "&VTZ=" + Math.random();
+	  	
+	//window.open(url);
+	
+	var i=0;
+						  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	formulario.selectTipos.options[i] = opcion;
+				i=i+1;
+			}) //end each
+	           	opcion = new Option("TODOS","");
+				opcion.selected = true;
+	          	formulario.selectTipos.options[i] = opcion;
+				
+		})//end $get
+		
+	 
+	
+ } 
+ 
+
+ 	 
+function salir(){
+parent.document.getElementById('boxDetAvisos').close();
+}
+
+
+
+function inicio(){
+
+listAvisos();
+
+}
+
+function set(_equipo,_desc){
+
+	formulario.txtCodEquipo.value = _equipo;
+	formulario.txtEquipo.value = _desc;
+	setTimeout("ListBitacora();",1);
+	
+}
+
+function visor(obj){
+
+var left=60;
+var top=20;
+var width=950;
+var height=550;
+
+var _obj = obj.children[0];
+
+var URLStr =_obj.src;
+//alert(URLStr);
+
+ popUpSic = open(URLStr, 'popUpFotos', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,copyhistory=yes,width='+width+',height='+height+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+ 
+
+}
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0" >
+	<div id="divCalendar" onClick="event.cancelBubble=true" 
+		style="position: absolute; visibility: hidden; width: 10; z-index: 100; 
+        left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+<form name="formulario" cellSpacing="0" cellPadding="0" leftmargin="0" rightmargin="0" topmargin="0">
+
+ </form>
+ <table id="tbl" border="0" cellpadding="4" cellspacing="0">
+ </table>
+ 
+<!--table border="1px">
+        <thead style="font-weight: bold;">
+            <tr>
+                <td>Title</td>
+                <td>Description</td>
+                <td>PubDate</td>
+                <td>Link</td>
+            </tr>
+        </thead>
+        <tbody id="resTable">
+        </tbody>
+    </table-->
+
+          
+ 
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Usuarios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT language="JavaScript1.2">
+
+var newEvent = false;
+xmlDoc.async = false;
+var option = "New";
+
+function Get(){
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=GetUsuario&ID=" + formulario.TxtID.value;
+
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+	//formulario.btnNew.className='botonBlanco';
+	setTimeout("setBirthDate();",800);
+	setTimeout("listArchivos();",800);
+	
+	option = "Edit";
+}
+
+function setBirthDate(){
+//	alert(formulario.BDy.value);
+	formulario.BirthDatey.value = eval(formulario.BirthDate.value.substring(6,10));
+	formulario.BirthDatem.value = eval(formulario.BirthDate.value.substring(3,5));
+	formulario.BirthDated.value = eval(formulario.BirthDate.value.substring(0,2));
+	
+//	alert(formulario.BirthDate.value.substring(6,10));
+ }
+
+function Nuevo(){
+
+//formulario.btnNew.className='hidden';
+formulario.TxtID.readOnly=false;
+newEvent=true;
+LimpiarForm();
+setTimeout("formulario.TxtID.focus();",400);
+}
+
+function sendMail(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	 
+ 	url = "xml/Mail.asp?RECURSO=NewMail";
+	url += "&FROM=info@ttminsight.cl";
+	url += "&TO=" + formulario.TxtEmail.value; 
+	url += "&SUBJECT=Registro de Usuario : "+formulario.TxtID.value;
+	url += "&BODY="
+	url += "Estimado " + formulario.TxtNOMBRES.value + " " +  formulario.TxtAPELLIDOS.value + " </br>";
+	url += "Le informamos que se ha registrado como usuario en nuesto sistema TTMInsight.</br> "
+	url += "para ingresar al sistema debe utilizar los siguientes datos.<br><br>";
+	
+	url += "USER:  <strong>" + formulario.TxtID.value + "</strong><BR>"
+	url += "PASSWORD: <strong>" + formulario.TxtPassword.value + "</strong><BR><BR>"
+	url += "Ud. podra cambiar la clave en el menu Inicio->Cambio de Password si as� lo desea.<BR><BR>"
+	url += "<a target='_blank' href='http://www.ttminsight.cl/loginSGM.html'>http://www.ttminsight.cl</a><BR>";
+	url += "El sistema esta disponible para <strong>Internet Explorer</strong><BR><BR><BR>"
+	url += "Atte. <BR><BR>Soporte TTM Insight <BR>"
+	url += "Santiago - Chile<BR>" 
+	url += "Fono 056-02-68059000<BR>" 
+	url += "</body></html> "
+	 
+	    var res =xmlDso.load(url);
+		
+		if(res){
+		 	alert("Aviso de creaci�n enviado.");
+			}
+		 else
+		 		window.open(url);
+}
+
+
+
+function NewUser(){
+
+if (!validaRut(formulario.TxtRUT.value))
+							return false;
+	
+	Rut = getRut(formulario.TxtRUT.value);
+	Dv = getDv(formulario.TxtRUT.value);
+	
+	for (i=0;i<formulario.Gender.length;i++)
+			if(formulario.Gender[i].checked)
+					sexo=formulario.Gender[i].value;
+	
+var xmlDso = xmlDoc.XMLDocument;
+	xmlDso.async = false;
+	
+				
+	var url = "xml/usuarios.asp?RECURSO=NewUsuario&ID=" + formulario.TxtID.value;
+		url += "&RUT=" + Rut;
+		url += "&DV=" + Dv;
+		url += "&PASSWORD=" + formulario.TxtPassword.value;
+		url += "&NOMBRES=" + formulario.TxtNOMBRES.value;
+		url += "&APELLIDOS=" + formulario.TxtAPELLIDOS.value;
+ 	    url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&FECHA_NAC=" + formulario.BirthDate.value;
+		url += "&EMAIL=" + formulario.TxtEmail.value;
+		url += "&FONO=" + formulario.TxtFono.value;
+		url += "&SEXO=" + sexo;
+		url += "&CELULAR=" + formulario.TxtCelular.value;
+		url += "&AREA=" + formulario.txtCodArea.value;
+		url += "&ACCESO_DB=" + formulario.chkAccesoDB.checked;
+		url += "&LUGAR=" + formulario.listFaenas.value;
+		url += "&CARGO=" + formulario.ListCargo.value;
+		url += "&ROL=" + formulario.ListRoles.value;
+		
+		 xmlestado = xmlDso.load(url);
+			if (xmlestado)
+					alert("Usuario ingresado..");
+			else
+				window.open(url);
+	
+Get();
+
+
+}
+
+function guardar(){
+
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Usuarios.asp?RECURSO=ExisteUsuario&ID=" + formulario.TxtID.value;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			}
+	else
+		window.open(url);
+	    
+if (getChildNodeValue(node,"Exist")=="False")
+			NewUser();
+else
+	if (option=="Edit")
+					UpdateUser();
+			else
+					alert("ID usuario existente!");
+					
+}
+
+
+function UpdateUser(){
+
+	if (!validaRut(formulario.TxtRUT.value))
+							return false;
+
+	if (!formulario.TxtPassword.value){
+							alert('Password Incorrecto');
+							return false;
+							}
+							
+	var sexo='M';
+	Rut = getRut(formulario.TxtRUT.value);
+	Dv = getDv(formulario.TxtRUT.value);
+
+	for (i=0;i<formulario.Gender.length;i++)
+			if(formulario.Gender[i].checked)
+					sexo=formulario.Gender[i].value;
+					
+	
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=UpdateUsuario&ID=" + formulario.TxtID.value;
+		  url += "&RUT=" + Rut;
+		  url += "&PASSWORD=" + formulario.TxtPassword.value;
+	  	  url += "&DV=" + Dv;
+		  url += "&NOMBRES=" + formulario.TxtNOMBRES.value;
+		  url += "&APELLIDOS=" + formulario.TxtAPELLIDOS.value;
+		  url += "&ESTADO=ACTIVO";
+		  url += "&FECHA_NAC=" + formulario.BirthDate.value;
+		  url += "&EMAIL=" + formulario.TxtEmail.value;
+		  url += "&FONO=" + formulario.TxtFono.value;
+  		  url += "&SEXO=" + sexo;
+		  url += "&CELULAR=" + formulario.TxtCelular.value;
+		  url += "&AREA=" + formulario.txtCodArea.value;
+		  url += "&ACCESO_DB=" + formulario.chkAccesoDB.checked;
+		  url += "&ACCESO_EMP=" + formulario.chkAccesoEMP.checked;
+		  url += "&LUGAR=" + formulario.listFaenas.value;
+		  url += "&CARGO=" + formulario.ListCargo.value;
+		  url += "&EMPRESA=" + formulario.listEmpresa.value;
+		  url += "&ROL=" + formulario.ListRoles.value;
+		// window.open(url);
+		  xmlEstado = xmlDso.load(url);
+		  if(xmlEstado)
+			  	alert("Usuario Actualizado.");
+			else
+		  		window.open(url);
+		  //Get();
+		 LimpiarForm();
+}
+
+function List(){
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=ListUsuarios";
+	window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function ListUsuarios(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/usuarios.asp?RECURSO=ListUsuarios");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListRoles.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+function ListRoles(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/Roles.asp?RECURSO=ListRol");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListRoles.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+function listFaenas(){
+       xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+          	formulario.listFaenas.options[i] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+}
+
+
+
+function ListCargos(){
+       xmlListRoles.async = false;
+        var xmlDso =  xmlListRoles.XMLDocument;
+        var res = xmlDso.load("xml/Usuarios.asp?RECURSO=ListCargos");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListCargo.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+function daysinmonth(lnMonth,lnYear) {
+	var dt1, cmn1, cmn2, dtt, lflag, dycnt, lmn;
+	lmn = lnMonth-1;
+	dt1 = new Date(lnYear,lmn,1);
+	cmn1 = dt1.getMonth();
+	dtt=dt1.getTime()+2332800000;
+	lflag = true;
+	dycnt=28;
+	while (lflag) {
+	   dtt = dtt + 86400000;
+	   dt1.setTime(dtt);
+	   cmn2 = dt1.getMonth();
+	   if (cmn1!=cmn2) {
+	      lflag = false;
+	   } else {
+		  dycnt = dycnt + 1;
+	   }
+	}
+	if (dycnt > 31) {
+		dycnt = 31;
+	}
+	return dycnt;
+}
+
+function setdays(sobjname, datemode){
+	var dobj = eval(sobjname + "d");
+	var mobj = eval(sobjname + "m");
+	var yobj = eval(sobjname + "y");
+	var hobj = eval(sobjname);
+	var monthdays = daysinmonth(mobj.options[mobj.selectedIndex].value,yobj.options[yobj.selectedIndex].value);
+	var selectdays = dobj.length;
+	var curdy = dobj.options[dobj.selectedIndex].value;
+	if (curdy.length==1) {
+		curdy = "0"+curdy;
+	}
+	var curmn = mobj.options[mobj.selectedIndex].value;
+	if (curmn.length==1) {
+		curmn = "0"+curmn;
+	}
+	var curyr = yobj.options[yobj.selectedIndex].value;
+	if (selectdays > monthdays) {
+	   for (var dlp=selectdays; dlp > monthdays; dlp--) {
+	       dobj.options[dlp-1] = null; 
+	   }
+	} else if (monthdays > selectdays) {
+	   for (var dlp=selectdays; dlp < monthdays; dlp++) {
+	       dobj.options[dlp] = new Option(dlp+1,dlp+1);
+	   }
+	}       
+	if (curdy > monthdays) {
+	   dobj.options[monthdays-1].selected = true;
+	   curdy = monthdays;
+	}
+	if (datemode==1) {
+	   var curdate = curmn+"/"+curdy+"/"+curyr;
+	} else if (datemode==2) {
+	   var curdate = curdy+"/"+curmn+"/"+curyr;
+	} else if (datemode==5) {
+	   var curdate = curyr+"/"+curmn+"/"+curdy;
+	} else if (datemode==3) {
+	   var curdate = curyr+curmn+curdy;
+	} else if (datemode==4) {
+	   var cdate = new Date(curyr,curmn-1,curdy);
+	   var curdate = cdate.toGMTString();
+	}
+	hobj.value = curdate;
+}
+
+function listArchivos(){
+	xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=USUARIOS"; 
+		url += "&IDENTIFICADOR="+formulario.TxtID.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);}
+	else{		
+	   total_registros_lista = xmlImages.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/1);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+
+}
+
+
+function newFile(){
+document.frameFiles.mostrarVentana(formulario.TxtID,"USUARIOS",divFiles);
+}
+
+function delFile(){
+xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=USUARIOS"; 
+		url += "&IDENTIFICADOR="+formulario.TxtID.value;
+		url += "&ID=" + formulario.txtId.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);
+		}
+
+listArchivos();
+}
+
+</SCRIPT>
+
+<BODY onLoad="formulario.TxtID.focus();ListRoles();ListCargos();listFaenas();">
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+
+<DIV id="divFiles" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 290px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameFiles" src="archivos.html" frameBorder="0" width="450" scrolling="no" height="220"></IFRAME>
+</DIV>
+
+<DIV id="DivAreas" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px;BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: -80px;" onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameAreas" src="ListArea.html" frameBorder="0" width="250" scrolling="no" height="180"></IFRAME>
+</DIV>
+
+<DIV id="DivUsuarios" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 196px;  BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 74px; width: 260px; height: 200px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="260" scrolling="no"	height="200"></IFRAME>
+</DIV>
+<BR>
+<TABLE>
+<TR>
+  <TD height="31" class="titulo">Registro de Usuarios</TD>
+</TR>
+<TR><TD valign="top">
+	<TABLE width="781"  border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlDoc">
+	  <!--DWLayoutTable-->
+	  <TR class="texto" >
+	    <TD height="15" colspan="6" align="left" valign="top" class="txtVineta" >Datos del Usuario </TD>
+	    <TD width="2" ></TD>
+	    <TD width="119" ></TD>
+	    <td width="182"></td>
+	  </TR>
+	  <TR class="texto" >
+	    <TD width="38" height="15" align="right">&nbsp;</TD>
+	    <TD colspan="7" align="left" >&nbsp;</TD>
+	    <td></td>
+	  </TR>
+	  <TR class="texto" > 
+		<TD height="38" colspan="2" align="right" valign="top">Usuario : </TD> 
+		<TD colspan="6" align="left" valign="top" >
+			<INPUT name="TxtID" type="text" class="input"  onKeyPress="if(event.keyCode==13)Get();"
+            			onkeyup=fn(this.form,this) size="25" datafld="ID" />
+          	<IMG src="images/lupa.jpg" align="absbottom"
+			 style="cursor:hand" onclick="ListFrame.popsearchbox(10, TxtID, TxtID, DivUsuarios)"/>		</TD>
+		<td rowspan="11" valign="top"><TABLE height="89%" border="0" cellpadding="0" cellspacing="0" datapagesize="1"
+                  id="tabImages" DATASRC="#xmlImages">
+          <TR>
+            <TD height="23" valign="top"><FONT class="calibri">&nbsp;Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>&nbsp;</FONT> <A  href="javascript:irAtras('tabImages');">&lt; Anterior</A> <A  href="javascript:irAdelante('tabImages');">Siguiente &gt;</A> </TD>
+          </TR>
+          <TR>
+            <TD width="233" height="194"  align="center" valign="top">
+            <A datafld="FILEID" target="_blank">
+             <IMG src="images/noDisponible.png" alt="Imagen" width="180"  border="1" 
+                             		align="middle" datafld="FILEIMAGE"
+                                	 onerror="this.src='images/noDisponible.png';"><BR>
+                 <INPUT DATAFLD="FILE_ID" ID="txtId" TYPE="HIDDEN" name="txtId">
+              
+              </SPAN> <SPAN DATAFLD="NOMBRE"></SPAN></A> <SPAN id="ID_list_cant_reg" style="visibility:hidden"></SPAN> </TD>
+          </TR>
+          <TR>
+            <TD valign="top">
+            <INPUT name="button2" type="button" class="botonBlanco"  value="Nuevo Archivo" onClick="newFile();">
+                <INPUT name="button3" type="button" class="botonBlanco"  value="Eliminar" onClick="delFile();">            </TD>
+          </TR>
+        </TABLE></td>
+	  </TR>
+	  <TR class="texto" >
+	    <TD height="35" colspan="2" align="right" valign="top">&nbsp;</TD>
+	    <TD colspan="6" align="left" valign="top" >El <STRONG>Usuario
+         debe contener  entre 6 y 16 caracteres</STRONG>. S&oacute;lo pueden   usarse letras y n&uacute;meros, exceptuando signos, acentos y la letra &ntilde;, &Ntilde;. </TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="22" colspan="2" align="right" valign="top">Password : </TD>
+	    <TD colspan="6" align="left" valign="top" >
+		<INPUT name="TxtPassword" datafld="PASSWORD" class="input" size="25"  type="password"/></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="22" colspan="2" align="right" valign="top">RUT :</TD>
+	    <TD colspan="6" align="left" valign="top" ><INPUT type="text" name="TxtRUT" datafld="RUT" class="input" size="25" onKeyUp=fn(this.form,this) />
+	      Ej. 12666124-k </TD>
+	    </TR>
+	  <TR class="texto" >
+		<TD height="22" colspan="2" align="right" valign="top">Nombres :</TD>
+		<TD colspan="6" align="left" valign="top" >
+        <INPUT  name="TxtNOMBRES" type="text" class="input" onkeyup=fn(this.form,this) 
+        		size="40" datafld="NOMBRES" /></TD>
+		</TR>
+	  <TR class="texto" >
+	    <TD height="25" colspan="2" align="right" valign="top">Apellidos :</TD>
+	    <TD colspan="6" align="left" valign="top" ><INPUT  name="TxtAPELLIDOS" type="text" class="input" onKeyUp=fn(this.form,this) size="40" datafld="APELLIDOS" /></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="23" colspan="2" align="right" valign="top">Sexo : </TD>
+	    <TD colspan="6" align="left" valign="top" >
+	      <INPUT id="femenino" name="Gender" value="F" class="input" type="radio" DATAFLD="SEXO">
+	      <LABEL for="femenino">Femenino</LABEL>
+          <INPUT id="masculino" name="Gender" value="M" class="input" type="radio" DATAFLD="SEXO" checked>
+          <LABEL for="masculino">Masculino</LABEL>
+	    </span></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="27" colspan="2" align="right" valign="top">Fecha de Nacimiento : </TD>
+	    <TD colspan="6" align="left" valign="top" ><SPAN class="datos">
+	      <INPUT  name="BirthDate" type="hidden" DATAFLD="FECHA_NAC">
+	      <SELECT name="BirthDated"  onChange="setdays('formulario.BirthDate',2)"
+		   style="width: 40px; margin-right: 10px;">
+            <OPTION value="1" selected="selected">1</OPTION>
+            <OPTION value="2">2</OPTION>
+            <OPTION value="3">3</OPTION>
+            <OPTION value="4">4</OPTION>
+            <OPTION value="5">5</OPTION>
+            <OPTION value="6">6</OPTION>
+            <OPTION value="7">7</OPTION>
+            <OPTION value="8">8</OPTION>
+            <OPTION value="9">9</OPTION>
+            <OPTION value="10">10</OPTION>
+            <OPTION value="11">11</OPTION>
+            <OPTION value="12">12</OPTION>
+            <OPTION value="13">13</OPTION>
+            <OPTION value="14">14</OPTION>
+            <OPTION value="15">15</OPTION>
+            <OPTION value="16">16</OPTION>
+            <OPTION value="17">17</OPTION>
+            <OPTION value="18">18</OPTION>
+            <OPTION value="19">19</OPTION>
+            <OPTION value="20">20</OPTION>
+            <OPTION value="21">21</OPTION>
+            <OPTION value="22">22</OPTION>
+            <OPTION value="23">23</OPTION>
+            <OPTION value="24">24</OPTION>
+            <OPTION value="25">25</OPTION>
+            <OPTION value="26">26</OPTION>
+            <OPTION value="27">27</OPTION>
+            <OPTION value="28">28</OPTION>
+            <OPTION value="29">29</OPTION>
+            <OPTION value="30">30</OPTION>
+            <OPTION value="31">31</OPTION>
+          </SELECT>
+	      <SELECT name="BirthDatem" onChange="setdays('formulario.BirthDate',2)"
+		  style="width: 50px; margin-right: 10px;">
+            <OPTION value="1" selected="selected">Ene</OPTION>
+            <OPTION value="2">Feb</OPTION>
+            <OPTION value="3">Mar</OPTION>
+            <OPTION value="4">Abr</OPTION>
+            <OPTION value="5">May</OPTION>
+            <OPTION value="6">Jun</OPTION>
+            <OPTION value="7">Jul</OPTION>
+            <OPTION value="8">Ago</OPTION>
+            <OPTION value="9">Sep</OPTION>
+            <OPTION value="10">Oct</OPTION>
+            <OPTION value="11">Nov</OPTION>
+            <OPTION value="12">Dic</OPTION>
+          </SELECT>
+	      <SELECT name="BirthDatey" onChange="setdays('formulario.BirthDate',2)"
+		  style="width: 60px; margin-right: 10px;">
+            <OPTION value="1940" selected="selected">1940</OPTION>
+            <OPTION value="1941">1941</OPTION>
+            <OPTION value="1942">1942</OPTION>
+            <OPTION value="1943">1943</OPTION>
+            <OPTION value="1944">1944</OPTION>
+            <OPTION value="1945">1945</OPTION>
+            <OPTION value="1946">1946</OPTION>
+            <OPTION value="1947">1947</OPTION>
+            <OPTION value="1948">1948</OPTION>
+            <OPTION value="1949">1949</OPTION>
+            <OPTION value="1950">1950</OPTION>
+            <OPTION value="1951">1951</OPTION>
+            <OPTION value="1952">1952</OPTION>
+            <OPTION value="1953">1953</OPTION>
+            <OPTION value="1954">1954</OPTION>
+            <OPTION value="1955">1955</OPTION>
+            <OPTION value="1956">1956</OPTION>
+            <OPTION value="1957">1957</OPTION>
+            <OPTION value="1958">1958</OPTION>
+            <OPTION value="1959">1959</OPTION>
+            <OPTION value="1960">1960</OPTION>
+            <OPTION value="1961">1961</OPTION>
+            <OPTION value="1962">1962</OPTION>
+            <OPTION value="1963">1963</OPTION>
+            <OPTION value="1964">1964</OPTION>
+            <OPTION value="1965">1965</OPTION>
+            <OPTION value="1966">1966</OPTION>
+            <OPTION value="1967">1967</OPTION>
+            <OPTION value="1968">1968</OPTION>
+            <OPTION value="1969">1969</OPTION>
+            <OPTION value="1970">1970</OPTION>
+            <OPTION value="1971">1971</OPTION>
+            <OPTION value="1972">1972</OPTION>
+            <OPTION value="1973">1973</OPTION>
+            <OPTION value="1974">1974</OPTION>
+            <OPTION value="1975">1975</OPTION>
+            <OPTION value="1976">1976</OPTION>
+            <OPTION value="1977">1977</OPTION>
+            <OPTION value="1978">1978</OPTION>
+            <OPTION value="1979">1979</OPTION>
+            <OPTION value="1980">1980</OPTION>
+            <OPTION value="1981">1981</OPTION>
+            <OPTION value="1982">1982</OPTION>
+            <OPTION value="1983">1983</OPTION>
+            <OPTION value="1984">1984</OPTION>
+            <OPTION value="1985">1985</OPTION>
+            <OPTION value="1986">1986</OPTION>
+            <OPTION value="1987">1987</OPTION>
+            <OPTION value="1988">1988</OPTION>
+            <OPTION value="1989">1989</OPTION>
+            <OPTION value="1990">1990</OPTION>
+            <OPTION value="1991">1991</OPTION>
+            <OPTION value="1992">1992</OPTION>
+            <OPTION value="1993">1993</OPTION>
+            <OPTION value="1994">1994</OPTION>
+            <OPTION value="1995">1995</OPTION>
+            <OPTION value="1996">1996</OPTION>
+            <OPTION value="1997">1997</OPTION>
+          </SELECT>
+	      <SPAN class="gris50">(DD/MM/AAAA)</SPAN></SPAN></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="24" colspan="2" align="right" valign="top">Fono : </TD>
+	    <TD colspan="6" align="left" valign="top" ><INPUT  name="TxtFono" type="text" class="input" datafld="FONO" onKeyUp=fn(this.form,this) /> 
+	    Estado : 
+	      <INPUT name="txtEstado" datafld="ESTADO" class="input" size="25"  /></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="22" colspan="2" align="right" valign="top">Fono Movil :</TD>
+	    <TD colspan="6" align="left" valign="top" ><INPUT  name="TxtCelular" type="text" class="input" datafld="CELULAR" onKeyUp=fn(this.form,this)  /></TD>
+	    </TR>
+	  <TR class="texto" >
+	  <TD height="24" colspan="2" align="right" valign="top">E-Mail :</TD>
+	    <TD colspan="6" align="left" valign="top" >
+			<INPUT  name="TxtEmail" type="text" class="input" id="TxtEmail" 
+            size="40" datafld="E_MAIL" onkeyup=fn(this.form,this) /></TD>
+	    </TR>
+	  <TR class="texto" >
+	    <TD height="15" colspan="6" align="left"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	    <TD colspan="2" align="right" ><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	    <td></td>
+	  </TR>
+	  <TR class="texto" >
+	  <TD height="15" colspan="6" align="left" class="txtVineta">Datos de la Empresa</TD>
+	  <TD colspan="2" align="right" ><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	  <td></td>
+	  </TR>
+	<TR class="texto" >
+	  <TD height="15" colspan="2" align="right" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	  <TD colspan="6" align="left" valign="top" ><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	  <td></td>
+	</TR>
+	<TR class="texto" >
+	  <TD height="22" colspan="2" align="right" valign="top">Empresa :</TD>
+	    <TD colspan="3" align="left" valign="top" >
+			<SELECT class="input" name="listEmpresa" datafld='EMPRESA' >
+        		<OPTION value='TTM' SELECTED>TTM</OPTION>
+			</SELECT>        </TD>
+	    <TD colspan="2" align="right" valign="top" >Fecha Ingreso: </TD>
+	    <TD ><INPUT  name="TxtFecha" type="text"  size="12" class="input" 
+		id="TxtFecha" datafld="FECHA" onKeyUp=fn(this.form,this)  />	    </TD>
+	    <td></td>
+	</TR>
+	<TR class="texto">
+	  <TD height="22" colspan="2" align="right" valign="top"> Lugar de Trabajo :</TD>
+	  <TD colspan="6" align="left" valign="top" >
+      	<SELECT class="input" name="listFaenas" DATAFLD="LUGAR" >
+        		<OPTION  VALUE="0">SELECCIONAR</OPTION>
+		</SELECT></TD>
+	  <td></td>
+	</TR>
+	<TR class="texto">
+	  <TD height="24" colspan="2" align="right" valign="top">Area :</TD>
+	  <TD colspan="6" align="left" valign="top" >
+	    <INPUT  name="txtCodArea" type="text" class="input" size="5" datafld="AREA" />
+	  	<INPUT  name="txtArea" type="text" class="input" size="45" datafld="DESC_AREA" 
+							onkeyup=fn(this.form,this) />
+	    <IMG src="images/lupa.jpg" alt="Areas" align="top"	style="cursor:hand" 
+		onclick="ListFrameAreas.popsearchbox(10, txtCodArea, txtArea, DivAreas,'return;');" /></TD>
+	  <td></td>
+	</TR>
+	<TR class="texto">
+	  <TD height="24" colspan="2" align="right" valign="top">Rol de Sistema :</TD>
+	  <TD colspan="6" align="left" valign="top" >
+	  <SELECT name="ListRoles" id="ListRoles" datafld="ROL" style="size:auto" class="input"
+      	 onkeyup=fn(this.form,this) >
+        <OPTION selected></OPTION>
+      </SELECT>
+	  Acceso Total DB. 
+	  		<INPUT type="checkbox"  name="chkAccesoDB"
+	  				datafld="ACCESO_DB" value="true" class="Campo"/> 
+	  		Acceso Total Empresas
+	  		<INPUT type="checkbox"  name="chkAccesoEMP"
+	  				datafld="ACCESO_EMP" value="true" class="Campo"/></TD>
+	  <td></td>
+	</TR>
+	<TR class="texto">
+	  <TD height="24" colspan="2" align="right" valign="top">Cargo :</TD>
+		<TD colspan="6" align="left" valign="top" >
+				<SELECT name="ListCargo" datafld="CARGO" class="input" onkeyup=fn(this.form,this) SIZE="4" >
+              </SELECT>		</TD>
+		<td></td>
+	</TR>
+	<TR align="center" valign="middle">
+	  <TD height="22" colspan="8" valign="middle">
+       <INPUT  type="button" class="botonBlanco" onClick="LimpiarForm();option='New';" value="Nuevo">
+       <INPUT name="btnUpdate" type="button" class="botonBlanco" onClick="guardar();" value="Guardar">
+			&nbsp;&nbsp;&nbsp;
+       <INPUT type="button" class="botonBlanco" onClick="sendMail();" value="Enviar Mail">			</TD>
+	  <td></td>
+	</TR>
+	<TR>
+	  <TD height="3"></TD>
+	  <TD width="70"></TD>
+	  <TD width="67"></TD>
+	  <TD width="79"></TD>
+	  <TD width="44"></TD>
+	  <TD width="152"></TD>
+	  <TD></TD>
+	  <TD></TD>
+	  <td></td>
+	</TR>
+	</TABLE>
+</TD></TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>

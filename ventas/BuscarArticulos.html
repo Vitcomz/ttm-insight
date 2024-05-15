@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLDoc"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var precio = new Object();
+var nameobj = new Object();
+var functionName;
+var tipo;
+
+function popsearchbox(_codeobj, _nameobj, _precio, _popbox, _function, _tipo){
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  precio = _precio;
+  tipo = _tipo;
+  functionName = _function;
+  
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+  //  top  = point.y + nameobj.offsetHeight + 1;
+    visibility = "visible";
+  }
+  strc.focus();
+  strc.value="";
+}
+
+
+function close(){
+//  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+	if(!tmp.tagName){
+    	pt.x = 300;
+	  	pt.y = 150;
+/*		oTmp = parent.document.getElementById('tabPlanifica');
+
+		oTmp = oTmp.rows[_Index].children[4].children[0];
+		gdCtrl = oTmp;
+	  	pt.x += oTmp.offsetLeft;
+	  	pt.y += oTmp.offsetTop;		*/
+		return pt;
+	}
+		
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(texto){
+	
+if(texto.length<3){
+				alert("debe ser ingresar al menos 3 caracteres");
+				strc.focus();
+				return;
+			 }
+			 
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url = "xml/Articulos.asp?RECURSO=ListArticulos&c="+texto;
+  
+  if (tipo=="EXISTENCIA"){
+  		url+="&IND_EXISTENCIA=YES";
+		url+="&IND_STOCK=YES";
+	}	
+  var res = xmlDso.load(url);
+ 
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	 window.open(url);
+  }
+}
+
+function set(itr){
+  if (itr){
+	document.getElementById('idCodigo').innerText = itr.children[0].children[0].innerText;
+	document.getElementById('idDescripcion').innerText = itr.children[1].children[0].innerText;
+	document.getElementById('idSaldo').innerText = itr.children[2].children[0].innerText;
+	txtValor.value = itr.children[2].children[0].innerText.replace(",",".");
+	}
+  else setcodeandname("","");
+  txtCantidad.focus();
+}
+
+
+function guardar(itr){
+
+ if (document.getElementById('idCodigo').innerText!=""){
+ 	codeobj.value = document.getElementById('idCodigo').innerText;
+  	nameobj.value = txtCantidad.value;
+  	precio.value = txtValor.value;
+  }
+  
+  if(tipo=="EXISTENCIA"){	
+   if (Math.ceil(txtCantidad.value)>Math.ceil(document.getElementById('idSaldo').innerText)){
+   		alert("La cantidad es mayor que el saldo.");
+		return;
+		}
+	}
+ // alert(functionName);
+  eval("parent." + functionName);
+  close();
+	
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:65%;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"
+	  scroll="no"  >
+
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda Articulos </TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="popbox.style.visibility = 'hidden';">
+    </TD>
+  </TR>
+</TABLE>
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR>
+    <TD CLASS="text" STYLE="color:#000000; font-weight:bold;" >&nbsp;Cantidad :
+	<INPUT TYPE="text" CLASS="input" NAME="txtCantidad" SIZE="3"  value="1"
+							onKeyPress="if(event.keyCode==13)txtValor.focus();">
+	</TD>
+    <TD CLASS="text" STYLE="color:#000000; font-weight:bold;" >&nbsp; Valor  :
+	  <INPUT TYPE="text" CLASS="input" NAME="txtValor" SIZE="10"
+							onKeyPress="if(event.keyCode==13)btnGuardar.focus();">
+    <INPUT TYPE="button" NAME="btnGuardar"  class="BotonBlanco" VALUE="Aceptar" onClick="guardar();">
+	</TD>
+  </TR>
+  <TR ALIGN="center">
+    <TD COLSPAN="2" ALIGN="left" CLASS="text" STYLE="color:#000000; font-weight:bold;">&nbsp;
+	<INPUT TYPE="text" CLASS="input" NAME="strc" SIZE="45" onKeyPress="if(event.keyCode==13)search(strc.value);">
+    <INPUT TYPE="button"  class="BotonBlanco" VALUE="Buscar" onClick="search(strc.value);">
+	</TD>
+  </TR>
+  <TR  align="left" >
+    <TD CLASS="texto" STYLE="font-weight:bold;"  bgcolor="#dee6eb" COLSPAN="2">
+	<SPAN ID="idCodigo" CLASS="texto" STYLE="font-weight:bold;"></SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<SPAN ID="idDescripcion"  class="texto" STYLE="color:#000000;font-weight:bold; text-align:center;"></SPAN>
+	&nbsp;&nbsp;<SPAN ID="idSaldo"  class="texto" STYLE="color:#000000;font-weight:bold; text-align:center;"></SPAN>
+    </TD>
+  </TR>
+</TABLE>
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+<SPAN ID="cont" STYLE="height:170px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE DATASRC="#XMLDoc" border=0 cellpadding=1 cellspacing=0 BORDERCOLOR="#6587a3" WIDTH="100%">
+  <THEAD>
+   <TR  class="titulo">
+    <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle">
+      ID</TD>
+      <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle" ALIGN="left" >
+	  NOMBRE</TD>
+	  <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle">
+	  VALOR</TD>
+	 </td>
+  </TR>
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:default;" 
+  		onMouseOver="mOvr(this,'#dee6eb')" onMouseOut="mOut(this,'#ffffff')">
+    <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle">
+      <SPAN DATAFLD="ID" CLASS="text"></SPAN></TD>
+      <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle" ALIGN="left" >
+	  <SPAN DATAFLD="NOMBRE" CLASS="text"></SPAN></TD>
+	  <TD STYLE="border-bottom:solid 1px #6587a3;" VALIGN="middle" WIDTH="1">
+	  <SPAN DATAFLD="VALOR" CLASS="text">&nbsp;</SPAN></TD>
+	 </td>
+  </TR>
+</TABLE>
+</SPAN>
+
+
+
+
+
+
+
+</BODY>
+
+</HTML>

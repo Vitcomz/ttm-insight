@@ -1,0 +1,388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Equipos Moviles</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlEquipos></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlTemp1></xml>
+
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+xmlTemp.async = false;
+
+xmlTemp1.async = false;
+
+ 
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =   xmlEquipos.XMLDocument;
+  var url = "../xml/equipos.asp?RECURSO=ListEquiposMoviles";	
+	  url+= "&FAENA=" + getEmpresa(); 
+	  url += "&VTZ=" + Math.random();
+	
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+} 
+
+function checkAll(){
+
+ var tbl = document.getElementById('tabEquipos');
+ var chk = document.getElementById('chkAll');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=2; i<lastRow; i++){
+	 if (chk.checked)
+		tbl.rows[i].children[2].children[0].checked=true;
+	else
+		tbl.rows[i].children[2].children[0].checked=false;
+	}
+	 
+} 
+
+function check(obj){
+
+// alert(obj.children[2].children[0].checked);
+ 
+	if (obj.children[2].children[0].checked)
+		obj.children[2].children[0].checked=false;
+	else
+		obj.children[2].children[0].checked=true;
+	 
+} 
+
+function add(obj){
+
+var row1 = obj.parentElement.parentElement; //.parentElement.rowIndex
+var tbl = document.getElementById('tabEquiposSel');
+ 
+ if (row1.children[0].style.fontWeight=="bolder"){
+ 			alert("Equipo ya esta seleccionado!");
+			return;
+			}
+ 
+ 
+  var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = row1.children[0].innerText;
+			row1.children[0].style.fontWeight ="bolder";
+										
+	  		var cell = row.insertCell(1);
+			cell.innerHTML = row1.children[1].innerText;
+			row1.children[1].style.fontWeight ="bolder";
+			
+			var cell = row.insertCell(2);
+			cell.innerHTML = tbl.rows.length - 2;
+			cell.align = "CENTER";
+		
+			var cell = row.insertCell(3);
+			cell.innerHTML = "<img src='../images/trash.jpg' alt='Eliminar' style='cursor:hand' onclick='eliminar(this);'>";
+			cell.align = "CENTER";
+	
+} 
+
+
+function eliminar(obj){
+
+var index = obj.parentElement.parentElement.rowIndex;
+var tbl = document.getElementById('tabEquiposSel');
+
+var equipo = tbl.rows[index].children[0].innerText;
+
+tbl.deleteRow(index);
+
+for (i=2;i<tbl.rows.length;i++){
+	tbl.rows[i].children[2].innerText = i - 1;
+	}
+
+var tbl = document.getElementById('tabEquipos');
+for (i=2;i<tbl.rows.length;i++){
+		if(equipo == tbl.rows[i].children[0].innerText){
+			tbl.rows[i].children[0].style.fontWeight ="normal";
+			tbl.rows[i].children[1].style.fontWeight ="normal";
+		}
+	}
+
+
+}
+
+
+function guardar(){
+
+var str;
+str = "";
+tabla = document.getElementById('tabEquiposSel');
+	
+
+if (tabla.rows.length<=5){	 
+	alert("Debe seleccionar equipos");
+	return;
+	}
+	
+
+if (formulario.txtFolio.value){
+		if (!confirm("Desea cambiar informe folio " + formulario.txtFolio.value))
+			formulario.txtFolio.value="";
+		}
+		
+var _folio = formulario.txtFolio.value;
+
+xmlTemp1.async=false;
+	var xmlDso = xmlTemp1.XMLDocument;
+	var url = "../xml/tren.asp?RECURSO=delTren"
+		url += "&FAENA="+getEmpresa();
+		url += "&FOLIO=" + _folio;
+		url += "&USUARIO=" +  Usuario;
+
+  var res = xmlDso.load(url);
+   if (!res)
+   	window.open(url);
+  
+for (i=2; i< tabla.rows.length; i++){
+
+		Codigo = tabla.rows[i].children[0].innerText;	
+		str = str + Codigo + ";";
+		
+	}
+	
+	
+
+
+	xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "../xml/tren.asp?RECURSO=saveTren"
+		url += "&EQUIPOS=" + str;
+		url += "&FECHA=" + document.getElementById("idFecha").innerText;
+		url += "&FAENA="+getEmpresa();
+		url += "&FOLIO=" + _folio;
+		url += "&USUARIO=" +  Usuario;
+
+  var res = xmlDso.load(url);
+
+ //window.open(url);
+ 
+ 
+  if (!res) 
+	  window.open(url);
+  else
+	  alert("Informe guardado.");
+	  
+
+  getTren();
+			
+}
+
+function cambio2(obj){
+
+rowObj = obj.parentElement.parentElement;
+
+	if (rowObj.children[3].children[0].checked){
+		rowObj.children[2].children[0].checked=false;
+		//alert(rowObj.tagName);		
+		}
+}
+
+function cambio1(obj){
+
+rowObj = obj.parentElement.parentElement;
+
+	if (rowObj.children[2].children[0].checked){
+		rowObj.children[3].children[0].checked=false;
+		//alert(rowObj.tagName);		
+		}
+}
+
+function inicio(){
+ListEquipos();
+document.getElementById("idFecha").innerText = _hoy();
+}
+
+function getTren(){
+
+xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "../xml/tren.asp?RECURSO=getTren"
+		url += "&FECHA=" + document.getElementById("idFecha").innerText;
+		url += "&FAENA="+getEmpresa();
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		url += "&USUARIO=" +  Usuario;
+		
+var tbl = document.getElementById('tabEquiposSel');
+
+limpiarTabla2(tbl);
+
+ var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+			 var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = getChildNodeValue(node,"EQUIPO");
+			marcarEquipo(getChildNodeValue(node,"EQUIPO"));
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML = getChildNodeValue(node,"DESCRIPCION");
+			
+			var cell = row.insertCell(2);
+			cell.innerHTML = getChildNodeValue(node,"SECUENCIA");
+			cell.align = "CENTER";
+			
+			var cell = row.insertCell(3);
+			cell.innerHTML = "<img src='../images/trash.jpg' alt='Eliminar' style='cursor:hand' onclick='eliminar(this);'>";
+			cell.align = "CENTER";
+			}
+		}
+		else
+		  window.open(url);
+			
+	  
+}
+
+function marcarEquipo(_codigo){
+
+var tabla = document.getElementById('tabEquipos');
+
+for (i=2; i< tabla.rows.length; i++){
+
+		if (_codigo == tabla.rows[i].children[0].innerText){
+			tabla.rows[i].children[0].style.fontWeight ="bolder";
+			tabla.rows[i].children[1].style.fontWeight ="bolder";
+		
+		}
+		
+	}
+	
+
+}
+
+
+ function limpiarTabla2(tbl){
+	var lastRow = tbl.rows.length;
+	for (i=2; i<lastRow; i++)
+		  var row = tbl.deleteRow(-1);
+}
+
+function imprimir(){
+
+var _folio = formulario.txtFolio.value;
+
+xmlTemp1.async=false;
+	var xmlDso = xmlTemp1.XMLDocument;
+	var url = "../xml/tren.asp?RECURSO=infTren"
+		url += "&FAENA="+getEmpresa();
+		url += "&FOLIO=" + _folio;
+		url += "&USUARIO=" +  Usuario;
+		
+	window.open(url);
+}
+
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+  <DIV id="divFolio" style="POSITION: absolute;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 390px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; TOP: 100px; width: 320px;"	onclick="event.cancelBubble=true">
+	<IFRAME name="frameFolio" src="listTren.html" frameBorder="0"
+				 width="320" scrolling="no" height="230"></IFRAME>
+  </DIV>
+<FORM name="formulario">
+
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE width="920"  >
+  <!--DWLayoutTable-->
+<TR>
+  <TD width="337" height="21" class="titulo">INFORME TREN DE APILAMIENTO</TD>
+  </TR>
+
+<tr>
+  <td height="32" align="right" valign="middle"  class="calibri">INFORME 
+  <IMG src="../images/litleLupa.png" align="absbottom"
+				style="cursor:hand" onClick="frameFolio.popsearchbox(txtFolio, divFolio, 'getTren();');" /> 
+                 
+      <input type="text" class="input" name="txtFolio" size="10"  align="absbottom" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      FECHA <SPAN  id="idFecha" ></SPAN>&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" onClick="guardar();" value="Guardar" class="botonBlanco" align="absbottom">
+      <input type="button" onClick="imprimir();" value="Imprimir" class="botonBlanco" align="absbottom">
+      </td>
+  </tr>
+</TABLE>
+
+<TABLE width="920" border="0" cellpadding="5" cellspacing="5">
+  <!--DWLayoutTable-->
+  <TR>
+  <TD width="526" height="95" valign="top" class="td">
+	<TABLE width="100%" cellpadding="0" cellspacing="4" class="texto"
+				id="tabEquipos"  DATASRC="#xmlEquipos" >
+		  <THEAD>
+			<TR class="HeaderLista"  >
+			<TD height="13" colspan="5" valign="top">EQUIPOS</TD>
+			</TR>
+			<TR class="HeaderLista" >
+			  <TD width="124" height="13">CODIGO</TD>
+			  <TD width="385">NOMBRE</TD>
+  			  <TD width="62">OPERATIVO</TD>
+  			  <TD width="62">NO OPERATIVO</TD>
+		      <TD width="62">&nbsp;</TD>
+			</TR>
+			</THEAD>
+		<TR onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')"	 >
+			<TD height="20"><SPAN name="TxtCodigo" datafld="CODIGO"/></TD>
+			<TD><SPAN name="TxtNombre" datafld="DESCRIPCION"/></TD>
+			<TD align="center"><INPUT type="checkbox" datafld="IND_OP"  class="input"  onClick="cambio1(this);"/></TD>
+			<TD align="center"><INPUT type="checkbox" datafld="IND_NO_OP"  class="input" onClick="cambio2(this);"/></TD>
+	        <TD align="center"><img src="../images/flecha.png" alt="Agregar" onClick="add(this);" ></TD>
+		</TR>
+	</TABLE></TD>
+  <TD width="366" valign="top" class="td">
+  <TABLE width="100%" cellpadding="0" cellspacing="4" class="texto"	id="tabEquiposSel" >
+    <THEAD>
+      <TR class="HeaderLista" >
+        <TD height="13" colspan="4" valign="top">EQUIPOS SELECCIONADOS</TD>
+      </TR>
+      <TR class="HeaderLista" >
+        <TD width="124" height="13">CODIGO</TD>
+        <TD width="385">NOMBRE</TD>
+        <TD width="62">SECUENCIA</TD>
+        <TD width="62">&nbsp;</TD>
+      </TR>
+    </THEAD>
+  </TABLE></TD>
+  </TR></TABLE>
+</FORM>
+
+</BODY>
+</HTML>

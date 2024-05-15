@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var equipo = new Object();
+var fecha = new Object();
+var functionName;
+
+function mostrarVentana(_equipo, _fecha, _divBox, _function){
+
+if (!_fecha.value){
+		alert("Ingrese Fecha Inicio de OT.");
+		return;
+		}
+		
+if (!_equipo.value){
+		alert("Ingrese Equipo.");
+		return;
+		}
+		
+		
+  equipo = _equipo;
+  fecha = _fecha;
+  divBox = _divBox;
+  functionName = _function
+  with (divBox.style){visibility = "visible";} 
+  formulario.TxtFecha.value = _fecha.value;
+  formulario.TxtEquipo.value = _equipo.value;
+  getHorometroEquipo(_equipo.value); 
+  formulario.TxtValor.focus();
+  
+}
+
+function getHorometroEquipo(Equipo){
+
+xmlDoc.async =false;
+
+var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/equipos.asp?RECURSO=GetEquipo";
+		url += "&CODIGO=" + Equipo;
+    var res =xmlDso.load(url);
+    var tree = xmlDso.documentElement;	
+	if (tree.childNodes.length>0){
+		var node = tree.childNodes.item(0); 
+		formulario.TxtHorometro.value = getChildNodeValue(node,"HOROMETRO_PADRE");
+		}
+	else
+		alert("El codigo de equipo no existe.");
+}
+  
+
+function GuardarHorometro(){
+
+	
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=UltimoValorHorometro";
+		url += "&HOROMETRO=" + 	formulario.TxtHorometro.value;
+		url += "&COD_EQUIPO=" + 	formulario.TxtEquipo.value;
+	   xmlestado = xmlDso.load(url);		
+	 Valor = formulario.TxtValor.value;
+	 Fecha = formulario.TxtFecha.value.substr(0,10)
+	  if (xmlestado)
+			{
+			if (xmlDso.documentElement.childNodes.length>0){
+		   	        var node = xmlDso.documentElement.childNodes.item(0);
+					   fechaAnt = getChildNodeValue(node,"FECHA");
+		   			   valorAnt = getChildNodeValue(node,"VALOR");
+					   
+					   	//if (parseFloat(Valor) < parseFloat(valorAnt)){
+					   	//	alert('Lectura incorrecta, ultimo valor ' + valorAnt);
+						//	formulario.TxtHorometro.value ="";
+						//	return;}
+							
+					 //  if (obtenerPeriodo(Fecha)<=obtenerPeriodo(fechaAnt)){
+					   //		alert('Error, lectura con fecha ' + fechaAnt
+						//		+ ' para ' + formulario.TxtHorometro.value + ' grupo '
+						//		 + formulario.TxtGrupo.value + 
+						//			' Fecha Ingresada :' + Fecha);
+						//			formulario.TxtHorometro.value ="";
+						//		parent.indHorometro=true;
+						//	return;}
+							
+					   }
+			   }			
+		else
+			window.open(url);
+	
+						
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=InsertValorHorometro";
+		url += "&HOROMETRO=" + formulario.TxtHorometro.value;
+		url += "&COD_EQUIPO=" + formulario.TxtEquipo.value;
+		url += "&CODIGO=" + formulario.TxtEquipo.value;
+		url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&VALOR=" + formulario.TxtValor.value;
+		url += "&USUARIO=" + GetSession();
+		
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+		  else{
+				alert("Valor horometro " + formulario.TxtValor.value + " " + formulario.TxtHorometro.value + " ingresado.");
+				parent.indHorometro=true;
+				}
+				
+				//window.open(url);
+		
+}
+
+function aceptar(Index){
+
+GuardarHorometro();
+divBox.style.visibility = 'hidden';
+
+}
+
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+<DIV id="DivHorometro" style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px" onClick="event.cancelBubble=true">
+<IFRAME name="ListFrameHorometro" src="ListHorometro.html" frameBorder="0" width="250" scrolling="no" height="180"></IFRAME>
+</DIV>
+	<body  onLoad="">
+	<form name="formulario">
+		<table><tr><td width="50"></td><td>
+			<input type="hidden" size="0" name="txtIni">
+		</td></tr></table>
+			
+			<table border="0">
+						  <tr class="titulo">
+						    <td width="132" height="17" align="center">Horometro</td>
+						    <td width="152" height="17" align="center"></td>
+						    <td width="16" height="17" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table>  
+			<table width="234" align="center" cellpadding="0" cellspacing="3" class="texto" >
+				<thead>
+				<tr class="HeaderLista">
+				  <td width="106">Equipo</td>
+				  <td width="117">Hometro</td>
+				  <td><img src="images/table.png" style="CURSOR: hand" align="right"
+							onclick="ListFrameHorometro.popsearchbox(TxtValor,TxtEquipo , TxtHorometro,
+									DivHorometro,this.parentElement.parentElement.rowIndex,1);"></td>
+			    </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" height="27">
+				  <input name="TxtGrupo" type="hidden" class="inputT" id="TxtGrupo" size="4"/>
+				  <input name="TxtEquipo" type="text" class="inputT" id="TxtEquipo" size="12"/></td>
+			      <td align="center">
+				  <input name="TxtHorometro" type="text" class="inputT" id="TxtHorometro" size="12"/></td>
+			      </tr>
+		        <tr bgcolor="#EEEEEE">
+		          <td height="13" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+		        <tr bgcolor="#dee6eb" class="HeaderLista">
+		          <td onClick="return;">Fecha</td>
+		          <td align="center">Valor</td>
+	          </tr>
+	          <tr bgcolor="#dee6eb">
+				<td height="27" align="center" onClick="return;">
+				<input name="TxtFecha" type="text" class="inputT" id="TxtFecha" size="12"/></td>
+				<td align="center"><input name="TxtValor" type="text" class="input" id="TxtValor" size="12"/></td>
+			  </tr>
+</table>
+	      </div><br>
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="aceptar();" value="Aceptar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

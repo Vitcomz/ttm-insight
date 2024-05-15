@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Areas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+
+</head>
+<xml id = xmlAreas></xml>
+<xml id = xmlFuncionarios></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlDoc></xml>
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlTemp.async = false;
+
+function creaArea(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre.","");
+		
+	if (input)
+	{var url = "xml/areas.asp?RECURSO=NewArea&DESCRIPCION=" + input;
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+	}
+	listAreas();
+}
+
+function creaTrabajador(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre.","");
+	var url = "xml/area.asp?RECURSO=NewTrabajador&USUARIO=" + input;
+		url+= "&CODIGO=" + formulario.txtActividad.value;
+		url+= "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+		
+	if (input)
+		{xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+		
+	ListTrabajadores(formulario.txtActividad.value);
+}
+
+
+function UpdateResponsable(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/areas.asp?RECURSO=UpdateResponsable";
+		url += "&CODIGO=" + formulario.txtArea.value;
+		url += "&RESPONSABLE=" + formulario.txtResponsable.value;
+		
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+			
+	listAreas();
+		
+}
+
+function UpdateSubActividad(Codigo, SubCodigo, Nombre)
+{
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=UpdateSubActividad"
+		url += "&CODIGO=" + Codigo;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+		url += "&SUB_CODIGO=" + SubCodigo;
+		url += "&NOMBRE=" + Nombre;
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+			
+}
+
+  
+function listAreas()
+{
+	var xmlDso = xmlAreas.XMLDocument;
+	var url  = "xml/areas.asp?RECURSO=ListAreas";
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			window.open(url);
+	
+}
+
+
+  
+function ListFuncionarios(CodArea){
+
+	var tbl = document.getElementById('tabFuncionarios');
+
+	xmlFuncionarios.async=false;
+	var xmlDso = xmlFuncionarios.XMLDocument;
+	var url = "xml/areas.asp?RECURSO=ListFuncionarios";
+		url +="&CODIGO=" + CodArea;
+	 	xmlestado = xmlDso.load(url);
+		
+if (!xmlestado)
+			window.open(url);
+											
+}
+
+
+function Eliminar(Index)
+{
+	var tabla = document.getElementById('tabActividades');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "xml/Actividades.asp?RECURSO=DelActividad&CODIGO=" + Codigo;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Actividad Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListActividades();
+	}
+}
+
+function EliminarSubActividad(Index)
+{
+
+	var tabla = document.getElementById('tabSubActividades');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=DelSubActividad&SUB_CODIGO=" + Codigo;
+		url += "&CODIGO=" + formulario.txtActividad.value;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar SubActividad Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListSubActividades(formulario.txtActividad.value);
+	}
+}
+
+function selArea(Index)
+{
+	var tabla = document.getElementById('tabAreas');
+	var Area =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	var Responsable =  tabla.rows[Index].children[2].innerText;
+
+	formulario.txtArea.value = Area;
+	document.getElementById('idDescArea').innerText = Nombre;
+	document.getElementById('idResponsable').innerText = Responsable;
+	ListFuncionarios(Area);
+	Get();
+	//getResponsableArea(Area);
+	
+}
+
+function inicio(){
+listAreas();
+}
+
+function Get(){
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/usuarios.asp?RECURSO=GetUsuario&ID=" + formulario.txtResponsable.value;
+
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+		window.open(url);
+}
+
+
+</script>
+
+
+<body onLoad="inicio();" >
+<form name="formulario">
+<DIV id="DivUsuarios" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 289px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 145px; width: 280px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="280" scrolling="no"	height="170"></IFRAME>
+</DIV>
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table width="583">
+<tr>
+  <td width="149" height="31" colspan="2" class="titulo">AREAS</td>
+</tr>
+<tr>
+  <td height="18" class="titulo" colspan="2">&nbsp;</td>
+</tr>
+</table>
+
+<table width="836" border="0" cellpadding="5" cellspacing="5">
+  <tr><td width="376" valign="top" class="td">
+	<table width="383" cellpadding="0" cellspacing="4" class="texto" id="tabAreas"  DATASRC="#xmlAreas">
+			<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">AREAS</td>
+			</tr>
+			<tr class="HeaderLista" >
+			  <td width="50">CODIGO</td>
+			  <td width="174">NOMBRE</td>
+  			  <td width="90">RESPONSABLE</td>
+			  <td width="27" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaArea();" 
+									src="images/add.gif"></td>
+			 </tr>
+			</th>
+		</thead>
+		<tr onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dde3eb')" 
+			onClick="selArea(this.rowIndex)" bgcolor="#dde3eb" >
+			<td><span class="texto" name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span class="texto" name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td><span class="texto" name="TxtResponsable" datafld="RESPONSABLE"/></td>
+			<td align="center" onClick="Eliminar(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+	</table>
+	</td>
+	<td width="16">&nbsp;&nbsp;</td>
+	<td width="394" align="left" valign="top" class="td">
+			<input type="hidden" name="txtResponsable" id="idResponsable">
+			<input type="hidden" name="txtArea">						
+			<table width="393" cellpadding="0" cellspacing="4" class="texto" DATASRC="#xmlDoc">
+			<tr class="HeaderLista" >
+			  <td  colspan="3">JEFE DE AREA : <span id="idDescArea"></span></td>
+			</tr>
+			<tr bgcolor="#dde3eb">
+			  <td width="56" height="20"><strong>NOMBRE</strong></td>
+			  <td width="282" height="20" >
+			  <span class="texto" datafld="NOMBRES"></span>&nbsp;
+			  <span class="texto" datafld="APELLIDOS"></span>			  </td>
+  			  <td width="30" height="20">
+		   	<img onclick="ListFrame.popsearchbox(10, txtResponsable, txtResponsable, DivUsuarios)" 
+							src="images/lupa.jpg" style="cursor:hand"/>			  </td>
+			</tr>
+			<tr bgcolor="#dde3eb">
+			  <td><strong>CORREO</strong></td>
+			  <td height="20">
+		  	  <span class="HeaderLista" datafld="E_MAIL" />
+			  </td>
+   			  <td height="20">
+			  </td>
+			</tr>
+		</table>
+	
+		<table width="382" cellpadding="0" cellspacing="4" class="texto" 
+				id="tabFuncionarios"  datasrc="#xmlFuncionarios">
+		<thead>
+			<tr class="HeaderLista">
+			  <td height="20" colspan="3">FUNCIONARIOS</td>
+			</tr>
+			<tr class="HeaderLista">
+			  <td width="56">USERNAME</td>
+			  <td width="265">NOMBRE</td>
+			  <td width="16" height="20">&nbsp;</td>
+			</tr>
+		</thead>
+			<tr bgcolor="#dde3eb">
+			  <td width="56"><span class="texto" datafld="ID"/></td>
+			  <td width="265"><span class="texto" datafld="NOMBRE"/></td>
+			  <td >&nbsp;</td>
+		  </tr>
+	</table>
+</td></tr></table>
+</form>
+<br>
+<br>
+<div align="center" >
+  <input type="button" onClick="UpdateResponsable();" value="Guardar" class="botonBlanco">&nbsp;
+  <input type="button" onClick="window.location.href='index.html'" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

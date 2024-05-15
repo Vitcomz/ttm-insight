@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+	<siteMapNode img="default.png" title="Home" url="~/default.aspx" description="Home" Value="Home">
+		<siteMapNode img="default.png" title="SCI" url="~/ttm_sci/SubMenu.aspx" description="SCI" Value="SISTEMA CONTROL DE INFORMACION" roles="ADMIN">
+			<siteMapNode img="usuarios.png" title="Usuarios" url="~/ttm_sci/sci_usuarios.aspx" description="Administrar informacion de Usuarios"  Value="USUARIOS"></siteMapNode>
+			<siteMapNode img="roles.png" title="Roles" url="~/ttm_sci/sci_roles.aspx" description="Administrar informacion de Roles"  Value="ROLES"></siteMapNode>
+			<siteMapNode img="sistema.png" title="Sistema" url="~/ttm_sci/sci_sistema.aspx" description="Administrar informacion de Sistema"  Value="SISTEMA"></siteMapNode>
+		</siteMapNode>
+	</siteMapNode>
+</siteMap>

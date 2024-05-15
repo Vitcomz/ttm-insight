@@ -1,0 +1,34 @@
+.hero-unit h1{
+	background: none;
+}
+
+.hero-unit .buttons{
+	margin-top: 100px;
+}
+
+.row .span4 p{
+	height: 9ex;
+}
+
+.buttons{
+	text-align: right;
+}
+
+.sliderContainer{
+	margin-bottom: 70px;
+}
+
+.ui-rangeslider{
+	margin:0 40px;
+}
+
+input.ui-editRangeSlider-inputValue{
+	margin:0;
+	width: 3em;
+	height: auto;
+}
+
+.ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-label{
+	bottom:0 !important;
+	font-size: 12px;
+}

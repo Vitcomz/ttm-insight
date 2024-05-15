@@ -1,0 +1,945 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<title>Orden de Servicio - Sistema de Mantenci&oacute;n - Liebherr</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOT"></xml>
+		<xml id="xmlTemp"></xml>
+		<xml id="xmlActividades"></xml>
+		<xml id="xmlResponsables"></xml>
+		<xml id="xmlIncidente"></xml>
+		<xml id="xmlIncidentes"></xml>
+	<link rel="stylesheet" href="standard/menu.css" type="text/css">
+	<link rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+	<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+	<script src="standard/vitcomz.js"> </script>
+
+<script>
+//Funciones de Inicio de P�gina
+	
+function inicio(){
+  //Variables generales
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  formulario.txtRol.value = rol;
+//  formulario.txtUsuario.value = Usuario;
+//  ListResponsables();
+//  formulario.listResponsables.value = Usuario;
+  if (getParametro("Folio")){
+		formulario.txtOT.value=getParametro("Folio");
+		getOT();
+		}  			
+}
+
+
+function nuevo(){
+  //Variables generales
+  window.location.href="OT.html";
+}
+
+function newBitacora(){
+var url ="NewBitacora.html?COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	url +="&EQUIPO=" + formulario.txtEquipo.value;
+	url +="&IND_OT=true";
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:700px;dialogHeight:550px;scroll:no");
+	creaIncidente();
+}
+
+
+function guardar(){
+
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	for (i=0;i<formulario.tipoOT.length;i++)
+			if(formulario.tipoOT[i].checked)
+					tipo=formulario.tipoOT[i].value;
+					
+	if (formulario.listEstados.value=="EJE"){
+				alert("No se pueden realizar cambios, OS Ejecutada.");
+				return false;
+				}
+				
+	/*if (formulario.txtFecha.value==""){
+				alert("Ingrese fecha de Ejecucion.");
+				return false;
+				}
+				*/
+	
+	
+	if (formulario.txtOT.value)
+			var url = "xml/OT.asp?Recurso=UpdateOT&FOLIO_OT=" + formulario.txtOT.value;
+	else
+			var url = "xml/OT.asp?Recurso=NewOT";
+
+	url += "&FECHA_EJECUCION=" + formulario.txtFechaEjecucion.value;
+	url += "&FECHA_INICIO=" + formulario.txtFecha.value;
+	url += "&TIPO=" + tipo;
+	//url += "&OBSERVACION=" + formulario.txtObservacion.value;
+	url += "&EQUIPO=" + formulario.txtCodEquipo.value;
+	url += "&ESTADO="+ formulario.listEstados.value;
+	url += "&PROVEEDOR="+ getNumberRut(formulario.txtRut.value);
+	//alert(url);
+	var res =xmlDso.load(url);
+	
+	if (!formulario.txtOT.value)
+		formulario.txtOT.value = xmlDso.documentElement.childNodes.item(0).text;
+		
+	if (res){
+		setTimeout("guardarIncidentes();",1000);
+		setTimeout("guardarActividadesOT();",1000);
+		}
+	else
+		window.open(url);
+		
+return true;
+		
+}
+
+function finalizar(){
+
+   				
+ var tbl = document.getElementById('tabActividades');
+ var lastRow = tbl.rows.length;
+ var _finalizar=true;
+ for (i=1; i<lastRow; i++){
+	if(tbl.rows[i].children[0].children[1]){
+		if (!tbl.rows[i].children[2].children[0].checked){
+		    _finalizar=false;}//if
+
+		}//if
+	
+ }//for
+ 
+						
+ if (!_finalizar)
+		alert("Faltan Tareas por realizar.");
+ else{
+	if (guardar())
+	 	setTimeout("finalizarOT();",800);	
+	}
+
+}
+
+function finalizarOT(){
+
+Horometro = (new Date()).getTime();
+
+	for (i=0;i<formulario.tipoOT.length;i++)
+			if(formulario.tipoOT[i].checked)
+					tipo=formulario.tipoOT[i].value;
+					
+xmlOT.async = false;
+var xmlDso = xmlOT.XMLDocument;
+var url = "xml/OT.asp?RECURSO=FinalizarOT";
+	url += "&FOLIO_OT=" + formulario.txtOT.value;
+	url += "&EQUIPO=" + formulario.txtCodEquipo.value;
+	url += "&FECHA=" + formulario.txtFechaEjecucion.value;
+	url += "&HOROMETRO_CRO=" + Horometro;
+	url += "&ESTADO=EJE";
+	url += "&TIPO=" + formulario.txtTipoHrm.value;
+	
+    var res =xmlDso.load(url);
+	if(res)
+		alert("OT finalizada");		
+	else
+		window.open(url);	
+
+		
+	setTimeout('getOT();',1000);	
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+ 
+function getDatosProv(){
+
+
+if (!formulario.txtRut.value)
+			return;
+			
+xmlTemp.async = false;
+    
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Proveedores.asp?Recurso=GetProv&RUT=" + formulario.txtRut.value;
+			
+    var res =xmlDso.load(url);
+	
+	//window.open(url);
+	if (!res){
+		window.open(url);}
+	else{
+		var node = xmlDso.documentElement.childNodes.item(0);
+        formulario.txtRut.value =  getChildNodeValue(node,"RUT");
+		formulario.txtProveedor.value =  getChildNodeValue(node,"NOMBRE");
+		formulario.txtDireccion.value =  getChildNodeValue(node,"DIRECCION");
+		formulario.txtCiudad.value =  getChildNodeValue(node,"CIUDAD");
+		formulario.txtContacto.value =  getChildNodeValue(node,"CONTACTO");
+		formulario.txtFono.value =  getChildNodeValue(node,"FONO");
+		formulario.txtFax.value =  getChildNodeValue(node,"FAX");
+		formulario.txtEMail.value =  getChildNodeValue(node,"EMAIL");
+	}
+	
+		
+ 	
+	
+
+}
+  
+function getOT(){
+
+	limpiarTabla('tabActividades');
+
+  	xmlOT.async = false;
+	var xmlDso = xmlOT.XMLDocument;
+	       
+	var url = "xml/OT.asp?Recurso=GetOT&FOLIO_OT=" + formulario.txtOT.value;
+
+    var res = xmlDso.load(url);
+
+	//window.open(url);
+	 
+	 var tree = xmlDso.documentElement;
+     if (tree.childNodes.length > 0){
+				labelLoading.style.visibility = "visible";
+				setTimeout("mostrarActividadesUsr();",800);
+				setTimeout("mostrarIncidentes();",800);
+				setTimeout("getDatosProv();",800);
+	}
+	else
+		alert("No Existe Nro de OS.");
+
+labelLoading.style.visibility = "hidden";
+
+}
+	
+function creaActividad(){
+
+	for (i=0;i<formulario.tipoOT.length;i++)
+			if(formulario.tipoOT[i].checked)
+					tipo=formulario.tipoOT[i].value;
+						
+				
+ var tbl = document.getElementById('tabActividades');
+ var lastRow = tbl.rows.length + 1;
+ var actividad = prompt('Ingrese Actividad','');
+ 
+ var row = tbl.insertRow(-1);
+ var cell = row.insertCell(0);
+ 	cell.innerHTML = "<INPUT type='hidden' size='2' value='USR'>";
+ 
+ var cell = row.insertCell(1);
+  cell.innerHTML =  "<span class='texto'>" + lastRow + "</span>";
+  cell.style.borderBottom = '1px solid black';
+  cell.width="75px";
+  
+ var cell = row.insertCell(2);
+  cell.innerHTML =  "<span class='texto'>" + actividad + "</span>";
+  cell.width="100%";
+  cell.style.borderBottom = '1px solid black';
+  
+ var cell = row.insertCell(3);
+ 		cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+		cell.align = "middle";
+
+}
+
+function creaIncidente(){
+
+
+ID = formulario.txtIDIncidente.value;
+	 
+if (ID){
+	var tbl = document.getElementById('tabIncidentes');
+	var lastRow = tbl.rows.length;
+	
+    xmlIncidente.async = false;
+    var xmlDso = xmlIncidente.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=GetBitacora&ID="+ID;
+    var res =xmlDso.load(url);
+ 
+      if (res)
+      {
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0)
+        {
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT type='hidden' size='2' value='" + 
+										getChildNodeValue(node,"ID") + "'>" +					
+							 "<INPUT class='texto' type='text' size='2' value='" 	+ 
+										getChildNodeValue(node,"TURNO") + "'>";
+			var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='texto' type='text' size='14' value='" + 
+										getChildNodeValue(node,"FECHA") + "' >";
+			var cell = row.insertCell(2);
+			cell.innerHTML = "<TEXTAREA class='texto' rows=3 cols='45'>" +
+										getChildNodeValue(node,"DESCRIPCION") + "</TEXTAREA>";
+			var cell = row.insertCell(3);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+         }
+        }
+        else
+        { alert("No hay incidentes pendientes.");
+        }
+      }
+      else
+      {alert("Ha ocurrido un error al cargar los datos.\n" + xmlDso.parseError.reason);
+	  window.open(url);}
+  }
+  else
+  { alert("Operaci�n Cancelada.");}
+  //labelLoading.style.visibility = "hidden";
+ }
+ 
+
+function mostrarActividadesOT(){
+
+var CodEquipo = formulario.txtCodEquipo.value;
+
+	if (formulario.tipoOT[0].checked)
+				tipo='PRE';
+	else
+				tipo='COR';
+					
+	if (tipo=='COR'){
+			 labelLoading.style.visibility = "hidden";
+				return;}
+
+if (CodEquipo){
+
+	var tbl = document.getElementById('tabActividades');
+	var lastRow = tbl.rows.length;
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=ListSubActividadesOT&EQUIPO="+CodEquipo;
+		url += "&FOLIO_OT=" + formulario.txtOT.value;
+    var res =xmlDso.load(url);
+	//window.open(url);
+ 	var ActividadAnterior = "";
+	
+      if (res)
+      {
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0)
+        {
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          //var row = tbl.deleteRow(1);
+		  
+		  if (getChildNodeValue(node,"ACTIVIDAD") != ActividadAnterior){
+          	var row = tbl.insertRow(-1); 
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden'/>";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='Campo' >" + getChildNodeValue(node,"ACTIVIDAD") + "</span>";
+         	var cell = row.insertCell(2);
+			cell.innerHTML =  "<input class='hidden'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";    
+			}
+			
+			ActividadAnterior = getChildNodeValue(node,"ACTIVIDAD");
+			
+			var row = tbl.insertRow(-1);
+
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden' value=" + 
+						getChildNodeValue(node,"COD_ACTIVIDAD") + " />" +
+						 "<input  class='hidden' value=" + 
+						getChildNodeValue(node,"COD_SUB_ACTIVIDAD") + " />";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='texto'>" + getChildNodeValue(node,"NOMBRE") + "</span>";
+						 
+  			var cell = row.insertCell(2);
+			if(getChildNodeValue(node,"IND")=="TRUE")
+				cell.innerHTML =  "<INPUT class='Campo' type='checkbox' size='2' checked/>";
+			else
+				cell.innerHTML =  "<INPUT class='Campo' type='checkbox' size='2'/>";
+
+						
+         }
+        }
+        else
+        { //alert("Sin Actividades");
+        }
+      }
+      else
+  	    	window.open(url);	
+	 labelLoading.style.visibility = "hidden";
+  }  
+ 
+}
+
+
+function mostrarActividadesUsr(){
+
+Equipo = formulario.txtCodEquipo.value;
+//limpiarTabla('tabActividades');
+
+	var tbl = document.getElementById('tabActividades');
+	var lastRow = tbl.rows.length;
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=ListActividadesUsr";
+		url += "&FOLIO_OT=" + formulario.txtOT.value;
+    var res =xmlDso.load(url);
+	//window.open(url);
+	
+      if (res)
+      {
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+          var node = tree.childNodes.item(i);          	  
+          		var row = tbl.insertRow(-1); 
+				var cell = row.insertCell(0);
+				cell.innerHTML =  "<input class='hidden' value='USR'/>";    	
+				var cell = row.insertCell(1);
+				cell.innerHTML =  "<span class='texto' >" + (i+1) + "</span>";
+				cell.style.borderBottom = '1px solid black';
+				
+				var cell = row.insertCell(2);
+				cell.innerHTML =  "<span class='texto' >" + getChildNodeValue(node,"ACTIVIDAD") + "</span>";
+				cell.width="100%";
+  				cell.style.borderBottom = '1px solid black';
+				
+				var cell = row.insertCell(3);
+				cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+	      }//for
+        }//if
+      }
+      else
+      	window.open(url);
+}
+  
+function mostrarActividadesEquipo()
+{
+
+Equipo = formulario.txtCodEquipo.value;
+limpiarTabla('tabActividades');
+
+if (Equipo)
+ {
+	var tbl = document.getElementById('tabActividades');
+	var lastRow = tbl.rows.length;
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=ListSubActividadesEquipo&COD_EQUIPO="+Equipo;
+    var res =xmlDso.load(url);
+ 	var ActividadAnterior = "";
+	
+      if (res)
+      {
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0)
+        {
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          //var row = tbl.deleteRow(1);
+		  
+		  if (getChildNodeValue(node,"ACTIVIDAD") != ActividadAnterior){
+          	var row = tbl.insertRow(-1); 
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='Campo' >" + getChildNodeValue(node,"ACTIVIDAD") + "</span>";
+         	var cell = row.insertCell(2);
+			}
+			
+			ActividadAnterior = getChildNodeValue(node,"ACTIVIDAD");
+			
+			var row = tbl.insertRow(-1);
+
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<input class='hidden' size=2>" + 
+						getChildNodeValue(node,"COD_ACTIVIDAD") + "</input>" +
+						 "<input class='hidden' size=2>" + 
+						getChildNodeValue(node,"COD_SUB_ACTIVIDAD") + "</input>";    
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML =  "<span class='texto'>" + getChildNodeValue(node,"NOMBRE") + "</span>";
+						 
+  			var cell = row.insertCell(2);
+			cell.innerHTML =  "<INPUT class='Campo' type='checkbox' size='2'>";
+						
+         }
+        }
+        else
+        { //alert("Sin Actividades");
+        }
+      }
+      else
+      	window.open(url);
+  }
+ 
+ mostrarIncidentes();
+}
+
+function mostrarIncidentes(){
+
+OT = formulario.txtOT.value;
+limpiarTablaCabecera('tabIncidentes');
+
+if (OT){
+	var tbl = document.getElementById('tabIncidentes');
+	var lastRow = tbl.rows.length;
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=ListIncidentesOT&FOLIO_OT=" + OT;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res)
+      {
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);          
+          var row = tbl.insertRow(-1);
+          										
+			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='texto' type='text' size='16' value='" + 
+										getChildNodeValue(node,"FECHA") + "' >" +
+							 "<INPUT class='hidden' type='text'  value='" + 
+										getChildNodeValue(node,"ID") + "' >";
+			cell.vAlign="top";
+			
+			var cell = row.insertCell(1);
+			cell.innerHTML = "<TEXTAREA class='texto' rows=3 cols='55'>" +
+										getChildNodeValue(node,"DESCRIPCION") + "</TEXTAREA>";
+			var cell = row.insertCell(2);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+			
+			cell.align="middle";
+			         }
+        }
+        else
+        { //alert("Sin Actividades");
+        }
+      }
+      else
+      	window.open(url);
+  }
+
+}
+
+function guardarIncidentes(){
+
+ var tbl = document.getElementById('tabIncidentes');
+ var lastRow = tbl.rows.length;
+	xmlIncidentes.async = false;
+    var xmlDso = xmlIncidentes.XMLDocument;
+ 	url = "xml/OT.asp?RECURSO=DeleteIncidentesOT";
+	url += "&FOLIO_OT=" + formulario.txtOT.value;
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);		
+ for (i=1; i<lastRow; i++) {
+	url = "xml/OT.asp?RECURSO=InsertIncidenteOT"
+	url += "&ID_INCIDENTE=" + tbl.rows[i].children[0].children[1].value;
+	url += "&FOLIO_OT=" + formulario.txtOT.value;
+    var res =xmlDso.load(url);
+	if (!res) 
+			window.open(url);
+
+ }
+} 
+
+function guardarActividadesOT(){
+
+ var tbl = document.getElementById('tabActividades');
+ var lastRow = tbl.rows.length;
+	xmlIncidentes.async = false;
+ var xmlDso = xmlIncidentes.XMLDocument;
+  
+	url = "xml/OT.asp?RECURSO=DeleteActividadesOT";
+	url += "&FOLIO_OT=" + formulario.txtOT.value;
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);
+						
+ 
+ for (i=0; i<lastRow; i++){
+		guardarActividadesUsr(tbl.rows[i].children[2].innerText);
+		}
+ 
+ 
+} 
+
+function guardarActividadesUsr(Actividad){
+
+	xmlIncidentes.async = false;
+ var xmlDso = xmlIncidentes.XMLDocument;
+  
+	url = "xml/OT.asp?RECURSO=InsertActividadesUSR";
+	url += "&FOLIO_OT=" + formulario.txtOT.value;
+	url += "&ACTIVIDAD=" + Actividad;
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);
+
+
+}
+
+
+//Funciones generales
+ function limpiarTabla(tabla)
+ {
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(0);
+	 }
+ }
+ 
+function limpiarTablaCabecera(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++){
+	  var row = tbl.deleteRow(1);
+	 }
+ }
+ 
+function getEquipo(){
+mostrarActividadesEquipo();
+
+}
+
+function imprimirOT(){
+//showModalDialog(url,window,"status:no;help:no;dialogWidth:510px;dialogHeight:200px");
+var url = "ImprOT.html?OT=" + formulario.txtOT.value;
+
+window.open(url);
+
+}
+</script>
+
+<style type="text/css">
+<!--
+.style1 {
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.style4 {font-family: Verdana, Arial, Helvetica, sans-serif}
+-->
+</style>
+</HEAD>
+<body onload="inicio();">
+	
+<DIV id="divEquipos" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 155px; 
+		VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge;
+	 	POSITION: absolute; TOP: 181px; width: 365px;"
+			onclick="event.cancelBubble=true">
+			<IFRAME name="frameEquipos" src="ListEquiposPadres.html" frameBorder="0"
+			 width="365" scrolling="no" height="300"></IFRAME>
+</DIV>
+
+<DIV id="DivProv" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 324px;
+	 BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 137px; width: 259px;
+     visibility: hidden;" onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameProv" src="ListProveedores.html" frameBorder="0" width="280" scrolling="no"	height="250"></IFRAME>
+</DIV>
+
+<DIV id="DivPeriodo" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FramePeriodo" src="periodo.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+	
+	<DIV id="divOT" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 553px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 87px; width: 360px; height: 205px; visibility: hidden;" onclick="event.cancelBubble=true">
+	  <iframe name="frameOT" src="ListOT.html" frameborder="0" width="360" scrolling="no" height="205"></iframe>
+	</DIV>
+	
+    <DIV id="divIncidentes" style="BORDER-RIGHT: #dfdfdf 4px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 289px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 280px; width: 419px;"
+			onclick="event.cancelBubble=true">
+			<IFRAME name="frameIncidentes" src="ListIncidentes.html" frameBorder="0" width="419" scrolling="no" height="170"></IFRAME>
+	</DIV>
+
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+
+<DIV id="DivObservacion" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 280px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameObservacion" src="observacion.html" frameBorder="0"
+	 width="560" scrolling="no" height="280">
+</IFRAME>
+</DIV>
+
+<DIV id="DivHorometro" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameHorometro" src="horometroBox.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+
+<span class="loading" id="labelLoading" style=" visibility:hidden; LEFT: 296px; WIDTH: 256px; POSITION: absolute; TOP: 204px; HEIGHT: 48px">Cargando.... espere un momento</span>	
+		<br>
+		<br>	
+		<form name="formulario">
+		<script language="JavaScript1.2" src="standard/menudata.js"></script>
+		<table width="770" height="562" border="0" cellPadding="0" cellSpacing="0" class="calibri">
+			  <!--DWLayoutTable-->
+<tr>
+					<th width="770" height="283" vAlign="middle"> 
+           		    <!-- CABECERA SOLICITUD -->
+						<table cellSpacing="0" cellPadding="0" 
+								height="273" width="793" align="left" DATASRC="#xmlOT">
+						  <!--DWLayoutTable-->
+			              <TR align="center">
+			                <TD width="112" height="30" valign="middle" ><!--DWLayoutEmptyCell-->&nbsp;</TD>
+			                <TD colspan="4" valign="middle" class="calibri_16" >ORDEN DE SERVICIO</TD>
+			                <TD colspan="2" align="right" valign="middle" class="calibri_16" >N�&nbsp;</TD>
+			                <TD width="82" valign="middle" >
+                            <input  class="Campo" id="idRol" type="hidden"  name="txtRol"> 
+                            <input class="input" type="text" size="6"
+							  	 name="txtOT" datafld="FOLIO_OT"
+								 	onKeyPress="if(event.keyCode==13)getOT();"
+									 onBlur="getOT();" />			                  &nbsp;
+                              <img src="images/lupa.jpg" alt="Buscar"	align="top" style="CURSOR: hand" 
+									onClick="frameOT.mostrarVentana(txtOT, txtEquipo, divOT,'getOT();',
+                                    	Usuario, txtRol); return false;"></TD>
+		                  </TR>
+			              
+			              <TR align="center">
+			                <TD height="26" valign="middle" >&nbsp;</TD>
+			                <TD colspan="4" valign="middle" >&nbsp;</TD>
+			                <TD colspan="2" align="right" valign="middle" class="calibri_16" >FECHA &nbsp;</TD>
+			                <TD valign="middle" >
+                            <input class="Campo" type="text"  size="12"
+							  		name="txtFecha"  datafld="FECHA_INICIO">
+                             <input class="hidden" type="text"  size="12"
+							  		name="txtFechaEjecucion"  datafld="FECHA_EJECUCION">                            </TD>
+		                  </TR>
+			              <TR align="center">
+			                <TD height="22" align="left" valign="middle" >A</TD>
+			                <TD colspan="7" align="left" valign="middle" >
+                            <input class="Campo" i type="text" size="110"
+							  				 name="txtProveedor"  datafld="PROVEEDOR">
+		                    <img src="images/lupa.jpg" align="top"	style="cursor:hand"
+                             onclick="ListFrameProv.popsearchbox(10, txtRut, txtProveedor, DivProv,'getDatosProv();');" />                             </TD>
+		                  </TR>
+			              <TR align="center">
+			                <TD height="27" align="left" valign="middle" >RUT</TD>
+			                <TD colspan="2" align="left" valign="middle" >
+                       	    <input  class="Campo"  type="text" size="50" 
+							  			name="txtRut" datafld="RUT_PROVEEDOR"></TD>
+			                <TD width="91" align="left" valign="middle" >FONO</TD>
+			                <TD colspan="4" align="left" valign="middle" >
+                            <input  class="Campo"  type="text" size="17" 
+							  			name="txtFono" datafld="FONO"> 
+			                  											  FAX
+		                      <input  class="Campo" id="idCodEquipo10" type="text" size="17" 
+							  			name="txtFax" datafld="FAX"></TD>
+		                  </TR>
+			              <TR align="center">
+			                <TD height="22" align="left" valign="middle" >DIRECCION</TD>
+			                <TD colspan="2" align="left" valign="middle" >
+                            <input  class="Campo"  type="text" size="50" 
+							  			name="txtDireccion" datafld="DIRECCION"></TD>
+			                <TD align="left" valign="middle" >AT.</TD>
+			                <TD colspan="4" align="left" valign="middle" >
+                            	<input  class="Campo" type="text" size="43" 
+							  			name="txtContacto" datafld="CONTACTO"></TD>
+		                  </TR>
+			              <TR align="center">
+			                <TD height="33" align="left" valign="middle" >CIUDAD</TD>
+			                <TD colspan="2" align="left" valign="middle" >
+                            	<input  class="Campo" type="text" size="50" 
+							  			name="txtCiudad" datafld="CIUDAD"></TD>
+			                <TD align="left" valign="middle" >E-MAIL</TD>
+			                <TD colspan="4" align="left" valign="middle" >
+                            <input  class="Campo"  type="text" size="43" 
+							  			name="txtEMail" datafld="EMAIL"></TD>
+		                  </TR>
+			              <TR align="center">
+			                <TD height="9" colspan="8" valign="middle" ><hr></TD>
+		                  </TR>
+			              <TR align="center">
+								<TD height="19" colspan="4" align="left" valign="middle" >DESCRIPCION DEL EQUIPO</TD>
+							<TD width="55" >&nbsp;</TD>
+						    <TD colspan="3" align="left" valign="middle" >TIPO DE SERVICIO SOLICITADO</TD>
+						  </TR>
+							<TR align="center" vAlign="middle">
+							  <TD height="22" colSpan="4" align=left valign="middle">
+							    <input class="Campo" id="idEquipo" type="text" size="63"
+							  				 name="txtEquipo"  datafld="DESC_EQUIPO">
+							  &nbsp;
+							  <!--IMG style="CURSOR: hand" 
+							  onclick="frameEquipos.mostrarVentana(txtCodEquipo, txtEquipo,
+                               divEquipos,'getEquipo();'); return false;" 	
+                               	src="images/lupa.jpg" align="absmiddle"--></TD>
+							  <TD>&nbsp;</TD>
+						      <TD width="56">&nbsp;</TD>
+						      <TD colSpan="2" rowspan="3" align="left" valign="middle">
+							    <input name="tipoOT" type="radio" class="input" 
+                                		 checked value="MAN" datafld="TIPO">
+							    MANTENCI�N<BR>
+                                <input name="tipoOT" type="radio" class="input"	onClick="" 
+                                		value="COR"  datafld="TIPO">
+                                REPARACI&Oacute;N<BR>
+                                <input name="tipoOT" type="radio" class="input" 
+									onClick="" value="COT" 	datafld="TIPO">
+                              COTIZACI&Oacute;N </TD>
+						  </TR>
+							<TR align="left">
+							  <td height="19"  >PATENTE</td>
+							  <td width="212" align="left" valign="middle"  >
+                              <input  class="Campo"  type="text" size="15" 
+							  			name="txtPatente" datafld="PATENTE">
+						      KILOMETROS                              </td>
+							  <td colspan="2" valign="top"  >
+                                <input  class="Campo"  type="text" size="15" 
+							  			name="txtHorometro" datafld="HOROMETRO"></td>
+							  <TD>&nbsp;</TD>
+					          <TD>&nbsp;</TD>
+				          </TR>
+							<TR align="left">
+							  <td height="22"  >CODIGO</td>
+							  <td align="left" valign="middle"  >
+                              <input  class="Campo" id="idCodEquipo" type="text" size="15" 
+							  			name="txtCodEquipo" datafld="COD_EQUIPO">
+						      ESTADO						      </td>
+							  <td colspan="2" valign="top"  >
+                                <select name="listEstados" class="input" disabled="disabled" datafld="ESTADO">
+                                <option value="PRO">PROGRAMADA</option>
+                                <option value="PEN">PENDIENTE</option>
+                                <option value="EJE">EJECUTADA</option>
+                                <option value="NUL">ANULADA</option>
+                               </select></td>
+							  <TD>&nbsp;</TD>
+					          <TD>&nbsp;</TD>
+				          </TR>
+							<TR align="left">
+							  <td height="17" colspan="8"  ><hr></td>
+						  </TR>
+							<tr>
+							  <td height="3"></td>
+							  <td></td>
+							  <td width="60"></td>
+							  <td></td>
+							  <td></td>
+							  <td></td>
+							  <td width="123"></td>
+							  <td></td>
+						  </tr>
+					</table>				
+      </th>
+			    </tr>
+			<tr>
+			  <th height="145" align="left" valign="top" >           	  
+                <!---- SERVICIOS --->
+				<TABLE width="554" border="0" cellPadding="0" cellSpacing="0">
+       	   		 <!--DWLayoutTable-->
+					<TR class="Rotulo">
+				  <TH height="22" colspan="3"  align="left" valign="top">SERVICIOS SOLICITADOS</TH>
+					  <th width="108" align="left"> 
+                        <IMG src="images/add.gif" width="19" height="19" style="CURSOR: hand" 
+									onclick="creaActividad(); return false;">INSERTAR</th>
+			</TR>
+						<TR class="Rotulo" >
+                        <TH width="73" height="14"  align="left" valign="middle">ITEM</TH>
+						<TH width="244"  align="left" valign="middle">&nbsp;DESCRIPCI&Oacute;N</TH>
+   			            <TH width="129"></TH>
+						<td></td>
+</TR>
+	    		</TABLE>
+   			    <TABLE id="tabActividades" border="0" align="left"  width="475" cellpadding="0">
+   			    </TABLE>
+              </th>
+	      </tr>
+			<tr>
+			  <th height="120" align="left" valign="top" >
+              <table width="562" border="0" cellPadding="0" cellSpacing="0" >
+				<TBODY>
+				 <TR align="left"  valign="top" class="Rotulo">
+				 <th width="456"  align="left" valign="middle">&nbsp;INCIDENTES CORREGIDOS</th>
+				  <th width="106" align="center" valign="top">
+                            <IMG src="images/lupa.jpg" width="19" height="19" style="CURSOR: hand" 
+									onclick="frameIncidentes.mostrarVentana(txtIDIncidente,
+									10, divIncidentes,'creaIncidente()'); return false;">
+                    <input type="hidden" name="txtIDIncidente"  size="2"  />
+                   BUSCAR</th>
+				  </TR>
+			    </TBODY>
+			  </table>
+       	 		 <TABLE width="564" height="21" border="0" id="tabIncidentes">
+						<TR valign="top" class="Rotulo" >
+						  <TH width="125" height="17" align="left" >FECHA INCIDENTE</TH>
+						  <TH width="348" align="left" >DESCRIPCI&Oacute;N</TH>
+						  <TH width="77"  >&nbsp;&nbsp;&nbsp;</th>
+   				   </TR>
+	            </TABLE>
+              </th>
+		  </tr>
+			
+
+			<tr>
+			  <th height="14" align="left" vAlign="top" scope="row">
+			  		
+			<BR>	
+				    </th>
+			  </tr>
+			<tr>
+			  <td height="0"></td>
+		    </tr>
+		  </TABLE>
+<table height="19" cellSpacing="0" cellPadding="0" width="752" border="0">
+				<TR>
+				  <td width="148" align="center"><input class="botonBlanco" onclick="nuevo();" type="button" value="Nuevo"></td>
+				  <td width="137" align="center"><input class="botonBlanco"
+				  		 onclick="guardar();setTimeout('getOT();',1000);" type="button" value="Guardar"></td>
+					<td width="37" align="center"><!--input class="boton" onclick="alert('Esta funcion esta casi lista!');" type="button" value="Nueva"--></td>
+				  <td width="137" align="center"><input class="botonBlanco" onclick="finalizar();" type="button" value="Finalizar"></td>
+				  <td width="150" align="center"><input class="botonBlanco" onclick="imprimirOT();" type="button" value="Imprimir"></td>
+					<td width="125" align="center">
+					<!--input name="button" type="button" class="botonBlanco"
+									 onclick="FrameInsumos.mostrarVentana(
+									formulario.txtOT.value,10, DivInsumos);" value="Insumos"--></td>
+					<td width="18"></TD></TR>
+			</table>
+			</TR></TBODY></TABLE></form>
+	</body>
+</HTML>

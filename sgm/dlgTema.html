@@ -1,0 +1,544 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//ES" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Biblioteca</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+
+
+
+
+
+</HEAD>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style3 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</STYLE>
+<xml id = xmlNew></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlDel></xml>
+<xml id = xmlImages></xml>
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+</script>
+<SCRIPT>
+
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  indHorometro = false;
+  
+ 
+		if (id_br == "IE")
+		{
+			var _opener = dialogArguments;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var _opener =  window.dialogArguments;
+		}
+
+  var indOT;
+  var cat = getParametro("cat");
+
+function guardar(){
+
+if (document.getElementById('txtFOLIO').value)
+		updateTema(document.getElementById('txtFOLIO').value);
+else
+		newTema();
+
+}
+
+
+							  
+function inicio(){
+		if (id_br == "IE")
+		{
+			document.getElementById("idResponsable").innerText = GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			document.getElementById("idResponsable").textContent = GetSessionMoz();
+		}
+
+	if (getParametro("ID"))
+				getTema(getParametro("ID"));
+	document.getElementById('txtFecha').value = _hoy();
+
+		if (id_br == "IE")
+		{
+			var usuario = GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var usuario = GetSessionMoz();
+		}
+	var str="YGODOYO IVERGARA FFIGUEROA DG"; 
+	
+	document.getElementById("listCategoria").value=cat;
+
+	if(str.indexOf(usuario)<0) {
+		document.getElementById("BotonGuardar").style.visibility="hidden";
+		document.getElementById("botonArchNew").style.visibility="hidden";
+		document.getElementById("botonElim").style.visibility="hidden";
+		}
+	else {
+		document.getElementById("BotonGuardar").style.visibility="visible";
+		document.getElementById("botonArchNew").style.visibility="visible";
+		document.getElementById("botonElim").style.visibility="visible";
+		}
+
+}
+
+function salir(){
+
+window.close();
+
+}
+ 
+function newTema(){
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/temas.asp?RECURSO=newTema";
+		url += "&FECHA=" + document.getElementById('txtFecha').value;
+		url += "&ESTADO=" + document.getElementById('listEstados').value;
+		url += "&AUTOR=" +  document.getElementById('txtAutor').value;
+		url += "&NOMBRE=" + scape(document.getElementById('txtNombre').value);
+		url += "&DESCRIPCION=" + scape(document.getElementById('txtDescripcion').value);
+		url += "&SUCURSAL=" + document.getElementById('listSucursal').value;
+		url += "&CATEGORIA=" + document.getElementById('listCategoria').value;
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=iso-8859-1");
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+		
+		if (!xmlestado)
+			window.open(url);
+		else		
+		document.getElementById('txtFOLIO').value = xmlDso.documentElement.childNodes.item(0).text;
+			
+//setTimeout("guardarCheckList();",1);			
+//setTimeout("window.close();",500);		
+}
+
+
+function updateTema(ID){
+		 		
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/temas.asp?RECURSO=updateTema";
+		url += "&ID=" + ID;
+		url += "&FECHA=" + document.getElementById('txtFecha').value;
+		url += "&ESTADO=" + document.getElementById('listEstados').value;
+		url += "&AUTOR=" +  document.getElementById('txtAutor').value;;
+		url += "&DESCRIPCION=" + scape(document.getElementById('txtDescripcion').value);
+		url += "&NOMBRE=" + scape(document.getElementById('txtNombre').value);
+		url += "&SUCURSAL=" + document.getElementById('listSucursal').value;
+		url += "&CATEGORIA=" + document.getElementById('listCategoria').value;
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=iso-8859-1");
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+		
+		if (!xmlestado)
+				window.open(url);
+	
+		
+	window.close();			
+}
+
+
+function getTema(ID){
+
+
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/temas.asp?RECURSO=getTema";
+		url +="&ID=" + ID;
+		url +="&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=iso-8859-1");
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+	if (!xmlestado)
+			window.open(url);
+  	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//		document.getElementById("ID_list_cant_reg").textContent = total_registros_lista;
+		var x = xmlDso.getElementsByTagName("ROW");
+		for (i=0; i<x.length; i++) {
+			document.getElementById("txtFOLIO").value = x[i].getElementsByTagName("FOLIO")[0].childNodes[0].nodeValue;
+			document.getElementById("txtNombre").value = x[i].getElementsByTagName("NOMBRE")[0].childNodes[0].nodeValue;
+			document.getElementById("txtFecha").value = x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+			document.getElementById("listCategoria").value = x[i].getElementsByTagName("CATEGORIA")[0].childNodes[0].nodeValue;
+			document.getElementById("listEstados").value = x[i].getElementsByTagName("ESTADO")[0].childNodes[0].nodeValue;
+			document.getElementById("listSucursal").value = x[i].getElementsByTagName("SUCURSAL")[0].childNodes[0].nodeValue;
+			document.getElementById("txtAutor").value = x[i].getElementsByTagName("AUTOR")[0].childNodes[0].nodeValue;
+			if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+				document.getElementById("txtDescripcion").value = x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+			}
+		}
+		
+	}	
+	setTimeout("listArchivos();",500);
+}
+
+
+
+function newFile(){
+//		if (id_br == "IE")
+//		{
+//			
+			document.getElementById('divFiles').style.visibility = 'visible';
+			document.getElementById('frameFiles').src = "archivos.html?IDx="+ document.getElementById('txtFOLIO').value + "&FAMx=TEMAS"
+			//document.getElementById('frameFiles').mostrarVentana(document.getElementById('txtFOLIO'),"TEMAS",divFiles);
+//		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//			OpenWin = this.open("archivos.html?IDx="+ document.getElementById('txtFOLIO').value + "&FAMx=TEMAS", "CtrlWindow", "toolbar=no,menubar=no,location=no, scrollbars=yes,resizable=yes, dependent=no,directories=no, width=600,height=250,x=50,y=50");
+//			//CtrlWindow
+//			if (OpenWin != null || !OpenWin.closed) {
+//				setTimeout("OpenWin.mostrarVentana(document.getElementById('txtFOLIO'),'TEMAS','');",400);
+//				//document.frameFiles.mostrarVentana(document.getElementById('txtFOLIO'),"TEMAS",divFiles);
+//			}
+//		}
+
+}
+
+function delFile(){
+		if (id_br == "IE")
+		{
+			var xmlImages = document.getElementById("xmlImages");
+			xmlImages.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlImages = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=TEMAS"; 
+		url += "&IDENTIFICADOR="+document.getElementById('txtFOLIO').value;
+		url += "&ID=" + document.getElementById("txtId").innerHTML;
+    
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+	//window.open(url);
+	if (xmlestado){
+		//listArchivos();
+		window.parent.location.reload(true);
+	}
+	if(!xmlestado){
+			window.open(url);
+		}
+
+}
+ 
+function listArchivos(){
+		if (id_br == "IE")
+		{
+			var xmlImages = document.getElementById("xmlImages");
+			xmlImages.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlImages = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=TEMAS"; 
+		url += "&IDENTIFICADOR="+document.getElementById('txtFOLIO').value;
+    
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);}
+	else{		
+	   total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerHTML = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/1);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerHTML = "1/" + total_bloque_listado;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+	//		document.getElementById("ID_list_cant_reg").textContent = total_registros_lista;
+			var x = xmlDso.getElementsByTagName("ROW");
+			for (i=0; i<x.length; i++) {
+				document.getElementById("txtId").textContent = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+				document.getElementById("spnombre").textContent = x[i].getElementsByTagName("NOMBRE")[0].childNodes[0].nodeValue;
+				document.getElementById("FILEID").href = x[i].getElementsByTagName("FILEID")[0].childNodes[0].nodeValue;
+				document.getElementById("FILEIMAGE").src = x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue;
+				// x[i].getElementsByTagName("RUTA")[0].childNodes[0].nodeValue +
+			}
+			
+		}	
+	}
+
+}
+
+</SCRIPT>
+<BODY onLoad="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+
+<DIV id="divFiles" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 50px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 60px"
+onclick="event.cancelBubble=true">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+  <tr>
+    <td><a href="#"><img src="images/close.gif" width="16" height="14" alt="Cerrar" align="right" onClick="document.getElementById('divFiles').style.visibility = 'hidden';"></a></td>
+  </tr>
+  <tr>
+    <td><IFRAME name="frameFiles" id="frameFiles" src="archivos.html?x=1" frameBorder="0" width="450" scrolling="no" height="220"></IFRAME></td>
+  </tr>
+</table>
+
+</DIV>
+
+<FORM NAME="formulario" id="formulario">
+  <TABLE WIDTH="473" DATASRC="#xmlNew">
+    <TR>
+      <TD WIDTH="143"  CLASS="titulo"> TEMA&nbsp;N&ordm;
+      <INPUT NAME="txtFOLIO" TYPE="TEXT" id="txtFOLIO"
+       READONLY CLASS="inputBold" SIZE="5"  DATAFLD="FOLIO" /></TD>
+      <TD WIDTH="295"  CLASS="titulo">
+      		Responsable Ingreso : <SPAN ID="idResponsable" CLASS="Campo" DATAFLD="RESPONSABLE"></SPAN>
+      <TD WIDTH="19" ALIGN="right">   </TD>
+    </TR>
+    <TR CLASS="texto">
+      <TD HEIGHT="2"  valign="top"></TD>
+    </TR>
+  </TABLE>
+  <TABLE WIDTH="618" HEIGHT="298" BORDER="0" CLASS="texto"  DATASRC="#xmlNew">
+    <!--DWLayoutTable-->
+    <TR>
+      <TD WIDTH="111" HEIGHT="21" ALIGN="left" VALIGN="top">NOMBRE</TD>
+      <TD COLSPAN="2" VALIGN="top">
+        <INPUT CLASS="input"  TYPE="text" SIZE="80"
+            			 name="txtNombre" id="txtNombre"  datafld="NOMBRE">
+      </TD>
+    </TR>
+    <TR>
+      <TD HEIGHT="22" VALIGN="middle">FECHA</TD>
+      <TD COLSPAN="2" VALIGN="middle" >
+      <INPUT NAME="txtFecha" id="txtFecha" TYPE="text" CLASS="input" SIZE="12" 
+	  				readonly="true" DATAFLD="FECHA"/>
+        &nbsp;<IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top"
+					  onclick="FrameCalendar.fPopCalendar(txtFecha,txtFecha,divCalendar);return false">&nbsp;&nbsp;
+        CATEGORIA 
+  		<SELECT NAME="listCategoria" id="listCategoria" DATAFLD="CATEGORIA">
+          <OPTION VALUE="DOCUMENTOS SGI">DOCUMENTOS SGI</OPTION>
+          <OPTION VALUE="DOCUMENTOS MODIFICADOS">DOCUMENTOS MODIFICADOS</OPTION>
+  		</SELECT>
+  </TD>
+    </TR>
+    
+    
+    
+    <TR >
+      <TD HEIGHT="20" VALIGN="TOP">ESTADO </TD>
+<TD WIDTH="306" VALIGN="TOP">
+      			<SELECT  NAME="listEstados" id="listEstados" DATAFLD="ESTADO">
+                		<OPTION VALUE='EVA'>EN EVALUACION</OPTION>
+                 		<OPTION VALUE='ACT'>ACTIVA</OPTION>
+                </SELECT>
+      </TD>
+      <TD WIDTH="185" ROWSPAN="5" ALIGN="CENTER" VALIGN="TOP">
+        <TABLE WIDTH="200" height="89%" border="0" cellpadding="0" cellspacing="0" datapagesize="1"
+                  id="tabImages" DATASRC="#xmlImages">
+          <TR>
+            <TD height="23" valign="top">
+              <FONT class="calibri">&nbsp;Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>
+               <SPAN id="ID_list_cant_reg" STYLE="visibility:hidden"></SPAN> &nbsp;</FONT>
+              <A  href="javascript:irAtras('tabImages');">&lt; Anter.</A>         
+              <A  href="javascript:irAdelante('tabImages');">Sig. &gt;</A>                         </TD>
+          </TR>
+          <TR>
+            <TD width="272" height="194"  align="center" valign="top">
+              <A datafld="FILEID" target="_blank" id="FILEID" >
+              <IMG src="images/noDisponible.png"  border="1" width="180"  
+                             		align="middle" datafld="FILEIMAGE"
+                                	 onerror="this.src='images/noDisponible.png';" id="FILEIMAGE"><BR>
+              <BR><SPAN DATAFLD="ID" ID="txtId" STYLE="visibility:hidden"></SPAN>
+              <SPAN DATAFLD="NOMBRE" id="spnombre"></SPAN></A>                      </TD>
+			    </TR>
+          
+          <TR>
+            <TD ALIGN="CENTER" valign="top">
+              <INPUT name="button" type="button" id="botonArchNew" class="botonBlanco"  value="Nuevo Archivo" onClick="newFile();">
+              <INPUT name="button" type="button" id="botonElim" class="botonBlanco"  value="Eliminar" onClick="delFile();">                          </TD>
+	      </TR>
+        </TABLE>
+        <!-- ***************** FIN ARCHIVOS ******************* --->
+      </TD>
+    </TR>
+    <TR >
+      <TD HEIGHT="23" VALIGN="TOP">SUCURSAL </TD>
+      <TD VALIGN="TOP">
+             	<SELECT  NAME="listSucursal" id="listSucursal" DATAFLD="SUCURSAL">
+                	<OPTION VALUE='IQUIQUE'>IQUIQUE</OPTION>
+                 	<OPTION VALUE='ANTOFAGASTA'>ANTOFAGASTA</OPTION>
+                    <OPTION VALUE='CALAMA'>CALAMA</OPTION>
+                    <OPTION VALUE='SANTIAGO'>SANTIAGO</OPTION>
+                    <OPTION VALUE='TTM'>TTM</OPTION>
+                    <OPTION VALUE='SGI'>SGI</OPTION>
+                </SELECT>
+      </TD>
+    </TR>
+    <TR >
+      <TD HEIGHT="21"> AUTOR  </TD>
+      <TD VALIGN="TOP">
+        <INPUT NAME="txtAutor" id="txtAutor" TYPE="text" CLASS="input" SIZE="30"  DATAFLD="AUTOR"/>
+      </TD>
+    </TR>
+    <TR >
+      <TD HEIGHT="145" COLSPAN="2">DESCRIPCION
+      <TEXTAREA CLASS="input" COLS="80" ROWS="10" name="txtDescripcion" id="txtDescripcion" DATAFLD="DESCRIPCION"></TEXTAREA>
+      </TD>
+    </TR>
+    <TR >
+      <TD HEIGHT="29" VALIGN="BOTTOM">
+        <INPUT TYPE="button" id="BotonGuardar" CLASS="botonBlanco" onClick="guardar();" VALUE="Guardar Tema" >
+      </TD>
+      <TD VALIGN="BOTTOM">
+        <INPUT  TYPE="button" CLASS="botonBlanco" onClick="salir();" VALUE="Salir" >
+      </TD>
+    </TR>
+  </TABLE>
+</FORM>
+</BODY>
+</HTML>

@@ -1,0 +1,548 @@
+<!DOCTYPE HTML>
+<html> 
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>KPYs</title>
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+
+
+
+
+
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+
+	<script language="JavaScript1.2" src="js/main.js"></script>
+    
+<style>
+
+ 
+body{
+
+
+background:#CCCCCC; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #FFFFFF ,#CCCCCC ); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #FFFFFF ,#CCCCCC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+font-family:Verdana, Arial, Helvetica, sans-serif;
+font-size:10px;
+margin: 0px 0px 0px 0px;
+
+}
+
+.tinyText{
+font-size:9px;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+color:#33CCFF;
+
+}
+
+.textoTbl{
+	font-size:12px;
+	font-weight:bold;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:#FFFFFF;
+	text-align:left;
+ text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.inputDash{
+
+font-size:18px;
+font-family: Verdana,Arial,sans-serif;
+text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+height:100%;
+font-weight:bold;
+text-align:justify;
+display: inline-block;
+background: #52c234;  
+background: -webkit-linear-gradient(to left, #52c234 , #2B6B1A);  
+background: linear-gradient(to left, #52c234 , #2B6B1A); 
+
+color:#000000; 
+cursor:pointer;
+padding: 6px 8px;
+vertical-align: middle;
+border: 1px solid #cccccc;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+padding: 0.5em;
+border-radius: 4px;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+-webkit-box-shadow: 4px 4px #424548;
+-moz-box-shadow: 4px 4px #424548;
+box-shadow: 4px 4px #424548;
+
+}
+
+.inputDash1{
+
+font-size:18px;
+font-family: Verdana,Arial,sans-serif;
+text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+width:280px;
+height:100px;
+font-weight:bold;
+word-wrap: break-word;
+text-align:left;
+cursor:pointer;
+color:#000000;
+
+background: #C02425;  
+background: -webkit-linear-gradient(to left, #C25332 , #F0CB35);  
+background: linear-gradient(to left, #C25332 , #F0CB35);  
+
+display: inline-block;
+padding: 6px 8px;
+vertical-align: middle;
+border: 1px solid #cccccc;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+padding: 0.5em;
+border-radius: 4px;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+-webkit-box-shadow: 4px 4px #424548;
+-moz-box-shadow: 4px 4px #424548;
+box-shadow: 4px 4px #424548;
+
+}
+
+.inputDash2{
+
+font-size:18px;
+font-family: Verdana,Arial,sans-serif;
+text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+width:350px;
+height:100%;
+font-weight:bold;
+text-align:justify;
+display: inline-block;
+
+background: #1e3c72;  
+background: -webkit-linear-gradient(to left, #1e3c72 , #2a5298);  
+background: linear-gradient(to left, #1e3c72 , #2a5298);  
+
+display: inline-block;
+padding: 6px 8px;
+vertical-align: middle;
+border: 1px solid #cccccc;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+padding: 0.5em;
+border-radius: 4px;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+-webkit-box-shadow: 4px 4px #424548;
+-moz-box-shadow: 4px 4px #424548;
+box-shadow: 4px 4px #424548;
+
+}
+
+.sFile{
+
+ 
+	font-family: Verdana,Arial,sans-serif;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-size: 16px;
+	cursor:pointer;
+	text-align: left;
+ 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+
+}
+
+.dash{
+color:#5BA63F;
+font-size:16px;
+font-family:Geneva, Arial, Helvetica, sans-serif;
+
+
+}
+
+ 
+.style2 {color: #6699FF}
+
+.underLine {text-decoration:underline; cursor:pointer;}
+
+ 
+.texto1 {	font-size:10px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:#FFFFFF;
+	text-align:left;
+}
+</style>
+	
+   
+<script type="text/javascript">
+
+var total;
+var n=0;
+var anho;
+var mes;
+
+$(document).ready(function() {
+
+	//listAreas();
+	
+});
+
+function inicio(){
+
+//with (divWait.style){visibility = "visible";} 
+
+var fecha = _hoy();
+
+//tblTracker();
+ listArchivos();
+ 
+}
+
+
+  
+
+function salir(){
+parent.document.getElementById('boxSumarios').close();
+}
+
+ function listArchivos(){
+ 
+ 	var tbl = document.getElementById('tblFiles');
+	 limpiarTabla2(tbl);
+	var periodo = document.getElementById("idAnho").value+""+
+						document.getElementById("idMes").value;
+			
+	var url = "js/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=SUMARIOS"; 
+		url += "&IDENTIFICADOR="+periodo;
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+   
+   //	window.open(url);
+    
+	 var j=1; 
+		       
+	 var row = tbl.insertRow(-1);
+		 row.className ="texto";
+  	 
+	$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+ 
+ 		 var row = tbl.insertRow(-1);
+			row.className = "texto";
+			 															
+		var	id =$(this).find("ID").text();
+		var	lnk =$(this).find("FILEID").text();
+		var nom = $(this).find("NOMBRE").text();
+		var siz = $(this).find("SIZE").text();
+		
+		var cell = row.insertCell(-1);
+		
+			cell.innerHTML = "<img src='img/pdfIco.png'  /> ";
+			cell.onclick = function (){showFile(lnk)};
+	 		cell.width="50";
+			
+		var cell = row.insertCell(-1);
+		
+			cell.innerHTML = "<span style='cursor:pointer;text-decoration:underline; ' > " + nom + "</span>";
+			cell.onclick = function (){showFile(lnk)};
+	 		cell.width="250";
+			
+		var cell = row.insertCell(-1);
+			cell.innerHTML = "<span>" + $(this).find("SIZE").text() +"</span>"
+		  	cell.onclick = function (){showFile(lnk)};
+			cell.width="150";		
+ 
+			 		
+		var ini = $(this).find("FECHA_INI").text();
+			
+	 
+			 
+		})//End each
+	});//end $.get
+
+}
+
+
+
+function hideFrm(){
+	 with (divWait.style){visibility = "hidden";} 
+}
+
+
+	 
+  
+ 
+function showFile(lnk){
+
+winCfg = "width=1050px,height=550px,left=" + 50 + "px,top=" + 40 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxDoc", "iframe", lnk , "--==ARCHIVO==--", winCfg);
+//inlinewin2.onclose=function(){ }
+
+}
+ 
+function newFile(){
+
+	anho = document.getElementById("idAnho").value;
+	mes = document.getElementById("idMes").value;
+	var iMes = document.getElementById("idMes").value;
+	 if (iMes.length<2)iMes = '0'+iMes;
+	
+ var periodo = anho +''+iMes;
+ //alert(periodo);
+					  
+document.frameFiles.mostrarVentana(periodo, divFiles,"SUMARIOS");
+
+}
+
+
+
+function report(){
+}
+
+function infAnual(){
+
+var tbl = document.getElementById('tblFiles');
+	limpiarTabla2(tbl);
+				
+	url = "js/informes.asp?RECURSO=infAnual";
+	url += "&MES=" + document.getElementById("idMes").value;
+	url += "&ANHO=" + document.getElementById("idAnho").value; 
+	url += "&EMPRESA=" + getEmpresa();
+	url += "&VTZ=" + Math.random();
+	
+	var row = tbl.insertRow(-1);
+	var cell = row.insertCell(-1);
+		 		
+	var cell = row.insertCell(-1); 
+		cell.innerHTML =  "<span>COMPRAS</span>";cell.align="center";
+		cell.colSpan = "3";
+								 
+	var cell = row.insertCell(-1);cell.align="center";
+		cell.innerHTML =  "<span>VENTAS</span>";	
+		cell.colSpan = "3";			
+	 		 
+	 
+		
+	var row = tbl.insertRow(-1);
+	var cell = row.insertCell(-1);
+		cell.innerHTML =  "<span> </span>";
+		
+	var cell = row.insertCell(-1);cell.width='100';
+		cell.innerHTML =  "<span> NETO</span>";cell.align="center";
+								 
+	var cell = row.insertCell(-1);cell.width='100';cell.align="center";
+		cell.innerHTML =  "<span> IVA</span>";	
+	
+	var cell = row.insertCell(-1);cell.width='100';cell.align="center";
+		cell.innerHTML =  "<span> TOTAL</span>";	
+						
+	var cell = row.insertCell(-1);cell.align="center";
+		cell.innerHTML =  "<span> NETO</span>";
+		
+	var cell = row.insertCell(-1);cell.align="center";
+		cell.innerHTML =  "<span> IVA</span>";	
+	
+	var cell = row.insertCell(-1);cell.align="center";
+		cell.innerHTML =  "<span> TOTAL</span>";	
+				 
+	var cell = row.insertCell(-1);
+		cell.innerHTML =  "<span>F29</span>";				
+
+	//window.open(url);
+	j=1;
+		
+	 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){	
+			
+			var row = tbl.insertRow(-1);
+					
+		if (j==1){row.bgColor= "#3475A4";j=2;}
+				 else{row.bgColor= "#2D516D";j=1;}
+				 
+			
+			var mes = $(this).find("MES").text();
+			var num = $(this).find("NUM").text();
+			var com = $(this).find("COM").text();
+			var ven = $(this).find("VEN").text();
+			var iva_c = $(this).find("IVA_C").text();
+			var iva_v = $(this).find("IVA_V").text();
+			var t_c = $(this).find("T_C").text();
+			var t_v = $(this).find("T_V").text();
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='underLine'>" + mes + "</span>";
+				cell.onclick = function (){verLibros(num)};
+				 
+				 
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML =  "<span>" + com + " </span>";
+				
+							
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML = "<span>" + iva_c +"</span>";
+				
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML = "<span>" + t_c +"</span>";	
+					
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML = "<span>" + ven + "</span>";
+				
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML = "<span>" + iva_v + "</span>";	
+	
+			var cell = row.insertCell(-1);cell.align="right";
+				cell.innerHTML = "<span>" + t_v +"</span>";	
+											
+			var	lnk =$(this).find("FILEID").text();
+				var	img =$(this).find("FILE_IMG").text();
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML = "<img src='" + img + "' style='cursor:pointer;border:0;' />";
+				cell.align="center";cell.onclick = function (){showFile(lnk)};
+				
+			}), hideFrm();//End Each
+	 });	//End $.get
+	 
+		
+}
+
+function tblTracker(){
+
+var tbl = document.getElementById('tblTracker');
+				limpiarTabla2(tbl);
+				
+	url = "js/archivos.asp?RECURSO=runSqlXML";
+	//url += "&SQL="+ scape2(document.getElementById("idQuery").value);
+	url += "&ID=22";
+	url += "&VTZ=" + Math.random();
+	
+	//window.open(url);
+		
+	 $.get(url, function(theXML){
+			$('ROWS',theXML).each(function(i){	
+			var hora = $(this).find("HORA").text();
+			
+			var row = tbl.insertRow(-1);
+				row.onclick = function (){verLink(this)};
+					
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span>" + $(this).find("USUARIO").text() + "</span>";
+				cell.width='150';
+				 
+			var cell = row.insertCell(-1);cell.width='200';
+				cell.innerHTML =  "<span>" + $(this).find("UBICACION").text() + " </span>";
+				
+							
+			var cell = row.insertCell(-1);
+				cell.innerHTML = "<span>" + $(this).find("FECHA1").text() +" "+ hora +"</span>";
+				cell.width='300';
+				
+					
+			var cell = row.insertCell(-1);
+				cell.innerHTML = "<span>" + $(this).find("IP").text() + "</span>";
+				
+				
+			/*var cell = row.insertCell(-1);
+				cell.innerHTML = "<span>" + $(this).find("SERVER").text() + "</span>";
+				*/
+				
+			}), hideFrm();//End Each
+	 });	//End $.get
+	 
+		
+}
+
+     function printElem(elem){
+        popup($(elem).html());
+    }
+
+    function popup(data){
+        var mywindow = window.open('', 'my div', 'height=400,width=600');
+        mywindow.document.write('<html><head><title>my div</title>');
+        mywindow.document.write('<link rel="stylesheet" href="css/style.css" type="text/css" />');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10
+
+        mywindow.print();
+        mywindow.close();
+
+        return true;
+    }
+
+</script>		
+</head>
+
+
+<body onLoad="inicio();">
+<DIV ID="divFiles" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #000 1px ridge; BORDER-TOP: #000 1px ridge; Z-INDEX: 145; LEFT: 130px; BORDER-LEFT: #000 1px ridge; BORDER-BOTTOM: #000 1px ridge; POSITION: absolute; TOP: 60px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="frameFiles" id="frameFiles" SRC="archivos.html?x=8" frameBorder="0" WIDTH="480" SCROLLING="no" HEIGHT="300"></IFRAME>
+</DIV>
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+    
+<div id="myDiv">
+<table width="95%" border="0" align="center">
+  <!--DWLayoutTable-->
+  <tr>
+    <th width="218" height="41" align="left" valign="top" scope="row">
+    <h4 class="txtMenu">CONTROL DE EMPALMES</h4></th>
+    <th width="47" align="right">MES :</th>
+    <th width="63" align="left">
+      <select  class="titulo" id="idMes" onChange="listArchivos();">
+      <OPTION VALUE="0">TOD</OPTION>
+      <OPTION VALUE="01">01</OPTION>
+      <OPTION VALUE="02">02</OPTION>
+      <OPTION VALUE="03">03</OPTION>
+      <OPTION VALUE="04" selected="selected">04</OPTION>
+      <OPTION VALUE="05">05</OPTION>
+      <OPTION VALUE="06">06</OPTION>
+      <OPTION VALUE="07">07</OPTION>
+      <OPTION VALUE="08">08</OPTION>
+      <OPTION VALUE="09">09</OPTION>
+      <OPTION VALUE="10">10</OPTION>
+      <OPTION VALUE="11">11</OPTION>
+      <OPTION VALUE="12">12</OPTION>
+    </select></th>
+    <th width="51" align="right">AÑO : </th>
+    <td width="70">
+<select name="listAno" id="idAnho" class="titulo" onChange="listArchivos();">
+ 
+  
+            <option value="2018">2018</option>
+			   <option value="2019" selected>2019</option>
+			   <option value="2020">2020</option>
+    </select></td>
+    <th width="35" align="right">      </th>
+    <td width="65"><input name="btnSalir2" type="button" class="input" id="btnSalir2"  onclick="newFile();" value="Nuevo" /></td>
+  <td width="61">
+	  <input name="btnSalir" type="button" class="input" id="btnSalir"  onclick="salir();" value="Salir " /></td>
+  </tr>
+</table>
+<table width="98%" border="0" align="center" cellpadding="10" cellspacing="5">
+   <tr>
+    <td width="424" height="450" align="center" valign="top" >
+		<table width="100%"  id="tblFiles" border="1"   cellspacing="2" >
+        </table>
+      <br/>    </td>
+</tr>
+</table>
+</div>
+
+
+</body>
+</html>

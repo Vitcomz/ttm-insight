@@ -1,0 +1,496 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Mantenci�n Correctiva</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlIncidentes></xml>
+		<xml id=xmlIncidentesOT></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlEquipos></xml>
+		<link rel="stylesheet" href="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script type="text/javascript" src="standard/Tabber/tabber.js"></script>
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+        <style type="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </style>
+</HEAD>
+
+<script>
+function inicio(){
+ListIncidentes();
+ListIncidentesOT();
+ListEquipos();
+ListResponsables();
+}
+
+function list(){
+ListIncidentes();
+ListIncidentesOT();
+}
+
+function ListEquiposAsignados()
+{
+
+	xmlPlanifica.async = false;
+	var xmlDso = xmlPlanifica.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=ListEquiposAsignados&TIPO_ASG='COR'";
+	xmlEstado = xmlDso.load(url);
+	if (!xmlEstado)
+			window.open(url);
+	
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsablesInc.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsablesInc.options[0] = opcion; 
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsablesInc.options[i] = opcion;
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+function GeneraOT(Index){
+
+	var Tabla = parent.document.getElementById('tabPlanifica');
+
+	if (Tabla.rows[Index].children[7].children[0].value){
+				alert("OT ya fue generada!");
+				return;
+				}
+				
+	if (!Tabla.rows[Index].children[3].children[0].value){
+				alert("Ingrese un Responsable!");
+				return;
+				}
+				
+	if (!Tabla.rows[Index].children[4].children[0].value){
+				alert("Ingrese Fecha!");
+				return;
+				}
+				
+	if (!Tabla.rows[Index].children[5].children[0].value){
+				alert("Ingrese Turno!");
+				return;
+				}
+				
+					
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=NewOT";
+		url += "&ESTADO=PRO";
+		url += "&EQUIPO=" + Tabla.rows[Index].children[1].children[0].value;
+ 	 	url += "&RESPONSABLE=" + Tabla.rows[Index].children[3].children[0].value;
+		url += "&FECHA=" + Tabla.rows[Index].children[4].children[0].value;
+ 	 	url += "&TURNO=" + Tabla.rows[Index].children[5].children[0].value;
+		url += "&TIPO=COR";
+	var IdIncidente = Tabla.rows[Index].children[0].children[0].value;
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+			else
+				guardarIncidenteOT(xmlDso.documentElement.childNodes.item(0).text,IdIncidente);
+		
+		ListIncidentesOT();
+}
+
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+  url += "&USUARIO="+GetSession();
+  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ /*
+function AsignarEquipos()
+{
+var tabPlanifica = parent.document.getElementById('tabPlanifica');
+var tabla = document.getElementById('TabAsignar');
+
+		for (i=1; i< tabla.rows.length; i++){
+			Codigo = tabla.rows[i].children[0].children[0].value;
+			Responsable = tabla.rows[i].children[6].children[0].value;
+			if (Responsable!="")
+					AsignarEquipo(Codigo, Responsable);
+		}
+		
+AsignarOTs();
+}*/
+
+function verOT(Index){
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[7].children[0].value;
+window.location.href="OS.html?Folio=" + Folio;
+
+}
+
+function verInsumos(Index){
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[7].children[0].value;
+document.FrameInsumos.mostrarVentana(Folio,10, DivInsumos);
+}
+
+
+
+
+function AsignarOTs()
+{
+var tabla = parent.document.getElementById('tabPlanifica');
+		for (i=1; i< tabla.rows.length; i++){
+			Responsable = tabla.rows[i].children[2].children[0].value;
+			Folio = tabla.rows[i].children[6].children[0].value;
+			if (Folio!="")
+					AsignarOT(Folio, Responsable);
+		}
+		
+ListEquiposMan();
+}
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+function ListIncidentes(){
+	xmlIncidentes.async = false;
+	var xmlDso =xmlIncidentes.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=ListIncidentes";
+		url +="&ESTADO=SIN_OT";
+		url +="&EQUIPO=" + formulario.ListEquipos.value;
+		url +="&RESPONSABLE=" + formulario.listResponsablesInc.value;
+		url +="&TURNO=" + formulario.listTurnosInc.value;
+		url +="&USUARIO=" + GetSession();
+		
+	var res = xmlDso.load(url);
+	if(res){
+		//BLOQUE DE NAVEGACION
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/7);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+	else
+		window.open(url);
+
+}
+
+function ListIncidentesOT(){
+	 
+	xmlIncidentesOT.async = false;
+    var xmlDso = xmlIncidentesOT.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=ListOT";
+		url += "&TIPO=COR";
+		url += "&ESTADO=" + formulario.listEstados.value;
+		url += "&EQUIPO=" +  formulario.ListEquipos.value;
+		url += "&TURNO=" + formulario.listTurnos.value;
+		url += "&RESPONSABLE=" + formulario.listResponsables.value;
+		
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/10);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+ 
+function GetInsumo(){
+}
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+
+
+<DIV id="DivOT" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameOT" src="generaOT.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR>
+	<BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+				  <table border="0" id="tableTitulo">
+						  <tr class="titulo">
+						    <td width="315" colspan="2">Mantenci�n Correctiva</td>
+						  </tr>
+					<TR  class="Campo">
+				  <TD align="center">EQUIPO PRINCIPAL  :</TD>
+					<TD><select name="ListEquipos"  class="Campo"  
+							onChange="ListIncidentesOT();ListIncidentes();getElementById('tableTitulo').focus();">
+						</select>
+					</TD>
+					</TR>
+				  </table>
+			    <div class="tabber">
+				    <div class="tabbertab">
+					  <h2>Incidentes Pendientes </h2>
+					  <table><tr>
+					   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicio('tabIncidentes');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtras('tabIncidentes');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelante('tabIncidentes');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinal('tabIncidentes');">&nbsp;&nbsp;
+				Registros: <span id="ID_list_cant_reg"></span>
+					&nbsp;| Vista: <span id="ID_list_fraccion_reg"></span>
+						</td></tr></table>
+					  <table width="958"  border="0" cellpadding="0" cellspacing="0" datapagesize="7" class="texto" id="tabIncidentes"
+					  	 datasrc=#xmlIncidentes>
+						<thead>
+						<tr class="HeaderLista">
+						  <td width="62" height="27">ID Incidente</td>
+						  <td width="195">Equipo</td>
+						  <td width="70">Fecha Incidente 	</td>
+  						  <td width="53">Turno</td>
+   						  <td width="316" >Descripci�n</td>
+   						  <td width="83">Dias Trascurridos</td>
+   						  <td width="86">Responsable Incidente</td>
+						<td width="36"></th>
+						<tr class="HeaderLista">
+						  <td></td>
+						  <td></td>
+						  <td></td>
+						 <td>
+					  	<select name="listTurnosInc" class="Campo" onChange="ListIncidentes();">
+							<option value="TOD" selected="selected">TOD</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+					  	</select>
+						 </td>
+  						 <td></td>
+  						 <td></td>
+						 <td>
+						  	<select name="listResponsablesInc" class="Campo" onChange="ListIncidentes();">
+						  	</select>
+						  </td>
+   						 <td></td>
+						  </tr>
+						</thead>
+					<tr bgcolor="#dee6eb">
+					  <td align="center">
+					  	<span class="texto" datafld="ID"/></td>
+					  	<td align="center">
+						<input  name="TxtCodEquipo" type="text" class="inputT" size="4" datafld="COD_EQUIPO"/>
+						<input  name="TxtDescEquipo" type="text" class="inputT" size="40" datafld="DESC_EQUIPO"/>
+						</td>
+						<td align="center">
+						<input  name="TxtFecha" type="text" class="inputT" size="14" datafld="FECHA"/></td>
+						<td align="center">
+						<input  name="TxtTurno" type="text" class="inputT" size="1" datafld="TURNO"/></td>
+						<td align="center">
+						<textarea name="TxtDescripcion" type="text" class="inputT" cols="60"  rows="3"
+							datafld="DESCRIPCION"></textarea>
+						</td>
+						<td align="center">
+							<input  name="TxtDias" type="text" class="inputBold" size="1" datafld="DIAS"  />
+						</td>
+						<td align="center">
+							<input  name="TxtResponsable" type="text" class="inputT"
+								 size="10" datafld="RESPONSABLE"  />
+						</td>	
+						<td align="center">
+						<IMG style="CURSOR: hand"  datafld="IMAGE"
+							onclick="FrameOT.mostrarVentana(
+									getElementById('tabIncidentes').rows[this.parentElement.parentElement.rowIndex]
+									.children[0].children[0],
+									getElementById('tabIncidentes').rows[this.parentElement.parentElement.rowIndex]
+									.children[1].children[0],
+									'COR',
+									DivOT,'list();');"
+							src="" align="middle">
+						</td>
+						</tr>
+
+				</table>
+	     </div>
+				 
+     	<div class="tabbertab">
+		  <h2>Consulta O.S. Correctivas</h2>
+			  <table><tr>
+					   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabPlanifica');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabPlanifica');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabPlanifica');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabPlanifica');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>
+			</td></tr></table>
+						
+			<table cellpadding="0" cellspacing="3" class="texto"
+				 id="tabPlanifica" datasrc=#xmlIncidentesOT datapagesize="10">
+				<thead>
+				<tr class="HeaderLista">
+				  <td>Incidente</td>
+				  <td>Equipo</td>
+				  <td>Responsable&nbsp;OT</td>
+   				  <td>Programada</td>
+   				  <td width="80">Ejecutada</td>
+  				  <td>&nbsp;Turno&nbsp;</td>
+   				  <td>Estado</td>
+   				  <td>&nbsp;FolioOT&nbsp;</td>
+   				  <td>Ver O.T.</td>
+   				  <td>Insumos</td>
+				</th>
+				<tr class="HeaderLista">
+				  <td></td>
+				  <td></td>
+				 <td>
+				  	<select name="listResponsables" class="Campo" onChange="ListIncidentesOT();">
+				  	</select>
+				  </td>
+				  <td></td>
+				  <td></td>
+				 <td>
+				  	<select name="listTurnos" class="Campo" onChange="ListIncidentesOT();">
+						<option value="TOD" selected="selected">TOD</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+				  	</select>
+				 </td>
+ 				 <td>
+				  	<select name="listEstados" class="Campo" onChange="ListIncidentesOT();">
+						<option value="TOD" selected="selected">TODOS</option>
+						<option value="PRO">PROGRAMADA</option>
+						<option value="PEN">PENDIENTE</option>
+						<option value="EJE">EJECUTADAS</option>
+				  	</select>
+				 </td>
+ 				  <td></td>					  
+  				  <td></td>
+  				  <td></td>
+				 </tr>
+				</thead>
+			<tr bgcolor="#dee6eb">
+				<td onClick="return;">
+				<span  class="texto" datafld="ID_INCIDENTE"/></td>
+				<td>	<input  name="TxtCodEquipo" type="text" class="inputT" size="3" datafld="COD_EQUIPO"/>
+						<input  name="TxtDescEquipo" type="text" class="inputT" size="40" datafld="DESC_EQUIPO"/>
+				</td>
+				<td align="center"><span  class="texto" datafld="RESPONSABLE"></span></td>
+				<td>
+				 <span  class="texto" datafld="FECHA_PROGRAMADA"></span></td>
+				<td>
+				 <span  class="texto" datafld="FECHA"></span></td>
+					<td align="center">
+					<span  class="texto" datafld="TURNO"></span></td>
+				    <td align="center"><span  class="texto" datafld="ESTADO"></span></td>
+			    <td align="center">
+				 <input class="inputBold" type="text" size="2" name="txtOT" datafld="FOLIO_OT"></input>				</td>
+				<td align="center">
+				 <IMG style="CURSOR: hand" 
+							onclick="verOT(this.parentElement.parentElement.rowIndex);"
+							src="images/table.png" align="middle"></td>
+				<td align="center">
+				 <IMG style="CURSOR: hand" 
+							 onclick="verInsumos(this.parentElement.parentElement.rowIndex);"
+							src="images/tools.png" align="middle"></td>
+
+			</tr>
+</table>
+	      </div>					 		
+		</div>				
+		</form>
+
+	</body>
+</HTML>

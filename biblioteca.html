@@ -1,0 +1,471 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//ES" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Biblioteca Virtual - TTM Chile</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-right: 5px;
+	margin-bottom: 0px;
+}
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+-->
+</STYLE>
+
+<xml id=xmlDoc></xml>
+<xml id=xmlResponsables></xml>
+<xml id=xmlEquipos></xml>
+
+
+
+
+
+
+
+</HEAD>
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+//	alert(browser);
+//	alert(navigator.userAgent.toLowerCase());
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+//	var title = document.getElementsByTagName("title")[0].innerHTML;
+//	document.getElementsByTagName("title")[0].innerHTML = title + " " + browser;
+</script>
+<SCRIPT>
+var newEvent = false;
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+
+function Inicio(){
+
+		if (id_br == "IE")
+		{
+			document.getElementById("usuario").innerText = GetSession();
+			if 	(GetSession() == "DESCONOCIDO"){
+				self.location.href="LoginBiblio.html";
+			}else{	
+				ListTemas();
+			
+			}
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			document.getElementById("usuario").textContent = GetSessionMoz();
+			if 	(GetSessionMoz() == "DESCONOCIDO"){
+				self.location.href="LoginBiblio.html";
+			}else{		
+				ListTemas();
+			}
+		}
+} 
+function ListTemas(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+
+	var xmlDso = xmlDoc.XMLDocument; 
+		if (id_br == 'IE'){
+			var usuario = GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var usuario = GetSessionMoz();
+		}	
+	
+	var str="YGODOYO IVERGARA FFIGUEROA DG SMORENOV"; 
+	var seleccion = document.getElementById("listCategoria").value;
+	document.getElementById("formulario").txtSTR.value = "";
+	if((seleccion=="DOCUMENTOS SGI")&&(str.indexOf(usuario)<0))
+		document.getElementById("NewTema").style.visibility="hidden";
+	else
+		document.getElementById("NewTema").style.visibility="visible";
+	
+	var url = "xml/temas.asp?RECURSO=ListTemas";
+	    url += "&CATEGORIA=" + document.getElementById("listCategoria").value;
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+//			if (window.XMLHttpRequest)
+//			  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//			  xmlhttp=new XMLHttpRequest();
+//			  }
+//			else
+//			  {// code for IE6, IE5
+//			  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//			  }
+//			xmlhttp.open("GET",url,false);
+//			xmlhttp.send();
+//			xmlDso=xmlhttp.responseXML;
+//			xmlestado = xmlDso;
+			xmlestado = xmlDso.load(url);
+		}
+		
+		if(xmlestado){	
+					//BLOQUE DE NAVEGACION
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				if (id_br == "IE")
+				{
+					document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					document.getElementById("ID_list_cant_reg").textContent = total_registros_lista;
+				}				
+				bloque_listado = 1;
+				total_bloque_listado = Math.ceil(total_registros_lista/15);
+				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+				if (id_br == "IE")
+				{
+					objLabelReg.innerText = "1/" + total_bloque_listado;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					objLabelReg.textContent = "1/" + total_bloque_listado;
+					var context = ""
+					context = context +  "<TABLE width='977' cellpadding='2' cellspacing='1'  BORDER='1' BORDERCOLOR='#000000' id='tabBitacora'  datasrc=#xmlDoc datapagesize='15'><THEAD><TR CLASS='Rotulo'><TD WIDTH='11'>ID</TD><TD WIDTH='137'>&nbsp;FECHA</TD><TD WIDTH='120'>&nbsp;AUTOR&nbsp;</TD><TD WIDTH='379'>NOMBRE</TD><TD WIDTH='137'>ORIGEN</TD><TD WIDTH='48'>FAMILIA</TD><TD WIDTH='48'>&nbsp;</TD></TR></THEAD>";
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						context = context +  "<TR onclick='verTema(this.rowIndex);' CLASS='texto'><TD valign='top' onClick='return;'><SPAN name='TxtID' id='TxtID'  datafld='ID' title='"+ x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue +"'>" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD valign='top'><SPAN  name='txtFecha' datafld='FECHA'>" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</span></TD>";
+						if (x[i].getElementsByTagName("AUTOR")[0].childNodes[0]){
+							context = context +  "<TD valign='top'><SPAN  name='txtAutor' datafld='AUTOR'>" + x[i].getElementsByTagName("AUTOR")[0].childNodes[0].nodeValue + "</span></TD>";
+						}else{
+							context = context +  "<TD valign='top'><SPAN  name='txtAutor' datafld='AUTOR'></span></TD>";
+						}
+						context = context +  "<TD><SPAN  name='txtResponsable' datafld='NOMBRE'>" + x[i].getElementsByTagName("NOMBRE")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD align='center' valign='top'><SPAN  name='txtResponsable' datafld='SUCURSAL'>" + x[i].getElementsByTagName("SUCURSAL")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD ALIGN='CENTER' valign='top'><SPAN  name='txtCategoria' datafld='CATEGORIA'>" + x[i].getElementsByTagName("CATEGORIA")[0].childNodes[0].nodeValue + "</span></TD><TD ALIGN='CENTER' valign='top'><IMG style='CURSOR: hand' src='images/lupa2.gif' align='middle'></TD></TR>";
+					}
+					  context = context +  "</TABLE>";
+					document.getElementById("tabBitacora").innerHTML= context;
+					advise = "Registros: <SPAN id='ID_list_cant_reg'></SPAN>&nbsp;| Pagina: <SPAN id='ID_list_fraccion_reg'></SPAN>";
+					document.getElementById("adv").innerHTML= advise;
+
+				}
+				
+				
+				if (total_registros_lista > 100){
+					setTimeout("rolls()",5000);
+				}else{
+					setTimeout("rolls()",500);
+				}
+			  //var pager = new Pager('tabBitacora', 15); 
+			}
+			else
+				window.open(url);
+				
+
+}
+
+function buscar(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}	
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/temas.asp?RECURSO=buscaTemas";
+	    url += "&STR=" + document.getElementById("formulario").txtSTR.value;
+	    url += "&CATEGORIA=" + document.getElementById("listCategoria").value;
+		url += "&VTZ=" + Math.random();
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if(xmlestado){	
+					//BLOQUE DE NAVEGACION
+				//window.open(url);
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				if (id_br == "IE")
+				{
+					document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					document.getElementById("ID_list_cant_reg").textContent = total_registros_lista;
+				}				
+				bloque_listado = 1;
+				total_bloque_listado = Math.ceil(total_registros_lista/15);
+				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+				if (id_br == "IE")
+				{
+					objLabelReg.innerText = "1/" + total_bloque_listado;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					objLabelReg.textContent = "1/" + total_bloque_listado;
+					var context = ""
+					context = context +  "<TABLE width='977' cellpadding='2' cellspacing='1'  BORDER='1' BORDERCOLOR='#000000' id='tabBitacora'  datasrc=#xmlDoc datapagesize='15'><THEAD><TR CLASS='Rotulo'><TD WIDTH='11'>ID</TD><TD WIDTH='137'>&nbsp;FECHA</TD><TD WIDTH='120'>&nbsp;AUTOR&nbsp;</TD><TD WIDTH='379'>NOMBRE</TD><TD WIDTH='137'>ORIGEN</TD><TD WIDTH='48'>FAMILIA</TD><TD WIDTH='48'>&nbsp;</TD></TR></THEAD>";
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						context = context +  "<TR onclick='verTema(this.rowIndex);' CLASS='texto'><TD valign='top' onClick='return;'><SPAN name='TxtID' id='TxtID' datafld='ID' title='"+ x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue +"'>" + x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD valign='top'><SPAN  name='txtFecha' datafld='FECHA'>" + x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue + "</span></TD>";
+						if (x[i].getElementsByTagName("AUTOR")[0].childNodes[0]){
+							context = context +  "<TD valign='top'><SPAN  name='txtAutor' datafld='AUTOR'>" + x[i].getElementsByTagName("AUTOR")[0].childNodes[0].nodeValue + "</span></TD>";
+						}else{
+							context = context +  "<TD valign='top'><SPAN  name='txtAutor' datafld='AUTOR'></span></TD>";
+						}
+						context = context +  "<TD><SPAN  name='txtResponsable' datafld='NOMBRE'>" + x[i].getElementsByTagName("NOMBRE")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD align='center' valign='top'><SPAN  name='txtResponsable' datafld='SUCURSAL'>" + x[i].getElementsByTagName("SUCURSAL")[0].childNodes[0].nodeValue + "</span></TD>";
+						context = context +  "<TD ALIGN='CENTER' valign='top'><SPAN  name='txtCategoria' datafld='CATEGORIA'>" + x[i].getElementsByTagName("CATEGORIA")[0].childNodes[0].nodeValue + "</span></TD><TD ALIGN='CENTER' valign='top'><IMG style='CURSOR: hand' src='images/lupa2.gif' align='middle'></TD></TR>";
+					}
+					  context = context +  "</TABLE>";
+					document.getElementById("tabBitacora").innerHTML= context;
+					advise = "Registros: <SPAN id='ID_list_cant_reg'></SPAN>&nbsp;| Pagina: <SPAN id='ID_list_fraccion_reg'></SPAN>";
+					document.getElementById("adv").innerHTML= advise;
+				}	
+				if (total_registros_lista > 100){
+					setTimeout("rolls()",5000);
+				}else{
+					setTimeout("rolls()",500);
+				}
+
+			}
+			else
+				window.open(url);
+		
+}
+
+function newTema(){
+	
+	var cat=document.getElementById("listCategoria").value;
+	var url ="dlgTema.html";
+	url += "?cat="+cat+"&VTZ=" + Math.random();
+	
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:650px;dialogHeight:500px;scroll:yes");
+	ListTemas();	
+}
+
+
+function verTema(Index){
+	var tabla = document.getElementById('tabBitacora');
+	if (id_br == "IE")
+	{
+		var id =  tabla.rows[Index].children[0].innerText;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var id =  tabla.rows[Index].cells[0].children[0].textContent;
+	}
+	var cat=document.getElementById("listCategoria").value;
+		
+	var url ="dlgTema.html?ID=" + id ;
+		url += "&cat="+cat+"&VTZ=" + Math.random();
+	//alert(url);
+				var w = 720;
+			var h = 500;
+			LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+			TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+			var winHandle = window.open(url, "window_bit", "modal,toolbar=false,location=false,directories=false,status=false,menubar=false,scrollbars=yes,resizable=no,top="+TopPosition+",left="+LeftPosition+",width=720px,height=500px");
+			winHandle.focus();
+
+//	if (id_br == "IE" || id_br == "FF")
+//	{
+//		showModalDialog(url,window,"status:no;help:no;dialogWidth:720px;dialogHeight:500px;scroll:yes");
+//	}else if (id_br == "OP" || id_br == "SF"){
+//		window.open(url,window,"status:no;help:no;dialogWidth:720px;dialogHeight:500px;scroll:yes");	
+//	}
+}
+
+
+function _close(){
+
+	DelSession(document.getElementById("usuario").innerText);
+	document.location.href='LoginBiblio.html';
+
+}
+
+			  function rolls(){
+					pager.init(); 
+					pager.showPageNav('pager', 'pageNavPosition'); 
+					pager.showPage(1);
+					var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+					if (id_br == "IE")
+					{
+						objLabelReg.innerText = "1/" + total_bloque_listado;
+					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+						objLabelReg.textContent = "1/" + total_bloque_listado;
+					}
+					
+			  }
+		
+</SCRIPT>
+        <style type="text/css">    
+            .pg-normal {
+                color: black;
+                font-weight: normal;
+                text-decoration: none;    
+                cursor: pointer;    
+            }
+            .pg-selected {
+                color: black;
+                font-weight: bold;        
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        </style>
+        <script type="text/javascript" src="standard/paging.js"></script>
+
+<BODY onLoad="Inicio();">
+	<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10;
+                z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<IFRAME frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+	</DIV>
+<FORM name="formulario" action="javascript:buscar();" id="formulario">
+<INPUT type="hidden" value="" name="IdUsuario">
+<TABLE WIDTH="1000" align="center" id="tableTitulo">
+  <!--DWLayoutTable-->
+<TR>
+  <TD WIDTH="227" rowspan="2"><img src="../images/logo.png" /></TD>
+  <TD WIDTH="602" rowspan="2" align="center" valign="middle">
+	<span class="calibri_16">BIBLIOTECA VIRTUAL - TTM CHILE</span></TD>
+<TD WIDTH="136" height="55" align="right" valign="top">
+  <input  type="button" class="botonBlanco"
+		onClick="_close();" value="Salir"></TD>
+</TR>
+<TR>
+  <TD height="38">Usuario : <span class="titulo" id="usuario"></span></TD>
+</TR>
+<TR>
+  <TD  height="31" colspan="3" ALIGN="LEFT" class="titulo">
+  BUSCAR : 
+    <input name="txtSTR" type="text" class="LitleText" size="70">
+  		<input type="button" class="blueTr"   onClick="buscar();" value="Buscar">
+  		FAMILIA
+        <SELECT NAME="listCategoria" id="listCategoria" onChange="ListTemas();">
+          <OPTION VALUE="DOCUMENTOS SGI">DOCUMENTOS SGI</OPTION>
+          <OPTION VALUE="DOCUMENTOS MODIFICADOS">DOCUMENTOS MODIFICADOS</OPTION>
+          <OPTION VALUE="DOCUMENTOS MODIFICADOS">INGENIERIA MANTENIMIENTO</OPTION>
+        </SELECT>  </TD>
+</TR>
+<TR>
+  <TD  height="31" colspan="3" ALIGN="LEFT" class="titulo">
+    <input type="button" id="NewTema" class="botonBlanco" onClick="newTema();" value="Nuevo Tema">  </TD>
+</TR>
+</TABLE>
+
+<TABLE width="977"  BORDER="1" align="center" cellpadding="2" cellspacing="1" BORDERCOLOR="#000000" 
+				id="tabBitacora"  datasrc=#xmlDoc ><!--datapagesize="15"-->
+<THEAD>
+				<TR CLASS="Rotulo">
+				  <TD WIDTH="11">ID</TD>
+   				  <TD WIDTH="137">&nbsp;FECHA</TD>
+   				  <TD WIDTH="120">&nbsp;AUTOR&nbsp;</TD>
+   				  <TD WIDTH="379">NOMBRE</TD>
+				  <TD WIDTH="137">ORIGEN</TD>
+  				  <TD WIDTH="48">FAMILIA</TD>
+  				  <TD WIDTH="48">&nbsp;</TD>
+				</TR>
+	</THEAD>
+			<TR onClick="verTema(this.rowIndex);" CLASS="texto">
+				<TD valign="top" onClick="return;"><SPAN name="TxtID" id="TxtID"  datafld="ID"/></TD>
+				<TD valign="top"><SPAN  name="txtFecha" datafld="FECHA"/></TD>
+				<TD valign="top"><SPAN  name="txtAutor" datafld="AUTOR"/></TD>
+				<TD><SPAN  name="txtResponsable" datafld="NOMBRE"/></TD>
+				<TD align="center" valign="top"><SPAN  name="txtResponsable" datafld="SUCURSAL"/></TD>
+			    <TD ALIGN="CENTER" valign="top"><SPAN  name="txtCategoria" datafld="CATEGORIA"/></TD>
+		      <TD ALIGN="CENTER" valign="top">
+                <IMG style="CURSOR: hand" src="images/lupa2.gif" align="middle"></TD>
+			</TR>
+</TABLE>
+<TABLE width="977"  BORDER="1" align="center" cellpadding="2" cellspacing="1" BORDERCOLOR="#000000">
+	<TR CLASS="Rotulo">
+	  <td><div id="pageNavPosition"></div></td>
+      <td><div id="adv">&nbsp;&nbsp;Registros: <SPAN id="ID_list_cant_reg"></SPAN>&nbsp;| Pagina: <SPAN id="ID_list_fraccion_reg"></SPAN></div></td>
+    </TR>
+</TABLE>
+  <script type="text/javascript"><!--
+	  //setTimeout("rolls()",5000);
+	  var pager = new Pager('tabBitacora', 15); 
+//	  function rolls(){
+//			pager.init(); 
+//			pager.showPageNav('pager', 'pageNavPosition'); 
+//			pager.showPage(1);
+//	  }
+	  function atras(){
+			var xx = pager.prev();
+			var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+				if (id_br == "IE")
+				{
+					objLabelReg.innerText = xx + "/" + total_bloque_listado;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					objLabelReg.textContent = xx + "/" + total_bloque_listado;
+				}
+	  }
+	  function delante(){
+			var xx = pager.next();
+			var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+				if (id_br == "IE")
+				{
+					objLabelReg.innerText = xx + "/" + total_bloque_listado;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					objLabelReg.textContent = xx + "/" + total_bloque_listado;
+				}
+			
+	  }	  	  
+	  function pag(id){
+		  		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+				if (id_br == "IE")
+				{
+					objLabelReg.innerText = id + "/" + total_bloque_listado;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					objLabelReg.textContent = id + "/" + total_bloque_listado;
+				}
+			pager.showPage(id);
+	  }	  	  
+	  
+    //--></script>
+</FORM>
+</BODY>
+</HTML>

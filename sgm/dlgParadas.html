@@ -1,0 +1,617 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Paradas</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+
+
+
+
+
+
+</HEAD>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style3 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</STYLE>
+<xml id = xmlNew></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlDel></xml>
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<SCRIPT>
+<!--adding-->
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+<!---->
+
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay(); 
+  indHorometro = false;
+  var indOT;
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+
+function guardar(){
+
+if (!document.getElementById("idCodEquipo").value){
+				alert('Ingrese el equipo.');
+				return;}
+
+if (document.getElementById("txtID").value)
+		updateParada(document.getElementById("txtID").value);
+else
+		newParada();
+
+}
+
+function danhos(){
+if(!document.getElementById("txtID").value){
+		alert("Debe guardar antes.");
+		return;
+		}
+		
+document.getElementById("chkIncidente").checked=true;
+frameDanos.mostrarVentana(document.getElementById("txtID"),document.getElementById("txtEquipo"), divDanos,'');
+
+}
+
+function newParada(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlNew");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+		if (id_br == 'IE'){
+					var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+					var emp = getEmpresaMoz();
+		}
+		
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+		
+	var url = "xml/Paradas.asp?RECURSO=newParada";	
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value + " " + document.getElementById("txtHoraIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value + " " + document.getElementById("txtHoraFin").value;
+		url += "&EQUIPO=" + document.getElementById("idCodEquipo").value;
+		url += "&COMPONENTE=" + document.getElementById("idCodComponente").value;
+		url += "&TIPO=" + document.getElementById("listTipo").value;
+		url += "&CAUSA=" + document.getElementById("idCausa").value;
+		url += "&OT=" + document.getElementById("txtOT").value;
+		url += "&OBSERVACION=" + document.getElementById("txtObservacion").value;
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+        if (!xmlestado)
+			window.open(url);
+
+		var x = xmlDso.getElementsByTagName("REGISTROS");
+		for (i=0; i<x.length; i++) {
+			document.getElementById("txtID").value = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+		}
+		
+	var urlx = window.location.href;
+	var SECCION = getUrlVars()["SECCION"];
+	var VTZ = getUrlVars()["VTZ"];
+	this.window.location.href = "dlgParadas.html?ID=" + document.getElementById("txtID").value + "&SECCION=" + SECCION + "&VTZ=" + VTZ;
+	window.opener.document.getElementById("formulario").submit();
+
+}
+
+function updateParada(){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlNew");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+		if (id_br == 'IE'){
+					var emp = getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+					var emp = getEmpresaMoz();
+		}
+
+   	var xmlDso =  xmlTemp.XMLDocument;
+		
+	var url = "xml/Paradas.asp?RECURSO=updateParada";	
+		url += "&ID=" + document.getElementById("txtID").value;
+		url += "&FECHA_INI=" + document.getElementById("txtFechaIni").value + " " + document.getElementById("txtHoraIni").value;
+		url += "&FECHA_FIN=" + document.getElementById("txtFechaFin").value + " " + document.getElementById("txtHoraFin").value;
+		url += "&EQUIPO=" + document.getElementById("idCodEquipo").value;
+		url += "&COMPONENTE=" + document.getElementById("idCodComponente").value;
+		url += "&TIPO=" + document.getElementById("listTipo").value;
+		url += "&CAUSA=" + document.getElementById("idCausa").value;
+		url += "&OT=" + document.getElementById("txtOT").value;
+		url += "&OBSERVACION=" + document.getElementById("txtObservacion").value;
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+	
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	
+        if (!xmlestado)
+			window.open(url);
+	var urlx = window.location.href;
+	var SECCION = getUrlVars()["SECCION"];
+	var VTZ = getUrlVars()["VTZ"];
+	this.window.location.href = "dlgParadas.html?ID=" + document.getElementById("txtID").value + "&SECCION=" + SECCION + "&VTZ=" + VTZ;
+	window.opener.document.getElementById("formulario").submit();
+}
+				  
+function inicio(){
+
+document.getElementById("txtObservacion").value="";
+document.getElementById("txtObservacion").focus();
+
+if (getParametro("ID")){
+		getParada(getParametro("ID"));
+		document.getElementById("txtID").value = getParametro("ID");
+		return;
+		}
+			
+if (getParametro("COD_EQUIPO")){
+		document.getElementById("txtCodEquipo").value = getParametro("COD_EQUIPO");
+		document.getElementById("txtEquipo").value = getParametro("EQUIPO");
+		}
+
+if (getParametro("IND_OT")){
+					indOT = true;
+					document.getElementById("ChkIncidente").checked=true;
+					}
+					
+if ((hour+"").length==1) hour = '0' + hour;
+
+
+var fiveMin=minute/5;		
+fiveMin=parseInt(fiveMin*5);		
+var afterMin = fiveMin;
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((fiveMin+"").length==1) fiveMin ='0'+fiveMin;
+
+document.getElementById("txtHoraIni").value = hour+ ":" + fiveMin;
+document.getElementById("txtHoraFin").value = hour+ ":" + parseInt(afterMin+5);
+
+document.getElementById("txtMinutos").value = "0.05";
+
+document.getElementById("txtFechaIni").value = day_month + "/" + month +"/"+ year;
+document.getElementById("txtFechaFin").value = day_month + "/" + month +"/"+ year;
+
+
+		if (id_br == "IE")
+		{
+			document.getElementById("idResponsable").innerText = GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			document.getElementById("idResponsable").innerHTML = GetSessionMoz();
+		}
+}
+
+function Equipos(){
+document.getElementById("divEquipos").style.visibility = 'visible';
+document.getElementById('frameEquipos').contentWindow.mostrarVentana(document.getElementById("idCodEquipo"), document.getElementById("idEquipo"), document.getElementById('divEquipos'),'getTipoEquipo();');
+}
+
+function Componentes(){
+document.getElementById("divSubEquipos").style.visibility = 'visible';
+						
+document.getElementById('frameSubEquipos').contentWindow.mostrarVentana(document.getElementById("idCodComponente"), document.getElementById("idDesComponente"), document.getElementById('divSubEquipos'),'dual();', document.getElementById("idCodEquipo"));
+}
+
+function Paradas(){
+document.getElementById("divParadas").style.visibility = 'visible';
+document.getElementById('frameParadas').contentWindow.popsearchbox(document.getElementById("idCausa"), document.getElementById("idCausa"), document.getElementById("idCodEquipo"), document.getElementById("listTipo"), document.getElementById('divParadas'));
+
+}
+
+
+
+function getParada(ID){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Paradas.asp?RECURSO=getParada";
+		url +="&ID=" + ID;
+		url +="&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	if (!xmlestado)
+			window.open(url);
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+		var context = "";
+		for (i=0; i<x.length; i++) {		
+
+			if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+				document.getElementById("idCodEquipo").value =  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0] != null){
+				document.getElementById("idEquipo").value =  x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("COD_COMPONENTE")[0].childNodes[0] != null){
+				document.getElementById("idCodComponente").value =  x[i].getElementsByTagName("COD_COMPONENTE")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("DESC_COMPONENTE")[0].childNodes[0] != null){
+				document.getElementById("idDesComponente").value =  x[i].getElementsByTagName("DESC_COMPONENTE")[0].childNodes[0].nodeValue;
+			}		
+			if (x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0] != null){
+				document.getElementById("txtFechaIni").value =  x[i].getElementsByTagName("FECHA_INI")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("HORA_INI")[0].childNodes[0] != null){
+				document.getElementById("txtHoraIni").value =  x[i].getElementsByTagName("HORA_INI")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0] != null){
+				document.getElementById("txtFechaFin").value =  x[i].getElementsByTagName("FECHA_FIN")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("HORA_FIN")[0].childNodes[0] != null){
+				document.getElementById("txtHoraFin").value =  x[i].getElementsByTagName("HORA_FIN")[0].childNodes[0].nodeValue;
+			}
+
+			if (x[i].getElementsByTagName("COD_TIPO")[0].childNodes[0] != null){
+				document.getElementById("listTipo").value =  x[i].getElementsByTagName("COD_TIPO")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0] != null){
+				document.getElementById("idCausa").value =  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("MINUTOS")[0].childNodes[0] != null){
+				document.getElementById("txtMinutos").value =  x[i].getElementsByTagName("MINUTOS")[0].childNodes[0].nodeValue;
+			}
+			
+			if (x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0] != null){
+				document.getElementById("txtObservacion").value =  x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("OT")[0].childNodes[0] != null){
+				document.getElementById("txtOT").value =  x[i].getElementsByTagName("OT")[0].childNodes[0].nodeValue;
+			}
+			
+		}
+
+}
+
+
+function getTipoEquipo(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=GetTipo&CODIGO=" + document.getElementById("idCodEquipo").value;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	if (!xmlestado)
+			window.open(url);
+	
+	var tree = xmlDso.documentElement;	
+	var node = tree.childNodes.item(0);
+	if(node){
+			document.getElementById("txtCodTipoEquipo").value =  getChildNodeValue(node,"CODIGO");
+	}
+
+}
+
+function limpiarTablaCheck(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+}
+
+function validateTime(obj)
+{
+    var timeValue = obj.value;
+	if (timeValue == ''){
+		return false;
+	}
+    if(timeValue.indexOf(":")<0)
+    {
+        alert("Ingrese Hora Correcta");
+		obj.value = '';
+        return false;
+    }
+    else
+    {
+        var sHours = timeValue.split(':')[0];
+        var sMinutes = timeValue.split(':')[1];
+
+        if(sHours == "" || isNaN(sHours) || parseInt(sHours)>23)
+        {
+            alert("Hora Invalida");
+            return false;
+        }
+        else if(parseInt(sHours) == 0)
+            sHours = "00";
+        else if (sHours <10)
+            sHours = "0"+sHours;
+
+        if(sMinutes == "" || isNaN(sMinutes) || parseInt(sMinutes)>59)
+        {
+            alert("Minutos Invalido");
+            return false;
+        }
+        else if(parseInt(sMinutes) == 0)
+            sMinutes = "00";
+        else if (sMinutes <10)
+            sMinutes = "0"+sMinutes;    
+
+        obj.value = sHours + ":" + sMinutes;   
+    }
+
+    return true;    
+}
+
+
+</SCRIPT>
+<BODY onload="inicio();">
+
+<DIV ID="divCriticidad" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 212px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 33px; height: 450px;"
+onclick="event.cancelBubble=true">
+  <IFRAME NAME="FrameCriticidad" SRC="Criticidad.html" frameBorder="0" WIDTH="250" SCROLLING="no" HEIGHT="450"></IFRAME>
+</DIV>
+
+<DIV ID="divSubEquipos" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 275px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 84px; width: 350px;" onClick="event.cancelBubble=true">
+<IFRAME NAME="frameSubEquipos" id="frameSubEquipos" SRC="listSubEquiposv2.html" frameBorder="0" WIDTH="350" SCROLLING="no" height="300"></IFRAME>
+</DIV>
+
+<DIV ID="divEquipos" STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 275px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 58px; width: 375px; height: 290px;"	onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameEquipos" id="frameEquipos" SRC="ListEquiposSolosPadresv2.html" FRAMEBORDER="0" WIDTH="375" SCROLLING="no" HEIGHT="290">
+  </IFRAME>
+</DIV>
+
+<DIV ID="divParadas" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 369px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 183px; width: 352px; height: 317px;" onClick="event.cancelBubble=true">
+<IFRAME NAME="frameParadas" id="frameParadas" SRC="ListParadasv2.html" frameBorder="0" WIDTH="380" SCROLLING="no" height="320"></IFRAME>
+</DIV>
+
+<FORM NAME="formulario">
+  <TABLE DATASRC="#xmlNew">
+    <TR>
+      <TD WIDTH="200"  CLASS="titulo">Folio&nbsp;N&ordm;
+        <INPUT NAME="txtID" TYPE="TEXT" CLASS="inputBold" SIZE="5" READONLY  id="txtID"/></TD>
+      <TD WIDTH="227"  CLASS="titulo">
+       Responsable : <SPAN ID="idResponsable" CLASS="Campo" DATAFLD="RESPONSABLE"></SPAN>
+      <TD WIDTH="100" ALIGN="right">
+      </TD>
+      <TD WIDTH="149" CLASS="LitleText">
+      </TD>
+    </TR>
+    <TR CLASS="texto">
+      <TD HEIGHT="2"  valign="top"></TD>
+    </TR>
+  </TABLE>
+  <TABLE WIDTH="98%" HEIGHT="328" BORDER="0" CLASS="texto"  DATASRC="#xmlNew">
+    <!--DWLayoutTable-->
+    <TR>
+      <TD WIDTH="115" HEIGHT="24" ALIGN="left" VALIGN="top">EQUIPO </TD>
+      <TD COLSPAN="6" VALIGN="top"><INPUT  class="input" ID="idCodEquipo" 
+            		type="text" SIZE="20"  name="txtCodEquipo" DATAFLD="EQUIPO">
+        <INPUT CLASS="input" ID="idEquipo" TYPE="text" SIZE="50"
+            			 name="txtEquipo"  datafld="DESC_EQUIPO">        <img style="CURSOR: hand" onClick="Equipos();"  src="images/lupa.jpg" align="top" id="btn_equipos"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turno
+        <SELECT NAME="ListTurnos" CLASS="input" DATAFLD="TURNO" id="ListTurnos">
+          <OPTION VALUE="A">A</OPTION>
+          <OPTION VALUE="B">B</OPTION>
+        </SELECT></TD>
+    </TR>
+    <TR>
+      <TD HEIGHT="24" VALIGN="middle">COMPONENTE</TD>
+      <TD COLSPAN="6" VALIGN="middle" >
+      <INPUT CLASS="input" ID="idCodComponente" TYPE="text" SIZE="20"  
+      						name="txtCodComponente" DATAFLD="COD_COMPONENTE">
+      <INPUT CLASS="input" ID="idDesComponente" TYPE="text" SIZE="50"
+            			 		name="txtDesComponente" datafld="DESC_COMPONENTE">      <img style="CURSOR: hand" onClick="Componentes();"  src="images/lupa.jpg" align="top" id="btn_componentes"></TD>
+    </TR>
+    <TR>
+      <TD HEIGHT="22" VALIGN="middle">FECHA INICIO</TD>
+      <TD COLSPAN="6" VALIGN="middle" >
+      <INPUT NAME="txtFechaIni" TYPE="text" CLASS="input" SIZE="12" DATAFLD="FECHA_INI" id="txtFechaIni"/>
+      &nbsp;&nbsp;&nbsp;HORA :
+       <INPUT NAME="txtHoraIni" TYPE="text" CLASS="input" SIZE="12" DATAFLD="HORA_INI" id="txtHoraIni" onblur="validateTime(this)"/>
+&nbsp;O.T. :
+<INPUT NAME="txtOT" TYPE="text" CLASS="input" SIZE="12" DATAFLD="OT" id="txtOT"/></TD>
+    </TR>
+    <TR>
+      <TD HEIGHT="25" VALIGN="middle">FECHA TERMINO</TD>
+      <TD COLSPAN="6" VALIGN="middle" >
+      <INPUT NAME="txtFechaFin" TYPE="text" CLASS="input" SIZE="12" DATAFLD="FECHA_FIN" id="txtFechaFin"/>
+        &nbsp;&nbsp;&nbsp;HORA :
+        <INPUT NAME="txtHoraFin" TYPE="text" CLASS="input" SIZE="12" DATAFLD="HORA_FIN" 
+        		  id="txtHoraFin"  onblur="validateTime(this)"/><!--onKeyPress="if(event.keyCode==13)setHora();"-->
+        TOTAL DETENCION HRS: 
+        <INPUT NAME="txtMinutos" TYPE="text" CLASS="input" SIZE="12" DATAFLD="MINUTOS" id="txtMinutos"/>
+        <INPUT NAME="txtCodTipoEquipo"  type="hidden" DATAFLD="TIPO_EQUIPO" id="txtCodTipoEquipo"/></TD>
+    </TR>
+    <TR>
+      <TD HEIGHT="24" COLSPAN="2" VALIGN="bottom">
+           Tipo de Detenci&oacute;n
+             <SELECT name="listTipo" CLASS="tableheader_select2"  DATAFLD="COD_TIPO" id="listTipo">
+               <OPTION VALUE="FO">FALLA OPERACIONAL</OPTION>
+               <OPTION VALUE="OP">OPERACIONAL PROGRAMADA</OPTION>
+               <OPTION VALUE="FM">FALLA MTTO MECANICO</OPTION>
+               <OPTION VALUE="FE">FALLA MTTO ELECTRICO</OPTION>
+               <OPTION VALUE="FI">FALLA MTTO INSTRUMENTAL</OPTION>
+               <OPTION VALUE="FG">FALLA MTTO GENERAL</OPTION>
+               <OPTION VALUE="MP">MTTO PROGRAMADO</OPTION>
+               <OPTION VALUE="RS">RESERVA</OPTION>
+               <OPTION VALUE="ST">STANDBY</OPTION>
+               <OPTION VALUE="MI">MINA</OPTION>
+             </SELECT></TD>
+    <TD colspan="5" ALIGN="CENTER" VALIGN="BOTTOM">Causa 
+      <INPUT CLASS="input" ID="idCausa" TYPE="text" SIZE="50"
+            			 name="txtCausa"  datafld="CAUSA">&nbsp;<img style="CURSOR: hand" onClick="Paradas();"  src="images/lupa.jpg" align="top" id="btn_componentes2"></TD>
+    </TR>
+    
+    
+    <TR >
+      <TD HEIGHT="140"  COLSPAN="7" VALIGN="top">
+        <STRONG>OBSERVACIONES</STRONG>
+        <TEXTAREA NAME="txtObservacion"  ROWS="8"
+		  COLS="100" CLASS="textArea" DATAFLD="OBSERVACION"
+		   onKeyPress="validaKeys(this,1500, window.event);" ID="txtObservacion"></TEXTAREA>
+       </TD></TR>
+    <TR>
+         <TD HEIGHT="10"></TD>
+         <TD WIDTH="192"></TD>
+         <TD width="89"></TD>
+         <TD WIDTH="429"></TD>
+         <TD WIDTH="0"></TD>
+         <TD WIDTH="142"></TD>
+         <TD width="217"></TD>
+    </TR>
+  </TABLE>
+  <DIV align="left">
+  <TABLE width="90%">
+  <TR>
+    <TD><INPUT  type="button" CLASS="botonBlanco" onClick="guardar();" VALUE="Guardar" >
+      <INPUT  type="button" CLASS="botonBlanco" onClick="window.close();" VALUE="Salir" >    </TD>
+  </TR>
+  </TABLE>
+  </DIV>
+    <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFechaIni","txtFechaFin"]);
+		myCalendar.setSkin("dhx_web");
+		if (total_registros_lista == 0){
+				document.getElementById("btndelpic").disabled = "disabled";
+		}
+	</script>
+  
+</FORM>
+</BODY>
+</HTML>

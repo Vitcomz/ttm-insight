@@ -1,0 +1,252 @@
+<HTML XMLNS="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+<xml id=xmlListFaenas></xml>
+<xml id=xmlTemp></xml>
+<TITLE>SGI - TTM CHILE</TITLE>
+<LINK REL="stylesheet" HREF="Chart/Style.css" TYPE="text/css" />
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript" SRC="Chart/FusionCharts.js"></SCRIPT>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<!--
+.style1 {color: #FF0000}
+-->
+</STYLE>
+</HEAD>
+<SCRIPT>
+function inicio(){
+ 	
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay();  
+
+document.getElementById("usuario").innerText = GetSession();
+
+if 	(GetSession() == "DESCONOCIDO")
+	self.location.href="loginSGI.html";
+else		
+	getObjetivos();
+	
+//alert(day_month);
+monthFin = month +1;
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((monthFin+"").length==1) monthFin ='0' + monthFin;
+
+
+
+}
+
+function getObjetivos(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/objetivos.asp?RECURSO=getObjetivos";
+		url +="&ANHO=" + formulario.listAnho.value;
+		url +="&SUCURSAL=" + formulario.listSucursal.value;
+
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			window.open(url);
+buscar();
+  		
+}
+
+
+function listSecciones(){
+        xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			
+			
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            if (opcion.value == "AGLOAPI") opcion.selected = true;
+          	formulario.listSecciones.options[i] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+}
+
+function buscar(){
+	
+	    xmlTemp.async = false;
+        var xmlDso =  xmlTemp.XMLDocument;
+			
+		  url = "xml/objetivos.asp?RECURSO=grObjetivosA%26SUCURSAL=" +  formulario.listSucursal.value;
+		  url += "%26ANHO=" + formulario.listAnho.value;
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "450", "280", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv1");
+		   
+		  url = "xml/objetivos.asp?RECURSO=grObjetivosB%26SUCURSAL=" +  formulario.listSucursal.value;
+		  url += "%26ANHO=" + formulario.listAnho.value;
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "450", "280", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv2");
+		   
+		  url = "xml/objetivos.asp?RECURSO=grObjetivosC%26SUCURSAL=" +  formulario.listSucursal.value;
+		  url += "%26ANHO=" + formulario.listAnho.value;
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "450", "350", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv3");
+		   
+		  url = "xml/objetivos.asp?RECURSO=grObjetivosD%26SUCURSAL=" +  formulario.listSucursal.value;
+		  url += "%26ANHO=" + formulario.listAnho.value;
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "450", "300", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv4");
+}
+
+function _close(){
+
+DelSession(document.getElementById("usuario").innerText);
+document.location.href='../intranet.html';
+
+}
+
+</SCRIPT>
+<BODY onLoad="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 10; z-index: 100; 
+    left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" 
+                scrolling="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+
+<FORM NAME="formulario">
+<img src="images/logoNew.jpg" />
+<TABLE><TR><TD>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="3" ALIGN="LEFT" >
+  <!--DWLayoutTable-->
+<TR>
+  <TD HEIGHT="29" COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="calibri_16"><STRONG>S.G.I. SISTEMA DE GESTION INTEGRADO TTM Chile. </STRONG></TD>
+</TR>
+<TR>
+  <TD  ALIGN="left" VALIGN="top" CLASS="calibri">
+  Usuario Conectado &nbsp;<SPAN ID="usuario" ></SPAN></TD>
+  <TD ALIGN="RIGHT"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+</TR>
+<TR>
+  <TD WIDTH="445" HEIGHT="33" ALIGN="left" VALIGN="top" CLASS="calibri">
+      Sucursal :
+        <SELECT CLASS="input" NAME="listSucursal" onChange="getObjetivos()" >
+          <OPTION VALUE="ANTOFAGASTA">ANTOFAGASTA</OPTION>
+          <OPTION VALUE="CALAMA" >CALAMA</OPTION>
+          <OPTION VALUE="IQUIQUE">IQUIQUE</OPTION>
+          <OPTION VALUE="SANTIAGO" SELECTED>SANTIAGO</OPTION>
+          <OPTION VALUE="EMPRESA">TOTAL EMPRESA</OPTION>
+        </SELECT>
+        A&ntilde;o :
+        <SELECT CLASS="input" NAME="listAnho" DATAFLD="ANHO" onChange="getObjetivos()">
+            <OPTION VALUE="2009">2009</OPTION>
+            <OPTION VALUE="2010">2010</OPTION>
+            <OPTION VALUE="2011">2011</OPTION>
+            <OPTION VALUE="2012">2012</OPTION>
+                </SELECT>
+  </TD>
+<TD WIDTH="286" ALIGN="RIGHT"><SPAN CLASS="calibri">
+  <INPUT  TYPE="button" CLASS="botonBlanco"
+		onClick="_close();" VALUE="Salir">
+</SPAN></TD>
+</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" DATASRC="#xmlTemp" BORDER="1"  BORDERCOLORDARK="#000000" CELLSPACING="0" CLASS="TBL_1">
+  <THEAD>
+  	<TR  class="blueTr">
+  	  <TD WIDTH="2">ID</TD>
+  	  <TD WIDTH="200">Objetivos de la Pol�tica</TD>
+  	  <TD WIDTH="150">Indicadores</TD>
+  	  <TD WIDTH="50">Meta</TD>
+  	  <TD WIDTH="50">Ene</TD>
+  	  <TD WIDTH="50">Feb</TD>
+  	  <TD WIDTH="50">Mar</TD>
+  	  <TD WIDTH="50">Abril</TD>
+  	  <TD WIDTH="50">May</TD>
+  	  <TD WIDTH="50">Jun</TD>
+  	  <TD WIDTH="50">Jul</TD>
+  	  <TD WIDTH="50">Ago</TD>
+  	  <TD WIDTH="50">Sep</TD>
+  	  <TD WIDTH="50">Oct</TD>
+  	  <TD WIDTH="50">Nov</TD>
+      <TD WIDTH="50">Dic</TD>
+      <TD WIDTH="50">Acumulado</TD>
+    </TR>
+   </THEAD>
+  	<TR CLASS="texto" >
+  	  <TD><SPAN DATAFLD="ID"></SPAN></TD>
+  	  <TD><SPAN DATAFLD="OBJETIVO"></SPAN><BR>
+  	    <SPAN CLASS="style1" DATAFLD="RESPONSABLE"></SPAN></TD>
+  	  <TD ><SPAN DATAFLD="INDICADOR"></SPAN></TD>
+  	  <TD  ALIGN="RIGHT"><SPAN DATAFLD="META"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="ENE"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="FEB"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="MAR"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="ABR"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="MAY"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="JUN"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="JUL"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="AGO"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="SEP"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="OCT"></SPAN></TD>
+  	  <TD ALIGN="RIGHT"><SPAN DATAFLD="NOV"></SPAN></TD>
+      <TD ALIGN="RIGHT"><SPAN DATAFLD="DIC"></SPAN></TD>
+      <TD ALIGN="RIGHT"><SPAN DATAFLD="ACUM"></SPAN></TD>
+  	</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" CELLSPACING="10" >
+  <TR>
+   <TD  VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv1" ALIGN="center"> 
+      Indicadores. </DIV>
+    </TD>
+    <TD VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv2" ALIGN="center"> 
+      Indicadores . </DIV>
+    </TD>
+  </TR>
+  <TR><TD>
+  	<DIV ID="chartdiv3" ALIGN="center"> 
+      Indicadores . </DIV>
+  </TD>
+  <TD>
+  	<DIV ID="chartdiv4" ALIGN="center"> 
+      Indicadores . </DIV>
+  </TD></TR>
+</TABLE>
+</TD></TR></TABLE>
+</FORM>
+</BODY>
+</HTML>

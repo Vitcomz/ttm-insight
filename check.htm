@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>ChekList</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<style type="text/css">
+
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+</style>
+
+
+
+
+</head>
+<xml id = xmlGrupos></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlTemp.async = false;
+
+function creaCheck(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	
+		var nomGrupo = prompt("Descripci�n del Checklist","");
+		var url = "xml/Checklist.asp?RECURSO=NewCheck";
+			url += "&DESCRIPCION=" + nomGrupo
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		
+		
+	ListCheck();	
+}
+
+
+ 
+function ListCheck(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "xml/Checklist.asp?RECURSO=ListCheck";
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListTipos";
+	  	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"SEL");
+				if (opcion.value == "SEL") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+function ListCheck(CodEquipo){
+
+	var tbl = document.getElementById('tabCheck');
+	//limpiarTabla(tbl);
+	xmlHorometros.async=false;
+	var xmlDso = xmlHorometros.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+		url +="&COD_EQUIPO=" + CodEquipo;
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+}
+
+
+
+function EliminarCheck(Index){
+
+	var tabla = document.getElementById('tabCheck');
+	var Codigo = tabla.rows[Index].children[0].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=DelCheck&CODIGO=" + Codigo;
+		url += "&COD_EQUIPO=" + formulario.ListEquipos.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar CheckList Codigo " + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListCheck(formulario.ListEquipos.value);
+	}
+}
+
+function selGrupo(Index){
+	var tabla = document.getElementById('tabGrupos');
+	var CodGrupo =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodGrupo.value = CodGrupo;
+	document.getElementById('idNombreGrupo').innerText = Nombre;
+	ListHorometros(CodGrupo);
+	//getDescripcionActividad(Actividad);
+	
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	xmlEstado = xmlDso.load(url);
+	
+	if(!xmlEstado)
+			window.open(url);
+
+
+}
+
+function inicio(){
+ListCheck();
+}
+
+</script>
+
+
+<body onLoad="inicio();" >
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table width="493">
+<tr>
+  <td height="31" colspan="2" class="titulo">ChekList</td>
+</tr>
+<tr class="titulo">
+<TD width="116">Tipo de Equipo  :</TD>
+<TD width="365"><select name="ListEquipos" onChange="ListHorometros(this.value);" class="Campo"></select></TD>
+</tr>
+</table>
+
+<table width="371" border="0" cellpadding="5" cellspacing="5">
+  <tr><td width="8">&nbsp;&nbsp;</td>
+	<td width="328" align="center" valign="top" class="td">
+	  <table width="270" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabCheck" DATASRC="#xmlHorometros">
+		<thead>
+			<tr class="HeaderLista">
+			  <td width="53">CODIGO</td>
+			  <td width="183">DESCRIPCION</td>
+			  <td width="16" height="20">
+			  <IMG style="CURSOR: hand" onclick="creaCheck();" 
+								src="images/add.gif"></td>
+			</tr>
+		<thead>
+		<tbody>
+		<tr bgcolor="#dde3eb">
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="EliminarCheck(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+		</tbody>
+	</table>
+</td></tr></table>
+</form>
+
+<div align="center" >
+  <input type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+
+
+
+
+        <script src="FusionCharts_.js" type="text/javascript"></script>
+        <script src="fusioncharts.charts_.js" type="text/javascript"></script>
+        <script src="fusioncharts.theme.fint_.js" type="text/javascript"></script>
+        <script src="../../ttm_js/jslide/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <style type="text/css">
+    body,td,th {
+	font-family: Arial;
+	font-size: 12px;
+}
+    </style>
+	</head>
+<style type="text/css">
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.tinyInput{
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-size:8px;
+    font-weight:bold;
+    border:solid 1px #000000;
+    color:#003399;
+}
+.tinyInputBlocked{
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-size:8px;
+    font-weight:bold;
+    border:solid 1px #000000;
+    color:#777;
+}
+
+#DIV2 td {
+    font-size: 10px;
+    color: #424242;
+}
+
+</style>
+
+<script>
+
+
+    String.prototype.replaceAll = function (find, replace) {
+        var str = this;
+        return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+    };
+
+function graph(){
+	var folios="";
+	var tipo="";
+	var folio_ret = "";
+	document.getElementById("faena_span").innerHTML = parent.document.getElementById("ctl00_CmbFaenasFiltro_Input").value;
+	document.getElementById("cod_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtcodeq").value;
+	document.getElementById("desc_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_TxtDescripcion").value;
+	document.getElementById("anch_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtAncho").value;
+	document.getElementById("espc_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtEspesor").value;
+	document.getElementById("espr_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtEspesorR").value;
+	document.getElementById("espseg_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtEspesorSeg").value;
+	document.getElementById("finst_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_TxtFechaInstalacion_dateInput").value;
+	document.getElementById("fcamb_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_TxtFechaCambio_dateInput").value;
+	document.getElementById("diasop_span").innerHTML = parent.document.getElementById("ctl00_ContentPlaceHolder1_txtdiasop").value;
+
+	var data = parent.document.getElementById("ctl00_ContentPlaceHolder1_hddkeydata").value;
+	var dat1 = data.replaceAll("±", "'");
+	var dat2 = dat1.replaceAll("&", "<");
+	var dat3 = dat2.replaceAll("$", ">");
+	var dat4 = dat3.replaceAll("Ω", "/");
+	data = dat4.replaceAll("π", "?");
+	
+	var chart = new FusionCharts("MSLine.swf", "ChartId", "1010", "280", "0", "1");
+	chart.setDataXML(data);
+	chart.render("chartdiv");
+	//setTimeout(function () { chart.print(); }, 4000);
+	var strx = '<input name="ctl00$ContentPlaceHolder1$IBtnExpExcel" id="ctl00_ContentPlaceHolder1_IBtnExpExcel" src="../../ttm_skins/Images/Skin/botones/btn-excel.png" onclick="FromHTMLtoEXCEL();return false;" style="border-width:0px;" align="right" type="image">';
+	var compx = parent.document.getElementById("ctl00_ContentPlaceHolder1_Pnlmedform").innerHTML;
+
+
+	document.getElementById("DIV2").innerHTML = compx;
+
+										
+	   
+}
+</script>
+<body onLoad="graph();">
+<form name="formulario">
+<table bordercolordark="#FFFFFF" id="tabSheet" border="1" bordercolor="#000000" cellpadding="0" cellspacing="0" width="100%"><tbody>
+  <tr class="titulo" align="center">
+    <td height="16" colspan="6" align="center" valign="MIDDLE"><img src="../../ttm_skins/images/_header/encabezado.jpg" width="997" height="111"></td>
+  </tr>
+  <tr class="titulo" align="center">
+    <td colspan="6" valign="middle"><h1>Reporte Espesor 2.0 - Faena <span id="faena_span"></span></h1></td>
+  </tr>
+  <tr class="titulo" align="center">
+    <td width="14%" align="center" valign="top">Codigo: </td>
+    <td width="22%" align="center" valign="top"><span id="cod_span"></span></td>
+    <td width="14%" align="center" valign="top">Descripcion: </td>
+    <td width="22%" height="16" align="center" valign="top"><span id="desc_span"></span></td>
+    <td width="14%" align="center" valign="top">Dias Operacion:</td>
+    <td width="19%" align="center" valign="top"><span id="diasop_span"></span></td></tr>
+  <tr class="titulo" align="center">
+    <td align="center" valign="top">Ancho:</td>
+    <td align="center" valign="top"><span id="anch_span"></span></td>
+    <td align="center" valign="top">Espesor Cubierta:</td>
+    <td align="center" height="16" valign="top"><span id="espc_span"></span></td>
+    <td align="center" valign="top">Espesor Seguridad:</td>
+    <td class="normal" align="center" valign="top"><span id="espseg_span"></span></td>
+  </tr>
+  <tr class="titulo" align="center">
+    <td align="center" valign="top">Fecha Instalacion:</td>
+    <td align="center" valign="top"><span id="finst_span"></span></td>
+    <td align="center" valign="top">Fecha Cambio:</td>
+    <td align="center" height="16" valign="top"><span id="fcamb_span"></span></td>
+    <td align="center" valign="top">Espesor Retorno:</td>
+    <td class="normal" align="center" valign="top"><span id="espr_span"></span></td>
+  </tr><tr class="rotulo" align="center"><td colspan="7" align="CENTER" height="21">&nbsp;</td></tr><tr align="center" valign="MIDDLE"><td colspan="6" align="left" class="titulo"><DIV ID="chartdiv" ALIGN="left"> Grafico </DIV></td></tr>
+<tr align="center" valign="MIDDLE">
+  <td colspan="6" align="left" class="titulo">&nbsp;</td>
+</tr>      
+<tr align="center"><td colspan="7" align="LEFT" height="254" valign="TOP">
+<DIV ID="DIV2" ALIGN="center">Lecturas</DIV>
+</td></tr></tbody></table>
+
+<script type="text/javascript">
+    setTimeout(function () { window.print(); setTimeout(function () { window.close(); }, 1000); }, 6000);
+
+</script>
+
+</form>
+</body>
+</html>

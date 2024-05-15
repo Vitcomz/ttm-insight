@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+@media print{
+  div#header{
+   position:fixed;
+   height:80%;
+  }
+ 
+  div#content{
+  top:100px;
+  margin-bottom:20px;
+   height:80%;
+  }
+  
+  div#footer{
+   position:fixed;
+  }
+  
+  body{
+  overflow:hidden;
+  background-color:#FFFFFF;
+ }
+ 
+}
+
+ @media screen{
+  
+   div#footer{
+   position:fixed;
+   visibility:hidden;
+  }
+  
+}
+-->
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script>
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+function checkImage(src) {
+	  var img = new Image();
+	  img.src = src;
+	  img.onload = function() {
+//			alert('T')
+			return src
+	  };
+	  img.onerror = function() {
+//			alert('F')
+			return "noDisponible.png"
+	  };
+}
+
+function testImage(id, URL) {
+    var tester=new Image();
+    tester.onLoad=isGood(id, URL);
+    tester.onError=isBad(id);
+    tester.src=URL;
+}
+
+function isGood(id, URL) {
+	setTimeout("document.getElementById('" + id +"').src = '" + URL + "';",900);
+}
+
+function isBad(id) {
+//	setTimeout("document.getElementById('" + id +"').src = 'http://www.ttminsight.cl/sgm/images/noDisponible.png';",900);
+}
+
+function ListBitacora(arr){
+   
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+  
+   var xmlDso = xmlDoc.XMLDocument;
+	var url = "../xml/Informes.asp?RECURSO=infDiario";
+		url += "&RESPONSABLE=TOD";
+		url += "&BITACORAS="+parent.document.getElementById("txtBitacoras").value;
+		url += "&TURNO=TOD";
+		url += "&FAENA="+emp;
+		url += "&USUARIO="+GetSession();
+		url += "&IND_DANO=TOD";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&VTZ=" + Math.random();
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	
+	//window.open(url);
+	if (!xmlestado)
+				window.open(url);
+				
+	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[1].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  context = context +  "<td valign='top'>ID:&nbsp;<span>"+  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue + "</span>&nbsp;&nbsp;<span>"+  x[i].getElementsByTagName("DESC_EQ_PRINCIPAL")[0].childNodes[0].nodeValue + "</span><BR /><img id='img"+ i +"' STYLE='border-color:#666666' BORDER='1' width='200px' ALIGN='middle' ONERROR='this.src=''../images/noDisponible.png'';'  src='"+ testImage("img" + i, trim(x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue)) + "'><BR /><span>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</span>&nbsp;<span>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</span></td>";
+				  
+				  
+				  
+				  context = context +  "<td valign='top' align='left'><span>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span>&nbsp;</td>";
+				  context = context +  "<td valign='top' align='left'><span>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</span>&nbsp;</td>";
+				  if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0] != null){
+ 				  	context = context +  "<td valign='top' align='left'><span>"+  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue + "</span>&nbsp;</td>";
+				  }else{
+					  context = context +  "<td valign='top' align='left'><span>&nbsp;</span>&nbsp;</td>";
+				  }
+				  context = context +  "<td valign='top' class='calibri_16' align='center'><select datafld='CRITICIDAD_2' class='calibri_16'><option "
+				  if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0] != null){
+				  		if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0].nodeValue == "1"){ context = context +  " selected='selected' ";} 
+				  }
+				  context = context +   " value='1'>1  <24 hrs</option><option ";
+				  if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0] != null){
+				  		if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0].nodeValue == "2"){ context = context +  " selected='selected' ";} 
+				  }
+				  context = context +  "value='2'>2  <7  días</option><option ";
+				  if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0] != null){
+				  		if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0].nodeValue == "3"){ context = context +  " selected='selected' ";} 
+				  }
+				  context = context +  "value='3'>3  <30 días</option><option ";
+				  if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0] != null){
+				  		if (x[i].getElementsByTagName("CRITICIDAD_2")[0].childNodes[0].nodeValue == "4"){ context = context +  " selected='selected' ";} 
+				  }
+				  context = context +  "value='4'>4  <90 días</option></select>&nbsp;<BR /><SPAN class='tinyText' >AVISO/OT</SPAN><BR /><INPUT class='tinyTextBox' size='17' value = '";
+				  if (x[i].getElementsByTagName("REPORT")[0].childNodes[0] != null){
+					  context = context +  x[i].getElementsByTagName("REPORT")[0].childNodes[0].nodeValue;
+				  }
+				  context = context +  "' /></td>";
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[1].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[1].innerHTML = "<tr><td >&nbsp;</td><td >0</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+
+	}
+	
+}
+
+function saveCriticidad(){
+
+tabla = document.getElementById('tblBitacoras');
+
+for (i=3; i< tabla.rows.length; i++){
+
+		
+		if (id_br == "IE")
+		{
+			id = tabla.rows[i].children[0].children[0].innerText;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			id = tabla.rows[i].children[0].children[0].innerHTML;
+		}
+		criticidad = tabla.rows[i].children[4].children[0].value;
+		aviso = tabla.rows[i].children[4].children[4].value;
+		//alert(id + " " + criticidad);
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlTemp.XMLDocument;
+		var url = "../xml/informes.asp?RECURSO=updateCriticidad2"
+			url += "&ID=" + id;
+			url += "&REPORT=" + aviso;
+			url += "&CRITICIDAD=" + criticidad;
+	
+			if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+						if (window.XMLHttpRequest)
+						  {// code for IE7+, Firefox, Chrome, Opera, Safari
+						  xmlhttp=new XMLHttpRequest();
+						  }
+						else
+						  {// code for IE6, IE5
+						  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						  }
+						xmlhttp.open("GET",url,false);
+						xmlhttp.send();
+						xmlDoc=xmlhttp.responseText;
+						parser = new DOMParser();
+						xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+						xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+						//alert(xmlDso);
+						//window.open(url);
+			}
+			else if (id_br == "IE")
+			{
+				xmlestado = xmlDso.load(url);
+			}
+	
+	if(!xmlestado)
+		window.open(url);
+
+	} //end for
+}
+
+function trim(stringToTrim) {
+	return stringToTrim.replace(/^\s+|\s+$/g,"");
+}
+function ltrim(stringToTrim) {
+	return stringToTrim.replace(/^\s+/,"");
+}
+function rtrim(stringToTrim) {
+	return stringToTrim.replace(/\s+$/,"");
+}
+
+function _print(){
+var prtContent = document.getElementById("tblMain").innerHTML;
+var WinPrint = window.open('','','left=0,top=0,width=1,height=1, toolbar=0,scrollbars=0,status=0');
+WinPrint.document.write("<html><head><meta http-equiv='x-ua-compatible' content='IE=9'><title>&nbsp;</title>");
+WinPrint.document.write("<LINK rel='stylesheet' href='../sci_print.css' type='text/css'>");
+WinPrint.document.write("</head><body>");
+WinPrint.document.write(prtContent);
+WinPrint.document.write("</body>");
+WinPrint.document.close();
+WinPrint.focus();
+WinPrint.print();
+WinPrint.close();
+
+}
+
+
+function hiddenFrm(){ with (parent.document.getElementById("divWait").style){visibility = "hidden";}}
+</script>
+
+<BODY>
+
+<table width="100%" bgcolor="#666666" height="100%" id="tblMain" border="0">
+<tr><td width="50px">&nbsp;</td>
+<td align="center" valign="top">
+	<table width="1000"  BORDER="0" cellpadding="4" cellspacing="0" bgcolor="#FFFFFF" 
+    	CLASS="calibri" id="tblBitacoras" datasrc=#xmlDoc>
+	<thead>
+    <tr style="border:solid 1px #000000;" height="110px"><td colspan="5"><img src="..\Images\encabezado.jpg" width="997" height="111"></td></tr>
+    <tr style="border:solid 1px #000000;" height="30px"><td colspan="5" class="calibri_16">INSPECCIONES DIARIAS RELEVANTES&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;FAENA : <span id="idFaena"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    				  FECHA : <span id="idFecha"></span></TD></tr>
+	<tr style="border:solid 1px #000000;" bgcolor="#CCCCCC">
+		<td style="border:solid 1px #000000;" width="204"><b>IMAGEN</b></td>
+   		<td style="border:solid 1px #000000;" width="152"><b>OBSERVACION</b></td>
+       	<td style="border:solid 1px #000000;" width="152"><b>RECOMENDACION</b></td>
+   		<td style="border:solid 1px #000000;" width="106"><b>POSIBLES CAUSAS RAICES</b></td>
+        <td style="border:solid 1px #000000;" width="115"><b>CRITICIDAD 1SAP</b></td>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	<td style="border:solid 1px #000000;" valign="top">
+  	ID:&nbsp;<span datafld="ID"></span>&nbsp;&nbsp;<span datafld="DESC_EQ_PRINCIPAL"></span><BR />
+  	<img STYLE="border-color:#666666" BORDER="1" width="200px" ALIGN="middle" DATAFLD="FILE" 
+    		ONERROR="this.src='../images/noDisponible.png';"  src="../images/noDisponible.png"><BR />
+            <span datafld="EQUIPO"></span>&nbsp;<span datafld="COMPONENTE"></span>	</td>
+	<td style="border:solid 1px #000000;" valign="top" align="left"><span datafld="DESCRIPCION"></span>&nbsp;</td>
+	<td style="border:solid 1px #000000;" valign="top" align="left"><span datafld="RECOMENDACION"></span>&nbsp;</td>
+	<td style="border:solid 1px #000000;" valign="top" align="left"><span datafld="CAUSA"></span></td>
+    <td style="border:solid 1px #000000;" valign="top" class="calibri_16" align="center"><!--<span datafld="CRITICIDAD_2"></span>--><select datafld="CRITICIDAD_2" class="calibri_16">
+    					<option value="1">1  <24 hrs</option>
+                        <option value="2">2  <7  días</option>
+                        <option value="3">3  <30 días</option>
+                        <option value="4">4  <90 días</option>
+    					</select>&nbsp;<BR />
+                        <SPAN class="tinyText" >AVISO/OT</SPAN><BR />
+                        &nbsp;<INPUT datafld="REPORT" class="tinyTextBox" size="22" />
+            			    </td>
+    </tr>
+	</tbody>
+	</table>
+</td>
+<td width="50px">&nbsp;</td>
+</tr>
+</table>
+<div id="footer" align="center">
+<img src="..\images\pie2.jpg"  align="bottom"/>	 
+</div>

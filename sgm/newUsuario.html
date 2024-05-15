@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="css/style-ttm.css" type="text/css" media="screen" />
+
+
+
+
+
+
+<script language="JavaScript1.2" src="js/main.js"></script>
+<script language="Javascript1.2" src="js/jquery.js"></script>
+</HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function show(_divBox){
+
+
+  divBox = _divBox;
+
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	  document.getElementById("idCodigo").focus();
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+
+function guardar(){
+	
+if(!document.getElementById("idPassword").value){
+		    alert("Ingrese la password.");
+			return;
+			}
+
+	var ex;
+	var url = "js/usuarios.asp?RECURSO=getUsuario";
+		url += "&ID=" + document.getElementById('idCodigo').value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	    
+	//window.open(url);
+	
+		$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				alert("Codigo de Usuario Existente!." + document.getElementById('idCodigo').value);
+				ex=true;
+			}), newUsuario(ex); //end each
+		})//end $get
+		
+	
+
+}
+
+
+function newUsuario(_ex){
+
+if(_ex)return;			
+
+var id;
+var codigo;
+var nombre;
+
+	var url = "js/usuarios.asp?RECURSO=newUsuario";
+		url += "&PASSWORD=" + document.getElementById("idPassword").value;
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&NOMBRES="+ document.getElementById("idNombre").value;;
+		url += "&EMPRESA="+getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+			
+	$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					 codigo = $(this).find("CODIGO").text();
+					 password = $(this).find("PASSWORD").text();
+					
+			}) , parent.setUsuario(codigo,nombre);
+		})//end $get
+		
+
+
+}
+
+function listFamilias(){
+
+
+  var url = "js/familias.asp?RECURSO=ListFamilias";
+//  var url = "xml/equipos.asp?RECURSO=ListEquiposxUsuario";
+
+
+i=0;	   
+
+  $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	formulario.selectFamilias.options[i] = opcion;
+				i=i+1;
+			}) //end each
+								
+		})//end $get
+	
+//	window.open(url);
+ } 
+	
+ 
+
+
+//window.onLoad = _inicio();
+
+</script>
+
+<body onLoad="">
+
+<form name="formulario">
+ <table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+						    <td width="942" height="26" align="center" class="titulo"><strong>NUEVO USUARIO</strong></td>
+<td width="105" height="26" align="left" valign="top">
+							<img src="mg/close.gif" width="20" height="20" align="right"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+    </tr>
+		  </table>  
+	    <table width="419" align="center" cellpadding="0" cellspacing="3" id="tabPlanifica"   >
+			  <!--DWLayoutTable-->
+	  <thead>
+				</thead>
+			    
+			    <tr  >
+			      <td width="138" height="34" align="right">Correo :</td>
+			      <td width="270" align="left">
+                  <input id="idCodigo" type="text" class="texto" size="45" onKeyPress="if(event.keyCode==13)idNombre.focus();"/></td>
+		      </tr>
+		        
+		        <tr >
+		          <td height="33" align="right" onClick="return;">Nombre :</td>
+		          <td><input id="idNombre" type="text" class="texto" size="30" onKeyPress="if(event.keyCode==13)idPassword.focus();"/>                  </td>
+          </tr>
+		        <tr >
+		          <td height="48" align="right" onClick="return;">Password :</td>
+          <td><input id="idPassword" type="text" class="texto" size="30" onKeyPress="if(event.keyCode==13)guardar();"/></td>
+          </tr>
+	          <tr  >
+				<td height="27" colspan="2" align="center" onClick="return;"><input name="button" type="button" class="BotonBlanco" onClick="guardar();" value="Guardar"></td>
+		  </tr>
+	          <tr>
+	            <td height="21"></td>
+	            <td></td>
+          </tr>
+</table>
+</div><br>
+<div align="center"></div>
+</form>
+
+	</body>
+</HTML>

@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Sistemas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+
+
+
+
+
+
+</style></head>
+<xml id = xmlDoc></xml>
+<xml id = xmlMenu></xml>
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id=xmlTempx></xml>
+<xml id=xmlTemp2x></xml>
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<script>
+
+//SET PASSWORD FOR root@localhost = OLD_PASSWORD('julius');
+xmlDoc.async = false;
+
+function Get()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Sistemas.asp?RECURSO=GetSistema&ID=" + formulario.TxtID.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+
+function existe()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Sistemas.asp?RECURSO=GetSistema&ID=" + formulario.TxtID.value;
+	res = xmlDso.load(url);
+	if (res){
+            var tree = xmlDso.documentElement;
+            if (tree.childNodes.length == 1){
+				return true;
+				}
+			else
+				return false;
+	  }
+}
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function Nuevo(){
+	LimpiarForm();
+	formulario.TxtID.readOnly = false;
+	formulario.TxtID.focus();
+}
+
+function Guardar(){
+if (existe()){
+	UpdateSistema();
+	formulario.TxtID.readOnly = true;
+	}
+else{
+	NewSistema();
+	formulario.TxtID.readOnly = true;
+	}
+}
+
+function NewSistema()
+{
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Sistemas.asp?RECURSO=NewSistema&ID=" + formulario.TxtID.value;
+			url += "&VERSION=" + formulario.TxtVersion.value;
+			url += "&NOMBRE=" + formulario.TxtNombre.value;
+			url += "&AUTOR=" + formulario.TxtAutor.value;
+			url += "&DESCRIPCION=" + formulario.TxtDescripcion.value;
+			url += "&ESTADO=" + formulario.ListEstado.value;
+			url += "&FECHA=" + formulario.TxtFecha.value;
+			url += "&BD=" + formulario.TxtBD.value;
+		    url += "&UBICACION=" + formulario.TxtUbicacion.value;
+		//window.open(url);
+		xmlestado = xmlDso.load(url);
+		//alert(xmlestado);
+}
+
+function UpdateSistema()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Sistemas.asp?RECURSO=UpdateSistema&ID=" + formulario.TxtID.value;
+		url += "&VERSION=" + formulario.TxtVersion.value;
+		url += "&NOMBRE=" + formulario.TxtNombre.value;
+		url += "&AUTOR=" + formulario.TxtAutor.value;
+		url += "&DESCRIPCION=" + formulario.TxtDescripcion.value;
+		url += "&ESTADO=" + formulario.ListEstado.value;
+		url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&BD=" + formulario.TxtBD.value;
+		url += "&UBICACION=" + formulario.TxtUbicacion.value;
+		//window.open(url);
+	xmlestado = xmlDso.load(url);
+	return false;
+}
+
+function List()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Sistemas.asp?RECURSO=ListSistemas";
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+</script>
+
+
+<body onLoad="formulario.TxtID.focus();">
+<form name="formulario">
+<DIV id="ListSistemas" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrame" src="ListSistemas.html" frameBorder="0" width="250" scrolling="no"	height="180"></IFRAME>
+</DIV>
+
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table height="200">
+<tr>
+  <td height="31" class="titulo">Sistemas</td>
+</tr>
+<tr><td height="200">
+	<table width="713"  border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlDoc">
+	  <!--DWLayoutTable-->
+	<tr class="texto" > 
+		<td align="right" >Codigo:</td> 
+		<td align="left" valign="top">
+		<input type="text" name="TxtID" datafld="ID" class="input" readonly/>
+			<img onclick="ListFrame.popsearchbox(10, TxtID, TxtNombre, ListSistemas)" src="images/lupa.jpg" style="cursor:hand"/>	
+
+		</td>
+		<td width="91" align="right" >Version :</td>
+		<td colspan="2" align="left" valign="top">		<input name="TxtVersion" type="text" class="input" id="TxtVersion" datafld="VERSION"/>		  </td>
+	</tr>
+	<tr class="texto" >
+		<td width="89" align="right">Nombre:</td>
+		<td align="left"><input  name="TxtNombre" type="text" class="input" id="TxtNombre" size="40" datafld="NOMBRE"/></td>
+		<td align="right">Autor :</td>
+		<td colspan="2" align="left"><input  name="TxtAutor" type="text" class="input" id="TxtAutor" size="40" datafld="AUTOR"/></td>
+		</tr>
+	<tr class="texto" >
+	  <td width="89" align="right">Estado:</td>
+	    <td align="left"><select name="ListEstado" datafld="ESTADO" class='input'>
+          <option value="ACTIVO">ACTIVO</option>
+          <option value="INACTIVO">INACTIVO</option>
+        </select></td>
+	    <td align="right">Fecha Ingreso: </td>
+	    <td colspan="2" align="left"><input  name="TxtFecha" type="text" class="input" id="TxtFecha" datafld="FECHA"/></td></tr>
+
+	<tr class="texto" >
+	  <td width="89" align="right">Base de Datos :</td>
+	    <td align="left"><input  name="TxtBD" type="text" class="input" datafld="BD"/></td>
+	    <td align="right">Ubicaci&oacute;n: </td>
+	    <td colspan="2" align="left"><input  name="TxtUbicacion" type="text" class="input"  size="40" datafld="UBICACION"/></td>
+		</tr>
+	
+	
+	<tr class="texto" >
+	  <td width="89" height="72" align="center">Descripcion : </td>
+	    <td colspan="3" align="left" valign="top">		<textarea name="TxtDescripcion" cols="80" rows="3" class="input" id="TxtDescripcion" datafld="DESCRIPCION"></textarea></td>
+	    <td width="114">&nbsp;</td>
+	</tr>
+	<tr class="texto"  >
+	  <td align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  <td align="left"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  <td align="right" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  <td colspan="2" align="left" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+	<tr>
+	  <td height="3"></td>
+	  <td></td>
+	  <td></td>
+	  <td width="134"></td>
+	  <td></td>
+	  </tr>
+	</table>
+</td>
+</tr>
+</table>
+<br>
+</form>
+<br>
+<input type="button"  onClick="Nuevo();" value="Nuevo" class="botonBlanco">
+<input type="button" onClick="Guardar();" value="Guardar" class="botonBlanco">
+<input type="button" onClick="List();" value="Listar" class="botonBlanco">
+<input type="button" onClick="close();" value="Salir" class="botonBlanco">
+</body>
+</html>

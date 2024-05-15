@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<xml id="xmlTemp"></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Detalle OT</title>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+</head>
+<script>
+function inicio(){
+
+xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "../xml/ot.asp?RECURSO=GetOT";
+		url += "&FOLIO_OT=" + getParametro("FOLIO");
+		url += "&VTZ=" + Math.random();
+    
+	xmlestado = xmlTemp.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);
+		}
+}
+
+function verOT(){
+
+parent.document.location="../ImprOT.html?FOLIO=" + getParametro("FOLIO");
+window.close();
+}
+
+</script>
+<body onload="inicio();">
+<table DATASRC=#xmlTemp width="100%" class="LitleText" border="1" cellspacing="0">
+<thead>
+<TR class="blueTr">
+  <TD>FOLIO</TD>
+  <TD>EQUIPO</TD>
+  <TD>REVESTIMIENTO APLICADO</TD>
+  <TD>FECHA REVESTIMIENTO</TD>
+</TR>
+</thead>
+<tr>
+	<td><span datafld="FOLIO_OT"></span></td>
+    <td><span datafld="COD_EQUIPO"></span>&nbsp;&nbsp;&nbsp;<span datafld="DESC_EQUIPO"></span></td>
+    <td><span datafld="TIPO_REV"></span></td>
+    <td><span datafld="FECHA_DESPACHO"></span></td>
+</tr>
+</table>
+<br/>
+<a href='javascript:verOT();' target="_self">Ver OT.</a>
+<br/>
+<center>
+<input type="button" value="Aceptar"  class="botonBlanco" onclick="window.close();" />
+</center>
+</body>
+</html>

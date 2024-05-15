@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+        <SCRIPT LANGUAGE="JavaScript" SRC="Chart/FusionCharts.js"></SCRIPT>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+</HEAD>
+
+<script>
+
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+
+
+function graph(){
+
+	var folios="";
+	var tipo="";
+	var folio_ret="";
+	
+	 
+	
+	var tbl= parent.document.getElementById('tabMedidas');
+	espesor = Math.ceil(parent.formulario.txtEspesor.value);
+	
+//
+//				if(tbl.rows[i].children[0].children[1]&&tbl.rows[i].children[0].children[1].innerText 
+// == folio&&formulario.txt_seleccion.value == "C"){
+//				    index = i;
+//					break;
+//				}else if (tbl.rows[i].children[0].children[1]&&tbl.rows[i].children[0].children[2].innerText
+// == folio&&formulario.txt_seleccion.value == "U"){
+//				    index = i;
+//					break;					
+//				}
+
+	for(var i = 3; i < tbl.rows.length; i++){
+	
+				if(tbl.rows[i].children[0].children[1]){
+				    
+					tipo = tbl.rows[i].children[0].children[3].innerText;
+					
+					if(tipo=='CAR')
+						folios = folios + tbl.rows[i].children[0].children[2].innerText; 
+					else
+						folio_ret = tbl.rows[i].children[0].children[2].innerText;
+							
+					if(tbl.rows[i+1]&&tbl.rows[i+1].children[0].children[3].innerText=='CAR')
+						folios = folios + ",";	
+											
+				}
+	}//end for
+
+	
+	
+	url = "xml/Graphics.asp?RECURSO=grEspesor2%26FAENA=" + getEmpresa();
+	url += "%26FECHA_INST=" + getParametro("FECHA_INST");
+	url += "%26EQUIPO=" + getParametro("EQUIPO");
+	url += "%26ESPESOR_SEG=" + getParametro("ESPESOR_SEG");
+	url += "%26FOLIOS=" + folios;
+	url += "%26FOLIO_R=" + folio_ret;
+	url += "%26CUBIERTA=" + espesor;
+	url += "%26FONDO=-" + parent.formulario.txtEspesorR.value;
+	url += "%26VTZ=" + Math.random();
+ 
+
+	url2 = "xml/Graphics.asp?RECURSO=grEspesor2&FAENA=" + getEmpresa();
+	url2 += "&FECHA_INST=" + getParametro("FECHA_INST");
+	url2 += "&EQUIPO=" + getParametro("EQUIPO");
+	url2 += "&ESPESOR_SEG=" + getParametro("ESPESOR_SEG");
+	url2 += "&FOLIOS=" + folios;
+	url2 += "&FOLIO_R=" + folio_ret;
+	url2 += "&CUBIERTA=" + espesor;
+	url2 += "&FONDO=-" + parent.formulario.txtEspesorR.value;
+	url2 += "&VTZ=" + Math.random();
+	
+	
+		//alert(url);
+	window.open(url2);
+	var chart = new FusionCharts("Chart/MSLine.swf", "ChartId", "1010", "280", "0", "1");
+	chart.setDataURL(url);		   
+	chart.render("chartdiv");
+									
+	   
+}
+		
+
+function a_print(){
+	alert('print');
+}
+function diasProyec(){
+
+var fechaCambio = formulario.txtFechaUltCambio.value;
+var dFechaCambio = new Date(fechaCambio.substr(6,4), 
+						  fechaCambio.substr(3,2)-1,
+						  fechaCambio.substr(0,2));
+					  
+var fechaProyec = formulario.txtFechaProyec.value;
+var dFechaProyec = new Date(fechaProyec.substr(6,4), 
+					  fechaProyec.substr(3,2)-1,
+					  fechaProyec.substr(0,2));
+					  
+formulario.txtDiasProyectados.value = Math.round((dFechaProyec.getTime()-dFechaCambio.getTime())/(24*1000*60*60));				  	
+actualizar();
+				  
+}
+
+function actualizar(){
+
+var tbl= document.getElementById('tabMedidas');
+
+espesor = Math.ceil(formulario.txtEspesor.value);
+espesor_r = Math.ceil(formulario.txtEspesorR.value);
+ncols = tbl.rows[4].children.length;
+i=1;
+
+while (i<ncols){
+//alert(i);
+if (tbl.rows[3].children[i].children[0].value){
+	valor=tbl.rows[3].children[i].children[0].value;
+	tbl.rows[4].children[i].innerText = redond(espesor - valor,2);
+	desgaste = espesor - valor;
+	tbl.rows[5].children[i].innerText = redond((desgaste / tbl.rows[2].children[i].innerText)* 100,2);
+	tbl.rows[7].children[i].innerText = redond(desgaste / formulario.txtDiasOp.value * formulario.txtDiasProyectados.value,2);
+	tbl.rows[6].children[i].innerText = redond(tbl.rows[2].children[i].innerText - tbl.rows[7].children[i].innerText,2);
+	
+	if (formulario.txtTipoEquipo.value=="CORREA TRANSPORTADORA"||formulario.txtTipoEquipo.value=="ALIMENTADOR"||formulario.txtTipoEquipo.value=="TRAMO"||formulario.txtTipoEquipo.value=="CINTA"||formulario.txtTipoEquipo.value=="EMPALME"){
+		valor=tbl.rows[10].children[i].children[0].value;
+		tbl.rows[9].children[i].innerText = redond(valor-(espesor_r)*-1,2)*-1;
+		}
+	}
+i=i+1;
+}
+
+graph();
+return;
+}
+
+function Print(elementId)
+
+{
+
+	var printContent = document.getElementById(elementId);
+	
+	var windowUrl = 'about:blank';
+	
+	var uniqueName = new Date();
+	
+	var windowName = 'Print' + uniqueName.getTime();
+	
+	var printWindow = window.open(windowUrl, windowName, 'left=50000,top=50000,width=0,height=0');
+	
+	printWindow.document.write(printContent.innerHTML);
+	
+	printWindow.document.close();
+	
+	printWindow.focus();
+	
+	printWindow.print();
+	
+	printWindow.close();
+
+}
+//window.onLoad = _inicio();
+
+</script>
+<body onLoad="graph();">
+<form name="formulario">
+<table width="100%" align="center" >
+<tr>
+<td width="255" height="13" onClick="return;"><DIV ID="chartdiv" ALIGN="left"> Grafico </DIV></td>
+</tr>
+</table>
+<br>
+</form>
+</body>
+</HTML>

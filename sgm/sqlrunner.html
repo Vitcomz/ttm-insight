@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>SQL RUNNER</TITLE>
+
+<META http-equiv=Content-Type CONTENT="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="css/estiloWEB.css" type="text/css">
+
+
+
+
+
+
+</HEAD>
+<script src='js/main.js'></script>
+
+<script>
+
+function run(){
+
+ 	url = "js/archivos.asp?RECURSO=runSql";
+	url += "&SQL="+scape(document.getElementById("txtSql").value);
+	
+	window.open(url);
+}
+</script>
+<BODY bgColor=#ffffff leftMargin=5 topMargin=0 onLoad="">
+<BR>
+<TABLE width=522 HEIGHT="112" border=0 bgColor=#880000 HEIGTH="126" cellpadding="0" cellspacing="0">
+  <TBODY>
+  <TR bgColor=#880000>
+    <TD WIDTH="516">
+    	<TEXTAREA COLS="120" ROWS="35" CLASS="normal" NAME="txtSql" id="txtSql"></TEXTAREA>
+    </TD>
+  </TR>
+  </TBODY>
+</TABLE>
+<span>INSERT INTO FAENAS_USUARIO (ID_FAENA, USUARIO)
+VALUES (35,'JRAMOS')</span></br>
+SELECT * FROM information_schema.tables</br>
+select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='BONOS'</br>
+<INPUT TYPE="BUTTON" CLASS="botonBlanco" VALUE="Run" onClick="run();">
+
+</BODY>
+</HTML>
+
+  

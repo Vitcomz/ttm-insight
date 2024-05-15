@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>ARCHIVOS BITACORA</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlDoc></xml>
+        <xml id=xmlImages></xml>
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE></HEAD>
+
+<SCRIPT>
+var divBox = new Object();
+var equipo = new Object();
+var id = new Object();
+var functionName;
+
+function mostrarVentana(_id, _equipo, _divBox, _function){
+
+if (!_id.value){
+		alert("Guardar Bitacora Antes de continuar.");
+		return;
+		}
+		
+if (!_equipo.value){
+		alert("Ingrese Equipo.");
+		return;
+		}
+		
+		
+  equipo = _equipo;
+  id = _id;
+  divBox = _divBox;
+  functionName = _function
+  with (divBox.style){visibility = "visible";} 
+  formulario.txtID.value = _id.value;
+  formulario.txtEquipo.value = _equipo.value;
+  listArchivos();
+
+}
+
+function getHorometroEquipo(Equipo){
+
+xmlDoc.async =false;
+
+var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/equipos.asp?RECURSO=GetEquipo";
+		url += "&CODIGO=" + Equipo;
+    var res =xmlDso.load(url);
+    var tree = xmlDso.documentElement;	
+	if (tree.childNodes.length>0){
+		var node = tree.childNodes.item(0); 
+		formulario.TxtHorometro.value = getChildNodeValue(node,"HOROMETRO_PADRE");
+		}
+	else
+		alert("El codigo de equipo no existe.");
+}
+  
+
+function GuardarHorometro(){
+
+	
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=UltimoValorHorometro";
+		url += "&HOROMETRO=" + 	formulario.TxtHorometro.value;
+		url += "&COD_EQUIPO=" + 	formulario.TxtEquipo.value;
+	   xmlestado = xmlDso.load(url);		
+	 Valor = formulario.TxtValor.value;
+	 Fecha = formulario.TxtFecha.value.substr(0,10)
+	  if (xmlestado)
+			{
+			if (xmlDso.documentElement.childNodes.length>0){
+		   	        var node = xmlDso.documentElement.childNodes.item(0);
+					   fechaAnt = getChildNodeValue(node,"FECHA");
+		   			   valorAnt = getChildNodeValue(node,"VALOR");
+					   
+					   	//if (parseFloat(Valor) < parseFloat(valorAnt)){
+					   	//	alert('Lectura incorrecta, ultimo valor ' + valorAnt);
+						//	formulario.TxtHorometro.value ="";
+						//	return;}
+							
+					 //  if (obtenerPeriodo(Fecha)<=obtenerPeriodo(fechaAnt)){
+					   //		alert('Error, lectura con fecha ' + fechaAnt
+						//		+ ' para ' + formulario.TxtHorometro.value + ' grupo '
+						//		 + formulario.TxtGrupo.value + 
+						//			' Fecha Ingresada :' + Fecha);
+						//			formulario.TxtHorometro.value ="";
+						//		parent.indHorometro=true;
+						//	return;}
+							
+					   }
+			   }			
+		else
+			window.open(url);
+	
+						
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=InsertValorHorometro";
+		url += "&HOROMETRO=" + formulario.TxtHorometro.value;
+		url += "&COD_EQUIPO=" + formulario.TxtEquipo.value;
+		url += "&CODIGO=" + formulario.TxtEquipo.value;
+		url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&VALOR=" + formulario.TxtValor.value;
+		url += "&USUARIO=" + GetSession();
+		
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+		  else{
+				alert("Valor horometro " + formulario.TxtValor.value + " " + formulario.TxtHorometro.value + " ingresado.");
+				parent.indHorometro=true;
+				}
+				
+				//window.open(url);
+		
+}
+
+function aceptar(Index){
+
+//GuardarHorometro();
+divBox.style.visibility = 'hidden';
+
+}
+
+function listArchivos(){
+xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&IDENTIFICADOR="+formulario.txtID.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);}
+	else{		
+	   total_registros_lista = xmlImages.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/1);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+
+document.frameFiles.src ="archivos.html";
+}
+
+function newFile(){
+document.frameFiles.mostrarVentana(formulario.txtID,"BITACORAS",divFiles);
+}
+
+function delFile(){
+xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&IDENTIFICADOR="+formulario.txtID.value;
+		url += "&ID=" + formulario.txtId.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);
+		}
+
+listArchivos();
+}
+
+</SCRIPT>
+<BODY  onLoad="">
+
+<DIV ID="divFiles" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 50px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 30px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="frameFiles" SRC="archivos.html" frameBorder="0" WIDTH="450" SCROLLING="no" HEIGHT="220"></IFRAME>
+</DIV>
+
+<FORM NAME="formulario">
+<TABLE BORDER="0" WIDTH="100%">
+<TR CLASS="titulo">
+	<TD WIDTH="904" HEIGHT="17" ALIGN="left">Archivos Adjuntos (Fotografias)</TD>
+    <TD WIDTH="43" HEIGHT="17"  align="right">
+	<IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14"
+			onClick="divBox.style.visibility = 'hidden';"></TD>
+  </TR>
+		  </TABLE>  
+			<TABLE WIDTH="558" HEIGHT="276" CELLPADDING="0" CELLSPACING="3"  >
+			  <!--DWLayoutTable-->
+				<TR CLASS="HeaderLista">
+				  <TD WIDTH="114" HEIGHT="20">Folio Sistema</TD>
+				  <TD WIDTH="182">Equipo</TD>
+				  <TD WIDTH="248">ARCHIVOS</TD>
+              </TR>
+			    <TR BGCOLOR="#dee6eb">
+			      <TD ALIGN="center" HEIGHT="27">
+				  <INPUT NAME="TxtGrupo" TYPE="hidden" CLASS="inputT" ID="TxtGrupo" SIZE="4"/>
+				  <INPUT NAME="txtID" TYPE="text" CLASS="input" SIZE="12"/></TD>
+			      <TD ALIGN="center">
+				  <INPUT NAME="txtEquipo" TYPE="text" CLASS="input"  size="35" ID="txtEquipo"/></TD>
+			      <TD ROWSPAN="3" ALIGN="center" VALIGN="top">
+                  <TABLE  border="0" CELLPADDING="0" 
+                  		cellspacing="0" DATAPAGESIZE="1" ID="tabImages" DATASRC="#xmlImages">
+			     	 <TR>
+					  <TD HEIGHT="23" VALIGN="top">
+                       <FONT CLASS="calibri">&nbsp;Vista: <SPAN ID="ID_list_fraccion_reg"></SPAN>&nbsp;</FONT>
+                   		 <A  href="javascript:irAtras('tabImages');">&lt; Anterior</A>         
+                   	   <A  href="javascript:irAdelante('tabImages');">Siguiente &gt;</A>                         </TD>
+				  	 </TR>
+  						<TR>
+							<TD WIDTH="233" HEIGHT="196"  align="center" VALIGN="top">
+                            <A DATAFLD="FILEID" TARGET="_blank">
+                   	  <IMG SRC="images/noDisponible.png"  border="1" WIDTH="180" 
+                             		align="middle" DATAFLD="FILEIMAGE"
+                                	 onerror="this.src='images/noDisponible.png';"><BR>
+           	     		 <BR><INPUT DATAFLD="ID" ID="txtId" TYPE="HIDDEN"></SPAN>
+                              <SPAN DATAFLD="NOMBRE"></SPAN></A>
+                                       <SPAN ID="ID_list_cant_reg" STYLE="visibility:hidden"></SPAN>                         </TD>
+  				</TR>
+					
+					<TR>
+                        <TD VALIGN="top">
+                          <INPUT NAME="button2" TYPE="button" CLASS="botonBlanco"  value="Nuevo Archivo" onClick="newFile();">
+                          <INPUT NAME="button3" TYPE="button" CLASS="botonBlanco"  value="Eliminar" onClick="delFile();">                        </TD>
+				    </TR>
+					<TR>
+					  <TD HEIGHT="19" VALIGN="top">&nbsp;</TD>
+				    </TR>
+			 </TABLE>             </TD>
+			    </TR>
+		        <TR BGCOLOR="#EEEEEE">
+		          <TD COLSPAN="2" ></TD>
+	          </TR>
+		        
+	          <TR BGCOLOR="#dee6eb">
+	            <TD HEIGHT="92" COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="texto" onClick="return;">
+                	Tome las fotografias en formato comprimido como jpf o gif para mas informaci&oacute;n 
+                     <A HREF="Preview/index.html" TARGET="_blank">presione aqui</A>, tambien puede adjuntar archivos en formato word, pdf o excel.</TD>
+              </TR>
+		</TABLE>
+       
+<TABLE ALIGN="center"><TR><TD>
+         <INPUT NAME="button" TYPE="button" CLASS="BotonBlanco" 
+		  	onClick="aceptar();" VALUE="Aceptar">
+            </TD></TR>
+            </TABLE>
+</FORM>  	 
+</BODY>
+</HTML>

@@ -1,0 +1,343 @@
+/* v1.0.4 */
+/* Core RS CSS file. 95% of time you shouldn't change anything here. */
+
+/* Smartphones (landscape) ----------- 
+@media only screen 
+and (min-width : 321px) {
+   .royalSlider {
+		height: 78%;
+	}	
+}
+*/
+
+/* Desktops and laptops ----------- */
+@media only screen and (min-width : 1224px) and (max-height : 1080px) {
+   .royalSlider {
+		height: 100%;
+	}
+	 
+	
+}
+
+@media only screen and (min-width : 1224px) and (max-height : 800px) {
+   .royalSlider {
+		height: 88%;
+	}
+	/*#zone_moviles1 { background-color:#C60}NARANJO*/
+	
+}
+/* Large screens ----------- */
+@media only screen and (min-width : 1824px) and (min-height : 1080px) {
+   .royalSlider {
+		height: 93.5%;
+	}
+	 
+/*	.rsOverflow {
+		height: 960px;
+	}
+*/
+	/*#zone_moviles1 { background-color:#F00}rojo*/
+
+}
+/* iPhone 4 ----------- */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) and (min-device-width : 950px) {
+   .royalSlider {
+		height: 84%;
+	}	
+	/*#zone_moviles1 { background-color:#FF0}amarillo*/
+	
+}
+/* iPhone 5 ----------- */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) and (min-device-width : 1130px) {
+   .royalSlider {
+		height: 84%;
+	}	
+	/*#zone_moviles1 { background-color:#C3F}morado*/
+
+}
+/* iPads (landscape) ----------- */
+@media (max-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+   .royalSlider {
+		height: 88%;
+	}
+	/*#zone_moviles1 { background-color:#60F}violeta*/
+
+}
+
+/* GALAXY S3 -----------OK */
+@media only screen and (-webkit-device-pixel-ratio: 2) and (min-device-width : 790px) and (min-device-width : 1200px) and (orientation : landscape)  {
+   .royalSlider {
+		height: 84%;
+	}	
+	/*#zone_moviles1 { background-color:#666}gris*/
+
+} 
+/* GALAXY 10.1 ----------- ok */
+@media (min-device-width: 1270px) and (max-device-width: 1280px) and (min-device-height: 800px) and (orientation: landscape) {
+   .royalSlider {
+		height: 87%;
+	}
+	/*#zone_moviles1 { background-color:#0FF}celeste*/
+
+} 
+/* iPhone 5 ----------- 
+@media screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2){
+   .royalSlider {
+		height: 87.5%;
+	}	
+} */
+
+
+.royalSlider {
+	width: 100%; 
+	height: 100%;
+	position:absolute;
+	direction: ltr;
+	margin:0;
+}
+
+.royalSlider > * {
+	float: left;
+}
+
+
+.rsWebkit3d .rsSlide,
+.rsWebkit3d .rsContainer,
+.rsWebkit3d .rsThumbs,
+.rsWebkit3d .rsPreloader,
+.rsWebkit3d img,
+.rsWebkit3d .rsOverflow,
+.rsWebkit3d .rsBtnCenterer,
+.rsWebkit3d .rsAbsoluteEl,
+.rsWebkit3d .rsABlock,
+.rsWebkit3d .rsLink {
+	-webkit-backface-visibility: hidden;
+}
+.rsFade.rsWebkit3d .rsSlide,
+.rsFade.rsWebkit3d img,
+.rsFade.rsWebkit3d .rsContainer {
+	-webkit-transform: none;
+}
+.rsOverflow {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	float: left;
+/*	-webkit-tap-highlight-color:rgba(0,0,0,0);
+*/}
+.rsVisibleNearbyWrap {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	overflow: hidden;
+	left: 0;
+	top: 0;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+.rsVisibleNearbyWrap .rsOverflow {
+	position: absolute;
+	left: 0;
+	top: 0;
+
+}
+.rsContainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+.rsArrow,
+.rsThumbsArrow {
+	cursor: pointer;
+}
+
+.rsThumb {
+	float: left;
+	position: relative;
+}
+
+
+.rsArrow,
+.rsNav,
+.rsThumbsArrow {
+	opacity: 1;
+	-webkit-transition:opacity 0.3s linear;
+	-moz-transition:opacity 0.3s linear;
+	-o-transition:opacity 0.3s linear;
+	transition:opacity 0.3s linear;
+}
+.rsHidden {
+	opacity: 0;
+	visibility: hidden;
+	-webkit-transition:visibility 0s linear 0.3s,opacity 0.3s linear;
+	-moz-transition:visibility 0s linear 0.3s,opacity 0.3s linear;
+	-o-transition:visibility 0s linear 0.3s,opacity 0.3s linear;
+	transition:visibility 0s linear 0.3s,opacity 0.3s linear;
+}
+
+
+.rsGCaption {
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+
+/* Fullscreen options, very important ^^ */
+.royalSlider.rsFullscreen {
+	position: fixed !important;
+	height: auto !important;
+	width: auto !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	z-index: 2147483647 !important;
+	top: 0 !important;
+	left: 0 !important;
+	bottom: 0 !important;
+	right: 0 !important;
+}
+
+.royalSlider .rsSlide.rsFakePreloader {
+	opacity: 1 !important;
+	-webkit-transition: 0s;
+	-moz-transition: 0s;
+	-o-transition:  0s;
+	transition:  0s;
+	display: none;
+}
+
+.rsSlide {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	overflow: hidden;
+	padding: 0px 0px 0px 5px;
+	height: 100%;
+	width: 100%;
+}
+
+.royalSlider.rsAutoHeight,
+.rsAutoHeight .rsSlide {
+	height: auto;
+}
+
+.rsContent {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.rsPreloader {
+	position:absolute;
+	z-index: 0;	
+}
+
+.rsNav {
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.rsNavItem {
+	-webkit-tap-highlight-color:rgba(0,0,0,0.25);
+}
+
+.rsThumbs {
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	float: left;
+	z-index: 22;
+}
+.rsTabs {
+	float: right;
+	background: none !important;
+}
+.rsTabs,
+.rsThumbs {
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+
+.rsVideoContainer {
+	/*left: 0;
+	top: 0;
+	position: absolute;*/
+	/*width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	float: left;*/
+	width: auto;
+	height: auto;
+	line-height: 0;
+	position: relative;
+}
+.rsVideoFrameHolder {
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #141414;
+	opacity: 0;
+	-webkit-transition: .3s;
+}
+.rsVideoFrameHolder.rsVideoActive {
+	opacity: 1;
+}
+.rsVideoContainer iframe,
+.rsVideoContainer video,
+.rsVideoContainer embed,
+.rsVideoContainer .rsVideoObj {
+	position: absolute;
+	z-index: 50;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+/* ios controls over video bug, shifting video */
+.rsVideoContainer.rsIOSVideo iframe,
+.rsVideoContainer.rsIOSVideo video,
+.rsVideoContainer.rsIOSVideo embed {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding-right: 44px;
+}
+
+.rsABlock {
+	left: 0;
+	top: 0;
+	position: absolute;
+	z-index: 15;
+	
+}
+
+img.rsImg {
+	max-width: none;
+}
+
+.grab-cursor {
+	cursor:url(grab.png) 8 8, move; 
+}
+
+.grabbing-cursor{ 
+	cursor:url(grabbing.png) 8 8, move;
+}
+
+.rsNoDrag {
+	cursor: auto;
+}
+
+.rsLink {
+	left:0;
+	top:0;
+	position:absolute;
+	width:100%;
+	height:100%;
+	display:block;	
+	z-index: 20;
+	background: url(blank.gif);
+}

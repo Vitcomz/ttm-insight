@@ -1,0 +1,2299 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Bitacora</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+
+
+
+
+
+
+
+</HEAD>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 10px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style3 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</STYLE>
+<xml id = xmlNew></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlImages></xml>
+<xml id = xmlDel></xml>
+
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<!--adding-->
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<!---->
+<SCRIPT type="text/javascript">
+  if (username!=null && username!="DESCONOCIDO")
+  {
+
+  }
+else 
+  {
+	  	window.close();
+  }
+<!--adding-->
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+<!---->
+
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay(); 
+  indHorometro = false;
+  //var _opener = dialogArguments;
+  var indOT;
+
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+function guardar(){
+
+
+if (getParametro("ROL")=='INVITADO'){
+					alert("No tiene privilegios suficientes para realizar esta acci�n");
+					return;
+					}
+
+if (getParametro("ROL")=='INFORMES2'){
+					alert("No tiene privilegios suficientes para realizar esta acci�n");
+					return;
+					}
+
+if (!document.getElementById("formulario").txtCodEquipo.value){
+				alert('Ingrese el equipo.');
+				return;}
+
+//alert(document.getElementById("formulario").txtEquipoPrincipal.value);
+if (!document.getElementById("formulario").txtEquipoPrincipal.value){
+				alert('Debe atribuir la inspeccion al componenete, no al equipo principal.');
+				return;}
+				
+if (document.getElementById("formulario").listFallas.value == "SEL"){
+				alert('Debe seleccionar Modo de falla.');
+				return;}
+				
+if (document.getElementById("formulario").ListCheck.value == "0"){
+				alert('Debe seleccionar Criticidad.');
+				return;}								
+				
+				
+if (document.getElementById("formulario").txtID.value)
+		updateBitacora(document.getElementById("formulario").txtID.value);
+else
+		newBitacora();
+
+}
+
+function danhos(){
+	if(!document.getElementById("formulario").txtID.value){
+//			alert("Debe guardar antes.");
+//			return;
+			document.getElementById("sendemail").disabled="disabled";
+			document.getElementById("btndelpic").disabled="disabled";
+			document.getElementById("btnnewpic").disabled="disabled";
+			document.getElementById("IFHistorial").style.display="block";
+
+	}
+			
+	document.getElementById("formulario").chkIncidente.checked=true;
+//		var url ="boxDanos.html?ID=" + document.getElementById("formulario").txtID.value ;
+//			url += "&EQUIPO=" + document.getElementById("formulario").txtEquipo.value;
+//			url += "&VTZ=" + Math.random();
+//			//showModalDialog(url,window,"status:yes;toolbar=no;menubar:no;dialogWidth:840px;dialogHeight:600px;scroll:yes");
+//		//window.open(url);
+//		
+//		document.getElementById("IFDANOS").src = url;
+//		new MooDialog.IFrame(url, {
+//			title: 'Ventana Fotografia',
+//			'class': 'MooDialog myDialog2'
+//		});	
+	
+	//frameDanos.mostrarVentana(document.getElementById("formulario").txtID,document.getElementById("formulario").txtEquipo, divDanos,'');
+
+
+}
+							  
+function inicio(){
+
+ListHoras();
+if ((hour+"").length==1) hour = '0' + hour;
+document.getElementById("formulario").ListHora.value = hour;
+var fiveMin=minute/5;		
+fiveMin=parseInt(fiveMin)*5;		
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((fiveMin+"").length==1) fiveMin ='0'+fiveMin;
+document.getElementById("formulario").ListMin.value = fiveMin;
+document.getElementById("formulario").txtFecha.value = day_month + "/" + month +"/"+ year;
+
+
+
+document.getElementById("formulario").TxtObservacion.value="";
+document.getElementById("formulario").TxtObservacion.focus();
+if (getParametro("ID")){
+		getBitacora(getParametro("ID"));
+		document.getElementById("formulario").txtID.value = getParametro("ID");
+		//return;
+		}
+			
+if (getParametro("COD_EQUIPO")){
+		document.getElementById("formulario").txtCodEquipo.value = getParametro("COD_EQUIPO");
+		document.getElementById("formulario").txtEquipo.value = getParametro("EQUIPO");
+		}
+
+if (getParametro("IND_OT")){
+					indOT = true;
+					document.getElementById("formulario").ChkIncidente.checked=true;
+					}
+					
+<!--adding-->
+		if (id_br == "IE")
+		{
+			document.getElementById("idResponsable").innerHTML = GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			document.getElementById("idResponsable").innerHTML = GetSessionMoz();
+		}
+danhos();		
+historial();
+
+//ListCheck();
+<!---->
+
+}
+
+function ListHoras(){
+
+var sHora="";
+
+var Hora = 0
+ for(var i = 0; i < 24; i++){
+	   if ((Hora+"").length==1) sHora = '0' + Hora;
+	   else	sHora = Hora;
+       opcion = new Option(sHora,sHora);
+	   document.getElementById("formulario").ListHora.options[i] = opcion; 
+	   Hora = Hora +1;
+	}
+
+var sMin ="";
+var Min=0;
+
+for(var i = 0; i < 12; i++){
+	   if ((Min+"").length==1) sMin = '0' + Min;
+	   else	sMin = Min;
+       opcion = new Option(sMin,sMin);
+	   document.getElementById("formulario").ListMin.options[i] = opcion; 
+ 	Min = Min + 5;
+	}
+	
+} 
+ 
+function newBitacora(){
+
+ /*
+ var tbl = document.getElementById('tabCheckList');
+ 
+ var lastRow = tbl.rows.length;
+ for (i=0; i<lastRow; i++){
+		if(tbl.rows[i].children[0])
+			if(tbl.rows[i].children[0].children[0].checked==false)
+								document.getElementById("formulario").chkIncidente.checked=true;
+			
+		if(tbl.rows[i].children[1])
+			if(tbl.rows[i].children[1].children[0].checked==false)
+								document.getElementById("formulario").chkIncidente.checked=true;
+			
+		if(tbl.rows[i].children[2])
+			if(tbl.rows[i].children[2].children[0].checked==false)
+								document.getElementById("formulario").chkIncidente.checked=true;
+		
+		if(tbl.rows[i].children[3])
+			if(tbl.rows[i].children[3].children[0].checked==false)
+								document.getElementById("formulario").chkIncidente.checked=true;
+		
+
+		 }
+	
+if (document.getElementById("formulario").chkIncidente.checked==true)
+	if(document.getElementById("formulario").TxtObservacion.value.length<3){
+		alert("Debe Ingresar una Observaci�n.");
+		return;
+		}
+	*/
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=NewBitacora";
+		url +="&FECHA=" + document.getElementById("formulario").txtFecha.value.substr(0,10) + 
+			 " " + document.getElementById("formulario").ListHora.value + ":" + document.getElementById("formulario").ListMin.value;
+		//url += "&TURNO=" + document.getElementById("formulario").ListTurnos.value;
+		//url += "&EJECUTOR=" + document.getElementById("formulario").listEjecutor.value; // no va
+		url += "&ULT_INSPECCION=" + document.getElementById("formulario").txtUltInspeccion.value;
+		url += "&EQUIPO=" + document.getElementById("formulario").txtCodEquipo.value;
+<!--adding-->
+		if (id_br == "IE")
+		{
+			url += "&USERNAME=" + GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			url += "&USERNAME=" + GetSessionMoz();
+		}
+<!---->
+		url += "&DESCRIPCION=" + scape(document.getElementById("formulario").TxtObservacion.value);
+		url += "&RECOMENDACION=" + scape(document.getElementById("formulario").TxtRecomendacion.value);
+		url += "&CAUSA=" + scape(document.getElementById("formulario").TxtCausa.value);
+		url += "&IND_INCIDENTE=" + document.getElementById("formulario").chkIncidente.checked;
+		url += "&IND_SOLUCION=" + document.getElementById("formulario").chkSolucion.checked;
+		url += "&FAENA=" + emp;
+		url += "&REPORT=" + document.getElementById("formulario").txtReport.value;
+		url += "&COLOR=" + document.getElementById("formulario").txtColor.value;
+		url += "&CRITICIDAD=" + document.getElementById("formulario").txtCriticidad.value;
+		url += "&FECHA_PROGRAMADA=" + document.getElementById("formulario").txtFechProg.value;
+		url += "&OT=" + document.getElementById("formulario").txtOT.value;
+		url += "&CONDICION=" + document.getElementById("formulario").listCondicion.value;
+		url += "&ESTATUS=" + document.getElementById("formulario").listStatus3.value;	
+		
+		
+		//url += "&COMBUSTIBLE=" + document.getElementById("formulario").txtCombustible.value.replace(",",".");
+		//url += "&VALOR_COMBUSTIBLE=" + document.getElementById("formulario").txtValorCombustible.value.replace(",",".");
+		//url += "&DOC_COMBUSTIBLE=" + document.getElementById("formulario").txtDocCombustible.value.replace(",",".");
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado)
+			window.open(url);	
+
+//	alert(x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue);
+//	window.open(url);
+	var x = xmlDso.getElementsByTagName("REGISTROS");
+	for (i=0; i<x.length; i++) {
+		document.getElementById("formulario").txtID.value = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+	}
+					if (id_br == "IE")
+					{
+						var xmlNew = document.getElementById("xmlNew");
+						xmlNew.async = false;
+					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+						var xmlNew = document.implementation.createDocument("", "", null);
+					}
+					var xmlDso = xmlNew.XMLDocument;
+					var url = "xml/Checklist.asp?RECURSO=NewCheckBitacora";
+					url += "&ID=" + document.getElementById("formulario").listFallas.value;
+					url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+					url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+					url += "&VTZ=" + Math.random();
+					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+					{
+								if (window.XMLHttpRequest)
+								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+								  xmlhttp=new XMLHttpRequest();
+								  }
+								else
+								  {// code for IE6, IE5
+								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+								  }
+								xmlhttp.open("GET",url,false);
+								xmlhttp.send();
+								xmlDoc=xmlhttp.responseText;
+								parser = new DOMParser();
+								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+								xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+								//alert(xmlDso);
+								//window.open(url);
+					}
+					else if (id_br == "IE")
+					{
+						xmlestado = xmlDso.load(url);
+					}
+					if (!xmlestado){
+						window.open(url);
+					}
+
+				  	mydate2 = new Date();
+				  	hour2      = mydate2.getHours();
+				  	minute2    = mydate2.getMinutes();
+				  	day_month2 = mydate2.getDate();
+				  	month2     = mydate2.getMonth()+1;
+				  	year2      = mydate2.getFullYear();    
+				  	day2       = mydate2.getDay(); 
+								
+					document.getElementById("txtFechaObs").value = day_month2 + "/" + month2 +"/"+ year2;
+					var xmlDso = xmlNew.XMLDocument;
+					var url = "xml/Bitacoras.asp?RECURSO=updateMod_Obs";
+					url += "&ID=" + document.getElementById("formulario").txtID.value;
+					url += "&ULT_MOD_OBS=" + document.getElementById("txtFechaObs").value;
+					url +="&VTZ=" + Math.random();
+			
+					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+					{
+								if (window.XMLHttpRequest)
+								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+								  xmlhttp=new XMLHttpRequest();
+								  }
+								else
+								  {// code for IE6, IE5
+								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+								  }
+								xmlhttp.open("GET",url,false);
+								xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+								xmlhttp.send();	
+								xmlDoc=xmlhttp.responseText;
+								parser = new DOMParser();
+								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+								xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+								//alert(xmlDso);
+								//window.open(url);
+					}
+					else if (id_br == "IE")
+					{
+						xmlestado = xmlDso.load(url);
+					}
+					//window.open(url);
+					if (!xmlestado){
+							window.open(url);
+					}
+
+	var urlx = window.location.href;
+	var ROL = getUrlVars()["ROL"];
+	var VTZ = getUrlVars()["VTZ"];
+	this.window.location.href = "NewBitacora.html?ID=" + document.getElementById("formulario").txtID.value + "&ROL=" + ROL + "&VTZ=" + VTZ;
+	//setTimeout("checkFallas();",400);
+	window.opener.document.getElementById("formulario").submit();
+	
+}
+
+
+function updateBitacora(ID){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	if (document.getElementById("ListCheck").value == '1'){
+		document.getElementById("txtColor").value="BAJA";
+		document.getElementById("txtCriticidad").value="33.3";
+		document.getElementById("txtColor").style.background="#3366FF";
+	}else if (document.getElementById("ListCheck").value == '2'){
+		document.getElementById("txtColor").value="MEDIA";
+		document.getElementById("txtCriticidad").value="66.7";
+		document.getElementById("txtColor").style.background="FFFF00";
+	}else if (document.getElementById("ListCheck").value == '3'){
+		document.getElementById("txtColor").value="ALTA";
+		document.getElementById("txtCriticidad").value="100";
+		document.getElementById("txtColor").style.background="FF0000";
+	}
+
+
+	var sww = 0;
+	if ((document.getElementById("TxtCausa").value != document.getElementById("TxtCausa_hidden").value || document.getElementById("TxtRecomendacion").value != document.getElementById("TxtRecomendacion_hidden").value ||  document.getElementById("TxtObservacion").value != document.getElementById("TxtObservacion_hidden").value) 
+	){
+		var sww = sww + 1;
+	}
+	
+	if (document.getElementById("listFallas").value != document.getElementById("listFallas_hidden").value || document.getElementById("ListCheck").value != document.getElementById("ListCheck_hidden").value
+	){
+		var sww = sww + 2;
+	}
+
+	mydate2 = new Date();
+	hour2      = mydate2.getHours();
+	minute2    = mydate2.getMinutes();
+	day_month2 = mydate2.getDate();
+	month2     = mydate2.getMonth()+1;
+	year2      = mydate2.getFullYear();    
+	day2       = mydate2.getDay(); 
+	if ((day_month2+"").length==1) day_month2 ='0'+day_month2;
+	if ((month2+"").length==1) month2 ='0' + month2;
+	var dates = day_month2 + "/" + month2 +"/"+ year2;
+	  
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=UpdateBitacora";
+		url += "&ID=" + ID;
+		url += "&FECHA=" + document.getElementById("formulario").txtFecha.value.substr(0,10) + " " + document.getElementById("formulario").ListHora.value + ":" + document.getElementById("formulario").ListMin.value;
+		url += "&ULT_INSPECCION=" + dates; //document.getElementById("formulario").txtUltInspeccion.value;
+		url += "&EQUIPO=" + document.getElementById("formulario").txtCodEquipo.value;
+		//url += "&TURNO=" + document.getElementById("formulario").ListTurnos.value;
+		//url += "&EJECUTOR=" + document.getElementById("formulario").listEjecutor.value; // no va
+		url += "&DESCRIPCION=" + scape(document.getElementById("formulario").TxtObservacion.value);
+		url += "&RECOMENDACION=" + scape(document.getElementById("formulario").TxtObservacion.value);
+		url += "&CAUSA=" + scape(document.getElementById("formulario").TxtCausa.value);
+		url += "&COLOR=" + document.getElementById("formulario").txtColor.value;
+		url += "&CRITICIDAD=" + document.getElementById("formulario").txtCriticidad.value.replace(",",".");
+		url += "&IND_INCIDENTE=" + document.getElementById("formulario").chkIncidente.checked;
+		url += "&IND_SOLUCION=" + document.getElementById("formulario").chkSolucion.checked;
+		url += "&REPORT=" + document.getElementById("formulario").txtReport.value;
+		url += "&SW=" + sww;
+<!--adding-->
+		if (id_br == "IE")
+		{
+			url += "&USERNAME=" + GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			url += "&USERNAME=" + GetSessionMoz();
+		}
+<!---->
+		url += "&FAENA=" + emp;
+		//url += "&COMBUSTIBLE=" + document.getElementById("formulario").txtCombustible.value.replace(",",".");
+		//url += "&VALOR_COMBUSTIBLE=" + document.getElementById("formulario").txtValorCombustible.value.replace(",",".");
+		//url += "&DOC_COMBUSTIBLE=" + document.getElementById("formulario").txtDocCombustible.value.replace(",",".");
+		url +="&VTZ=" + Math.random();
+		//window.open(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				window.open(url);
+		}else{
+				if (document.getElementById("formulario").chkSolucion.checked){
+//				<!--adding-->
+//						if (id_br == "IE")
+//						{
+//							var xmlTemp = document.getElementById("xmlTemp");
+//							xmlTemp.async = false;
+//						}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//							var xmlTemp = document.implementation.createDocument("", "", null);
+//						}
+//				<!---->
+//					var xmlDso = xmlTemp.XMLDocument;
+//					var url = "xml/historial.asp?RECURSO=newHisBit";
+//					url += "&ID=" + ID;
+//					<!--adding-->
+//					if (id_br == "IE") 
+//					{
+//						url += "&INSPECTOR=" + GetSession();
+//					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//						url += "&INSPECTOR=" + GetSessionMoz();
+//					}
+//					<!---->
+//					url += "&FECHA=" + day_month + "/" + month +"/"+ year;
+//					url += "&ESTATUS=1";
+//					url += "&VTZ=" + Math.random();					
+//					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//					{
+//								if (window.XMLHttpRequest)
+//								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//								  xmlhttp=new XMLHttpRequest();
+//								  }
+//								else
+//								  {// code for IE6, IE5
+//								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//								  }
+//								xmlhttp.open("GET",url,false);
+//								xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+//								xmlhttp.send();	
+//								xmlDoc=xmlhttp.responseText;
+//								parser = new DOMParser();
+//								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//								res = parser.parseFromString(xmlDoc, "text/xml"); 
+//								//alert(xmlDso);
+//								//window.open(url);
+//					}
+//					else if (id_br == "IE")
+//					{
+//						res = xmlDso.load(url);
+//					}
+//					
+//					if (!res)
+//						window.open(url);
+				}
+				
+
+				
+				if (document.getElementById("formulario").listFallas.value != "SEL"){
+					if (id_br == "IE")
+					{
+						var xmlNew = document.getElementById("xmlNew");
+						xmlNew.async = false;
+					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+						var xmlNew = document.implementation.createDocument("", "", null);
+					}
+//					var xmlDso = xmlDel.XMLDocument;
+//					url = "xml/Checklist.asp?RECURSO=DelCheckBitacora"
+//					url += "&ID=" + document.getElementById("formulario").txtID.value;
+//					url += "&VTZ=" + Math.random();
+//					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//					{
+//								if (window.XMLHttpRequest)
+//								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//								  xmlhttp=new XMLHttpRequest();
+//								  }
+//								else
+//								  {// code for IE6, IE5
+//								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//								  }
+//								xmlhttp.open("GET",url,false);
+//								xmlhttp.send();
+//								xmlDoc=xmlhttp.responseText;
+//								parser = new DOMParser();
+//								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//								xmlestadodelete = parser.parseFromString(xmlDoc, "text/xml"); 
+//								//alert(xmlDso);
+//								//window.open(url);
+//					}
+//					else if (id_br == "IE")
+//					{
+//						xmlestadodelete = xmlDso.load(url);
+//					}
+//					if (!xmlestadodelete){
+//						window.open(url);
+//					}
+					var xmlDso = xmlNew.XMLDocument;
+					var url = "xml/Checklist.asp?RECURSO=UpdCheckBitacora";
+					url += "&ID=" + document.getElementById("formulario").listFallas.value;
+					url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+					url += "&VALOR=" + document.getElementById("formulario").ListCheck.value;
+					url += "&VTZ=" + Math.random();
+					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+					{
+								if (window.XMLHttpRequest)
+								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+								  xmlhttp=new XMLHttpRequest();
+								  }
+								else
+								  {// code for IE6, IE5
+								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+								  }
+								xmlhttp.open("GET",url,false);
+								xmlhttp.send();
+								xmlDoc=xmlhttp.responseText;
+								parser = new DOMParser();
+								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+								xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+								//alert(xmlDso);
+								//window.open(url);
+					}
+					else if (id_br == "IE")
+					{
+						xmlestado = xmlDso.load(url);
+					}
+					//window.open(url);
+					if (!xmlestado){
+						window.open(url);
+					}
+
+				}
+					if (id_br == "IE")
+					{
+						var xmlNew = document.getElementById("xmlNew");
+						xmlNew.async = false;
+					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+						var xmlNew = document.implementation.createDocument("", "", null);
+					}
+					var xmlDso = xmlNew.XMLDocument;
+					var url = "xml/Bitacoras.asp?RECURSO=updatePlanData";
+						url += "&ID=" + ID;
+						url += "&OT=" + document.getElementById("formulario").txtOT.value;
+						url += "&REPORT=" + document.getElementById("formulario").txtReport.value;
+						url += "&FECHA_PROGRAMADA=" + document.getElementById("formulario").txtFechProg.value;
+						url += "&RECOMENDACION=" + document.getElementById("formulario").TxtRecomendacion.value;
+						url += "&CONDICION=" + document.getElementById("formulario").listCondicion.value;
+						url += "&ESTATUS=" + document.getElementById("formulario").listStatus3.value;
+						url += "&VTZ=" + Math.random();
+						if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+						{
+									if (window.XMLHttpRequest)
+									  {// code for IE7+, Firefox, Chrome, Opera, Safari
+									  xmlhttp=new XMLHttpRequest();
+									  }
+									else
+									  {// code for IE6, IE5
+									  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+									  }
+									xmlhttp.open("GET",url,false);
+									xmlhttp.send();
+									xmlDoc=xmlhttp.responseText;
+									parser = new DOMParser();
+									xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+									xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+									//alert(xmlDso);
+									//window.open(url);
+						}
+						else if (id_br == "IE")
+						{
+							xmlestado = xmlDso.load(url);
+						}
+						//window.open(url);
+						if (!xmlestado){
+							window.open(url);
+						}
+						var sw = false;
+						if (document.getElementById("TxtCausa").value != document.getElementById("TxtCausa_hidden").value || document.getElementById("TxtRecomendacion").value != document.getElementById("TxtRecomendacion_hidden").value ||  document.getElementById("TxtObservacion").value != document.getElementById("TxtObservacion_hidden").value){
+							var sw = true;
+						}
+						if (sw){
+							  	mydate2 = new Date();
+							  	hour2      = mydate2.getHours();
+							  	minute2    = mydate2.getMinutes();
+							  	day_month2 = mydate2.getDate();
+							  	month2     = mydate2.getMonth()+1;
+							  	year2      = mydate2.getFullYear();    
+							  	day2       = mydate2.getDay(); 
+								
+								document.getElementById("txtFechaObs").value = day_month2 + "/" + month2 +"/"+ year2;
+								var xmlDso = xmlTemp.XMLDocument;
+								var url = "xml/Bitacoras.asp?RECURSO=updateMod_Obs";
+								url += "&ID=" + ID;
+								url += "&ULT_MOD_OBS=" + document.getElementById("txtFechaObs").value;
+								url +="&VTZ=" + Math.random();
+						
+								if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+								{
+											if (window.XMLHttpRequest)
+											  {// code for IE7+, Firefox, Chrome, Opera, Safari
+											  xmlhttp=new XMLHttpRequest();
+											  }
+											else
+											  {// code for IE6, IE5
+											  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+											  }
+											xmlhttp.open("GET",url,false);
+											xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+											xmlhttp.send();	
+											xmlDoc=xmlhttp.responseText;
+											parser = new DOMParser();
+											xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+											xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+											//alert(xmlDso);
+											//window.open(url);
+								}
+								else if (id_br == "IE")
+								{
+									xmlestado = xmlDso.load(url);
+								}
+								//window.open(url);
+								if (!xmlestado){
+										window.open(url);
+								}
+						}
+		alert("Bitacora Actualizada.");
+		//window.opener.document.getElementById("formulario").submit();
+		window.document.location.href = window.document.location.href;
+		}
+}
+
+
+function guardarCheck(ID){
+				
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=NewCheckBitacora";
+		url += "&ID=" + ID;
+		url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+		
+
+		xmlestado = xmlDso.load(url);
+		
+		if (!xmlestado)
+				window.open(url);
+				
+}
+
+function getBitacora(ID){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlNew = document.getElementById("xmlNew");
+			xmlNew.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlNew = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=GetBitacora";
+		url +="&ID=" + ID;
+		url +="&VTZ=" + Math.random();
+
+	//window.open(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado)
+				window.open(url);
+				
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+		var context = "";
+		for (i=0; i<x.length; i++) {				
+			document.getElementById("formulario").txtCodEquipo.value =  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue;
+			document.getElementById("formulario").txtEquipo.value =  x[i].getElementsByTagName("DESC_EQUIPO")[0].childNodes[0].nodeValue;
+			document.getElementById("formulario").txtFecha.value =  x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+			if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtColor.value =  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtCriticidad.value =  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("REPORT")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtReport.value =  x[i].getElementsByTagName("REPORT")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("OT")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtOT.value =  x[i].getElementsByTagName("OT")[0].childNodes[0].nodeValue;
+			}
+			
+			if (x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtUltInspeccion.value =  x[i].getElementsByTagName("ULT_INSPECCION")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("IND_INCIDENTE")[0].childNodes[0].nodeValue == "TRUE"){
+				document.getElementById("formulario").chkIncidente.checked=true;
+			}else{
+				document.getElementById("formulario").chkIncidente.checked=false;
+			}
+			if (x[i].getElementsByTagName("IND_SOLUCION")[0].childNodes[0].nodeValue == "TRUE"){
+				document.getElementById("formulario").chkSolucion.checked=true;
+			}else{
+				document.getElementById("formulario").chkSolucion.checked=false;
+			}
+			if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+				document.getElementById("formulario").TxtObservacion.value =  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+				document.getElementById("formulario").TxtObservacion_hidden.value =  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+				document.getElementById("formulario").TxtRecomendacion.value =  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue;
+				document.getElementById("formulario").TxtRecomendacion_hidden.value =  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("CAUSA")[0].childNodes[0] != null){
+				document.getElementById("formulario").TxtCausa.value =  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue;
+				document.getElementById("formulario").TxtCausa_hidden.value =  x[i].getElementsByTagName("CAUSA")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("OT")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtOT.value =  x[i].getElementsByTagName("OT")[0].childNodes[0].nodeValue;
+			}
+			if (x[i].getElementsByTagName("ULT_MOD_OBS")[0].childNodes[0] != null){
+				document.getElementById("formulario").txtFechaObs.value =  x[i].getElementsByTagName("ULT_MOD_OBS")[0].childNodes[0].nodeValue;
+			}
+			
+		}
+
+		setTimeout("getHora();",400);
+		setTimeout("getColor();",400);
+		setTimeout("getTipoEquipo();",400);
+		setTimeout("ListCheck();",400);
+		setTimeout("checkFallas();",400);
+		setTimeout("checkPlan();",400);
+		
+}
+
+//	url += "&SUBJECT=Aviso de Inspecci�n N�: "+ document.getElementById("formulario").txtID.value + "  EQUIPO: " + document.getElementById("formulario").txtCodEquipo.value;
+//	url += "&ID="+ document.getElementById("formulario").txtID.value;
+//	url += "&FAENA="+ emp;
+//	url += "&EQUIPO="+ document.getElementById("formulario").txtCodEquipo.value;
+//	url += "&DES_EQUIPO="+ document.getElementById("formulario").txtEquipo.value;
+//	url += "&FECHA="+ document.getElementById("formulario").txtFecha.value;
+//	url += "&CRITICIDAD="+ document.getElementById("formulario").txtColor.value;
+//	url += "&P_CRITICIDAD="+ document.getElementById("formulario").txtCriticidad.value;
+//	url += "&INSPECTOR="+ document.getElementById("idResponsable").innerText;
+//	url += "&OBSERVACION="+ document.getElementById("formulario").TxtObservacion.value;
+//	url += "&RECOMENDACION="+ document.getElementById("formulario").TxtRecomendacion.value;
+//	url += "&CAUSA_R="+ document.getElementById("formulario").TxtCausa.value;
+
+
+function getColor(){
+if(document.getElementById("formulario").txtColor.value=="ALTA")
+	document.getElementById("formulario").txtColor.style.background="#FF0000";
+
+if(document.getElementById("formulario").txtColor.value=="MEDIA")
+	document.getElementById("formulario").txtColor.style.background="#FFFF00";
+
+if(document.getElementById("formulario").txtColor.value=="BAJA")
+	document.getElementById("formulario").txtColor.style.background="#3366FF";
+}
+
+
+function getTipoEquipo(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=GetTipo&CODIGO=" + document.getElementById("formulario").txtCodEquipo.value;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado)
+				window.open(url);
+		
+		var tree = xmlDso.documentElement;	
+		var node = tree.childNodes.item(0);
+		//window.open(url);
+/*	
+	var tbl = document.getElementById('tabChecklist');
+			limpiarTablaCheck('tabChecklist');*/
+			
+		if(node){
+				document.getElementById("formulario").txtCodTipoEquipo.value =  getChildNodeValue(node,"CODIGO");
+				document.getElementById("formulario").txtTipoEquipo.value =  getChildNodeValue(node,"DESCRIPCION");
+				document.getElementById("formulario").txtEquipoPrincipal.value =  getChildNodeValue(node,"EQUIPO_PADRE");
+				//mostrarCheckList();
+		}
+
+}
+
+
+function getHora(){
+//alert(document.getElementById("formulario").txtFecha.value.substr(11,2));
+document.getElementById("formulario").ListHora.value = document.getElementById("formulario").txtFecha.value.substr(11,2);  
+document.getElementById("formulario").ListMin.value =  document.getElementById("formulario").txtFecha.value.substr(14,2);
+var fech =  document.getElementById("formulario").txtFecha.value;
+document.getElementById("formulario").txtFecha.value =  fech.substr(0,10);
+}
+
+
+function mostrarCheckList(){
+
+//Equipo = document.getElementById("formulario").txtCodEquipo.value;
+
+	var tbl = document.getElementById('tabChecklist');
+		
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+		url += "&TIPO_EQUIPO=" + document.getElementById("formulario").txtCodTipoEquipo.value;
+		url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+		url +="&VTZ=" + Math.random();
+		
+    var res =xmlDso.load(url);
+	//window.open(url);
+	
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		i=0;j=1;var row = tbl.insertRow(-1);
+		while (i< tree.childNodes.length){
+                
+				if  (j==5) {
+					row = tbl.insertRow(-1);
+					j=1;
+          		 }
+				
+				var node = tree.childNodes.item(i);
+				var cell = row.insertCell(0);
+				if(getChildNodeValue("BITACORA",node)){
+						cell.innerHTML =  "<INPUT class='LitleText' type='checkbox' >"+
+										  "<span class='LitleText' >" +
+										  " " + getChildNodeValue(node,"DESCRIPCION") + "</span>"+
+										  "<INPUT  class='hidden' value='" + getChildNodeValue(node,"ID") + "' >";
+										  }
+					else{
+					cell.innerHTML =  "<INPUT class='LitleText' type='checkbox' checked=true>"+
+										"<span class='LitleText' >" +
+										" " + getChildNodeValue(node,"DESCRIPCION") + "</span>"+
+										"<INPUT  class='hidden' value='" + getChildNodeValue(node,"ID") + "' >";
+									 }
+					
+				cell.width = 150;  
+				i=i+1;j=j+1;
+				
+			}//end while
+		}//end if mq 0
+	}// end if res
+}//end function
+
+function limpiarTablaCheck(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+}
+
+function verNaves(){
+
+	
+document.FrameNaves.mostrarVentana(document.getElementById("formulario").txtNave,10,'COR',DivNaves,'inicio();');
+
+}
+
+function verPersonal(){
+if (!getParametro("ID")){
+	alert("Debe Guardar Bitacora antes.");
+	return;
+	}
+document.FramePersonal.mostrarVentana(getParametro("ID"),10,'COR',DivPersonal,'inicio();');
+
+}
+
+
+function ListPersonal(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlResponsables = document.getElementById("xmlResponsables");
+			xmlResponsables.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlResponsables = document.implementation.createDocument("", "", null);
+		}
+<!---->-
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios&ROL=SUPERVISOR";
+  var res = xmlDso.load(url);
+
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            document.getElementById("formulario").ListOpNave.options[i] = opcion;
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+				document.getElementById("formulario").ListOpGrua.options[i] = opcion;
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+				document.getElementById("formulario").ListPortanolero.options[i] = opcion;
+				 }
+    	     }
+		else
+			  window.open(url);
+
+ } 
+
+
+function guardarCheckList(){
+
+var tbl = document.getElementById('tabCheckList');
+var lastRow = tbl.rows.length;
+ 
+for (i=0; i<lastRow; i++){
+	
+		if(tbl.rows[i].children[0])
+			if(tbl.rows[i].children[0].children[0].checked==false)
+								guardarCheck(tbl.rows[i].children[0].children[2].value);
+			
+		if(tbl.rows[i].children[1])
+			if(tbl.rows[i].children[1].children[0].checked==false)
+								guardarCheck(tbl.rows[i].children[1].children[2].value);
+			
+		if(tbl.rows[i].children[2])
+			if(tbl.rows[i].children[2].children[0].checked==false)
+								guardarCheck(tbl.rows[i].children[2].children[2].value);
+		
+		if(tbl.rows[i].children[3])
+			if(tbl.rows[i].children[3].children[0].checked==false)
+								guardarCheck(tbl.rows[i].children[3].children[2].value);
+		
+
+		 }
+
+}
+
+
+
+function chkAll(){
+
+ var tbl = document.getElementById('tabCheckList');
+ var chk = document.getElementById('chckAll');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=0; i<lastRow; i++){
+	if (chk.checked){
+		if(tbl.rows[i].children[0])
+			tbl.rows[i].children[0].children[0].checked=true;
+			
+		if(tbl.rows[i].children[1])
+			tbl.rows[i].children[1].children[0].checked=true;
+			
+		if(tbl.rows[i].children[2])
+			tbl.rows[i].children[2].children[0].checked=true;
+		
+		if(tbl.rows[i].children[2])
+			tbl.rows[i].children[3].children[0].checked=true;
+		
+
+		 }
+	else{
+		if(tbl.rows[i].children[0])
+			tbl.rows[i].children[0].children[0].checked=false;
+			
+		if(tbl.rows[i].children[1])
+			tbl.rows[i].children[1].children[0].checked=false;
+			
+		if(tbl.rows[i].children[2])
+			tbl.rows[i].children[2].children[0].checked=false;
+			
+		if(tbl.rows[i].children[3])
+			tbl.rows[i].children[3].children[0].checked=false;
+		}
+	}
+	 
+} 
+
+function guardarHorometro(){
+	
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=UltimoValorHorometro";
+		url += "&HOROMETRO=MOT"; // + 	document.getElementById("formulario").TxtHorometro.value;
+		url += "&COD_EQUIPO=" + document.getElementById("formulario").txtCodEquipo.value;
+	 xmlestado = xmlDso.load(url);		
+	 Valor = document.getElementById("formulario").txtHorometroValor.value;
+	 Fecha = document.getElementById("formulario").txtFecha.value;
+	  if (xmlestado){
+			if (xmlDso.documentElement.childNodes.length>0){
+		   	        var node = xmlDso.documentElement.childNodes.item(0);
+					   fechaAnt = getChildNodeValue(node,"FECHA");
+		   			   valorAnt = getChildNodeValue(node,"VALOR");				
+					   }
+				else{
+					valorAnt = 0;
+					}
+			   }			
+		else
+			window.open(url);
+	if (Valor < valorAnt){
+						alert("Error en Kilometraje, valor anterior = " + valorAnt);
+						return;
+						}
+						
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=InsertValorHorometro";
+		url += "&HOROMETRO=MOT"; // + document.getElementById("formulario").TxtHorometro.value;
+		url += "&COD_EQUIPO=" + document.getElementById("formulario").txtCodEquipo.value;
+		url += "&CODIGO=" + document.getElementById("formulario").txtCodEquipo.value;
+		url += "&FECHA=" + Fecha;
+		url += "&VALOR=" + Valor;
+<!--adding-->
+		if (id_br == "IE")
+		{
+			url += "&USUARIO=" + GetSession();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			url += "&USUARIO=" + GetSessionMoz();
+		}
+<!---->
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+		  else{
+				alert("Kilometraje " + Valor + " " + " ingresado.");
+				//parent.indHorometro=true;
+				}
+				
+				//window.open(url);
+		
+}
+
+
+function guardarCinta(Cinta, ID){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	url = "xml/Bitacoras.asp?RECURSO=InsertCintaBitacora";
+	url += "&ID=" + ID;
+	url += "&CINTA=" + Cinta;
+	xmlestado = xmlDso.load(url);
+			
+		  if (!xmlestado)
+				window.open(url);
+		
+} 
+ 
+function verPlanificacion(){
+
+//url = "boxPlanificacion.html?vtz=" +  Math.random();
+//framePlanificacion.src= url;
+
+framePlanificacion.showWin(document.getElementById("formulario").txtID, divPlanificacion);
+
+}
+
+function enviar(){
+
+if (getParametro("ROL")=='INVITADO'){
+					alert("No tiene privilegios suficientes para realizar esta acci�n");
+					return;
+					}
+					
+		var url ="boxMails.html?ID=" + document.getElementById("formulario").txtID.value ;
+			//showModalDialog(url,window,"status:yes;toolbar=no;menubar:no;dialogWidth:840px;dialogHeight:600px;scroll:yes");
+			//window.open(url);
+		new MooDialog.IFrame(url, {
+			title: 'Ventana E-mail',
+			'class': 'MooDialog myDialog3'
+		});	
+	
+					
+//frameMail.showWin(document.getElementById("formulario").txtID,document.getElementById("divMail"));
+//return false;
+}
+
+
+function enviarAviso(){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlResponsables = document.getElementById("xmlResponsables");
+			xmlResponsables.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlResponsables = document.implementation.createDocument("", "", null);
+		}
+<!---->
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "xml/Mail.asp?RECURSO=destBitacora";
+  	  url += "&FAENA=" + emp;
+	//window.open(url);
+  var res = xmlDso.load(url);
+
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    sendMail(getChildNodeValue(node,"MAIL"), getChildNodeValue(node,"NOMBRE"));
+				 }
+    	     }
+		else
+			  window.open(url);
+			  
+			  
+}
+
+function sendMail(_to){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	var _fotos = new Array();
+	 
+ 
+ 	url = "xml/Mail.asp?RECURSO=NewMailBitacora";
+	url += "&FROM=info@ttminsight.cl";
+	url += "&TO=" + _to; 
+	url += "&SUBJECT=Aviso de Inspecci�n N�: "+ document.getElementById("formulario").txtID.value + "  EQUIPO: " + document.getElementById("formulario").txtCodEquipo.value;
+	url += "&ID="+ document.getElementById("formulario").txtID.value;
+	url += "&FAENA="+ emp;
+	url += "&EQUIPO="+ document.getElementById("formulario").txtCodEquipo.value;
+	url += "&DES_EQUIPO="+ document.getElementById("formulario").txtEquipo.value;
+	url += "&FECHA="+ document.getElementById("formulario").txtFecha.value;
+	url += "&CRITICIDAD="+ document.getElementById("formulario").txtColor.value;
+	url += "&P_CRITICIDAD="+ document.getElementById("formulario").txtCriticidad.value;
+	url += "&INSPECTOR="+ document.getElementById("idResponsable").innerText;
+	url += "&OBSERVACION="+ document.getElementById("formulario").TxtObservacion.value;
+	url += "&RECOMENDACION="+ document.getElementById("formulario").TxtRecomendacion.value;
+	url += "&CAUSA_R="+ document.getElementById("formulario").TxtCausa.value;
+	
+	
+	 
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}	
+	    //var res =xmlDso.load(url);
+		
+		if(xmlestado){
+		 	alert("Aviso enviado por Mail a  " + _to );
+			}
+		 else
+		 		window.open(url);
+}
+
+
+
+function getArchivos(){
+
+var fotos = new Array();
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlImages = document.getElementById("xmlImages");
+			xmlImages.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlImages = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&IDENTIFICADOR="+document.getElementById("formulario").txtID.value;
+		xmlestado = xmlImages.load(url);
+	//window.open(url);
+	 if (xmlestado){
+		
+	       
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+			  var node = tree.childNodes.item(i);
+    	       fotos[i]=getChildNodeValue(node,"FILEIMAGE");
+			 }
+			 
+			 return fotos;
+		}
+	
+fotos[0] = "SIN ARCHIVOS ADJUNTOS.";
+return fotos;
+
+}
+
+function sendMail_(_to, _nombre){
+
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	var xmlDso = xmlTemp.XMLDocument;
+	 
+	 //alert(_to + " " + _nombre); 
+	 //return;
+	 
+ 	url = "xml/Mail.asp?RECURSO=NewMail";
+	url += "&FROM=info@ttminsight.cl";
+	url += "&TO=" + _to; 
+	url += "&SUBJECT=Aviso de Inspecci�n N�: "+ document.getElementById("formulario").txtID.value + "  EQUIPO: " + document.getElementById("formulario").txtCodEquipo.value;
+	url += "&BODY="
+	url += "Estimado, " + _nombre+ " </br>";
+	url += "Le informamos que se ha registrado una nueva inspecci�n en TTMInsight.</br> ";
+	url += "<br><br>";
+	url += "FAENA :<strong>" + emp + "</strong><BR>";
+	url += "EQUIPO: <strong>" + document.getElementById("formulario").txtCodEquipo.value + " " + document.getElementById("formulario").txtEquipo.value + "</strong><BR>";
+	url += "FECHA INSPECCI�N: <strong>" + document.getElementById("formulario").txtFecha.value + "</strong><BR><BR>";
+	url += "<strong>CRITICIDAD: " + document.getElementById("formulario").txtColor.value +  " " + document.getElementById("formulario").txtCriticidad.value + " %";
+	url += "INSPECTOR: " + document.getElementById('idResponsable').innerText + "</strong><BR><BR>";
+	url += "OBSERVACI�N:<strong> " + document.getElementById("formulario").TxtObservacion.value + "</strong><BR><BR><BR>"
+	url += "RECOMENDACION:<strong> " + document.getElementById("formulario").TxtRecomendacion.value + "</strong><BR><BR><BR>"
+	url += "CAUSA RAIZ:<strong> " + document.getElementById("formulario").TxtCausa.value + "</strong><BR><BR><BR>"
+	url += "Ud. podra visualizar mas detalles en el modulo de Bitacoras as� lo desea.<BR><BR>"
+	url += "<a target='_blank' href='http://www.ttminsight.cl/loginSGM.html'>http://www.ttminsight.cl</a><BR>";
+	url += "<BR><BR>"
+	url += "Atte. <BR><BR>Ingenieria en Mantenimiento<BR>"
+	url += "TTMChile S.A.<BR>" 
+	url += "Fono 02-6805900<BR>" 
+	url += "</body></html> "
+	 
+	    var res =xmlDso.load(url);
+		
+		if(res){
+		 	alert("Aviso enviado por Mail a Don " + _nombre + " " + _to );
+			}
+		 else
+		 		window.open(url);
+}
+
+function historial(){
+
+//frameHistorial.showWin(document.getElementById("formulario").txtID, divHistorial);
+		var url ="boxHistorialv2.html?ID=" + document.getElementById("formulario").txtID.value ;
+			//showModalDialog(url,window,"status:yes;toolbar=no;menubar:no;dialogWidth:840px;dialogHeight:600px;scroll:yes");
+			//window.open(url);
+		 document.getElementById("IFHistorial").src = url;
+		
+//		new MooDialog.IFrame(url, {
+//			title: 'Ventana Historial',
+//			'class': 'MooDialog myDialog4'
+//		});	
+	
+
+}
+function Criticidad(){
+
+//FrameCriticidad.mostrarVentana(txtID,txtCodTipoEquipo,divCriticidad);
+		var url ="Criticidad.html?ID=" + document.getElementById("formulario").txtID.value ;
+			url += "&CODTIPOEQUIPO=" + document.getElementById("formulario").txtCodTipoEquipo.value;
+			//showModalDialog(url,window,"status:yes;toolbar=no;menubar:no;dialogWidth:840px;dialogHeight:600px;scroll:yes");
+			//window.open(url);
+		var dialog = new MooDialog.IFrame(url, {
+			title: 'Ventana Criticidad',
+			'class': 'MooDialog myDialog5'
+		});	
+	
+
+}
+
+function Equipos(){
+document.getElementById("divEquipos").style.visibility = 'visible';
+document.getElementById('frameEquipos').contentWindow.mostrarVentana(document.getElementById("formulario").txtCodEquipo, document.getElementById("formulario").txtEquipo, document.getElementById('divEquipos'),'getTipoEquipo();');
+//frameEquipos.mostrarVentana(txtCodEquipo, txtEquipo, divEquipos,'getTipoEquipo();');
+
+
+//		var url ="ListEquiposPadres.html?CodEquipo=" + document.getElementById("formulario").txtCodEquipo.value ;
+//			url += "&Equipo=" + document.getElementById("formulario").txtEquipo.value;
+//			url += "&TipoEquipo=" + getTipoEquipo();
+//		var dialog = new MooDialog.IFrame(url, {
+//			title: 'Ventana Equipo',
+//			'class': 'MooDialog myDialog6'
+//		});	
+	
+
+}
+
+
+function ListCheck(){
+<!--adding-->
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+<!---->
+	  var xmlDso = xmlTemp.XMLDocument;
+	  var url = "xml/Checklist.asp?RECURSO=ListCheckDesc";
+	  	  url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+		  url += "&TIPO_EQUIPO=" + document.getElementById("formulario").txtTipoEquipo.value;
+		  url += "&VTZ=" + Math.random();
+		//alert(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"SEL");
+				if (opcion.value == "SEL") opcion.selected = true;
+	            document.getElementById("formulario").listFallas.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"ID"));
+	            document.getElementById("formulario").listFallas.options[i] = opcion;
+ 			 }
+    	}
+		else
+			  window.open(url);
+			
+	
+ } 
+ function checkFallas() {
+	 	if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+
+ 		var selectitems = document.getElementById("listFallas");
+		var items = selectitems.getElementsByTagName("option");
+		if (items.length > 1){
+			var xmlDso = xmlTemp.XMLDocument;
+			var url = "xml/Checklist.asp?RECURSO=ListCheck";
+			url += "&TIPO_EQUIPO=" + document.getElementById("formulario").txtCodTipoEquipo.value;
+			url += "&FOLIO=" + document.getElementById("formulario").txtID.value;
+			url += "&VTZ=" + Math.random();
+			
+			if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+						if (window.XMLHttpRequest)
+						  {// code for IE7+, Firefox, Chrome, Opera, Safari
+						  xmlhttp=new XMLHttpRequest();
+						  }
+						else
+						  {// code for IE6, IE5
+						  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						  }
+						xmlhttp.open("GET",url,false);
+						xmlhttp.send();
+						xmlDoc=xmlhttp.responseText;
+						parser = new DOMParser();
+						xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+						res = parser.parseFromString(xmlDoc, "text/xml"); 
+						//alert(xmlDso);
+						//window.open(url);
+			}
+			else if (id_br == "IE")
+			{
+				res = xmlDso.load(url);
+			}
+			//window.open(url);
+		
+		    if (res){
+				  	var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+							document.getElementById('listFallas').value  = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+							document.getElementById('ListCheck').value  = x[i].getElementsByTagName("VALOR")[0].childNodes[0].nodeValue;
+							document.getElementById('listFallas_hidden').value  = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+							document.getElementById('ListCheck_hidden').value  = x[i].getElementsByTagName("VALOR")[0].childNodes[0].nodeValue;
+							
+					}
+		    }
+		}
+ }
+
+ function checkPlan() {
+	 	if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+	 
+			var xmlDso = xmlTemp.XMLDocument;
+			var url = "xml/Bitacoras.asp?RECURSO=getPlanData";
+			url += "&ID=" + document.getElementById("formulario").txtID.value;
+			url += "&VTZ=" + Math.random();
+			if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+						if (window.XMLHttpRequest)
+						  {// code for IE7+, Firefox, Chrome, Opera, Safari
+						  xmlhttp=new XMLHttpRequest();
+						  }
+						else
+						  {// code for IE6, IE5
+						  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						  }
+						xmlhttp.open("GET",url,false);
+						xmlhttp.send();
+						xmlDoc=xmlhttp.responseText;
+						parser = new DOMParser();
+						xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+						res = parser.parseFromString(xmlDoc, "text/xml"); 
+						//alert(xmlDso);
+						//window.open(url);
+			}
+			else if (id_br == "IE")
+			{
+				res = xmlDso.load(url);
+			}
+			//window.open(url);
+		    if (res){
+				  	var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+						if (x[i].getElementsByTagName("STATUS")[0].childNodes[0] != null){
+							document.getElementById('listStatus3').value  = x[i].getElementsByTagName("STATUS")[0].childNodes[0].nodeValue;
+						}
+						if (x[i].getElementsByTagName("CONDICION")[0].childNodes[0] != null){
+							document.getElementById('listCondicion').value  = x[i].getElementsByTagName("CONDICION")[0].childNodes[0].nodeValue;
+						}
+						if (x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0] != null){
+							document.getElementById('txtFechProg').value  = x[i].getElementsByTagName("FECHA_PROGRAMADA")[0].childNodes[0].nodeValue;
+						}
+					}
+		    }
+ }
+
+ 
+ function checkImage(src) {
+	  var img = new Image();
+	  img.src = src;
+	  img.onload = function() {
+			alert('T')
+			return true
+	  };
+	  img.onerror = function() {
+			alert('F')
+			return false
+	  };
+}
+
+function newFile(){
+
+if (getParametro("ROL")=='INFORMES2'){
+					alert("No tiene privilegios suficientes para realizar esta acci�n");
+					return;
+					}
+
+		var url ="archivos.html?IDx=" + document.getElementById("formulario").txtID.value ;
+			url += "&FAMx=BITACORAS" 
+			url += "&VTZ=" + Math.random();
+
+		var scr = new MooDialog.IFrame(url, {
+			title: 'Ventana Archivos',
+			'class': 'MooDialog myDialog3'
+		});	
+		//scr.close();
+	//document.frameFiles.mostrarVentana(document.getElementById("formulario_danos").txtID,"BITACORAS",document.getElementById("divFiles"));
+}
+
+function closeFile(r,d){
+		alert('closing');
+		slides2.push(r,d, r, "_new", "top=200, left=300, width=700, height=500");
+//		document.getElementsByClassName("a").click();
+		//this.close();
+}
+
+function fill(dat){
+		document.getElementById("idpic").value = dat;
+}
+
+
+
+function delFile(){
+
+if (getParametro("ROL")=='INFORMES2'){
+					alert("No tiene privilegios suficientes para realizar esta acci�n");
+					return;
+					}
+
+
+//	alert(document.getElementById("idpic").value);
+	var imgvar = "theimg" + (document.getElementById("idpic").value - 1) + "_0";
+	var idfile = document.getElementById("file").innerHTML;
+//	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//			alert(document.getElementById("file").innerHTML);
+//			var imgone = document.getElementById(imgvar).src.split("%5C");
+//			var leng = document.getElementById(imgvar).src.split("%5C").length;
+//			var obj = 1;
+//	}else if (id_br == "IE"){
+//			var imgone = document.getElementById(imgvar).src.split("/");
+//			var leng = document.getElementById(imgvar).src.split("/").length;
+//			if (imgone[5] == "noDisponible.png"){
+//				var obj = 6;
+//			}else{
+//				var obj = 1;
+//			}
+//			//alert(document.getElementById(imgvar).src.split("/").length);
+//	}
+////	alert(document.getElementById(imgvar).src.split("%5C").length);
+//	if (leng == obj){
+//		alert("Imagen no permitido a eliminar")
+//		return false;
+//	}else{
+	if (idfile != ""){
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//			var img_ar = imgone[1].split(".");
+//		}else if (id_br == "IE"){
+//			var img_ar = imgone[5].split(".");
+//		}
+			//alert(img_ar[0]);
+		<!--adding-->
+				if (id_br == "IE")
+				{
+					var xmlTemp = document.getElementById("xmlTemp");
+					xmlTemp.async = false;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					var xmlTemp = document.implementation.createDocument("", "", null);
+				}
+		<!---->
+		
+			var xmlDso = xmlTemp.XMLDocument;
+			var url = "xml/archivos.asp?RECURSO=delFile";
+				url += "&FAMILIA=BITACORAS"; 
+				url += "&IDENTIFICADOR="+document.getElementById("formulario").txtID.value;
+				url += "&ID=" + idfile;//img_ar[0];
+				//alert(url);
+		<!--adding-->
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+				{
+							if (window.XMLHttpRequest)
+							  {// code for IE7+, Firefox, Chrome, Opera, Safari
+							  xmlhttp=new XMLHttpRequest();
+							  }
+							else
+							  {// code for IE6, IE5
+							  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+							  }
+							xmlhttp.open("GET",url,false);
+							xmlhttp.send();
+							xmlDoc=xmlhttp.responseText;
+							parser = new DOMParser();
+							xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+							res = parser.parseFromString(xmlDoc, "text/xml"); 
+							//alert(xmlDso);
+							//window.open(url);
+				}
+				else if (id_br == "IE")
+				{
+					res = xmlDso.load(url);
+				}
+		<!---->
+			//window.open(url);
+			if(!res){
+					window.open(url);
+			}else{
+				alert("Archivo Eliminado");
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					location.reload(true);
+				}else if(id_br == "IE"){
+//					window.opener.document.editBitacora(document.getElementById("formulario").txtID.value);
+					window.document.location.href = window.document.location.href;
+					 //window.self.location.reload(true);
+					//window.dialogArguments.document.history.go(0);
+					//window.close(); 
+				}
+			}
+		//listArchivos();
+	}
+}
+
+function FirPict(){
+	var imgvar = "theimg" + (document.getElementById("idpic").value - 1) + "_0";
+	var idfile = document.getElementById("file").innerHTML;
+	if (idfile != ""){
+				if (id_br == "IE")
+				{
+					var xmlTemp = document.getElementById("xmlTemp");
+					xmlTemp.async = false;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					var xmlTemp = document.implementation.createDocument("", "", null);
+				}
+		
+			var xmlDso = xmlTemp.XMLDocument;
+			var url = "xml/archivos.asp?RECURSO=MarcFile";
+				url += "&FAMILIA=BITACORAS"; 
+				url += "&IDENTIFICADOR="+document.getElementById("formulario").txtID.value;
+				url += "&ID=" + idfile;//img_ar[0];
+				//alert(url);
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+				{
+							if (window.XMLHttpRequest)
+							  {// code for IE7+, Firefox, Chrome, Opera, Safari
+							  xmlhttp=new XMLHttpRequest();
+							  }
+							else
+							  {// code for IE6, IE5
+							  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+							  }
+							xmlhttp.open("GET",url,false);
+							xmlhttp.send();
+							xmlDoc=xmlhttp.responseText;
+							parser = new DOMParser();
+							xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+							res = parser.parseFromString(xmlDoc, "text/xml"); 
+							//alert(xmlDso);
+							//window.open(url);
+				}
+				else if (id_br == "IE")
+				{
+					res = xmlDso.load(url);
+				}
+			//window.open(url);
+			if(!res){
+					window.open(url);
+				}
+			else{
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					location.reload(true);
+					}
+				else if(id_br == "IE"){
+					window.document.location.href = window.document.location.href;
+					}
+				}
+	}
+}
+
+function ListCriticidad(){
+	if (document.getElementById("ListCheck").value == '1'){
+		document.getElementById("txtColor").value="BAJA";
+		document.getElementById("txtCriticidad").value="33.3";
+		document.getElementById("txtColor").style.background="#3366FF";
+	}else if (document.getElementById("ListCheck").value == '2'){
+		document.getElementById("txtColor").value="MEDIA";
+		document.getElementById("txtCriticidad").value="66.7";
+		document.getElementById("txtColor").style.background="#FFFF00";
+	}else if (document.getElementById("ListCheck").value == '3'){
+		document.getElementById("txtColor").value="ALTA";
+		document.getElementById("txtCriticidad").value="100";
+		document.getElementById("txtColor").style.background="#FF0000";
+	}
+}
+
+</SCRIPT>
+<link  href="images/MooDialog.css" rel="stylesheet">
+<style>
+.myDialog2 {
+	BORDER-RIGHT: #dfdfdf 1px ridge; 
+	BORDER-TOP: #dfdfdf 1px ridge; 
+	Z-INDEX: 1450; 
+	LEFT: 300px; ; 
+	BORDER-LEFT: #dfdfdf 1px ridge; 
+	BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; 
+	TOP: 230px;
+	width: 580px;
+	height: 380px;
+
+}
+
+.myDialog2 iframe {
+	width: 580px;
+	height: 380px;
+}
+
+.myDialog3 {
+	BORDER-RIGHT: #dfdfdf 1px ridge; 
+	BORDER-TOP: #dfdfdf 1px ridge; 
+	Z-INDEX: 1451; 
+	LEFT: 300px; ; 
+	BORDER-LEFT: #dfdfdf 1px ridge; 
+	BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; 
+	TOP: 230px;
+	width: 500px;
+	height: 230px;
+
+}
+
+.myDialog3 iframe {
+	width: 500px;
+	height: 230px;
+}
+
+
+.myDialog4 {
+	BORDER-RIGHT: #dfdfdf 1px ridge; 
+	BORDER-TOP: #dfdfdf 1px ridge; 
+	Z-INDEX: 1046; 
+	LEFT: 300px; ; 
+	BORDER-LEFT: #dfdfdf 1px ridge; 
+	BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; 
+	TOP: 230px;
+	width: 460px;
+	height: 375px;
+
+}
+
+.myDialog4 iframe {
+	width: 460px;
+	height: 375px;
+}
+.myDialog5 {
+	BORDER-RIGHT: #dfdfdf 1px ridge; 
+	BORDER-TOP: #dfdfdf 1px ridge; 
+	Z-INDEX: 1047; 
+	LEFT: 300px; ; 
+	BORDER-LEFT: #dfdfdf 1px ridge; 
+	BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; 
+	TOP: 230px;
+	width: 230px;
+	height: 375px;
+
+}
+
+.myDialog5 iframe {
+	width: 230px;
+	height: 375px;
+}
+</style>
+<script src="Scripts/mootools-core.js"></script>
+<script src="Scripts/Overlay.js"></script>
+<script src="Scripts/MooDialog.js"></script>
+<script src="Scripts/MooDialog.IFrame.js"></script>
+
+
+<!--[if IE]>
+<style type="text/css">
+div#show3 table td, div#show4 table td {
+height:21px;
+}
+</style>
+<![endif]-->
+
+<script type="text/javascript">
+
+
+</script>
+
+<script language="JavaScript" src="Scripts/swissarmy.js" type="text/javascript"></script>
+
+<BODY onload="inicio();" topmargin="0" rightmargin="0">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+  STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+<DIV ID="DivHorometro" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px" onClick="event.cancelBubble=true">
+<IFRAME NAME="ListFrameHorometro" SRC="ListHorometro.html" frameBorder="0" WIDTH="250" SCROLLING="no" HEIGHT="180"></IFRAME>
+</DIV>
+<!--<DIV ID="divMail" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 50px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 30px; width: 520px; height: 400px;" onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameMail" SRC="boxMails.html" frameBorder="0" WIDTH="520" SCROLLING="no" HEIGHT="400"> </IFRAME>
+</DIV>
+-->
+<!--<DIV ID="divCriticidad" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 212px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 33px; height: 450px;"
+onclick="event.cancelBubble=true">
+  <IFRAME NAME="FrameCriticidad" SRC="Criticidad.html" frameBorder="0" WIDTH="250" SCROLLING="no" HEIGHT="450"></IFRAME>
+</DIV>
+--><!--<DIV ID="divDanos" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 65px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 5px"
+onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameDanos" SRC="boxDanos.html" frameBorder="0" WIDTH="580" SCROLLING="no" HEIGHT="380"></IFRAME>
+</DIV>
+-->
+<DIV ID="divEquipos" STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 55px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 49px; width: 375px; height: 290px;"	onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameEquipos" id="frameEquipos" SRC="ListEquiposPadresv2.html" FRAMEBORDER="0" WIDTH="375" SCROLLING="no" HEIGHT="290">
+  </IFRAME>
+</DIV>
+
+<!--<DIV ID="divPlanificacion" STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 74px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 60px;"
+	onclick="event.cancelBubble=true">
+  <IFRAME NAME="framePlanificacion" id="framePlanificacion" SRC="boxPlanificacion1.html" FRAMEBORDER="0" WIDTH="530" SCROLLING="no" HEIGHT="375">
+  </IFRAME>
+</DIV>-->
+
+<!--<DIV ID="divHistorial" STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 74px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 60px;"
+	onclick="event.cancelBubble=true">
+  <IFRAME NAME="frameHistorial" id="frameHistorial"  SRC="boxHistorial.html" FRAMEBORDER="0" WIDTH="530" SCROLLING="no" HEIGHT="375">
+  </IFRAME>
+</DIV>
+-->
+<FORM NAME="formulario" id="formulario">
+  <TABLE height="35">
+    <TR>
+      <TD WIDTH="211" height="29"  CLASS="titulo"> BITACORA&nbsp;N&ordm;
+           <INPUT NAME="txtID" id="txtID" TYPE="TEXT" CLASS="inputBold" SIZE="5" READONLY /></TD>
+      <TD WIDTH="262"  CLASS="titulo">Ult. Mod. Observacion :  <INPUT id="txtFechaObs" NAME="txtFechaObs" TYPE="text" CLASS="input" SIZE="15" readonly /></TD>
+      <TD WIDTH="290"   CLASS="titulo">Responsable : <SPAN ID="idResponsable" CLASS="Campo"></SPAN> </TD>
+    </TR>
+  </TABLE>
+  <TABLE WIDTH="794" HEIGHT="411" BORDER="0" cellpadding="1" cellspacing="0" CLASS="texto">
+    <!--DWLayoutTable-->
+    <TR>
+      <TD WIDTH="165"  ALIGN="left" VALIGN="top">COMPONENTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+      <TD width="308" VALIGN="top"><INPUT  class="input" ID="idCodEquipo" SIZE="16"  name="txtCodEquipo" type="text"  READONLY />
+
+        <INPUT CLASS="input" ID="idEquipo" TYPE="text" SIZE="50"
+            			 name="txtEquipo"  datafld="DESC_EQUIPO">
+        <IMG STYLE="CURSOR: hand" onclick="Equipos();"  src="images/lupa.jpg" ALIGN="top" id="btn_componentes">
+        <input name="txtCodTipoEquipo"  id="txtCodTipoEquipo" type="hidden" />
+        <input name="txtEquipoPrincipal" id="txtEquipoPrincipal"  type="hidden" />
+        <input name="txtTipoEquipo" id="txtTipoEquipo" type="hidden"/></TD>
+      <TD width="75" VALIGN="middle" >AVISO</TD>
+      <TD width="78" VALIGN="middle" ><input  type="text" class="input" size="14" 
+   			name="txtReport" id="txtReport" ></TD>
+      <TD width="37" align="center" VALIGN="middle">OT</TD>
+      <TD width="118" VALIGN="middle" ><input  type="text" class="input" size="14" 
+   			name="txtOT" id="txtOT" ></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="165" HEIGHT="22" VALIGN="middle">FECHA  <INPUT id="txtFecha" name="txtFecha" TYPE="text" CLASS="input" SIZE="10"  READONLY /></TD>
+      <TD VALIGN="middle" >HORA :
+        <SELECT NAME="ListHora" id="ListHora" CLASS="input">
+        </SELECT>
+        <SELECT NAME="ListMin"  id="ListMin" CLASS="input">
+        </SELECT>
+        Fecha Prog.:<INPUT NAME="txtFechProg" id="txtFechProg" TYPE="text" CLASS="input" SIZE="12" readonly />
+        <INPUT NAME="txtUltInspeccion" id="txtUltInspeccion" TYPE="hidden" CLASS="input" SIZE="12" readonly /></TD>
+      <TD VALIGN="middle">STATUS SAP</TD>
+      <TD colspan="3" VALIGN="middle"><SELECT id="listStatus3" NAME="listStatus3" CLASS="input">
+        <OPTION VALUE="1">ABIERTA</OPTION>
+        <OPTION VALUE="2">CERRADA</OPTION>
+        <OPTION VALUE="3">NOTIFICADA</OPTION>
+      </SELECT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="165"  HEIGHT="29">CRITICIDAD
+         <INPUT  TYPE="text"  CLASS="bordes" SIZE="6"  ALIGN="MIDDLE" NAME="txtColor" id="txtColor"  VALUE="">
+           <!--&nbsp;COMBUSTIBLE (Ltrs):
+        <INPUT  type="text" CLASS="input" SIZE="7"
+        			name="txtCombustible" DATAFLD="COMBUSTIBLE" >
+        VALOR :
+        <INPUT  type="text" CLASS="input" SIZE="12" NAME="txtValorCombustible" 
+        		 DATAFLD="VALOR_COMBUSTIBLE" >
+        &nbsp;NRO. DOC. :
+        <INPUT  type="text" CLASS="input" SIZE="12" NAME="txtDocCombustible"  datafld="DOC_COMBUSTIBLE"-->
+        </TD>
+      <TD><INPUT  TYPE="text"  CLASS="bordes" SIZE="3"  ALIGN="MIDDLE"
+   			NAME="txtCriticidad"  ID="txtCriticidad">
+        %&nbsp;&nbsp;&nbsp;&nbsp;<span class="style3">DA&Ntilde;O </span>
+        <input name="chkIncidente" id="chkIncidente"  type="checkbox" class="input" />&nbsp;&nbsp;&nbsp;
+        <strong>SOLUCIONADO</strong>
+      <input name="chkSolucion"  type="checkbox" class="input"  id="chkSolucion"/></TD>
+      <TD VALIGN="middle">CONDICION</TD>
+      <TD colspan="3" VALIGN="middle"><SELECT id="listCondicion" NAME="listCondicion" CLASS="input" DATAFLD="CONDICION">
+        <OPTION VALUE="B" style="background-color:#0033FF; color:#FFF">(B) MONITOREAR </OPTION>
+        <OPTION VALUE="C" style="background-color:#FFFF00">(C) PROGRAMADA 2 SEMANAS</OPTION>
+        <OPTION VALUE="D" style="background-color:#FF9900">(D) PROGRAMADA 1 SEMANA</OPTION>
+        <OPTION VALUE="E" style="background-color:#FF0000; color:#FFF">(E) ACCION INMEDIATA</OPTION>
+        <OPTION VALUE="P" style="background-color:#990000; color:#FFF">(P) PROGRAMADA PARADA PLANTA</OPTION>
+      </SELECT></TD>
+    </TR>
+    
+    
+    <TR>
+      <TD COLSPAN="6"><table width="100%" border="0" cellspacing="1" cellpadding="1">
+          <TR class="texto">
+            <TD width="31%"><STRONG>MODO DE FALLA</STRONG></TD>
+            <TD width="43%"><STRONG>CRITICIDAD</STRONG></TD>
+            <TD width="26%" rowspan="6" valign="top"><strong>ARCHIVOS ADJUNTOS</strong><br>
+             &nbsp;<TABLE width="100%"  border="0" align="center" CELLPADDING="0" cellspacing="0" DATAPAGESIZE="1" ID="tabImages">
+			     	 <TR>
+						 <TD align="center" VALIGN="top">
+                            <script type="text/javascript">
+								if(getParametro("ID") != ""){
+										if (id_br == "IE")
+										{
+											var xmlImages = document.getElementById("xmlImages");
+											xmlImages.async = false;
+										}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+											var xmlImages = document.implementation.createDocument("", "", null);
+										}
+									<!---->
+									//If using image buttons as controls, Set image buttons' image preload here true
+									//(use false for no preloading and for when using no image buttons as controls):
+									var preload_ctrl_images=true;
+									
+									//And configure the image buttons' images here:
+									var previmg='left.gif';
+									var stopimg='stop.gif';
+									var playimg='play.gif';
+									var nextimg='right.gif';
+									
+									var xmlDso = xmlImages.XMLDocument;
+									var url = "xml/archivos.asp?RECURSO=listArchivos";
+										url += "&FAMILIA=BITACORAS"; 
+										url += "&IDENTIFICADOR="+getParametro("ID");
+										if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+										{
+													if (window.XMLHttpRequest)
+													  {// code for IE7+, Firefox, Chrome, Opera, Safari
+													  xmlhttp=new XMLHttpRequest();
+													  }
+													else
+													  {// code for IE6, IE5
+													  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+													  }
+													xmlhttp.open("GET",url,false);
+													xmlhttp.send();
+													xmlDoc=xmlhttp.responseText;
+													parser = new DOMParser();
+													xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+													xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+													//alert(xmlDso);
+													//window.open(url);
+										}
+										else if (id_br == "IE")
+										{
+											xmlestado = xmlDso.load(url);
+										}
+									
+									//window.open(url);
+									if(!xmlestado){
+											window.open(url);}
+									else{		
+									   total_registros_lista = xmlDso.documentElement.childNodes.length;
+									   
+								//		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+								//		bloque_listado = 1;
+								//		total_bloque_listado = Math.ceil(total_registros_lista/1);
+								//		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+								//		objLabelReg.innerHTML = "1/" + total_bloque_listado;
+								//		i = 0;
+								//		document.getElementById("n_file").value = i;
+								//		document.getElementById("t_file").value = total_registros_lista-1;
+										
+										if (total_registros_lista > 0){
+													var slides2=[]; 
+													var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+													for (i=0; i<x.length; i++) {
+														//alert(checkImage(x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue));
+//														if (checkImage(x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue.toString())){
+//															alert('done');
+															slides2[i] = [x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue.toString(), x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue.toString(), x[i].getElementsByTagName("FILEID")[0].childNodes[0].nodeValue.toString(), "_new", "top=200, left=300, width=700, height=500",  x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue.toString()];
+//														}else{
+//															slides2[i] = ["images/noDisponible.png", ""];	
+//															alert('failed');
+//														}
+													}
+											//var slides2=[]; //SECOND SLIDESHOW
+											////configure the below images and descriptions to your own. 
+											//slides2[0] = ["photo6.jpg", "Crucifix"];
+											//slides2[1] = ["photo7.jpg", "Alter Boys"];
+											//slides2[2] = ["photo8.jpg", "Young Pan"];
+											//slides2[3] = ["photo9_thumb.jpg", "Mona Lisa"];
+											//optional properties for these images:
+											slides2.desc_prefix='<b>Fecha:<\/b> '; //string prefix for image descriptions display
+											slides2.controls_top=0; //use for top controls
+											slides2.counter=1; //use to show image count
+											slides2.width=170; //use to set width of widest image if dimensions vary
+											slides2.height=170; //use to set height of tallest image if dimensions vary
+											slides2.no_auto=1; //use to make show completely user operated (no play button, starts in stopped mode)
+											slides2.use_alt=1; //use for descriptions as images alt attributes
+											slides2.use_title=0; //use for descriptions as images title attributes
+											slides2.nofade=0; //use for no fade-in, fade-out effect for this show
+											slides2.border=2; //set border width for images
+											slides2.border_color='lightblue'; //set border color for images
+											slides2.no_added_linebreaks=1;
+											//slides2.onclick="window.open(this.href,this.target,'top=0, left=0, width='+screen.availWidth+', height='+screen.availHeight);return false;";
+											 new inter_slide(slides2);
+											 document.getElementById("idpic").value = 1;
+										}
+									}
+								}
+                            </script>
+						</TD>
+  				</TR>
+					
+					<TR>
+                        <TD height="40" align="center" VALIGN="middle"><INPUT id="btnnewpic" NAME="button2" TYPE="button" CLASS="botonBlanco"  value="Nuevo Archivo" onClick="newFile();"  style="width:75px">
+                          <INPUT id="btndelpic" NAME="button3" TYPE="button" CLASS="botonBlanco"  value="Eliminar" onClick="delFile();"  style="width:46px">
+                          <INPUT id="btndelpic" alt="Marca la foto principal, que saldra primera y en todos los reportes" NAME="button3" TYPE="button" CLASS="botonBlanco"  value="Arch. Princ." onClick="FirPict();"  style="width:46px"></TD>
+				    </TR>
+					</TABLE>            
+            </TD>
+          </TR>
+          <TR class="texto">
+            <TD><SELECT NAME="listFallas" id="listFallas" CLASS="input">
+            </SELECT>
+            <input type="hidden" name="listFallas_hidden" id="listFallas_hidden"></TD>
+            <TD><SELECT NAME="ListCheck" id="ListCheck" CLASS="input" onChange="ListCriticidad();">
+              <OPTION VALUE="0">Sel</OPTION>
+              <OPTION VALUE="1">1</OPTION>
+              <OPTION VALUE="2">2</OPTION>
+              <OPTION VALUE="3">3</OPTION>
+            </SELECT>
+            <input type="hidden" name="ListCheck_hidden" id="ListCheck_hidden"></TD>
+          </TR>
+        <TR class="texto">
+          <TD colspan="2"><strong>CAUSA RAIZ</strong><br><TEXTAREA NAME="TxtCausa" id="TxtCausa"  ROWS="3" COLS="80" CLASS="textArea" onKeyPress="validaKeys(this,749, event);"></TEXTAREA><TEXTAREA NAME="TxtCausa_hidden" id="TxtCausa_hidden"  ROWS="1" COLS="1" CLASS="textArea" style="visibility:hidden"></TEXTAREA></TD>
+        </TR>
+        <TR class="texto">
+          <TD colspan="2" valign="baseline"><DIV ALIGN="left"> </DIV></TD>
+          </TR>
+        <TR class="texto">
+          <TD colspan="2" VALIGN="middle"><strong>RECOMENDACIONES</strong> <TEXTAREA NAME="TxtRecomendacion" id="TxtRecomendacion"  ROWS="3" COLS="80" CLASS="textArea" onKeyPress="validaKeys(this,749, event);"></TEXTAREA><TEXTAREA NAME="TxtRecomendacion_hidden" id="TxtRecomendacion_hidden"  ROWS="1" COLS="1" CLASS="textArea" style="visibility:hidden"></TEXTAREA></TD>
+          </TR>
+        <TR class="texto" >
+          <TD colspan="2" VALIGN="top"><STRONG>OBSERVACIONES</STRONG><br>
+            <TEXTAREA NAME="TxtObservacion" id="TxtObservacion" ROWS="3" COLS="80" CLASS="textArea" onKeyPress="validaKeys(this,1500, event);"></TEXTAREA><TEXTAREA NAME="TxtObservacion_hidden" id="TxtObservacion_hidden" ROWS="1" COLS="1" CLASS="textArea" style="visibility:hidden"></TEXTAREA>
+            <!--DIV ALIGN="right"><STRONG>APROBAR TODO
+          <INPUT TYPE="checkbox"  id="chckAll" CLASS="campoNum" onClick="chkAll();" />
+          </STRONG></DIV-->
+            <!--TABLE ID="tabCheckList"  CLASS="LitleText">
+        </TABLE--></TD>
+          </TR>
+      </table></TD>
+    </TR>
+    <TR>
+         <TD colspan="6" align="left"><strong>HISTORIAL DE CAMBIOS DE CRITICIDAD</strong><br>
+<iframe id="IFHistorial" style="width:98%" height="194" frameborder="0" scrolling="no">
+  <p>Este Navegador de internet no soporta Iframes</p>
+</iframe></TD>
+    </TR>
+    <TR>
+      <TD colspan="6" align="right"><input  type="button" class="botonBlanco" onClick="guardar();" value="Guardar" style="width:48px">
+        <input id="sendemail" type="button" class="botonBlanco" onClick="enviar();" value="Enviar x Mail"  style="width:70px">
+      <input  type="button" class="botonBlanco" onClick="window.close();" value="Salir"  style="width:32px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+    </TR>
+  </TABLE>
+</FORM>
+    <link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFecha","txtFechProg"]);
+		myCalendar.setSkin("dhx_web");
+		if (total_registros_lista == 0){
+				document.getElementById("btndelpic").disabled = "disabled";
+		}
+	</script>
+</BODY>
+</HTML>

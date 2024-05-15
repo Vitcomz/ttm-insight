@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  divBox = _divBox;
+  functionName = _function
+  with (divBox.style){visibility = "visible";} 
+  verCintas();
+}
+
+function verCintas(){
+
+if (codeobj==false)
+		codeobj=0;
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	url = "xml/Bitacoras.asp?RECURSO=GetCintasBitacora"
+	url += "&ID=" + codeobj;
+	xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+				
+var tbl = document.getElementById('tabCintas1');
+var tree = xmlDso.documentElement;
+
+for(var i = 0; i < tree.childNodes.length; i++){
+		var node = tree.childNodes.item(i);
+		document.getElementById("ChkC" + getChildNodeValue(node,"CINTA")).checked = 'checked';
+
+ }
+
+}
+
+
+function guardar(id){
+
+	//alert(id);
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	url = "xml/Bitacoras.asp?RECURSO=DelCintaBitacora"
+	url += "&ID=" + id;
+	xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+				
+var tbl = document.getElementById('tabCintas1');
+var lastRow = tbl.rows.length-1;
+
+for (i=1; i<lastRow; i++){
+		if (tbl.rows[i].children[1].children[0].checked)
+		    guardarCintas(tbl.rows[i].children[0].children[0].value,id);
+
+ }//for
+
+var tbl = document.getElementById('tabCintas2');
+var lastRow = tbl.rows.length-1;
+
+for (i=1; i<lastRow; i++){
+		if (tbl.rows[i].children[1].children[0].checked)
+		    guardarCintas(tbl.rows[i].children[0].children[0].value,id);
+
+ }//for
+
+}
+  
+function Aceptar(){
+		
+	
+divBox.style.visibility = 'hidden';
+//eval("parent." + functionName);
+}
+
+function guardarCintas(Cinta, ID){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	url = "xml/Bitacoras.asp?RECURSO=InsertCintaBitacora"
+	url += "&ID=" + ID;
+	url += "&CINTA=" + Cinta;
+	xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+		
+}
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body onLoad="">
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+		<form name="formulario">		
+		<table border="0">
+						  <tr class="titulo">
+						    <td width="84" height="10" align="center">Cintas</td>
+						    <td width="200"  align="center"></td>
+						    <td width="16"  align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table> 
+		  <table border="0" width="300"><tr><td> 
+			<table width="80" align="center" cellpadding="0"
+					 cellspacing="3" class="texto" id="tabCintas1" >
+				<thead>
+				<tr class="HeaderLista" align="center">
+				  <td width="48" align="center">CINTA</td>
+				  <td width="112">&nbsp;</td>
+				</tr>
+			    </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC1" type="text" class="inputT" value="1" size="3"/></td>
+			      <td align="center"><input id="ChkC1" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC2" type="text" class="inputT" value="2" size="3"/></td>
+			      <td align="center"><input id="ChkC2" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC3" type="text" class="inputT" value="3" size="3"/></td>
+			      <td align="center"><input id="ChkC3" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC4" type="text" class="inputT" value="4" size="3"/></td>
+			      <td align="center"><input name="ChkC4" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC5" type="text" class="inputT" value="5" size="3"/></td>
+			      <td align="center"><input id="ChkC5" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC6" type="text" class="inputT" value="6" size="3"/></td>
+			      <td align="center"><input id="ChkC6" class="input" type="checkbox"/></td>
+  				</tr>
+			<tfoot>
+		        <tr bgcolor="#EEEEEE">
+		          <td height="5" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+ 			</tfoot>
+		  </table>
+		  </td>
+		  <td>
+		  	<table width="80" align="center" cellpadding="0"
+					 cellspacing="3" class="texto" id="tabCintas2" >
+				<thead>
+				<tr class="HeaderLista" align="center">
+				  <td width="48" align="center">CINTA</td>
+				  <td width="112">&nbsp;</td>
+				</tr>
+			    </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC7" type="text" class="inputT" value="7" size="3"/></td>
+			      <td align="center"><input id="ChkC7" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC8" type="text" class="inputT" value="8" size="3"/></td>
+			      <td align="center"><input id="ChkC8" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC9" type="text" class="inputT" value="9" size="3"/></td>
+			      <td align="center"><input id="ChkC9" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC10" type="text" class="inputT" value="10" size="3"/></td>
+			      <td align="center"><input id="ChkC10" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC11" type="text" class="inputT" value="11" size="3"/></td>
+			      <td align="center"><input id="ChkC11" class="input" type="checkbox"/></td>
+  				</tr>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" >
+				  <input name="TxtC12" type="text" class="inputT" value="12" size="3"/></td>
+			      <td align="center"><input id="ChkC12" class="input" type="checkbox"/></td>
+  				</tr>
+			<tfoot>
+		        <tr bgcolor="#EEEEEE">
+		          <td height="5" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+ 			</tfoot>
+		  </table>
+		 </td></tr>
+	     </table>
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="Aceptar();" value="Aceptar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

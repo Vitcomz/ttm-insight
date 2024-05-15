@@ -1,0 +1,982 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title></title>
+</head>
+  
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+
+
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+	<LINK REL="stylesheet" HREF="css/style-ttm.css" TYPE="text/css">
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+	<script type="text/javascript" language="javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="/Scripts/cookie.js"></script>
+	<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+	
+	<script type="text/javascript" src="js/main.js"></script>
+
+<script src="js/highstock.js"></script>
+<script src="js/modules/exporting.js"></script>
+
+<link href="css/jquery-ui-1.8.20.css" rel="stylesheet" type="text/css"/>
+<script src="js/jquery-ui-1.8.20.min.js"></script>
+  
+
+ 
+<style type="text/css">
+
+ 
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color:#ccc;
+}
+.style1 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.highcharts-color-0 {
+    fill: yellow;
+    stroke: yellow;
+;
+}
+
+.highcharts-color-1 {
+    fill: orange;
+    stroke: orange;
+}
+
+.highcharts-color-2 {
+    fill: red;
+    stroke: red;
+}
+
+
+-->
+</style>
+<script>
+
+var nroMesas;
+
+
+function verInforme(){
+   
+  
+  	var _equipo =formulario.selectEquipos.value;
+  	var _area =formulario.selectTipos.value;
+ 
+   	var url = "script/informes.asp?RECURSO=infPolines";
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&SECCION=" + _area;
+		url += "&EQUIPO=" + _equipo;
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	
+	//with (divWait.style){visibility = "visible";} 
+	  
+	mostrarListado();
+	
+	//frameinforme.focus();
+	
+	with (divWait.style){visibility = "visible";} 
+	
+	//gr3();
+
+}
+	
+
+
+
+function mostrarListado(){
+
+var url = "js/equipos.asp?RECURSO=getEquipo";
+	url += "&CODIGO=" + formulario.selectEquipos.value;
+	url += "&UBICACION=" + getEmpresa();
+	url += "&TIPO=IZQ";
+	url += "&VTZ=" + Math.random();
+	//window.open(url);
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			document.getElementById("idDesc").innerText = $(this).find("DESCRIPCION").text()
+									+" Nro de Estaciones " + $(this).find("MESAS").text();
+									nroMesas = $(this).find("MESAS").text();
+									
+	}), gr1();gr2();gr3();gr4();//End each
+	});//end $.get
+
+var option;
+var tbl1 = document.getElementById('tabIzq');
+var tbl2 = document.getElementById('tabCen');
+var tbl3 = document.getElementById('tabDer');
+
+
+	limpiarTabla2(tbl1);
+	limpiarTabla2(tbl2);
+	limpiarTabla2(tbl3);
+	
+var row = tbl1.insertRow(-1);
+
+var cell = row.insertCell(-1);cell.innerHTML =  "<span> </span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>MESA</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>ESTACIÓN</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span >TIPO</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>TIPO FALLA &nbsp;</span>";
+	
+var cell = row.insertCell(-1);cell.innerHTML =  "<span>INSPECCIÓN</span>";
+var cell = row.insertCell(-1);cell.innerHTML =  "<span>CAMBIO</span>";
+	row.className = "tinyTitle";	
+	
+var row = tbl2.insertRow(-1);
+var cell = row.insertCell(-1);cell.innerHTML =  "<span> </span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>MESA</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>ESTACIÓN</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span  >TIPO</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>TIPO FALLA &nbsp;</span>";
+var cell = row.insertCell(-1);cell.innerHTML =  "<span>INSPECCIÓN</span>";
+var cell = row.insertCell(-1);cell.innerHTML =  "<span>CAMBIO</span>";
+	row.className = "tinyTitle";
+												
+
+var row = tbl3.insertRow(-1);
+var cell = row.insertCell(-1);cell.innerHTML =  "<span> </span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>MESA</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>ESTACIÓN</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span  >TIPO</span>";
+var cell = row.insertCell(-1);
+	cell.innerHTML =  "<span>TIPO FALLA &nbsp;</span>";	
+	var cell = row.insertCell(-1);cell.innerHTML =  "<span>INSPECCIÓN</span>";
+var cell = row.insertCell(-1);cell.innerHTML =  "<span>CAMBIO</span>";
+	row.className = "tinyTitle";
+		
+	var url = "js/checklist.asp?RECURSO=listPolines";
+		url += "&EQUIPO=" + formulario.selectEquipos.value;
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&FAENA=" + getEmpresa();
+		url += "&TIPO=IZQ";
+		url += "&TIPO2=CAR";
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+
+			var row = tbl1.insertRow(-1);
+			var img = $(this).find("IMG_EST").text();
+			var cell = row.insertCell(-1);cell.innerHTML =  "<img src='" + img +"' border=0 />";
+			
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("MESA").text() + "</span>";
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("EST").text() + "</span>";
+					//cell.width = 50;
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("TIPO").text() + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span>" + $(this).find("FALLA").text() + "&nbsp;" +
+										$(this).find("VALOR").text()  + "</span>";
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("SECTOR").text() + "</span>";
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("USERDATE").text() + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("FECHA_COR").text() + "</span>";
+				
+					
+		})//End each
+	});//end $.get
+	
+		var url = "js/checklist.asp?RECURSO=listPolines";
+		url += "&EQUIPO=" + formulario.selectEquipos.value;
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&TIPO=CEN";
+		url += "&TIPO2=CAR";
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+				
+	 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+
+			var row = tbl2.insertRow(-1);
+			var img = $(this).find("IMG_EST").text();
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<img src='" + img +"' border=0 />";
+		
+			
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("MESA").text() + "</span>";
+				//cell.width = 50;
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("EST").text() + "</span>";
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span c >" + $(this).find("TIPO").text() + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("FALLA").text() + "&nbsp;" +
+										$(this).find("VALOR").text()  + "</span>";	
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("SECTOR").text() + "</span>";
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("USERDATE").text() + "</span>";
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("FECHA_COR").text() + "</span>";
+										 			
+		})//End each
+	});//end $.get
+	
+	var url = "js/checklist.asp?RECURSO=listPolines";
+		url += "&EQUIPO=" + formulario.selectEquipos.value;
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&TIPO=DER";
+		url += "&TIPO2=CAR";
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+	//window.open(url);
+				
+	 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+
+			var row = tbl3.insertRow(-1);
+			var img = $(this).find("IMG_EST").text();
+			var cell = row.insertCell(-1);cell.innerHTML =  "<img src='" + img +"' border=0 />";
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("MESA").text() + "</span>";
+				
+				//cell.width = 50;
+								//cell.width = 50;
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span  >" + $(this).find("EST").text() + "</span>";
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("TIPO").text() + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("FALLA").text() + "&nbsp;" +
+										$(this).find("VALOR").text()  + "</span>";	
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("SECTOR").text() + "</span>";
+
+		 	var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("USERDATE").text() + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("FECHA_COR").text() + "</span>";
+									 			
+		}), listPolinesR(); hiddenFrm();//End each
+	});//end $.get
+	
+		
+}//end function
+
+function listPolinesR(){
+
+var option;
+var tbl1 = document.getElementById('tabIzqR');
+//var tbl2 = document.getElementById('tabCenR');
+var tbl3 = document.getElementById('tabDerR');
+	
+	limpiarTabla2(tbl1);
+//	limpiarTabla2(tbl2);
+	limpiarTabla2(tbl3);
+	
+	//document.getElementById('idEquipo').innerText = formulario.selectEquipos.value;
+			
+	var url = "js/checklist.asp?RECURSO=listPolines";
+		url += "&EQUIPO=" + formulario.selectEquipos.value;
+		url += "&FAENA=" + getEmpresa();
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&TIPO=IZQ";
+		url += "&TIPO2=RET";
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+
+			var row = tbl1.insertRow(-1);
+			
+		var img = $(this).find("IMG_EST").text();
+			var id	= $(this).find("ID").text();
+			var est = $(this).find("EST").text();
+			var mat = $(this).find("MAT").text();
+			var t =$(this).find("TIPO").text();
+			
+	 
+				//cell.width = 50;
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span class='LitleText' >" + est + "</span>";
+				
+		 	var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span class='LitleText' >" + mat + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("FALLA").text() + "&nbsp;" +
+										$(this).find("VALOR").text()  + "</span>";	
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("SECTOR").text() + "</span>";
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("USERDATE").text() + "</span>";
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<img src='" + img +"'  border=0 />";		
+			 
+				
+		})//End each
+	});//end $.get
+	
+		 
+	
+	var url = "js/checklist.asp?RECURSO=listPolines";
+		url += "&EQUIPO=" + formulario.selectEquipos.value;
+		url += "&TIPO=DER";
+		url += "&TIPO2=RET";
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+				
+	 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+
+			var row = tbl3.insertRow(-1);
+			var img = $(this).find("IMG_EST").text();
+			var id	= $(this).find("ID").text();
+			var est = $(this).find("EST").text();
+			var mat = $(this).find("MAT").text();
+			var t =$(this).find("TIPO").text();
+			
+	 
+				//cell.width = 50;
+			var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span class='LitleText' >" + est + "</span>";
+				
+		 	var cell = row.insertCell(-1);
+		  		cell.innerHTML =  "<span class='LitleText' >" + mat + "</span>";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("FALLA").text() + "&nbsp;" +
+										$(this).find("VALOR").text()  + "</span>";	
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span  >" + $(this).find("SECTOR").text() + "</span>";
+
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span class='LitleText' >" + $(this).find("USERDATE").text() + "</span>";
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<img src='" + img +"'  border=0 />";		
+			 
+									 			
+		}),sFocus();//End each
+	});//end $.get
+	
+}
+
+function sendMail(_to){
+
+	var _fotos = new Array();
+	   var _area = formulario.selectTipos.value;
+	   
+ 
+ 	url = "boxMail.html";
+	url += "?UBICACION=" + getEmpresa();
+	url += "&SECCION=" + _area;
+	url += "&INFORME=POL";
+	url += "&VTZ=" + Math.random();
+		
+	 
+winCfg = "width=550px,height=550px,left=" + 80 + "px,top=" + 32 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxMail", "iframe", url , "ENVIO DE INFORME", winCfg);
+
+
+}
+
+
+
+function inicio(){
+
+
+//alert(getEmpresa());
+document.getElementById("idFaena").innerText = getEmpresa();
+document.getElementById("idFecha").innerText = _hoy();
+
+listTipos();
+ 
+
+}
+
+
+
+
+
+function getInforme(){
+
+ 	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument; 
+	var url  = "js/informes.asp?RECURSO=getInfDiario&FOLIO=" + formulario.txtFolio.value;
+	    url += "&FAENA="+getEmpresa();
+		url += "&VTZ=" + Math.random();
+    
+	var res = xmlDso.load(url);
+	var tree = xmlDso.documentElement;
+    	
+	if (!res)
+		window.open(url);
+		
+		var node = tree.childNodes.item(0);
+		
+		formulario.txtBitacoras.value = getChildNodeValue(node,"BITACORAS");
+		document.getElementById("idFecha").innerText = getChildNodeValue(node,"FECHA");
+		frameinforme.document.getElementById("idFecha").innerText = getChildNodeValue(node,"FECHA");
+		frameinforme.document.getElementById("idFaena").innerText = getEmpresa();
+		ListBitacora();
+		
+		
+}
+
+function hiddenFrm(){ with (divWait.style){visibility = "hidden";}}
+
+function _print(){
+
+	var _equipo =formulario.selectEquipos.value;
+  	var _area =formulario.selectTipos.value;
+	
+   	var url = "js/informes.asp?RECURSO=infPolines";
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&SECCION=" + _area;
+		url += "&EQUIPO=" + _equipo;
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+		//return;
+	prtContent = document.getElementById("content").innerHTML;
+	
+	//scr = "<script>function load() {  alert('evento load detectado!');   }   window.onload = load;"
+
+	var WinPrint = window.open('','','left=30,top=30,width=1100,height=550, toolbar=0,scrollbars=0,status=0');
+	WinPrint.document.write("<LINK rel='stylesheet' href='css/estiloWEB.css' type='text/css'><style>body{background-color:#ffffff;}<\/style>" +  prtContent);
+
+	WinPrint.focus();
+	WinPrint.print();
+ 	WinPrint.close();
+
+
+}
+
+
+
+function listEquipos(){
+
+   var i=0;
+   formulario.selectEquipos.length=0;
+   var _area =formulario.selectTipos.value;
+		
+   var url = "js/equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		//url += "&USUARIO="+GetSession();
+		url += "&USUARIO=JROJAS";
+		url += "&AREA=" + _area;
+		url += "&UBICACION=" + getEmpresa();
+ 		url += "&VTZ=" + Math.random();
+	//	alert(url);
+	  	
+	//window.open(url);
+					opcion = new Option("TODOS","");
+	          	formulario.selectEquipos.options[0] = opcion;
+					  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(codigo,codigo);
+				if (i==0)opcion.selected = true;
+				
+	          	formulario.selectEquipos.options[i+1] = opcion;
+				i=i+1;
+			}) //end each
+	        
+				, verInforme();
+				
+				
+		})//end $get
+		
+		
+	
+ } 
+
+  
+function listTipos(){
+
+ 
+  
+  var url = "js/equipos.asp?Recurso=explorer&CODIGO=NULL";
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+	
+	var i=0;
+						  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	
+				if (i==8)opcion.selected = true;
+				formulario.selectTipos.options[i] = opcion;
+				i=i+1;
+			}) //end each
+					,listEquipos();
+		})//end $get
+
+
+ } 
+ 
+function salir(){
+parent.document.getElementById('infPolines').close();
+}
+
+function gr1(){
+
+var options = {
+
+		chart: {renderTo: 'chart1',     type: 'scatter',    zoomType: 'xy'}, //, inverted: true
+		title: { text: 'Tipo de fallas por Carga' },
+		xAxis: { type: 'xy', title: { text: 'Cinta Transportadora' }
+			 },
+		yAxis: {  type: 'xy', title: { text: 'DER     CEN     IZQ' },
+			 
+			
+			},
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+ 			
+			var url = "js/graphics.asp?RECURSO=grPolines";
+				url += "&AREA=" + document.getElementById("selectTipos").value;
+				url += "&EQUIPO="+formulario.selectEquipos.value;
+				url += "&TIPO=CAR";
+				url += "&HIST=" + document.getElementById("idHistorial").checked;
+				url += "&FAENA=" + getEmpresa();
+				url += "&VTZ=" + Math.random();
+	 
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				// push categories
+ 
+				options.yAxis.max = 100;
+				options.yAxis.min = 00
+				// push series
+				$xml.find('series').each(function(i, series) {
+				
+					options.xAxis.max = parseInt(nroMesas);
+					options.xAxis.min = 00
+					//alert(parseInt($(series).find('largo').text()));
+					
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						//color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('point').each(function(i, point) {
+							//name = $(series).find('name').text();
+							x= parseInt( $(point).find('x').text());
+							y= parseInt( $(point).find('y').text());
+							//alert($(point).find('x').text());
+						seriesOptions.data.push( [ x, y] );
+					});
+					
+					// add it to the options
+					options.series.push(seriesOptions);
+					
+				});  //end $xml series
+
+			var chart1 = new Highcharts.Chart(options);
+					
+	  });
+}
+
+function gr2(){
+
+var options = {
+
+		chart: {renderTo: 'chart2',     type: 'scatter',    zoomType: 'xy'}, //, inverted: true
+		title: { text: 'Tipo de fallas por Retorno' },
+		xAxis: { type: 'xy', title: { text: 'Cinta Transportadora' }
+			 },
+		yAxis: {  type: 'xy', title: { text: 'DER     CEN     IZQ' },
+			 
+			
+			},
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+ 			
+			var url = "js/graphics.asp?RECURSO=grPolines";
+				url += "&AREA=" + document.getElementById("selectTipos").value;
+				url += "&EQUIPO="+formulario.selectEquipos.value;
+				url += "&TIPO=RET";
+				url += "&HIST=" + document.getElementById("idHistorial").checked;
+				url += "&FAENA=" + getEmpresa();
+				url += "&VTZ=" + Math.random();
+	 
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				// push categories
+ 
+				options.yAxis.max = 100;
+				options.yAxis.min = 00
+				// push series
+				$xml.find('series').each(function(i, series) {
+				
+					options.xAxis.max = parseInt(nroMesas);
+					options.xAxis.min = 00
+					//alert(parseInt($(series).find('largo').text()));
+					
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						//color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('point').each(function(i, point) {
+							//name = $(series).find('name').text();
+							x= parseInt( $(point).find('x').text());
+							y= parseInt( $(point).find('y').text());
+							//alert($(point).find('x').text());
+						seriesOptions.data.push( [ x, y] );
+					});
+					
+					// add it to the options
+					options.series.push(seriesOptions);
+					
+				});  //end $xml series
+
+			var chart2 = new Highcharts.Chart(options);
+					
+	  });
+}
+
+function gr3(){
+
+var options = {
+
+		chart: {renderTo: 'chart3',     type: 'scatter',    zoomType: 'xy'}, //, inverted: true
+		title: { text: 'Criticidad por Carga '  },
+		xAxis: { type: 'xy', title: { text: 'Cinta Transportadora' }
+			 },
+		yAxis: {  type: 'xy', title: { text: 'DER      CEN      IZQ' },
+			},
+		series: []
+		
+		}; //end options
+			
+		// Load the data from the XML file 
+ 			
+			var url = "js/graphics.asp?RECURSO=grPolinesCri";
+				url += "&AREA=" + document.getElementById("selectTipos").value;
+				url += "&EQUIPO="+formulario.selectEquipos.value;
+				url += "&TIPO=CAR";
+				url += "&HIST=" + document.getElementById("idHistorial").checked;
+				url += "&FAENA=" + getEmpresa();
+				url += "&VTZ=" + Math.random();
+	 
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				// push categories
+ 
+				options.yAxis.max = 100;
+				options.yAxis.min = 00
+				// push series
+				$xml.find('series').each(function(i, series) {
+				
+					options.xAxis.max = parseInt(nroMesas);
+					options.xAxis.min = 00
+					//alert(parseInt($(series).find('largo').text()));
+					
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('point').each(function(i, point) {
+							//name = $(series).find('name').text();
+							x= parseInt( $(point).find('x').text());
+							y= parseInt( $(point).find('y').text());
+							//alert($(point).find('x').text());
+						seriesOptions.data.push( [ x, y] );
+					});
+					
+					// add it to the options
+					options.series.push(seriesOptions);
+					
+				});  //end $xml series
+
+			var chart3 = new Highcharts.Chart(options);
+					
+	  });
+}
+
+function gr4(){
+
+var options = {
+
+		chart: {renderTo: 'chart4',     type: 'scatter',    zoomType: 'xy'}, //, inverted: true
+		title: { text: 'Criticidad por Retorno '  },
+		xAxis: { type: 'xy', title: { text: 'Cinta Transportadora' }
+			 },
+		yAxis: {  type: 'xy', title: { text: 'DER      CEN      IZQ' },
+			},
+		series: []
+		
+		}; //end options
+			
+		// Load the data from the XML file 
+ 			
+			var url = "js/graphics.asp?RECURSO=grPolinesCri";
+				url += "&AREA=" + document.getElementById("selectTipos").value;
+				url += "&EQUIPO="+formulario.selectEquipos.value;
+				url += "&TIPO=RET";
+				url += "&HIST=" + document.getElementById("idHistorial").checked;
+				url += "&FAENA=" + getEmpresa();
+				url += "&VTZ=" + Math.random();
+	 
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				// push categories
+ 
+				options.yAxis.max = 100;
+				options.yAxis.min = 00
+				// push series
+				$xml.find('series').each(function(i, series) {
+				
+					options.xAxis.max = parseInt(nroMesas);
+					options.xAxis.min = 00
+					//alert(parseInt($(series).find('largo').text()));
+					
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('point').each(function(i, point) {
+							//name = $(series).find('name').text();
+							x= parseInt( $(point).find('x').text());
+							y= parseInt( $(point).find('y').text());
+							//alert($(point).find('x').text());
+						seriesOptions.data.push( [ x, y] );
+					});
+					
+					// add it to the options
+					options.series.push(seriesOptions);
+					
+				});  //end $xml series
+
+			var chart4 = new Highcharts.Chart(options);
+					
+	  });
+}
+
+</script>
+
+<body  onload="inicio();">
+	<script LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></script>
+<br/>
+<br/><br/>
+<form name="formulario">
+  <div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+
+   <table width="1150" border="0" align="center" cellpadding="0" cellspacing="0"  bgcolor="#FFFFFF">
+     <!--DWLayoutTable-->
+  <tr>
+       <td width="148" height="59">&nbsp;</td>
+       <td width="114"  ><label for="select"></label>Area :
+         <select name="selectTipos" id="selectTipos" class="select" onchange="listEquipos();">
+         </select></td>
+       <td width="110">&nbsp;</td>
+       <td width="150"><label for="select2"></label>Equipo :
+         <select name="selectEquipos" id="selectTipos2" class="select" onchange="verInforme();">
+         </select></td>
+       <td width="92" align="right"><span >HISTORIAL</span></td>
+       <td width="98"><input type="checkbox" id="idHistorial"  onchange="verInforme();"/>&nbsp;</td>
+       <td width="85"><!--DWLayoutEmptyCell-->&nbsp;</td>
+       <td width="86">
+       <input type='button' value="Print" style="cursor:pointer;" onclick="_print()"  /></td>
+       <td width="157">&nbsp;</td>
+     </tr>
+   </table>
+</form>
+<div id="content">
+
+  <table width="1154" height="575"  border="0"  align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+    <!--DWLayoutTable-->
+    <tr>
+      <td height="79" colspan="5" align="left" valign="top" class="calibri" style="font-size:19px">
+        <table width="1100" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" >
+          <!--DWLayoutTable-->
+          <tr>
+            <td width="212" valign="top" align="left">FAENA:<strong><span id="idFaena"></span></strong><br />
+            FECHA EMISIÓN:<strong><span id="idFecha"></span></strong><br />          </td>
+            <td width="10" align="center">&#160;</td>
+            <td width="344" align="center" valign="top"><table height="56" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="334" height="43" align="center" valign="top"><strong> SISTEMA DE MONITOREO EQUIPOS.<br />
+                    INFORME DE POLINES<br />
+                  </strong> </td>
+                </tr>
+            </table></td>
+            <td width="11" align="center" style="font-size:16px" valign="top">&nbsp;</td>
+            <td width="222" align="center" style="font-size:16px" valign="top"><br />          </td>
+          </tr>
+              </table></td>
+      <td width="4">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="23" colspan="5" align="left" valign="top"   style="font-size:19px">
+      	 TRANSPORTADOR : &nbsp;<span id="idDesc"></span>&nbsp;&nbsp;  </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr class="calibri20">
+      <td width="8" height="19">&nbsp;</td>
+      <td colspan="4" align="center" valign="top" bgcolor="#CCCCCC"><strong>POLINES</strong></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr class="calibri20">
+      <td height="19">&nbsp;</td>
+      <td width="369" align="center" valign="top"><strong>IZQUIERDA</strong></td>
+      <td colspan="2" align="center"><strong>CENTRO</strong></td>
+      <td width="345" align="center"><strong>DERECHA</strong></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+    <td height="108">&nbsp;</td>
+	<td align="center" valign="top">
+    	<table id="tabIzq" class="tinyText" ></table>    </td>
+	<td width="427" valign="top">
+   	  <table id="tabCen" class="tinyText" ></table>    </td>
+    <td height="108" colspan="2" valign="top">
+   	  <table id="tabDer" class="tinyText" ></table>     </td>
+    <td>&nbsp;</td>
+    </tr>
+
+	<tr>
+      <td height="39">&nbsp;</td>
+      <td colspan="4" align="center">&nbsp;RETORNO</td>
+		<td height="39">&nbsp;</td>
+	</tr>
+    <tr>
+      <td height="39">&nbsp;</td>
+      <td colspan="4">&nbsp;
+		<table width="99%" border="0"  align="center" cellpadding="0" cellspacing="0">
+			<tr class="titulo">
+				<td width="33%" align="center"><span class="style2">IZQUIERDA</span></td>
+	
+				<td width="33%" align="center"><span class="style2">DERECHA</span></td>
+			</tr>
+			<tr>
+			<td valign="top" align="center"><table id="tabIzqR" class="texto"></table></td>
+	
+			<td valign="top" align="center"><table id="tabDerR" class="texto"></table></td>
+		</tr>
+			</table></td>
+      <td>&nbsp;	
+			
+		
+		
+		</td>
+    </tr>
+    <tr>
+      <td height="196" colspan="6" valign="top">&#160;
+          <div id="chart1" style="height: 250px;"></div></td>
+    </tr>
+	<tr>
+      <td height="196" colspan="6" valign="top">&#160;
+          <div id="chart2" style="height: 250px;"></div></td>
+    </tr>
+	<tr>
+	<td colspan="5"> <hr/><br/></td></tr>
+	<tr>
+      <td height="196" colspan="6" valign="top">&#160;
+          <div id="chart3" style="height: 250px;"></div></td>
+    </tr>
+	<tr>
+      <td height="196" colspan="6" valign="top">&#160;
+          <div id="chart4" style="height: 250px;"></div></td>
+    </tr>
+  </table>
+</div>
+
+
+
+</body>
+</html>

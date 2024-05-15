@@ -1,0 +1,169 @@
+<HTML XMLNS="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+<xml id=xmlListFaenas></xml>
+<xml id=xmlTemp></xml>
+<TITLE>SGI - TTM CHILE</TITLE>
+<LINK REL="stylesheet" HREF="Chart/Style.css" TYPE="text/css" />
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript" SRC="Chart/FusionCharts.js"></SCRIPT>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<!--
+body {margin-left: 20px;margin-top: 0px;margin-right: 0px;margin-bottom: 0px;}
+.style3 {color:#666666;font-weight: bold;font-family:Arial, Helvetica, sans-serif;font-size:16px;
+}
+-->
+</STYLE>
+</HEAD>
+<SCRIPT>
+function inicio(){
+		
+	  mydate = new Date();
+	  mes = mydate.getMonth() +1;
+	  document.getElementById("txtFecha2").value= mydate.getDate()+"/"+mes.toString()+"/"+mydate.getFullYear();
+	  mydate.setTime( mydate.getTime() - 7 * 86400000 );
+	  
+	  mes = mydate.getMonth() +1;
+	  document.getElementById("txtFecha").value= mydate.getDate()+"/"+mes.toString()+"/"+mydate.getFullYear();
+	getObjetivos();
+	}
+
+function getObjetivos(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/observaciones.asp?RECURSO=listCompChuqui";
+		url +="&FECHA=" + document.getElementById("txtFecha").value;
+		url +="&FECHA2=" + document.getElementById("txtFecha2").value;
+		url +="&SUCURSAL=" + document.getElementById("listSucursal").value;
+		url +="&HSA=" + Math.random();
+
+//	window.open(url);
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			window.open(url);
+buscar();
+  		
+}
+
+function buscar(){
+	
+	    xmlTemp.async = false;
+        var xmlDso =  xmlTemp.XMLDocument;
+			
+		  url = "xml/observaciones.asp?RECURSO=grCompChuqui"
+		  url +="%26FECHA=" + document.getElementById("txtFecha").value;
+		  url +="%26FECHA2=" + document.getElementById("txtFecha2").value;
+		  url +="%26SUCURSAL=" + document.getElementById("listSucursal").value;
+		  url +="%26HSA=" + Math.random();
+
+	
+		  //window.open(url);
+		   var chart = new FusionCharts("Chart/MSColumnLine3D.swf", "ChartId", "1400", "380", "0", "0");
+
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv1");
+		   
+		
+}
+
+function _close(){
+	this.location.href="formETOC-chu.html";		
+}
+
+</SCRIPT>
+<BODY onLoad="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+    
+<BR/>
+<FORM NAME="formulario">
+<TABLE><TR><TD>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="3" ALIGN="LEFT" >
+  <!--DWLayoutTable-->
+<TR>
+  <TD WIDTH="206" HEIGHT="118"><IMG SRC="images/Logo1.jpg" ALT="" WIDTH="206" HEIGHT="112"></TD>
+  <TD COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="calibri_16"><STRONG CLASS="style3">ETOC EVALUACI&Oacute;N DE COMPORTAMIENTOS </STRONG></TD>
+</TR>
+<TR>
+  <TD HEIGHT="33"  COLSPAN="2" ALIGN="left" VALIGN="top" CLASS="calibri"> Sucursal : Iquique &nbsp;&nbsp;
+     <input type="hidden" id="listSucursal" name="listSucursal" value="CHUQUICAMATA">
+     
+     fecha desde : <INPUT NAME="txtFecha" id="txtFecha" TYPE="text" CLASS="input" SIZE="12" readonly DATAFLD="FECHA"/>
+     &nbsp;<IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top" onClick="FrameCalendar.fPopCalendar(txtFecha,txtFecha,divCalendar,1,'getObjetivos()');return false">
+     &nbsp;&nbsp;&nbsp;Fecha Hasta:<INPUT NAME="txtFecha2" id="txtFecha2" onChange="getObjetivos()" TYPE="text" CLASS="input" SIZE="12" readonly DATAFLD="FECHA2"/>
+     &nbsp;<IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top" onClick="FrameCalendar.fPopCalendar(txtFecha2,txtFecha2,divCalendar,2,'getObjetivos()');return false">
+
+  </TD>
+<TD WIDTH="86"><SPAN CLASS="calibri">
+  <INPUT  TYPE="button" CLASS="botonBlanco" onClick="_close();" VALUE="Volver" >
+</SPAN></TD>
+</TR>
+
+<TR>
+  <TD HEIGHT="7"></TD>
+  <TD WIDTH="303"></TD>
+  <TD></TD>
+</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" DATASRC="#xmlTemp" BORDER="1"  BORDERCOLORDARK="#000000" CELLSPACING="0" CLASS="TBL_1">
+  <THEAD>
+  	<TR  class="blueTr">
+  	  <TD WIDTH="150">Categoria de Comportamiento</TD>
+  	  <TD WIDTH="50">No Aplica</TD>
+  	  <TD WIDTH="50">Conduca Segura</TD>
+  	  <TD WIDTH="50">B1 No percive el riesgo</TD>
+  	  <TD WIDTH="50">B2 Ahorro de tiempo</TD>
+  	  <TD WIDTH="50">B3 No es comodo</TD>
+  	  <TD WIDTH="50">B4 Procedimiento no actualizado/Sin Procedimiento</TD>
+  	  <TD WIDTH="50">B5 No se encuentra disponible o no existe</TD>
+  	  <TD WIDTH="50">B6 No recibio entrenamiento/instruccion/capacitacion</TD>
+  	  <TD WIDTH="50">B7 Alta presion de trabajo</TD>
+  	  <TD WIDTH="50">B8 Dise�o de instalaciones</TD>
+  	  <TD WIDTH="50">B9 Falta de frecursos</TD>
+  	  <TD WIDTH="50">Total</TD>
+    </TR>
+   </THEAD>
+  	<TR CLASS="texto" >
+  	  <TD><SPAN DATAFLD="CATEGORIA"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="NA"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B00"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B01"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B02"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B03"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B04"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B05"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B06"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B07"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B08"></SPAN></TD>
+  	  <TD ALIGN="CENTER"><SPAN DATAFLD="B09"></SPAN></TD>
+  	  <TD  ALIGN="CENTER"><SPAN DATAFLD="TOTAL"></SPAN></TD>
+  	</TR>
+  </TABLE>
+  </TD></TR>
+  <TR><TD>
+  <TABLE ALIGN="LEFT" CELLSPACING="10" >
+  <TR>
+    <TD VALIGN="top" CLASS="text" ALIGN="center">
+     <DIV ID="chartdiv1" ALIGN="center"> 
+      Indicadores . </DIV>
+    </TD>
+  </TR>
+ 
+</TABLE>
+</TD></TR></TABLE>
+</FORM>
+</BODY>
+</HTML>

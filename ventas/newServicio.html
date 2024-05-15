@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>servicio</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE></HEAD>
+
+<SCRIPT>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function){
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	  formulario.txtDescripcion.focus();
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+
+function NewServicio(){			
+
+
+ if(!formulario.txtID.value){
+ 			alert("Ingrese el codigo.");
+			return;
+			}
+ 
+ if(!formulario.txtDescripcion.value){
+ 			alert("Ingrese la descripcion.");
+			return;
+			}
+			 	
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/servicios.asp?RECURSO=NewServicio";
+		url += "&DESCRIPCION=" + formulario.txtDescripcion.value;
+		url += "&VALOR=" + formulario.txtValor.value;
+		url += "&ID=" + formulario.txtID.value;
+		url += "&VTZ=" + Math.random();
+					
+		xmlestado = xmlDso.load(url);
+		
+	//     window.open(url);
+		if (xmlestado){
+				var tree = xmlDso.documentElement;
+	    	    var node = tree.childNodes.item(0);	
+	   			codeobj.value = getChildNodeValue(node,"RETURN");
+				alert("Servicio Ingresado.");
+ 				divBox.style.visibility = 'hidden';
+				eval("parent." + functionName);
+				  }
+	   else 
+	     window.open(url);
+}
+
+
+
+//window.onLoad = _inicio();
+
+</SCRIPT>
+	<BODY onLoad="">
+		
+
+		<FORM NAME="formulario">
+		<TABLE><TR><TD WIDTH="50"></TD><TD>
+			<INPUT TYPE="hidden" SIZE="0" NAME="txtIni">
+		</TD></TR></TABLE>
+			
+			<TABLE BORDER="0">
+						  <TR CLASS="titulo">
+						    <TD WIDTH="84" HEIGHT="26" ALIGN="center">Servicio</TD>
+						    <TD WIDTH="200" HEIGHT="26" ALIGN="center"></TD>
+						    <TD WIDTH="16" HEIGHT="26" ALIGN="center">
+							<IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14"
+								 onClick="divBox.style.visibility = 'hidden';"></TD>
+				    </TR>
+		  </TABLE>  
+			<TABLE WIDTH="273" ALIGN="center" CELLPADDING="0" CELLSPACING="3" CLASS="texto" ID="tabPlanifica"  datasrc=#xmlIncidentesOT>
+			  <!--DWLayoutTable-->
+				<THEAD>
+				<TR CLASS="HeaderLista">
+				  <TD HEIGHT="13" COLSPAN="2" VALIGN="top">Descripci&oacute;n</TD>
+				  </THEAD>
+			    <TR BGCOLOR="#dee6eb">
+			      <TD HEIGHT="27" COLSPAN="2" ALIGN="center" VALIGN="top">
+				    <TEXTAREA NAME="txtDescripcion" rows=3 COLS="60" CLASS="input"></TEXTAREA></TD>
+		      </TR>
+			    <TR BGCOLOR="#dee6eb">
+			      <TD >
+				  	CODIGO :
+				  	  <INPUT TYPE="TEXT" CLASS="input" NAME="txtID" SIZE="15" > 
+			  	    VALOR :
+		  	        <INPUT TYPE="TEXT" CLASS="input" NAME="txtValor" SIZE="15" VALUE="0"> </TD>
+		      </TR>
+</TABLE>
+	      </div><BR>
+		  <DIV ALIGN="center">
+	      <INPUT NAME="button" TYPE="button" CLASS="BotonBlanco" 
+		  	onClick="NewServicio();" VALUE="Guardar">
+	  	  </DIV>
+		</FORM>
+
+	</BODY>
+</HTML>

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Asignacion de Horometros</title>
+		<meta content="VITCOMZ.110MB.COM" name="GENERATOR">
+		<meta content="VITCOMZ.110MB.COM" name="CODE_LANGUAGE">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlGrupos></xml>
+		<xml id=xmlListEquipos></xml>
+		<xml id=xmlListHorometros></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css">
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+</HEAD>
+
+<script>
+
+function ListGrupos(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListGrupos";
+  var res = xmlDso.load(url);
+
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListGrupos.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"0");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.ListGrupos.options[i] = opcion; 
+    	     }
+	else
+	  window.open(url);
+	
+ } 
+  
+ function ListHorometros(){
+
+  xmlListHorometros.async = false;
+  var xmlDso = xmlListHorometros.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListHorometros";
+    	url += "&GRUPO=" + formulario.ListGrupos.value;
+  var res = xmlDso.load(url);
+
+ if (formulario.ListHorometrosPadre.value==false){
+  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION"), getChildNodeValue(node,"CODIGO"));
+	            formulario.ListHorometrosPadre.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "") opcion.selected = true;
+	            formulario.ListHorometrosPadre.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+
+function ListEquipos(){
+
+	xmlListEquipos.async = false;
+
+	var xmlDso = xmlListEquipos.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=ListEquiposxGrupos";
+		url += "&GRUPO=" + formulario.ListGrupos.value;
+	
+	xmlestado = xmlDso.load(url);		
+			  if (!xmlestado)
+						window.open(url);
+						
+	
+		
+}
+
+function AsignarEquipos()
+{
+
+var tabla = document.getElementById('TabAsignar');
+
+		for (i=1; i< tabla.rows.length; i++){
+			Codigo = tabla.rows[i].children[0].children[0].value;
+			CodHorometro = tabla.rows[i].children[2].children[0].value;
+			if (CodHorometro!="")
+					AsignarEquipo(Codigo, CodHorometro);
+		}
+}
+
+function AsignarEquipo(Codigo, CodHorometro){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=AsignarEquipoHorometro";
+		url += "&CODIGO=" + Codigo;
+		url += "&HOROMETRO=" + CodHorometro;
+	   xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+
+		
+}
+
+</script>
+	<body onLoad="ListGrupos();ListHorometros();" >
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR><BR><BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+			<table>
+			<TR class="titulo"><TD colspan="2">Asignaci�n de Horometros</TD></TR>
+			<TR  class="Campo">
+			  <TD>GRUPO  :</TD>
+				<td ><select name="ListGrupos" onChange="ListHorometros();ListEquipos();" class="Campo"></select></td>
+			</TR>
+			</table>
+			 <table cellpadding="2" cellspacing="1" class="texto" id="tabAsignar"  datasrc="#xmlListEquipos">
+						<thead>
+						<tr class="HeaderLista">
+						  <td>Codigo</td>
+						  <td>Descripci�n</td>
+						  <td>Horometro</td>
+  						  <td></td>
+						</th>
+						</thead>
+						<tr class="ItemLista" align="center">
+						  <td align="center"><input name="TxtCodigo" type="text" class="input" size="8" datafld="CODIGO"/></td>
+							<td align="center"><input  name="TxtDescripcion" type="text" class="input" size="50" datafld="DESCRIPCION"/></td>
+							<td align="center">
+									<select name="ListHorometrosPadre"  class="Campo" 
+											datafld="HOROMETRO_P">
+									</select>
+							</td>
+							<td align="center">
+									<img src="images/check.gif" style="CURSOR: hand"  onClick="AsignarEquipos();confirm('Cambio Realizado');">
+							</td>
+						</tr>
+
+				</table><br>
+				<input type="button"  class="botonBlancoLargo" value="Guardar" onClick="AsignarEquipos();ListEquipos();" align="right">&nbsp;&nbsp;&nbsp;
+			<input type="button"  class="botonBlancoLargo" value="Cancelar" onClick="document.location.href='AsigHorometros.html';" align="right">
+					
+				 
+				
+		</form>
+
+	</body>
+</HTML>

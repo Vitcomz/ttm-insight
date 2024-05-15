@@ -1,0 +1,362 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Inventario Inicial</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+        <style type="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </style>
+</HEAD>
+
+<script>
+var table;
+var Articulo;
+var ubicacion;
+var seccion;
+var cantidad;
+
+function inicio(){
+//ListSolicitudes();
+listMes();
+   xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=ExisteInicio";
+    var res =xmlDso.load(url);
+	//window.open(url);
+	 if (!res)
+	  		window.open(url);
+			
+  	FOLIO_INICIO = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"FOLIO");
+	formulario.listMes.value = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"MES_PROCESO");
+	formulario.txtFolio.value = FOLIO_INICIO;
+	ListArticulosInicio();
+}
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsablesInc.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsablesInc.options[0] = opcion; 
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsablesInc.options[i] = opcion;
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+
+
+
+function eliminar(Index){
+var tabla = document.getElementById('tabArticulos');
+
+
+Codigo = tabla.rows[Index].children[0].children[0].innerText;
+ 
+  xmlTemp.async = false;
+  var xmlDso = xmlTemp.XMLDocument;
+  var url = "xml/articulos.asp?RECURSO=DeleteArticuloInicio&FOLIO="+formulario.txtFolio.value;
+  	  url += "&CODIGO=" + Codigo;
+	  //window.open(url);
+   if(confirm("Esta Seguro de eliminar articulo "+Codigo)){
+  			var res = xmlDso.load(url);
+			}
+  ListArticulosInicio();
+
+ }
+
+
+function creaArticulo(){
+
+var ID = formulario.txtID.value;
+var Cantidad = prompt("Saldo ?","");
+var Precio = prompt("Valor Unitario ?","");
+
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+
+
+if (!formulario.txtFolio.value){
+				var url = "xml/Articulos.asp?RECURSO=InicioProceso";
+				url += "&MES=" + formulario.listMes.value;
+				url += "&RESPONSABLE=" + Usuario;
+    			var res =xmlDso.load(url);
+				FOLIO_INICIO = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"FOLIO");
+				formulario.txtFolio.value = FOLIO_INICIO;
+				alert("Se genero ingreso Nro =" + FOLIO_INICIO +  "");
+				 if (!res)
+	  				window.open(url);
+				}
+				
+	//window.open(url);
+	   var xmlDso = xmlTemp.XMLDocument;
+		url = "xml/Articulos.asp?RECURSO=InsertArticulosInicio";
+		url += "&MES=" + formulario.listMes.value;		
+		url += "&CODIGO=" + ID;
+		url += "&CANTIDAD=" + Cantidad;
+		url += "&VALOR=" + Precio;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		
+		//alert(url);
+    	var res =xmlDso.load(url);
+	  	 if (!res)
+	  				window.open(url);
+					
+ ListArticulosInicio();
+
+}
+
+
+
+function listMes(){
+
+  	
+       for(var i = 1; i < 13; i++){
+	   			if (i<10)
+						mes = "0" + i;
+					else
+						mes = i;
+						
+        	    opcion = new Option(mes , i);
+	            formulario.listMes.options[i-1] = opcion;
+				}
+	
+ } 
+
+
+function ListArticulosInicio(){
+	 
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=ListInicioInventario";
+		url += "&FOLIO=" + formulario.txtFolio.value;
+
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+ 
+function asignar(Index){
+
+var table = document.getElementById('tabArticulos');
+Articulo = table.rows[Index].children[0].children[0];
+var DescArticulo = table.rows[Index].children[1].children[0];
+ubicacion = table.rows[Index].children[5].children[0];
+seccion = table.rows[Index].children[6].children[0];
+cantidad = table.rows[Index].children[2].children[0].innerText;
+
+document.FrameAsigna.mostrarVentana(Articulo,DescArticulo,Bodega,
+						desBodega, DivAsignar, ubicacion, seccion, "guardarUbicacion();");
+						
+
+}
+
+function guardarUbicacion(){
+folio = formulario.txtFolio.value;
+
+
+if(Articulo.value)
+  		id = Articulo.value;
+	else
+		id = Articulo.innerText;
+		
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=UpdateUbicacion";
+		url += "&ID=" + id;
+		url += "&FOLIO=" + folio;
+ 	 	url += "&UBICACION=" + ubicacion.innerText;
+		url += "&SECCION=" + seccion.innerText;
+ 	 	url += "&COD_BODEGA=" + Bodega;	
+		url += "&CANTIDAD=" + cantidad;	
+ 	
+	   xmlestado = xmlDso.load(url);		
+	
+	//alert(url);
+	   
+		if (!xmlestado)
+				window.open(url);
+				
+ListArticulosInicio();
+}
+
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+	
+	<DIV id="DivAsignar" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameAsigna" src="asignaBodega.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+
+	<DIV id="divArticulos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 99px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 98px; width: 450px; height: 235px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameArticulos" src="ListArticulos.html" frameBorder="0" width="450" scrolling="no" height="235"></IFRAME>
+</DIV>
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR>
+	<BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+				 
+				  <table>
+				  <tr><td class="Campo">Inventario Inicial.</td></tr>
+				  <tr>
+				   <td class="input">
+					   A�o Proceso :
+                         <select name="listAno" class="input" >
+						 	<option value="2008">2008</option>
+							<option value="2008">2008</option>
+							<option value="2009">2009</option>
+							<option value="2010">2010</option>
+							<option value="2011">2011</option>
+                         </select></td>
+					   <td class="input">
+					   Mes Proceso :
+                         <select name="listMes" class="input" disabled="disabled" >
+                         </select></td>
+		          </tr></table>
+				  <table>
+				  <tr>
+				   <td class="input">
+					   Folio Inicio Proceso :
+                         <input type="text" class="input" name="txtFolio" size="3" readonly="TRUE"></td>
+						 <td class="input">
+					   Agregar Articulo :
+                  <INPUT NAME="txtCodigo" size="5" class="hidden" >
+				  <img src="images/lupa.jpg" alt="Buscar" width="19" height="19" align="middle" style="CURSOR: hand" 
+									onClick="frameArticulos.popsearchbox(txtID,txtCodigo,
+									 divArticulos,'creaArticulo();','EXISTENCIA2'); return false;">
+								<input type="hidden" name="txtID"  size="2"  />
+								<input type="hidden" name="txtCantidad"  size="2"  />
+								<input type="hidden" name="txtPrecio"  size="2"  /></td>
+		          </tr></table>
+				 
+			      <!--table>
+				  		<tr>
+					   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>
+			</td></tr></table-->
+						
+			<table width="847" border="0" cellpadding="0" cellspacing="1"  
+				 id="tabArticulos"  datasrc=#xmlOC datapagesize="20" class="tablaBordesTitle">	
+				 <thead>	
+				<tr class="tablaBordesTitle">
+				  	<td width="70" height="17" align="center">CODIGO</td>
+				 	<td width="417">ARTICULO</td>
+				  	<td width="72">SALDO  </td>
+			    	<td width="99">VALOR UNITARIO</td>
+			    	<td width="81">TOTAL</td>
+			    	<td width="81">UBICACION</td>
+			    	<td width="81">SECCION </td>               
+			    	<td width="81">ELIMINAR</td>	
+					<td width="81">UBICAR</td>	
+				</tr>
+			</thead>
+			<tr bgcolor="#dee6eb" class="tablaBordes">
+				<td><span datafld="ID"/></td>
+				<td align="left"><span datafld="DESCRIPCION"/></td>
+				<td><span datafld="CANTIDAD"/></td>
+			  	<td align="right"><span datafld="VALOR"/></td>
+				<td align="right"><span datafld="TOTAL"/></td>
+				<td><span datafld="UBICACION"/></td>
+				<td><span datafld="SECCION"/></td>
+				<td ><IMG  style="CURSOR:hand" src="images/trash.jpg"
+				 onClick="eliminar(this.parentElement.parentElement.rowIndex);"></td>
+				 <td>
+				 <IMG onclick='asignar(this.parentElement.parentElement.rowIndex);' 
+				 src='images/table.png' align='middle' style='CURSOR:hand' />				 </td>
+			</tr>
+			<tfoot>
+			<tr align="left">
+					   <td class="input" colspan="29">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabArticulos');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabArticulos');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabArticulos');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabArticulos');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>			</td>
+			<td width="24"></td>
+			</tr>
+			</tfoot>
+</table>
+     
+            <p><input type="button" value="Aceptar" class="botonBlanco" 
+			onClick="javascript:document.location='index.html';"></p>
+		</form>
+
+	</body>
+</HTML>

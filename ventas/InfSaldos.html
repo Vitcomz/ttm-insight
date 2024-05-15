@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Saldos</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<link rel="stylesheet" href="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script type="text/javascript" src="standard/Tabber/tabber.js"></script>
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+        <style type="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </style>
+</HEAD>
+
+<script>
+function inicio(){
+//ListSolicitudes();
+listMes();
+saldosMes();
+}
+
+
+function listMes(){
+
+  mydate = new Date();
+  month     = mydate.getMonth()+1;
+  if (month<10)
+			month = "0" + month;
+	
+       for(var i = 1; i < 13; i++){
+	   			if (i<10)
+						mes = "0" + i;
+					else
+						mes = i;
+						
+        	    opcion = new Option(mes ,mes);
+				if (opcion.value == month) opcion.selected = true;
+	            formulario.listMes.options[i-1] = opcion;
+				}
+	
+ } 
+  
+
+
+function updateValor(Folio, Valor, ID){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=UpdateValorizacion";
+		url += "&FOLIO=" + Folio;
+		url += "&VALOR=" + Valor;
+		url += "&ID=" + ID;
+		
+		//alert(url);
+	   xmlestado = xmlDso.load(url);		
+	   
+		  if (!xmlestado)
+				window.open(url);
+				
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=CalcularSaldos";
+		url += "&ID=" + ID;
+		url += "&MES=" + formulario.listMes.value;
+		
+		//alert(url);
+	   xmlestado = xmlDso.load(url);		
+	   
+		  if (!xmlestado)
+				window.open(url);
+		
+}
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabOC');
+Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="OrdenCompra.html?Folio=" + Folio;
+
+}
+
+function Recepcionar(Index){
+
+var tabla = parent.document.getElementById('tabOC');
+var imgUrl =tabla.rows[Index].children[8].children[0].src;
+
+if (imgUrl.substr(imgUrl.length-10,10)=="nerado.gif"){
+				alert("OC ya fue recepcionada!.");
+				return;
+				}		
+				
+	if(!tabla.rows[Index].children[7].children[0].value&&!tabla.rows[Index].children[6].children[0].value){
+				alert("Debe Ingresar Nro de Factura o Boleta.");
+				return;
+				}		
+				
+	
+	
+xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=SetRecepcion&FOLIO=" + tabla.rows[Index].children[0].children[0].innerText;
+	    var res =xmlDso.load(url);
+		
+		if(res)
+				alert("O.C. Actualizada.");
+		else
+			window.open(url);
+ListOC();
+	
+}
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+
+function saldosMes(){
+	 
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=Saldos";
+		url += "&MES=" + formulario.listMes.value;
+		url += "&ANHO=" + formulario.listAnos.value;
+		
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+
+
+<DIV id="DivOT" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameOT" src="generaOT.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR>
+	<BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+				  <h2 class="titulo2">Inventario Valorizado .</h2>
+		          <table><tr>
+					   <td class="input">
+					   A�o :
+                         <select name="listAnos" class="input" onChange="saldosMes();">
+						 	<option value="2007">2007</option>
+						 	<option value="2008" selected="selected">2008</option>
+						 	<option value="2009">2009</option>
+						 	<option value="2010">2010</option>
+						 	<option value="2011">2011</option>
+						  	<option value="2012">2012</option>
+                         </select></td>
+						 <td class="input">
+					   Mes  :
+                         <select name="listMes" class="input" onChange="saldosMes();">
+                    </select></td>
+		          </tr></table>
+			 						
+			<table width="938" border="0" cellpadding="0" cellspacing="3" datapagesize="20" 
+				 id="tabOC" datasrc="#xmlOC" class="tablaBordesTitle">
+				<thead>
+				<tr class="tablaBordesTitle">
+				  <td width="50">CODIGO</td>
+				  <td width="342">ARTICULO</td>
+				  <td width="54">SALDO ANTERIOR </td>
+				  <td width="57">ENTRADAS MES </td>
+				  <td width="49">SALIDAS MES </td>
+				  <td width="66">SALDOS</td>
+				  <td width="50">VALOR UNITARIO.</td>
+   				  <td width="110">STOCK TOTAL VALORIZADO $US</td>
+				  <td width="57">UBICACION</td>
+				  <td width="57">SECCION</td>
+				  </tr>
+				</thead>
+			<tr bgcolor="#dee6eb" class="tablaBordes">
+				<td ><span   datafld="ID"/></td>
+				<td align="left" ><span   datafld="DESCRIPCION"/></td>
+				<td ><span   datafld="SALDO_ANT"/></td>
+				<td ><span   datafld="ENTRADAS"></span></td>
+				<td ><span   datafld="SALIDAS"></span></td>
+			    <td><span   datafld="SALDO"></span></td>
+		      <td align="right"><span  datafld="PPM"></span></td>
+				<td align="right" width="110">
+				    <span  datafld="TOTAL"></span>
+					<strong><span  datafld="SUM_TOTAL"></span></strong></td>
+				<td align="center">
+				 <span  datafld="UBICACION"></span></td>
+			<td align="center">
+				 <span  datafld="SECCION"></span></td>
+			</tr>
+			<tfoot>
+			<tr align="left">
+					   <td class="input" colspan="29">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>
+			</td>
+			<td width="9"></td>
+			</tr>
+			</tfoot>
+</table>
+* La Suma total del inventario se desplegara cuando la valorizaci&oacute;n de los productos este completa. <br>
+		</form>
+
+	</body>
+</HTML>

@@ -1,0 +1,242 @@
+<!--%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM</title>
+
+
+
+
+
+
+</head>
+<xml id = xmlMenu></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+<link REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+<link REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<style TYPE="text/css">
+<!--
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+body{margin:0;}
+
+.tinyTextSub{
+font-family:Calibri;
+font-size:12px;
+border-bottom:solid 1px #CCCCCC;
+font-weight:normal;
+}
+-->
+</style>
+<script LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<script language="JavaScript1.2" >
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = getEmpresaMoz();
+}
+		
+var newEvent = false;
+
+function mostrarBitacora(){
+
+var equipo = getParametro("EQUIPO");
+var sub_equipo = getParametro("SUB_EQUIPO");
+var tbl = document.getElementById('tabEquipos');
+
+if (id_br == "IE")
+{
+	var xmlTemp = document.getElementById("xmlTemp");
+	xmlTemp.async = false;
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+	var xmlTemp = document.implementation.createDocument("", "", null);
+}
+
+	
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Bitacoras.asp?RECURSO=ListBitacora";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2015";
+		url += "&USUARIO=" + GetSession();
+		url += "&CRITICIDAD=TOD";
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN="+equipo;
+		
+		if (getParametro("DT"))
+				url += "&EQUIPO="+sub_equipo;
+		else
+			url += "&EQUIPO=TOD";
+			
+		url += "&IND_DANO=TOD";
+		url += "&IMG=1";
+		url += "&IND_SOLUCION=false";
+		
+   		//var res =xmlDoc.load(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	
+	if(!res)
+		window.open(url);
+	if (res){
+				var context = ""
+				context = context + "<table width='714' BORDER='0' CELLPADDING='5' CELLSPACING='0' bordercolor='#666666'  CLASS='texto' ID='tabEquipo' align='center'>";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr>";
+				  context = context +  "<td WIDTH='75' height='82' VALIGN='TOP' class='tinyTextSub'>EQUIPO COMPONENTE FECHA<br />DIAS PEND. CRITICIDAD</td><td WIDTH='111' VALIGN='TOP' class='tinyTextSub'>:<span class='normal'>"+  x[i].getElementsByTagName("EQUIPO_PRIN")[0].childNodes[0].nodeValue;
+				  context = context +  "</span><br>:<span class='normal'>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue;
+				  context = context +  "</span><br>:<span class='normal'>"+  x[i].getElementsByTagName("FECHA")[0].childNodes[0].nodeValue;
+				  context = context +  "</span><br>:<span class='normal'>"+  x[i].getElementsByTagName("DIAS")[0].childNodes[0].nodeValue;
+				  context = context +  "</span><br>:<span class='normal'>"+  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue;
+				  if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+				  	context = context +  "</span>&nbsp;<span class='normal'>"+ x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue}else{"</span>&nbsp;<span class='normal'>"};
+				  context = context +  "</span>%</td>";
+				
+				  context = context +  "<td WIDTH='374' VALIGN='TOP' class='tinyTextSub'><span class='normal'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+				  context = context +  "</span><br />RECOMENDACION :<span class='normal'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue;
+				  context = context +  "</span> <br/>  <br /> </td>";
+								
+				  context = context +  "<td WIDTH='106'><p><a href='" + x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue + "'  rel='facebox'>";
+				  context = context + "<img src='"+  x[i].getElementsByTagName("FILE")[0].childNodes[0].nodeValue;
+				  context = context +  "' WIDTH='100' border='1'  ONERROR='this.src='images/noDisponible.png;''/><br /><br />";
+				  context = context +  "</a></p></td>";
+				  
+				  context = context +  "</tr>";
+				}
+				context = context +  "</table>";
+				document.getElementById("tabEquipos").innerHTML= context;
+	}
+  /*    if (res){
+        var tree = xmlDso.documentElement;
+		i=0;j=1;
+		while (i< tree.childNodes.length){
+				var node = tree.childNodes.item(i);
+					row = tbl.insertRow(-1);
+					var cell = row.insertCell(0);
+					cell.innerHTML =   "<SPAN class='titulo'> " +
+									  	getChildNodeValue(node,"EQUIPO_PRIN") + "</SPAN>";
+					cell.vAling='TOP';
+					
+			 		var cell = row.insertCell(1);
+					cell.innerHTML =  "<SPAN class='normal'>"+getChildNodeValue(node,"DESCRIPCION")+"</SPAN>";
+					cell.width = 500;  
+					i=i+1;j=j+1;
+			}//end while
+	}//end if*/
+	
+}//end function
+
+function excel(){
+
+//Equipo = formulario.txtCodEquipo.value;
+
+   var equipo = getParametro("EQUIPO");
+    var xmlDoc = xmlTemp.XMLDocument;
+	 xmlTemp.async = false;
+	 
+	var url = "xml/Bitacoras.asp?RECURSO=ListBitacora";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2009";
+		url += "&USUARIO=" + GetSession();
+		url += "&CRITICIDAD=TOD";
+		url += "&FAENA=" + emp;
+		//url += ("&VTZ=" + Math.random()).substr(0,8);
+		//url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN="+equipo;
+		url += "&EQUIPO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&EXCEL=YES";
+		
+    
+		window.open(url);
+	
+  
+	
+}//end function
+
+</script>
+<script src="standard/jquery-1.2.2.pack.js" type="text/javascript"></script>
+<script src="standard/facebox.js" type="text/javascript"></script>
+<link href="standard/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox() 
+    })
+</script>
+
+<body BGCOLOR="#FFFFFF" TEXT="#000000" class=text  onLoad="mostrarBitacora();">
+<table width="705" border="0" align="center">
+  <tr>
+    <td align="center"><font class="titulo">COMPONENTES EN RIESGO</font></td>
+  </tr>
+</table>
+<!--<table width="714" BORDER="0" CELLPADDING="5" CELLSPACING="0" bordercolor="#666666" 
+	  CLASS="texto" ID="tabEquipos"  DATASRC="#xmlTemp" align="center">
+<tr>
+	<td WIDTH="75" height="82" VALIGN="TOP" class="tinyTextSub">
+    	EQUIPO	  
+        COMPONENTE
+  FECHA<br />     
+    	 DIAS PEND.
+   	CRITICIDAD</td>
+    <td WIDTH="111" VALIGN="TOP" class="tinyTextSub">
+:<span datafld='EQUIPO_PRIN'></span><br>
+        :<span  datafld='EQUIPO'></span><br>
+        :<span  datafld='FECHA'></span><br>
+        :<span  datafld='DIAS'></span><br>
+        :<span datafld='COLOR'></span>&nbsp;<span datafld='CRITICIDAD'></span>%
+    </td>
+    <td WIDTH="374" VALIGN="TOP" class="tinyTextSub">
+    <span  datafld='DESCRIPCION'></span><br />
+    RECOMENDACION :<span  datafld='RECOMENDACION'></span> <br/>  <br /> </td>
+  <td WIDTH="112" class="tinyTextSub"><div align="center"><a DATAFLD="FILE" rel='facebox'>
+    <img STYLE="border-color:#999999;" BORDER="1" WIDTH="100" ALIGN="middle" DATAFLD="FILE"
+            ONERROR="this.src='images/noDisponible.png';"><br /><br />
+  </a></div></td>
+</tr>
+</table>
+-->
+<div  ID="tabEquipos" ></div>
+</body>
+
+</html>

@@ -1,0 +1,1378 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Bitacora de Inspecciones</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+
+-->
+
+  div.loading-invisible{
+    display:none;
+  }
+  div.loading-visible{
+    /*make visible*/
+    display:block;
+
+    position:absolute;
+    top:100px;
+    left:0;
+    width:80%;
+	height:100%;
+    text-align:center;
+
+    background:#fff;
+	filter: alpha(opacity=89); /* internet explorer */
+	-khtml-opacity: 0.89;      /* khtml, old safari */
+	-moz-opacity: 0.89;       /* mozilla, netscape */
+	opacity: 0.89;           /* fx, safari, opera */
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+  }
+
+  div.form1-invisible{
+    display:none;
+  }
+  div.form1-visible{
+    /*make visible*/
+    display:block;
+
+    position:absolute;
+    top:100px;
+    left:0;
+    width:80%;
+	height:100%;
+    text-align:center;
+	vertical-align:central;
+
+    background:#fff;
+	filter: alpha(opacity=89); /* internet explorer */
+	-khtml-opacity: 0.89;      /* khtml, old safari */
+	-moz-opacity: 0.89;       /* mozilla, netscape */
+	opacity: 0.89;           /* fx, safari, opera */
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+  }
+
+</STYLE>
+<link rel="stylesheet" href="../standard/style.css" />
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<SCRIPT>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+function ListBitacora(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var maxmS = document.getElementById("formulario").CHKSEC.length;
+		var arr_chkS = "";
+		for (var idxS = 0; idxS < maxmS; idxS++) {
+			if (eval("document.getElementById('formulario').CHKSEC[" + idxS + "].checked") == true) {
+				if (arr_chkS == ""){
+					arr_chkS = "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}else{
+					arr_chkS = arr_chkS + "," + "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}
+			}
+		}
+
+		
+		var maxm = document.getElementById("formulario").CHKID.length;
+		var arr_chk = "";
+		for (var idx = 0; idx < maxm; idx++) {
+			if (eval("document.getElementById('formulario').CHKID[" + idx + "].checked") == true) {
+				if (arr_chk == ""){
+					arr_chk = "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}else{
+					arr_chk = arr_chk + "," + "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}
+			}
+		}
+		
+		var xmlDso = xmlDoc.XMLDocument;
+		var sorter = "";
+		document.getElementById("loading").className = "loading-visible";
+		var url = "../xml/Informes.asp?RECURSO=ListReportDiario";
+		url += "&FECHA=" + document.getElementById("txtFecha").value;
+		url += "&SECCION=" + arr_chkS;
+		url += "&EQUIPO=" + arr_chk;
+		url += "&USUARIO=" + Usuario;
+		url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	    //window.open(url);
+		if(xmlestado){	
+			if (id_br == "IE")
+			{
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+//				document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+//				bloque_listado = 1;
+//				total_bloque_listado = Math.ceil(total_registros_lista/9);
+//				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+//				objLabelReg.innerText = "1/" + total_bloque_listado;
+				var tbody = document.getElementById("tabBitacora").getElementsByTagName("tbody")[0];
+				var ttr = tbody.getElementsByTagName('tr');
+				if (ttr.length > 1){
+					for(i=ttr.length-1;ttr.length > 0;i--){
+						ttr[i].parentNode.removeChild(ttr[i]);
+					}
+				}
+				if (total_registros_lista > 0){
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					for (i=0; i<x.length; i++) {
+					  //context = context +  "<td><IMG style='CURSOR: hand' onclick='editBitacora(this.parentElement.parentElement.rowIndex);' src='images/lupa2.gif' align='middle'/></td>";
+					  //context = context +  "<td>&nbsp;&nbsp;</td>";
+					if (i < (x.length-1)){
+						var iy = i + 1;
+							if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null && x[iy].getElementsByTagName("BITACORA")[0].childNodes[0]  != null){
+								var row = document.createElement("TR");
+								var cell1 = document.createElement("TD");
+								cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+								var cell2 = document.createElement("TD");
+								cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</center>";
+								var cell4 = document.createElement("TD");
+								if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell5 = document.createElement("TD");
+								if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+								cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</center>";					
+								}else{
+								cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell6 = document.createElement("TD");
+								if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+								cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell7 = document.createElement("TD");
+								if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell8 = document.createElement("TD");
+								if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell9 = document.createElement("TD");
+								if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								row.appendChild(cell1);
+								row.appendChild(cell2);
+								row.appendChild(cell4);
+								row.appendChild(cell5);
+								row.appendChild(cell6);
+								row.appendChild(cell7);
+								row.appendChild(cell8);
+								row.appendChild(cell9);
+								tbody.appendChild(row);
+							}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								var row = document.createElement("TR");
+								var cell1 = document.createElement("TD");
+								cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+								var cell2 = document.createElement("TD");
+								cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</center>";
+								var cell4 = document.createElement("TD");
+								if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell5 = document.createElement("TD");
+								if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+								cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</center>";					
+								}else{
+								cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell6 = document.createElement("TD");
+								if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+								cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell7 = document.createElement("TD");
+								if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell8 = document.createElement("TD");
+								if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell9 = document.createElement("TD");
+								if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								row.appendChild(cell1);
+								row.appendChild(cell2);
+								row.appendChild(cell4);
+								row.appendChild(cell5);
+								row.appendChild(cell6);
+								row.appendChild(cell7);
+								row.appendChild(cell8);
+								row.appendChild(cell9);
+								tbody.appendChild(row);
+							}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue){
+								var row = document.createElement("TR");
+								var cell1 = document.createElement("TD");
+								cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+								var cell2 = document.createElement("TD");
+								cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</center>";
+								var cell4 = document.createElement("TD");
+								if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell5 = document.createElement("TD");
+								if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+								cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</center>";					
+								}else{
+								cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell6 = document.createElement("TD");
+								if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+								cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell7 = document.createElement("TD");
+								if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell8 = document.createElement("TD");
+								if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell9 = document.createElement("TD");
+								if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								row.appendChild(cell1);
+								row.appendChild(cell2);
+								row.appendChild(cell4);
+								row.appendChild(cell5);
+								row.appendChild(cell6);
+								row.appendChild(cell7);
+								row.appendChild(cell8);
+								row.appendChild(cell9);
+								tbody.appendChild(row);
+							}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue){
+								var row = document.createElement("TR");
+								var cell1 = document.createElement("TD");
+								cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+								var cell2 = document.createElement("TD");
+								cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</center>";
+								var cell4 = document.createElement("TD");
+								if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell5 = document.createElement("TD");
+								if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+								cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</center>";					
+								}else{
+								cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell6 = document.createElement("TD");
+								if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+								cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell7 = document.createElement("TD");
+								if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell8 = document.createElement("TD");
+								if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell9 = document.createElement("TD");
+								if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								row.appendChild(cell1);
+								row.appendChild(cell2);
+								row.appendChild(cell4);
+								row.appendChild(cell5);
+								row.appendChild(cell6);
+								row.appendChild(cell7);
+								row.appendChild(cell8);
+								row.appendChild(cell9);
+								tbody.appendChild(row);
+							}
+						}else{
+								var row = document.createElement("TR");
+								var cell1 = document.createElement("TD");
+								cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+								var cell2 = document.createElement("TD");
+								cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</center>";
+								var cell4 = document.createElement("TD");
+								if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+								cell4.innerHTML = "<center>"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell4.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell5 = document.createElement("TD");
+								if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+								cell5.innerHTML = "<center>"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</center>";					
+								}else{
+								cell5.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell6 = document.createElement("TD");
+								if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+								cell6.innerHTML = "<center>"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</center>";
+								}else{
+								cell6.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								var cell7 = document.createElement("TD");
+								if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell7.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell8 = document.createElement("TD");
+								if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+								cell8.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								var cell9 = document.createElement("TD");
+								if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></center>"
+								}else{
+									cell9.innerHTML = "<center><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></center>"
+								}
+								
+								row.appendChild(cell1);
+								row.appendChild(cell2);
+								row.appendChild(cell4);
+								row.appendChild(cell5);
+								row.appendChild(cell6);
+								row.appendChild(cell7);
+								row.appendChild(cell8);
+								row.appendChild(cell9);
+								tbody.appendChild(row);
+						}
+					}
+				}else{
+						var row = document.createElement("TR");
+						var cell1 = document.createElement("TD");
+						cell1.innerHTML = "<center>&nbsp;</center>"
+						var cell2 = document.createElement("TD");
+						cell2.innerHTML = "<center>&nbsp;</center>";
+						var cell4 = document.createElement("TD");
+						cell4.innerHTML = "<center>&nbsp;</center>";
+						var cell5 = document.createElement("TD");
+						cell5.innerHTML = "<center>&nbsp;</center>";
+						var cell6 = document.createElement("TD");
+						cell6.innerHTML = "<center>&nbsp;</center>";
+						var cell7 = document.createElement("TD");
+						cell7.innerHTML = "<center>&nbsp;</center>";
+						var cell8 = document.createElement("TD");
+						cell8.innerHTML = "<center>&nbsp;</center>";
+						var cell9 = document.createElement("TD");
+						cell9.innerHTML = "<center>&nbsp;</center>";
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+						row.appendChild(cell4);
+						row.appendChild(cell5);
+						row.appendChild(cell6);
+						row.appendChild(cell7);
+						row.appendChild(cell8);
+						row.appendChild(cell9);
+						tbody.appendChild(row);
+				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+					if (i < (x.length-1)){
+						var iy = i + 1;
+						if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null && x[iy].getElementsByTagName("BITACORA")[0].childNodes[0]  != null){
+							context = context +  "<tr>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</td>";
+						  if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+		
+						  if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+						   if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+							 context = context +  "<td  >"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }
+						  if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						  if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						   if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></td>";
+						   }else{
+						  context = context +  "<td >&nbsp;</td>";
+						   }
+						  context = context +  "</tr>";
+						}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							context = context +  "<tr>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</td>";
+						  if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+		
+						  if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+						   if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+							 context = context +  "<td  >"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }
+						  if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						  if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						   if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></td>";
+						   }else{
+						  context = context +  "<td >&nbsp;</td>";
+						   }
+						  context = context +  "</tr>";
+						}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue == x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue){
+							context = context +  "<tr>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</td>";
+						  if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+		
+						  if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+						   if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+							 context = context +  "<td  >"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }
+						  if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						  if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						   if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></td>";
+						   }else{
+						  context = context +  "<td >&nbsp;</td>";
+						   }
+						  context = context +  "</tr>";
+						}else if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue && x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue != x[iy].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue){
+							context = context +  "<tr>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</td>";
+						  if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+		
+						  if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+						   if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+							 context = context +  "<td  >"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }
+						  if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						  if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						   if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></td>";
+						   }else{
+						  context = context +  "<td >&nbsp;</td>";
+						   }
+						  context = context +  "</tr>";
+						}
+					}else{
+					  context = context +  "<tr>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+						  context = context +  "<td>"+  x[i].getElementsByTagName("COMPONENTE")[0].childNodes[0].nodeValue + "</td>";
+						  if (x[i].getElementsByTagName("BITACORA")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("BITACORA")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+		
+						  if (x[i].getElementsByTagName("AVISO")[0].childNodes[0] != null){
+							  context = context +  "<td  >"+  x[i].getElementsByTagName("AVISO")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 			  
+						   if (x[i].getElementsByTagName("ORDEN")[0].childNodes[0] != null){
+							 context = context +  "<td  >"+  x[i].getElementsByTagName("ORDEN")[0].childNodes[0].nodeValue + "</td>";
+						  }else{
+							 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }
+						  if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						  if (x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0] != null){
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>"+  x[i].getElementsByTagName("RECOMENDACION")[0].childNodes[0].nodeValue + "</div></td>";
+						  }else{
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px'>&nbsp;</div></td>";
+						  }				 
+						   if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0] != null){
+									if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "BAJA"){
+										var color = '#3366FF';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "MEDIA"){
+										var color = '#FFFF00';
+									}else if (x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue == "ALTA"){
+										var color = '#FF0000';
+									}
+								 context = context +  "<td><div style='overflow-x:hidden; overflow-y:auto; height:50px; background-color: " + color + ";'>"+  x[i].getElementsByTagName("CRITICIDAD")[0].childNodes[0].nodeValue + "</div></td>";
+						   }else{
+						  context = context +  "<td >&nbsp;</td>";
+						   }
+						  context = context +  "</tr>";						
+					}
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+			}
+//----------------------------------------------------------------------------------------------------------------------				
+				
+			}
+			else
+				window.open(url);
+				
+		//setTimeout("color();",600);
+		if (total_registros_lista > 0){
+			setTimeout("pagining();",700);
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);
+		}else{
+			var sorter = "";
+			var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+			hideDiv.call(this);	
+
+		}
+		
+		
+}
+ 
+
+function ListEquiposCorrea(){
+	if (id_br == "IE")
+	{
+		var xmlEquipos = document.getElementById("xmlEquipos");
+		xmlEquipos.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlEquipos = document.implementation.createDocument("", "", null);
+	}
+		var maxmS = document.getElementById("formulario").CHKSEC.length;
+		var arr_chkS = "";
+		for (var idxS = 0; idxS < maxmS; idxS++) {
+			if (eval("document.getElementById('formulario').CHKSEC[" + idxS + "].checked") == true) {
+				if (arr_chkS == ""){
+					arr_chkS = "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}else{
+					arr_chkS = arr_chkS + "," + "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}
+			}
+		}
+	
+  var seccion = arr_chkS; //document.getElementById("listSecciones").value;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposCorreas&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+emp;
+	  url += "&SECCION="+seccion;
+	  url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//document.getElementById("ListEquipos").length =0;
+		  var txt= document.getElementById ("lbl0"); 
+		  txt.innerHTML = "";
+	 	//window.open(url);
+		  if (res){
+					  var tree = xmlDso.documentElement;
+					  if (tree.childNodes.length > 0){
+						  //var opcion = new Option("TODOS" ,"TOD");
+						  //document.getElementById("ListEquipos").options[0] = opcion; 
+						  //document.getElementById("ListEquipos").selectedIndex = 0;
+						  //if (opcion.value == "TOD"){
+						  //	opcion.selected = true
+						  //}
+						  for(var i = 1; i < tree.childNodes.length+1; i++){
+							var node = tree.childNodes.item(i-1);
+							//opcion = new Option(getChildNodeValue(node,"CODIGO") + " " +getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+							//document.getElementById("ListEquipos").options[i] = opcion;
+							
+							var box1= document.createElement ("input"); 
+							box1.type= "checkbox"; 
+							box1.id= "CHKID"; 
+							box1.value= getChildNodeValue(node,"CODIGO"); 
+							txt.appendChild (box1); 
+							
+							var label = document.createElement('label')
+							label.innerHTML  = getChildNodeValue(node,"DESCRIPCION") + "<br>";
+							txt.appendChild (label); 
+
+						  }
+					  }
+				  }
+			else
+			  window.open(url);
+	
+} 
+
+function listSecciones(){
+
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url+= "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		  var txt0= document.getElementById ("lbl1"); 
+		  txt0.innerHTML = "";		
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            //opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	//document.getElementById("listSecciones").options[i] = opcion;   
+			
+			
+							//var node = tree.childNodes.item(i-1);						
+							var box0= document.createElement ("input"); 
+							box0.type= "checkbox"; 
+							box0.id= "CHKSEC"; 
+							box0.value= getChildNodeValue(node,"CODIGO"); 
+							box0.onclick=ListEquiposCorrea;
+							txt0.appendChild (box0); 
+							
+							var label = document.createElement('label')
+							label.innerHTML  = getChildNodeValue(node,"DESCRIPCION") + "<br>";
+							txt0.appendChild (label); 
+			
+          	}
+			
+			//opcion = new Option("TODOS" ,"TOD");
+			//document.getElementById("listSecciones").options[i] = opcion; 		
+		  }
+		 else
+		 	window.open(url); 
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();    
+  day       = mydate.getDay();  
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+
+if ((month+"").length==1) month ='0' + month;
+
+//alert("01/01/"+ year);
+var fech_end = day_month + "/" + month + "/" + year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+// day_month=dateIni.getDate();
+// month=dateIni.getMonth()+1;
+ year=dateIni.getFullYear()-1;
+ 
+
+//if ((day_month+"").length==1) day_month ='0'+day_month;
+//if ((month+"").length==1) month ='0' + month;
+
+//document.getElementById("txtFecha").value = "01/01/"+ year;
+var fech_ini =  "01/01/"+ year;
+
+document.getElementById("txtFecha").value = fech_end;
+
+listSecciones();
+ListEquiposCorrea();
+ListBitacora();
+//setTimeout("color();",200);
+
+}
+
+
+
+function pagining(){
+	var sorter = new TINY.table.sorter('sorter','tabBitacora',{
+		headclass:'head',
+		ascclass:'asc',
+		descclass:'desc',
+		evenclass:'evenrow',
+		oddclass:'oddrow',
+		evenselclass:'evenselected',
+		oddselclass:'oddselected',
+		paginate:true,
+		size:10,
+		colddid:'columns',
+		currentid:'currentpage',
+		totalid:'totalpages',
+		startingrecid:'startrecord',
+		endingrecid:'endrecord',
+		totalrecid:'totalrecords',
+		hoverid:'selectedrow',
+		pageddid:'pagedropdown',
+		navid:'tablenav',
+		sortcolumn:1,
+		sortdir:1,
+//		sum:[8],
+//		avg:[6,7,8,9],
+//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+		init:true
+	});
+	var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+	hideDiv.call(this);	
+}
+
+function excel(){
+
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var maxmS = document.getElementById("formulario").CHKSEC.length;
+		var arr_chkS = "";
+		for (var idxS = 0; idxS < maxmS; idxS++) {
+			if (eval("document.getElementById('formulario').CHKSEC[" + idxS + "].checked") == true) {
+				if (arr_chkS == ""){
+					arr_chkS = "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}else{
+					arr_chkS = arr_chkS + "," + "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}
+			}
+		}
+
+		
+		var maxm = document.getElementById("formulario").CHKID.length;
+		var arr_chk = "";
+		for (var idx = 0; idx < maxm; idx++) {
+			if (eval("document.getElementById('formulario').CHKID[" + idx + "].checked") == true) {
+				if (arr_chk == ""){
+					arr_chk = "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}else{
+					arr_chk = arr_chk + "," + "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}
+			}
+		}
+		
+		var xmlDso = xmlDoc.XMLDocument;
+		var sorter = "";
+		//document.getElementById("loading").className = "loading-visible";
+		var url = "../xml/Informes.asp?RECURSO=ListReportDiario";
+		url += "&FECHA=" + document.getElementById("txtFecha").value;
+		url += "&SECCION=" + arr_chkS;
+		url += "&EQUIPO=" + arr_chk;
+		url += "&USUARIO=" + Usuario;
+		url += "&FAENA=" + emp;
+		url += "&EXCEL=YES";
+		url += "&VTZ=" + Math.random();
+		window.open(url);
+
+}
+function former1(){
+		document.getElementById("form1").className = "form1-visible";
+}
+function unformer1(){
+		var hideDiv = function(){document.getElementById("form1").className = "form1-invisible";};
+		hideDiv.call(this);
+}
+
+function pdf(){
+
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var maxmS = document.getElementById("formulario").CHKSEC.length;
+		var arr_chkS = "";
+		for (var idxS = 0; idxS < maxmS; idxS++) {
+			if (eval("document.getElementById('formulario').CHKSEC[" + idxS + "].checked") == true) {
+				if (arr_chkS == ""){
+					arr_chkS = "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}else{
+					arr_chkS = arr_chkS + "," + "'" + eval("document.getElementById('formulario').CHKSEC[" + idxS + "].value") + "'";
+				}
+			}
+		}
+
+		
+		var maxm = document.getElementById("formulario").CHKID.length;
+		var arr_chk = "";
+		for (var idx = 0; idx < maxm; idx++) {
+			if (eval("document.getElementById('formulario').CHKID[" + idx + "].checked") == true) {
+				if (arr_chk == ""){
+					arr_chk = "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}else{
+					arr_chk = arr_chk + "," + "'" + eval("document.getElementById('formulario').CHKID[" + idx + "].value") + "'";
+				}
+			}
+		}
+		
+		var xmlDso = xmlDoc.XMLDocument;
+		var sorter = "";
+		//document.getElementById("loading").className = "loading-visible";
+		var url = "reporte_diario.asp?RECURSO=ListReportDiario";
+		url += "&FECHA=" + document.getElementById("txtFecha").value;
+		url += "&SECCION=" + arr_chkS;
+		url += "&EQUIPO=" + arr_chk;
+		url += "&USUARIO=" + Usuario;
+		url += "&FAENA=" + emp;
+		url += "&txtSupConfiabilidad=" + document.getElementById("txtSupConfiabilidad").value;
+		url += "&txtInspLider=" + document.getElementById("txtInspLider").value;
+		url += "&txtInsp1=" + document.getElementById("txtInsp1").value;
+		url += "&txtInsp2=" + document.getElementById("txtInsp2").value;
+		url += "&txtInsp3=" + document.getElementById("txtInsp3").value;
+		url += "&txtEqRel=" + document.getElementById("txtEqRel").value;
+		url += "&txtObsEq=" + document.getElementById("txtObsEq").value;												
+		url += "&VTZ=" + Math.random();
+		var w = 840;
+		var h = 650;		
+		unformer1();
+		LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+		TopPosition = (screen.height) ? (screen.height-h)/2 : 0;			
+		var winHandle = window.open(url, "window_bit", "modal,toolbar=false,location=false,directories=false,status=false,menubar=false,scrollbars=yes,resizable=no,top="+TopPosition+",left="+LeftPosition+",width=840px,height=650px");
+		winHandle.focus();
+		
+}
+
+
+</SCRIPT>
+<link  href="../images/MooDialog.css" rel="stylesheet">
+<style>
+.myDialog {
+	margin: -300px 0 0 -450px;
+	width: 810px;
+	height: 550px;
+}
+
+.myDialog iframe {
+	width: 810px;
+	height: 550px;
+}
+</style>
+<script src="../Scripts/mootools-core.js"></script>
+<script src="../Scripts/Overlay.js"></script>
+<script src="../Scripts/MooDialog.js"></script>
+<script src="../Scripts/MooDialog.IFrame.js"></script>
+<BODY>
+	<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="../DTPicker.htm" width="180"></IFRAME>
+	</DIV>
+<FORM name="formulario" id="formulario">
+<INPUT type="hidden" value="" name="IdUsuario">
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+<BR><BR><BR>
+<div id="loading" class="loading-invisible">
+<br><br><br><br><br><br><br><br><img src="../images/cargando.png" alt="Cargando..." id="cargando" align="middle"/>
+</div>
+<div id="tablewrapper">
+<TABLE WIDTH="950" id="tableTitulo">
+  <!--DWLayoutTable-->
+<tr>
+  <td WIDTH="349" height="29" class="titulo">REPORTE DIARIO</td>
+  <td width="585" colspan="2" valign="top" class="titulo"></td>
+</tr>
+</TABLE>
+		<div id="tableheader">
+        	<div class="search">
+            <table width="100%" border="0" cellspacing="3" cellpadding="2">
+              <tr>
+                <td align="center"><span class="titulo">SECCION</span></td>
+                <td rowspan="2" align="left" valign="top"><!-- <select name="listSecciones" class="tableheader_select2" id="listSecciones" onChange="ListEquiposCorrea();">
+                  </select>-->
+                 <div class="tinyInput" id="lbl1"  style="overflow: auto; width: 230px; height:60px; border: 1px solid #336699; padding-left: 1px"></div></td>
+                <td align="center"><span class="titulo">EQUIPO</span></td>
+                <td rowspan="2" align="left" valign="top">
+<!--                  <select name="ListEquipos" id="ListEquipos" class="tableheader_select2"  onChange="ListBitacora();">
+                  </select>
+-->                  <div class="tinyInput" id="lbl0"  style="overflow: auto; width: 230px; height:60px; border: 1px solid #336699; padding-left: 1px"></div></td>
+                <td align="center"><select name="columns" class="tableheader_select1" id="columns" onChange="sorter.search('query')">
+                </select></td>
+                <td><input type="text" class="tableheader_input1" id="query" onKeyUp="sorter.search('query')" /></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td align="right" valign="bottom">&nbsp;</td>
+                <td align="center" valign="top"><span class="titulo">FECHA :
+                  <input type="text" class="input" name="txtFecha" id="txtFecha" size="12">
+  &nbsp;</span></td>
+                <td align="center" valign="middle"><input type="button" class="botonBlanco" value="Buscar" onClick="ListBitacora();">
+                  <input type="button" class="botonBlanco" value="Excel" onclick="excel();" />
+                <input type="button" class="botonBlanco" value="Pdf"     onclick="former1()" /></td>
+              </tr>
+            </table>
+		  </div>
+          <span class="details">
+				<div>Registros <span id="startrecord"></span>-<span id="endrecord"></span> de <span id="totalrecords"></span></div>
+        		<div><a href="javascript:sorter.reset()">Reinicio</a></div>
+       	  </span>
+    </div></br></br>
+	<TABLE cellpadding="1" cellspacing="1" class="tinytable" id="tabBitacora">
+            <thead>
+                <tr>
+                    <th class="nosort"><h3>Nombre Equipo</h3></th>
+                    <th><h3>Sistema o Componente</h3></th>
+                    <th><h3>Bitacora</h3></th>
+                    <th><h3>Aviso</h3></th>
+                    <th><h3>Orden</h3></th>
+                    <th class="nosort"><h3>Descripcion Condicion</h3></th>
+                    <th class="nosort"><h3>Recomendacion</h3></th>
+                    <th><h3>Criticidad</h3></th>
+                </tr>
+				<tr>
+				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+  				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+   				  <td>&nbsp;</td>
+				</tr>
+           </thead>                
+      <tbody>
+      </tbody>
+    </table>
+        <div id="tablefooter">
+          <div id="tablenav">
+            	<div>
+                    <img src="../images/first.gif" width="16" height="16" alt="primera Pag" onclick="sorter.move(-1,true)" />
+                    <img src="../images/previous.gif" width="16" height="16" alt="Pag Anterior" onclick="sorter.move(-1)" />
+                    <img src="../images/next.gif" width="16" height="16" alt="Pag Siguiente" onclick="sorter.move(1)" />
+                    <img src="../images/last.gif" width="16" height="16" alt="Ultima Pag" onclick="sorter.move(1,true)" />
+                </div>
+                <div>
+                	<select id="pagedropdown"></select>
+				</div>
+                <div>
+                	<a href="javascript:sorter.showall()">Ver Todo</a>
+                </div>
+          </div>
+			<div id="tablelocation">
+            	<div>
+                    <select onchange="sorter.size(this.value)">
+                    <option value="5">5</option>
+                        <option value="10" selected="selected">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>Registro por pag.</span>
+                </div>
+                <div class="page">Pag. <span id="currentpage"></span> de <span id="totalpages"></span></div>
+            </div>
+        </div>
+
+	<script type="text/javascript" src="../Scripts/script.js"></script>
+	<script type="text/javascript">
+		Inicio();
+	if (total_registros_lista > 0){
+		var sorter = new TINY.table.sorter('sorter','tabBitacora',{
+			headclass:'head',
+			ascclass:'asc',
+			descclass:'desc',
+			evenclass:'evenrow',
+			oddclass:'oddrow',
+			evenselclass:'evenselected',
+			oddselclass:'oddselected',
+			paginate:true,
+			size:10,
+			colddid:'columns',
+			currentid:'currentpage',
+			totalid:'totalpages',
+			startingrecid:'startrecord',
+			endingrecid:'endrecord',
+			totalrecid:'totalrecords',
+			hoverid:'selectedrow',
+			pageddid:'pagedropdown',
+			navid:'tablenav',
+			sortcolumn:1,
+			sortdir:1,
+	//		sum:[8],
+	//		avg:[6,7,8,9],
+	//		columns:[{index:7, format:'%', decimals:1},{index:8, format:'$', decimals:0}],
+			init:true
+		});
+		var hideDiv = function(){document.getElementById("loading").className = "loading-invisible";};
+		hideDiv.call(this);
+	}
+  </script>
+</div>
+    <link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar.css"></link>
+	<link rel="stylesheet" type="text/css" href="../Scripts/dhtmlxcalendar_dhx_web.css"></link>     
+	<script src="../Scripts/dhtmlxcalendar.js"></script>
+	<script>
+		var myCalendar;
+		myCalendar = new dhtmlXCalendarObject(["txtFecha"]);
+		myCalendar.setSkin("dhx_web");
+	</script>
+<div id="form1" class="form1-invisible">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="80%">
+  <tr>
+    <td valign="middle" align="center"><table width="350" border="0" cellpadding="4" cellspacing="4" bgcolor="#CCCCCC" class="Campo">
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Supervisor Confiabilidad:</td>
+    <td>&nbsp;</td>
+    <td valign="bottom"><input class="input" id="txtSupConfiabilidad" type="text" size="30"
+            			 name="txtSupConfiabilidad"/></td>
+  </tr>
+  <tr>
+    <td>Inspector Lider:</td>
+    <td>&nbsp;</td>
+    <td><input class="input" id="txtInspLider" type="text" size="30"
+            			 name="txtInspLider" /></td>
+  </tr>
+  <tr>
+    <td>Inspectores</td>
+    <td>&nbsp;</td>
+    <td><input class="input" id="txtInsp1" type="text" size="30"
+            			 name="txtInsp1"  /></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><input class="input" id="txtInsp2" type="text" size="30"
+            			 name="txtInsp2"  /></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><input class="input" id="txtInsp3" type="text" size="30"
+            			 name="txtInsp3"  /></td>
+  </tr>
+  <tr>
+    <td valign="top">Equipos Inspeccionados:</td>
+    <td>&nbsp;</td>
+    <td><textarea name="txtEqRel" id="txtEqRel"  rows="3" cols="30" class="textArea" ></textarea></td>
+  </tr>
+  <tr>
+    <td valign="top">Observaciones:</td>
+    <td>&nbsp;</td>
+    <td><textarea name="txtObsEq" id="txtObsEq"  rows="3" cols="30" class="textArea" ></textarea></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><input id="btnpdf" name="btnpdf" type="button" class="botonBlanco"  value="Generar Pdf" onclick="pdf();"  style="width:80px" />
+    <input id="btncancel" name="btncancel" type="button" class="botonBlanco"  value="Cancelar" onclick="unformer1();"  style="width:80px" /></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+
+</div>
+</FORM>
+</BODY>
+</HTML>

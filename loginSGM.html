@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Acceso TTM Insight</title>
+<style type="text/css">
+<!--
+@font-face {
+    font-family: mifont;
+    src: url('/css/handgotb/handgotb.ttf') format('truetype');
+    }
+body{
+    font-family:Arial, Helvetica, sans-serif;	
+	background-color: #CCCCCC;
+}
+.cuerpo {
+	font-family: mifont;
+	font-size: 12px;
+	font-weight:500;
+	color: #999999;
+}
+.cuerpored {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 4px;
+	color: #FF0000;
+}
+.Estilo1 {font-family: mifont; font-size: 20px; color: #999999; font-weight: bold; }
+.Estilo2 {
+	font-family: mifont;
+	font-size: 20px;
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.fondoTBcontacto1 {
+	background-image:url(../img/fdCampoTexto.gif);
+	font-family: Verdana;
+	font-size: 11px;
+	font-style: normal;
+	color:#000000;
+	border: 0px solid #CCCCCC;
+	font-weight:normal;
+	text-transform: none;
+	margin: 1px;
+	padding: 4px;
+	clear:both;
+	float: left;
+	height: 13px;
+	width: 137px;	
+}
+.textos{
+	font-family:mifont;
+	color:#666666;
+	font-size:12px;
+	font-weight: bold;
+}
+.menu1:link {
+	color: #666666;
+	font-family:mifont;
+	font-size:12px;
+	text-decoration: none;
+}
+.menu1:visited {
+	color: #666666;
+}
+.menu1:hover {
+	color: #666666;
+	font-family:mifont;
+	font-weight:200;
+	font-size:12px;
+	text-decoration:underline;
+}
+.menu1:active {
+	color: #666666;
+	font-family:mifont;
+	font-size:12px;
+	text-decoration: none;
+}
+.marco {
+	text-decoration: none;
+	padding-top: 6px;
+}
+-->
+</style>
+
+<!--[if lt IE 8]>
+   <style type="text/css">
+    .marco2 {
+       text-decoration: none;
+       padding-top: 6px;
+	}
+    </style>
+<![endif]-->
+<!--[if !IE]><!-->
+    <style type="text/css">
+     .marco2 {
+       padding-top: 6px;
+        height: 122px;
+	}
+    </style>
+ <!--<![endif]-->
+<!--[if gte IE 7]>
+    <style type="text/css">
+     .marco2 {
+       padding-top: 6px;
+        height: 118px;
+	}
+    </style>
+<![endif]-->
+
+
+
+
+
+
+
+
+<script type="text/javascript" language="JavaScript" src="/standard/vitcomz.js"></script>
+<script type="text/javascript" language="javascript" src="/standard/mootools.js"></script>
+<script type="text/javascript">
+<!--
+window.location = "http://www.ttminsight.cl";
+
+window.addEvent('domready', function(){
+   $('Ingresar').addEvent('click', function(evento){   
+      	var nuevoRequest = new Request({
+         	method: 'get', 
+         	url: '/sci/xml/usuarios.asp?RECURSO=ValidaPass&id=' + document.getElementById('TxtID').value+'&PASSWORD=' + document.getElementById('TxtPassWord').value+"&TIPO=CONFIABILIDAD",
+         	onSuccess: function(texto, xmlrespuesta){login(texto);},
+         	onFailure: function(){alert('Error! ');}
+      }).send();
+      
+   });
+   
+   $('TxtPassWord').addEvent('keyup', function(evento){   
+		var esIE=(document.all);
+		var esNS=(document.layers);
+		tecla=(esIE) ? event.keyCode : evento.which;
+		if(tecla==13){
+			var nuevoRequest = new Request({
+			method: 'get', 
+			url: '/sci/xml/usuarios.asp?RECURSO=ValidaPass&id=' + document.getElementById('TxtID').value+'&PASSWORD=' + document.getElementById('TxtPassWord').value+"&TIPO=CONFIABILIDAD",
+			onSuccess: function(texto, xmlrespuesta){
+					login(texto);
+				},
+			 onFailure: function(){alert('Error2!');}
+			 }).send();
+	    };
+      
+   });
+   
+});
+
+
+
+function login(res2){
+	DelSession(document.getElementById('TxtID').value);
+	if (res2){
+		if (res2.indexOf('True')>0){
+			CrearSession(document.getElementById('TxtID').value);
+			this.location.href="/sgm/login.html";
+		}
+		else{
+			alert("Usuario o Password Invalidos!");
+			formulario.TxtID.focus();
+		}
+	  }
+}
+
+//-->
+</script>
+</head>
+
+<body>
+<xml id="XMLDoc"></xml>
+<form name="formulario" action="">
+<table height="800" width="800" border="0" align="center" cellpadding="0" cellspacing="0" style="background-image:url(/img/fondo_ttm_insight.jpg)">
+<tr>
+<td class="marco2">&nbsp;</td>
+</tr>
+  <tr>
+         <td width="26">&nbsp;</td>
+   <td class="marco" valign="top">
+<table width="258" border="0" cellspacing="0" cellpadding="10" style="background-image:url(/img/FondoCuadro.gif)">
+  <tr>
+      <td width="160">
+          <span class="cuerpo">Un software personalizable y amigable, exclusivo de  TTMCHILE, 
+          que permite el manejo de información relevante de los  transportadores, predecir comportamientos 
+          y priorizar la atención en los  elementos críticos sobre los que es necesario actuar para aumentar 
+          la  disponibilidad.<br />
+      </div></td>
+  </tr>
+  <tr>
+    <td>
+        <table height="155" width="200" border="0" align="center" cellpadding="0" cellspacing="0">
+          <tr>
+            <td colspan="2" class="Estilo1">Acceso <span class="Estilo2">Clientes</span></td>
+          </tr>
+          <tr>
+            <td class="cuerpored">&nbsp;</td>
+             <td></td>
+         </tr>
+          <tr>
+            <td class="textos" >Login</td>
+            <td><input name="TxtID" id="TxtID" type="text" class="fondoTBcontacto1"/>          </td>
+          </tr>
+          <tr>
+            <td class="textos">Password&nbsp;</td>
+            <td><input name="TxtPassWord" id="TxtPassWord" type="password" class="fondoTBcontacto1"/></td>
+          </tr>
+          <tr>
+            <td class="cuerpored">&nbsp;</td>
+             <td></td>
+         </tr>
+          <tr>
+            <td height="14" scope="row">&nbsp;</td>
+            <td scope="row"> <span class="textos"><img alt="TTM Chile" src="/img/vineta1.gif" width="9" height="11"/></span>
+               <a href="javascript:void(0)" id="Ingresar" class="menu1">Ingresar</a></td> 
+           </tr>
+          <tr>
+            <td height="14" scope="row">&nbsp;</td>
+            <td scope="row"><span class="textos"><img src="img/vineta1.gif" alt="Volver" width="9" height="11" />
+            </span> <a href="http://www.ttmchile.cl" target="_self" class="menu1">Home TTMChile.</a></td>
+          </tr>
+          <tr>
+            <td height="14" scope="row">&nbsp;</td>
+            <td scope="row">
+            <span class="textos"><img src="img/vineta1.gif" alt="Volver" width="9" height="11"/> </span> 
+            <a href="http://www.ttminsight.cl" target="_self" class="menu1">Home  Insight.</a></td>
+          </tr>
+       </table>
+    </td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

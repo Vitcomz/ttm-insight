@@ -1,0 +1,504 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<title>Informe de Inspecciones - Diario</title>
+
+
+
+
+
+
+</head>
+<xml id = xmlTemp></xml>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css">
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<SCRIPT type="text/javascript" src="windowfiles/dhtmlwindow.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+.style1 {color: #FFCC00}
+.style3 {color: #FF3300}
+.style4 {color: #666666;margin-bottom:0px;}
+
+-->
+</style>
+<script>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+
+function ListBitacora(){
+   
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Informes.asp?RECURSO=infDiario";
+		url += "&RESPONSABLE=TOD";
+		url += "&BITACORAS="+document.getElementById("txtBitacoras").value;
+		url += "&TURNO=TOD";
+		url += "&FAENA="+emp;
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_DANO=TOD";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		if (!xmlestado)
+			window.open(url);
+			
+		if (id_br == "IE")
+		{
+			document.frames['frameinforme'].ListBitacora(document.getElementById("txtBitacoras").value);
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			window.frames['frameinforme'].ListBitacora(document.getElementById("txtBitacoras").value);
+		}
+		document.getElementById('frameinforme').focus();
+//	document.getElementById('frameinforme').src= url;
+
+	//with (divWait.style){visibility = "visible";} 
+	
+}
+
+
+function guardar(){
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+  
+		  if (document.getElementById("txtFolio").value){
+		  
+			if(confirm("Desea Actualizar Informe Folio " + document.getElementById("txtFolio").value)){
+				var url = "../xml/Informes.asp?RECURSO=updateInfDiario";
+				url += "&BITACORAS="+document.getElementById("txtBitacoras").value;
+				url += "&FOLIO="+document.getElementById("txtFolio").value;
+				url += "&FAENA="+emp;
+				url += "&USUARIO="+Usuario;
+				url += "&FECHA="+document.getElementById("idFecha").innerText;
+				url += "&VTZ=" + Math.random();
+				
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+				{
+							if (window.XMLHttpRequest)
+							  {// code for IE7+, Firefox, Chrome, Opera, Safari
+							  xmlhttp=new XMLHttpRequest();
+							  }
+							else
+							  {// code for IE6, IE5
+							  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+							  }
+							xmlhttp.open("GET",url,false);
+							xmlhttp.send();
+							xmlDoc=xmlhttp.responseText;
+							parser = new DOMParser();
+							xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+							xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+							//alert(xmlDso);
+							//window.open(url);
+				}
+				else if (id_br == "IE")
+				{
+					xmlestado = xmlDso.load(url);
+				}
+
+				if (!xmlestado)
+						window.open(url);
+				else
+					alert("Informe actualizado.");		
+				
+				} // end if confirm
+				
+		  }else{
+		  
+				var url = "../xml/Informes.asp?RECURSO=newInfDiario";
+				url += "&BITACORAS="+document.getElementById("formulario").txtBitacoras.value;
+				url += "&FAENA="+emp;
+				url += "&USUARIO="+Usuario;
+				url += "&FECHA="+document.getElementById("idFecha").innerText;
+				url += "&VTZ=" + Math.random();
+				
+				if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+				{
+							if (window.XMLHttpRequest)
+							  {// code for IE7+, Firefox, Chrome, Opera, Safari
+							  xmlhttp=new XMLHttpRequest();
+							  }
+							else
+							  {// code for IE6, IE5
+							  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+							  }
+							xmlhttp.open("GET",url,false);
+							xmlhttp.send();
+							xmlDoc=xmlhttp.responseText;
+							parser = new DOMParser();
+							xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+							xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+							//alert(xmlDso);
+							//window.open(url);
+				}
+				else if (id_br == "IE")
+				{
+					xmlestado = xmlDso.load(url);
+				}
+				if (!xmlestado){
+						window.open(url);}
+				else{
+					var x = xmlDso.getElementsByTagName("REGISTROS");
+					document.getElementById("txtFolio").value = x[0].getElementsByTagName("ROW")[0].childNodes[0].nodeValue;
+//xmlDso.documentElement.childNodes.item(0).text;	
+					//alert(xmlDso.documentElement.childNodes.item(0).text);
+					alert("Nuevo informe ingresado.");	
+				}
+					
+//				if (!document.getElementById("txtFolio").value){
+//					
+//				}
+			}
+	if (id_br == "IE")
+	{
+		document.frames['frameinforme'].saveCriticidad();
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		window.frames['frameinforme'].saveCriticidad();
+	}
+
+//	document.getElementById('frameinforme').saveCriticidad();	
+	
+	setTimeout("getInforme()",1000);
+	  
+}
+
+
+ 
+function showBitacoras(){
+
+	var url = "listBitacoras.html";			
+	winCfg = "width=550px,height=400px,left=" + 250 + "px,top=" + 150 +"px,resize=1,scrolling=0";	
+	var inlinewin2=dhtmlwindow.open("googlebox", "iframe", url , "BITACORAS", winCfg, "recal");
+
+//	var winHandle = window.open(url, "window_bit", "modal,toolbar=false,location=false,directories=false,status=false,menubar=false,scrollbars=yes,resizable=no,top="+TopPosition+",left="+LeftPosition+",width=550px,height=400px");
+//	winHandle.focus();
+	 
+}
+
+function showFolios(){
+
+var url = "listFoliosDia.html";			
+winCfg = "width=230px,height=300px,left=" + 740 + "px,top=" + 85 +"px,resize=1,scrolling=0";	
+var inlinewin2=dhtmlwindow.open("folioBox", "iframe", url , "INFORMES DIARIOS", winCfg, "recal");
+				 
+}
+
+function listTipos(){
+	if (id_br == "IE")
+	{
+		var xmlTemp = document.getElementById("xmlTemp");
+		xmlTemp.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp = document.implementation.createDocument("", "", null);
+	}
+
+    var xmlDso = xmlTemp.XMLDocument;
+	  var url = "../xml/Equipos.asp?RECURSO=ListTipos";
+ 	  url += "&VTZ=" + Math.random();
+	  	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	
+	if(!res)
+		window.open(url);
+	if (res){
+		
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("SELECCIONAR" ,"");
+				if (opcion.value == "") opcion.selected = true;
+	            document.getElementById("listTipos").options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+	            document.getElementById("listTipos").options[i] = opcion;
+ 			 }
+    	  }
+	else{
+	  window.open(url);
+	}
+ }
+ 
+
+function excel(){
+	if (document.getElementById("txtBitacoras").value != ''){
+   //frameInforme.ListBitacora(document.getElementById("formulario").txtFechaIni.value,document.getElementById("formulario").txtFechaFin.value,document.getElementById("formulario").ListEquipos.value); 
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+   
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "../xml/Informes.asp?RECURSO=infDiario";
+		url += "&RESPONSABLE=TOD";
+		url += "&BITACORAS="+document.getElementById("txtBitacoras").value;
+		url += "&TURNO=TOD";
+		url += "&FAENA="+emp;
+		url += "&USUARIO=HSANDOVAL";
+		url += "&IND_DANO=TOD";
+		url += "&EXCEL=YES";
+		url += "&IND_INCIDENTE=TOD";
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+		
+		document.getElementById('frameinforme').src= url;
+		with (divWait.style){visibility = "visible";} 
+		var t=setTimeout("hiddenFrm()",2000);
+		
+	//xmlestado = xmlDso.load(url);
+	}else{
+		alert('Debe ingresar bitacora del dia');
+	}
+	
+}
+
+function Inicio(){
+var mes = "";
+var tmpStr1 = "";
+var tmpStr2 = "";
+
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getFullYear();
+  day       = mydate.getDay();  
+
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+
+document.getElementById("idFecha").innerText = day_month + "/" + month +"/"+ year;
+
+var dateIni = new Date(year,month-1,"01");   
+
+ milisegundos=parseInt(3*24*60*60*1000);
+
+ tiempo=dateIni.getTime();
+ total=dateIni.setTime(parseInt(tiempo-milisegundos));
+ day_month=dateIni.getDate();
+ month=dateIni.getMonth()+1;
+ year=dateIni.getYear();
+ 
+
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+//document.getElementById("formulario").txtFechaIni.value = "01/" + month +"/"+ year;
+
+
+
+}
+
+function getInforme(){
+
+	
+	if (id_br == "IE")
+	{
+		var xmlTemp = document.getElementById("xmlTemp");
+		xmlTemp.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp = document.implementation.createDocument("", "", null);
+	}
+	var xmlDso = xmlTemp.XMLDocument; 
+	var url  = "../xml/informes.asp?RECURSO=getInfDiario&FOLIO=" + document.getElementById("formulario").txtFolio.value;
+	    url += "&FAENA="+emp;
+		url += "&VTZ=" + Math.random();
+    
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	var tree = xmlDso.documentElement;
+    	
+	if (!res)
+		window.open(url);
+		
+		var node = tree.childNodes.item(0);
+		var frm = document.getElementById("frameinforme");
+		document.getElementById("txtBitacoras").value = getChildNodeValue(node,"BITACORAS");
+		document.getElementById("idFecha").innerText = getChildNodeValue(node,"FECHA");
+		if (id_br == "IE")
+		{
+			document.frames['frameinforme'].document.getElementById("idFaena").innerText = emp;
+			document.frames['frameinforme'].document.getElementById("idFecha").innerText = getChildNodeValue(node,"FECHA");
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			window.frames['frameinforme'].document.getElementById("idFaena").innerHTML = emp;
+			window.frames['frameinforme'].document.getElementById("idFecha").innerHTML = getChildNodeValue(node,"FECHA");
+		}
+
+		ListBitacora();
+		
+		
+}
+
+function hiddenFrm(){ with (document.getElementById("divWait").style){visibility = "hidden";}}
+
+function _print(){
+		if (id_br == "IE")
+		{
+			document.frames['frameinforme']._print();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			window.frames['frameinforme']._print();
+		}
+
+
+}
+
+
+</script>
+
+<body  onload="Inicio();">
+<form name="document.getElementById("formulario")" id="formulario">
+<input type="hidden" value="" name="IdUsuario">
+  <div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 58px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="../images/cargando.gif" />	</div>
+    
+	<div id="divCalendar" onClick="event.cancelBubble=true" 
+		style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<iframe frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="../DTPicker.htm" width="180"></iframe>
+	</div>
+    
+
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br><br><br>
+<table width="100%" id="tableTitulo">
+     <tr>
+      <td width="269"  height="21" class="titulo">INFORME DIARIO DE INSPECCIONES</td>
+       <td width="954" align="right"><span class="calibri">INFORME FOLIO 
+       <img src="../images/litleLupa.png" align="absbottom" style="cursor:hand" 
+      					alt="Buscar Informes" onclick="showFolios();" />
+           <input type="text" class="input" name="txtFolio" id="txtFolio" size="10"  align="absbottom" />
+           &nbsp;</span>&nbsp;
+         <input type="button" class="botonBlanco" value="Guardar"  onclick="guardar();" />
+         <input type="button" class="botonBlanco" value="Exportar Excel" onclick="excel();" />
+         <input type="button" class="botonBlanco" value="Imprimir"     onclick="_print()" /></td>
+    </tr>
+    
+     <tr>
+     <td>&nbsp;</td>
+     <td height="29" align="right" valign="middle" class="calibri">&nbsp;&nbsp;&nbsp;
+      FECHA <SPAN  id="idFecha" ></SPAN>&nbsp;&nbsp;
+      RESPONSABLE &nbsp;&nbsp;<SPAN  id="idResponsable" ></SPAN>&nbsp;&nbsp;      BITACORAS DEL DIA : 
+       <img src="../images/litleLupa.png" alt="Buscar Inspecciones" align="absbottom"
+				style="cursor:hand" onclick="showBitacoras();" />
+       <img src="../images/flecha.png" alt="Agregar" onclick="if (document.getElementById('txtBitacoras').value != ''){ListBitacora(this);if (id_br == 'IE'){document.frames['frameinforme'].document.getElementById('idFaena').innerText = emp}else{window.frames['frameinforme'].document.getElementById('idFaena').innerHTML = emp};if (id_br == 'IE'){document.frames['frameinforme'].document.getElementById('idFecha').innerText = day_month+'/'+month+'/'+year}else{window.frames['frameinforme'].document.getElementById('idFecha').innerHTML = day_month+'/'+month+'/'+year}};" align="absbottom" style="cursor:hand" />
+       <input type="text" class="input" name="txtBitacoras" id="txtBitacoras" size="72"  />
+       </td>
+     </tr>
+</table>
+</form>
+<iframe src="InspDiarias_collahuasi.html"  onload="hiddenFrm();" id="frameinforme" name="frameinforme" width="100%"  
+			height="500" scrolling="yes" frameBorder="0" class="style4"></iframe>
+</body>
+</html>

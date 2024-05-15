@@ -1,0 +1,95 @@
+body { margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; }
+a { font-weight:bold; font-size: 10px; font-family:Verdana, Arial, Helvetica, sans-serif; color: #3b5998; text-decoration:none; margin-bottom:10px;}
+a:hover { text-decoration:underline; }
+select { font-size: 10px; font-family:Verdana, Arial, Helvetica, sans-serif; padding:2px 2px 1px 1px; }
+
+.texto { font-family:Verdana, Tahoma, Arial; font-size:11px; font-weight:normal; border:solid 1px #FFFFFF; }
+.normal { font-family:Verdana, Tahoma, Arial; font-size:11px; font-weight:normal; table-layout:fixed; }
+.body { margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-family:Verdana, Tahoma, Arial; font-size: 11px; font-weight:normal; }
+.normal9px { font-family:Verdana, Tahoma, Arial; font-size:9px; font-weight:normal; }
+.normal { font-family:Verdana, Tahoma, Arial; font-size:11px; font-weight:normal; }
+.Subtitulo { font-family: Arial, Helvetica, sans-serif;	background-color:#6699ff; font-size:12px; font-weight:bold; color:White; }
+.Rotulo { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; color:#000000; text-align:left; background-color:#dde3eb; }
+.rotulo { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; color:#333333; text-align:left; background-color:#F1F1F1; }
+.mensaje { font-family:Verdana, Tahoma, Arial; font-size:75%; font-weight:normal; color:#FF0000; visibility:hidden; }
+.titulo { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; }
+.tituloBlanco { font-family: Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; color:White; }
+.boton{ background-color:#eeeeee; layer-background-color:#999999; color:#black; cursor:pointer; cursor:hand; }
+.botonBlanco{ padding:2px 4px 2px 4px; border-style:solid; border-top-width:1px; border-left-width:1px; border-bottom-width:1px; border-right-width:1px;
+	border-top-color:#D9DFEA; border-left-color:#D9DFEA; border-bottom-color:#0e1f5b; border-right-color:#0e1f5b; background-color:#3b5998;
+	color:#FFFFFF;font-size:11px;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;text-align:center; }
+.botonBlancoLargo { padding:2px 8px 2px 8px; border-style:solid; border-top-width:1px; border-left-width:1px; border-bottom-width:1px;
+	border-right-width:1px; border-top-color:#D9DFEA; border-left-color:#D9DFEA; border-bottom-color:#0e1f5b; border-right-color:#0e1f5b;
+	background-color:#3b5998; color:#FFFFFF;font-size:11px;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;text-align:center; }
+.blueTr { BACKGROUND: #94B0BE; FONT-FAMILY: Verdana; FONT-SIZE: 8pt; }
+.littleButton { filter:progid:dximagetransform.microsoft.gradient (gradienttype=0,startcolorstr="#f9f9f1",endcolorstr="#e7e8dd"); border:solid 1px #6587A3;
+	background-color:Silver; font-family:Verdana, Helvetica, sans-serif; font-size:8px; font-weight:normal; padding:1px 1px 1px 1px; cursor:hand; }
+.input { color:#black; font-family:Verdana, Tahoma, Arial; background-color:#dde3eb; border:solid 1px #7E95BD; font-size: 10px;
+	background-image: url(images/back1.png); background-repeat: no-repeat; background-position: left top; }
+.inputBold { background-color:#dde3eb; font-weight:bold; font-family:Verdana, Tahoma, Arial; border:solid 1px #7E95BD; font-size: 11px;
+	text-align:left;color:#black; font-family: arial, verdana, helvetica, sans-serif; background-image: url(images/back1.png);
+	background-repeat: no-repeat; background-position: left top; }
+.select { color:#black; font-family: arial, verdana, helvetica, sans-serif; background-color:#dde3eb; border:solid 1px #7E95BD; font-size: 11px;
+	font-weight:bold; background-image: url(images/back1.png); background-repeat: no-repeat; background-position: left top; }
+.inputT { color:#black; font-family: arial, verdana, helvetica, sans-serif; background-color:#dee6eb; border:solid 0px #7E95BD; 
+	font-size: 11px; cursor:default; }
+.tdSel { color:#black; font-family: arial, verdana, helvetica, sans-serif; background-color:#dde3eb; cursor:hand; font-size: 11px; }
+.td{ color:#black; font-family: arial, verdana, helvetica, sans-serif; border:solid 1px #7E95BD; border-width:medium; }
+.Campo { color:#black; font-family:Verdana, Tahoma, Arial; background-color:#dde3eb; border-width:thin; border:solid 1px #7E95BD;
+	font-size: 10px; background-image: url(images/back1.png); background-repeat: no-repeat; background-position: left top; }
+.campoNum { color:#black; font-family:Verdana, Tahoma, Arial; background-color:#dde3eb; border-width:thin; border:solid 1px #7E95BD;
+	font-size: 10px; text-align:right; background-image: url(images/back1.png); background-repeat: no-repeat; background-position: left top; }
+.CampoBold { color:#black; font-family: arial, verdana, helvetica, sans-serif; background-color:#dde3eb; border-width:thin; border:solid 1px #7E95BD;
+	font-size: 12px; font-weight:bold; text-align:center; background-image: url(images/back1.png); background-repeat: no-repeat;
+	background-position: left top; }
+.tituloLista { font-size:10px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; text-align:Center; color:#000000; 
+	vertical-align:Middle; background-color:#dde3eb; }
+.itemLista2 { font-size:10px; font-family:Arial, Helvetica, sans-serif; font-weight:bold; text-align:Center; color:#000000; vertical-align:Middle;
+	background-color:FFFFFF; }
+.txtVineta { background-color:#7E95BD; layer-background-color:#000000; color:#FFFFFF; font-weight:bold; font-size:10px; }
+.LitleText { font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold; font-size:10px; border-spacing:0px; }
+.tinyText { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:8px; font-weight:bold; border:solid 0px #000000; }
+.tinyTextBox { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:8px; font-weight:bold; border:solid 1px #000000; }
+.tinyInput { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:8px; font-weight:bold; border:solid 1px #000000; color:#003399; }
+.textArea {	font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; background-color: #DDE3EB; border:solid 1px #7E95BD;  }
+.tituloBox { font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; border:solid 1px #000000; text-align:left;}
+.tituloBoxNum { font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; border:solid 1px #000000; text-align:right; }
+.tituloBlanco { font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; color:White; }
+.tablaBordesTitle { font-family: Arial, Helvetica, sans-serif; font-size:10px; font-weight:bold; background-color:#dde3eb; color:Black;
+	text-align:center; border-bottom:solid 1px #6587a3; border-top:solid 1px #6587a3; border-left:solid 1px #6587a3; border-right:solid 1px #6587a3; }
+.tablaBordes { font-family: Arial, Helvetica, sans-serif; font-size:10px; font-weight:bold; color:Black; background-color:#FFFFFF;
+	border-bottom:solid 1px #6587a3; border-top:solid 1px #6587a3; border-left:solid 1px #6587a3; border-right:solid 1px #6587a3;}
+.bordes { border-bottom:solid 1px #000000; border-top:solid 1px #000000; border-left:solid 1px #000000; border-right:solid 1px #000000;}
+.noBorder { color:#333333; font-family:Arial, Helvetica, sans-serif; font-weight:bolder; font-size: 10px; border-top:solid 0px #dde3eb;
+	border-left:solid 0px #000000; border-right:solid 0px #000000; border-bottom:solid 0px #000000; }
+.calibri { font-family: Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; color:Black; }
+.calibri_16 { font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; color:Black; }
+.TBL_1 { BACKGROUND-COLOR:#DFDFDF; FONT:BOLD 10PX TAHOMA; CURSOR:HAND; PADDING:5PX; BORDER:OUTSET 3PX #E2E2E2; BORDER-COLLAPSE:COLLAPSE; }
+.calibri16Border { border-bottom:solid 1px #000000; border-top:solid 1px #000000; border-left:solid 1px #000000; border-right:solid 1px #000000;
+	font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; color:Black; }
+.hidden { display: none; }
+.style4 {color: #666666;margin-bottom:0px;}
+
+
+@media print {
+	div#header{ position:fixed;height:80%; }
+	div#content{ top:100px; margin-bottom:20px; height:80%; }
+	div#footer{ position:fixed; visibility:visible }
+	body{ overflow:hidden; background-color:#FFFFFF; }
+	table { page-break-inside:auto }
+	tr { page-break-inside:avoid; page-break-after:auto; page-break-before:auto }
+	img { page-break-inside:avoid; page-break-after:avoid; page-break-before:avoid }
+	.dontsplit { border: 0px solid black; page-break-inside: avoid; }
+}
+@media screen {
+	div#footer{ position:fixed; visibility:hidden; }
+}
+
+span.loading { font-weight:bold; font-size:18px; vertical-align:baseline; color:white; font-style:italic; font-family: arial, verdana, helvetica, sans-serif;
+	letter-spacing:2px; background-color:teal; text-align:center; font-variant:small-caps; }
+tr.HeaderLista { font-size:11px; font-family: Verdana, Helvetica, sans-serif; font-weight:bold; text-align:Center; color:#000000; vertical-align:Middle;
+	background-color:#7E95BD; }
+tr.HeaderListaBlack { font-size:12px; font-family: Verdana, Helvetica, sans-serif; font-weight:bold; text-align:Center; color:#000000; vertical-align:Middle; }
+tr.ItemLista { font-size:11px; font-family: Verdana, Helvetica, sans-serif; text-align:Left; color:Black; vertical-align:top; background-color: #dde3eb;}
+tr.ItemListaOver { font-size:11px; font-family: Verdana, Helvetica, sans-serif; text-align:Left; color:Black; vertical-align:Middle; background-color:Silver;
+	cursor:default;}

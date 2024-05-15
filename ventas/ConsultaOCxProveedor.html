@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Busqueda Articulos</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<link rel="stylesheet" href="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script type="text/javascript" src="standard/Tabber/tabber.js"></script>
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+        <style type="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </style>
+</HEAD>
+
+<script>
+function inicio(){
+//ListSolicitudes();
+formulario.txtProveedor.focus();
+
+}
+
+
+
+  
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabOC');
+Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="OrdenCompra.html?Folio=" + Folio;
+
+}
+
+
+function buscar(){
+	 
+			
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/Proveedores.asp?RECURSO=ListOCxProv";
+		url += "&TXTSRC=" + formulario.txtProveedor.value;
+
+//window.open(url);
+
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+
+<DIV id="DivProv" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameProv" src="ListProveedores.html" frameBorder="0" width="250" scrolling="no"	height="250"></IFRAME>
+</DIV>
+
+
+<DIV id="DivOT" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameOT" src="generaOT.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR>
+	<BR>
+		<form name="formulario" action="">
+				  <h2 class="titulo2">Busqueda de O.C por Proveedores.</h2>
+		          <table>
+				  <tr>
+						<td class="input">Proveedor :
+						  <input name="txtProveedor" type="text" class="input" id="txtProveedor"  size="30">
+						<input type="button" class="botonBlanco" onClick="buscar()" value="Buscar" />
+								
+					</td>
+		          </tr></table>
+			 						
+			<table width="962" border="0" cellpadding="0" cellspacing="3" datapagesize="20" 
+				 id="tabOC" datasrc="#xmlOC" class="tablaBordesTitle">
+				<thead>
+				<tr class="tablaBordesTitle">
+				  <td width="31" >FOLIO</td>
+				  <td width="48" >MONEDA </td>
+				  <td width="208">PROVEEDOR</td>
+				  <td width="34" >FECHA</td>
+				  <td width="46" >SOLICITA</td>
+				  <td width="28" >AREA</td>
+   				  <td width="355">DESCRIPCION</td>
+				  </tr>
+				</thead>
+			<tr bgcolor="#dee6eb" class="tablaBordes" onClick="verOC(this.rowIndex);" style="cursor:hand">
+				<td ><span datafld="FOLIO"/></td>
+				<td ><span datafld="MONEDA"/></td>
+				<td align="left"><span   datafld="NOMBRE"/></td>
+				<td align="center"><span  datafld="FECHA"></span></td>
+				<td ><span   datafld="RESPONSABLE"></span></td>
+			    <td ><span   datafld="AREA"></span></td>
+		      	<td align="left"><span  datafld="PROJECTO"></span></td>
+			  </tr>
+			<tfoot>
+			<tr align="left">
+					   <td class="input" colspan="26">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <span id="IDCantReg"></span>
+					&nbsp;| Vista: <span id="IDFraccionReg"></span>			</td>
+			</tr>
+			</tfoot>
+</table>
+<br>
+		</form>
+
+	</body>
+</HTML>

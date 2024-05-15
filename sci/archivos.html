@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>Vitcomz Upload</TITLE>
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+</HEAD>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+
+<xml id=xmlResponsables></xml>
+
+<SCRIPT LANGUAGE="javascript1.2">
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+
+function mostrarVentana(_codeobj, _nameobj,  _popbox){
+  popbox = _popbox;
+  formulario.txtIdent.value = _codeobj.value;
+  formulario.txtFamilia.value = _nameobj;
+  popbox = _popbox;
+  with (popbox.style){visibility = "visible";}
+  url = "xml/archivos.asp?recurso=SaveFile";
+  url = url + "&FAMILIA="+formulario.txtFamilia.value;;
+  url = url + "&IDENTIFICADOR="+formulario.txtIdent.value;
+  document.formulario.action=url;
+}
+
+
+
+</SCRIPT>
+
+<BODY >
+<DIV  align="right">
+<IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="popbox.style.visibility = 'hidden';"></DIV>	
+<DIV  class="titulo" STYLE="border-bottom: #A91905 2px solid;font-size:16">Adjuntar Archivo</DIV>
+<DIV style='margin-left:5'>
+<FORM NAME="formulario" METHOD="POST" 
+		enctype="multipart/form-data" >
+ <TABLE WIDTH="401" BORDER="0">
+ <TR>
+      <TD WIDTH="81"><FONT CLASS="texto">Identificaci�n:</FONT></TD>
+      <TD WIDTH="324"><INPUT NAME="txtIdent" CLASS="input" SIZE="12" readonly /><BR> </TD></TR>
+ <TR>
+      <TD WIDTH="81"><FONT CLASS="texto">Categoria:</FONT></TD>
+      <TD WIDTH="324"><INPUT NAME="txtFamilia" CLASS="input" SIZE="12" readonly /><BR> </TD></TR>
+ <TR>
+      <TD><FONT CLASS="texto">Archivo:</FONT></TD>
+      <TD>
+		<FONT CLASS="texto">
+		<INPUT NAME="attach1" TYPE="file" CLASS="input" SIZE="45" >
+		 </FONT> </TD></TR></TABLE>
+<BR><BR>
+<INPUT type=submit CLASS="botonBlanco" VALUE="Adjuntar" 
+	onClick="formulario.submit();">
+</FORM>
+
+<BR></DIV>
+
+</BODY>
+</HTML>

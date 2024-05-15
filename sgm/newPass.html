@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</head>
+<link href='http://fonts.googleapis.com/css?family=Ubuntu|Oswald:400,700,300' rel='stylesheet' type='text/css'>
+<link href="css/style-ttm.css" rel="stylesheet" type="text/css" />
+ 
+
+<style>
+body{
+	background-color:#ffffff;
+	margin:0 auto;
+	font-family: 'Ubuntu', sans-serif;
+}
+</style>
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script language="JavaScript1.2" src="js/main.js"></script>
+<script>
+
+
+function equipos(){
+
+	var url = "equipos.html";
+		url += "?VTZ=" + Math.random();
+	//url += "?EQUIPO=" + 1;
+
+
+winCfg = "width=759px,height=510px,left=" + 210 + "px,top=" + 40 +"px,resize=1,scrolling=0";	
+equiposwin= parent.dhtmlwindow.open("boxEquipos", "iframe", url , "ADMINISTRACI�N EQUIPOS ", winCfg);
+			
+}
+
+function Faenas(){
+
+	var url = "listFaenas.html";
+	    url += "?VTZ=" + Math.random();
+
+
+winCfg = "width=359px,height=310px,left=" + 210 + "px,top=" + 40 +"px,resize=1,scrolling=0";	
+equiposwin= parent.dhtmlwindow.open("boxFaenas", "iframe", url , "FAENAS", winCfg);
+			
+}
+
+ 
+ 
+
+ 
+function sendMail(mod){
+
+	 
+ 
+	 if (document.getElementById("idMail").value==""){
+	 			alert("Ingrese e-mail.");
+				return;}
+
+	 if (document.getElementById("idNombres").value==""){
+	 			alert("Ingrese su nombre.");
+				return;}
+	
+	 if (document.getElementById("idApellidos").value==""){
+	 			alert("Ingrese su Apellido(s).");
+				return;}
+											
+	 
+  	url = "js/mail.asp?RECURSO=newMailPass";
+	url += "&FROM=info@ttminsight.cl";
+	url += "&E_MAIL="+ document.getElementById("idMail").value;
+	url += "&ID_USER="+ document.getElementById("idUser").value;
+	url += "&NOMBRES="+ document.getElementById("idNombres").value;
+	url += "&APELLIDOS="+ document.getElementById("idApellidos").value;
+	url += "&PASSWORD="+ document.getElementById("idPassword").value;
+	url += "&EMPRESA=TTM";
+	url += "&USERNAME=GUEST";
+	url += "&VTZ=" + Math.random();	
+
+	//window.open(url);
+ //return;
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+				resp =  $(this).find("ERROR").text();
+				alert("Solicitud " + resp);
+				parent.document.getElementById('boxPass').close();
+		})//End each
+	 
+	});//end $.get
+		
+	
+}
+
+function salir(){
+parent.document.getElementById('boxPass').close();
+}
+	
+
+function inicio(){
+ 
+ document.getElementById("idUser").focus();
+
+
+
+}
+
+
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0" >
+	 
+<form name="formulario" cellSpacing="0" cellPadding="0" leftmargin="0" rightmargin="0" topmargin="0">
+<table width="472" border="0" align="center" cellpadding="0" cellspacing="0" class="texto">
+  <!--DWLayoutTable-->
+  <tr>
+    <td height="56" colspan="2"  class="titulo"><strong>&nbsp;&nbsp;REGISTRO DE USUARIOS</strong></td>
+    <td width="59"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+  <tr>
+    <td width="30" height="175">&nbsp;</td>
+    <td width="383" align="center" valign="top">        
+      <table width="429" height="287">
+        
+        <tr>
+          <td height="31" colspan="2" align="center" class="select"> 
+            <div align="justify">Ingrese sus datos,  recibir� un correo electr�nico con la confirmaci�n.</div></td>
+          </tr>
+        <tr>
+          <td align="center">&nbsp;</td>
+          <td height="24" align="center">&nbsp;</td>
+          </tr>
+        <tr>
+          <td width="128" align="right">ID de usuario :</td>
+          <td width="289" height="40" align="center">
+            <input type="text" id="idUser" size="40" 
+             onKeyPress="if(event.keyCode==13)document.getElementById('idNombres').focus();" /></td>
+          </tr>
+        <tr>
+          <td align="right">Nombres :</td>
+          <td height="32" align="center">
+          <input   type="text" id="idNombres" size="40" 
+         	 onKeyPress="if(event.keyCode==13)document.getElementById('idApellidos').focus();"/></td>
+          </tr>
+        <tr>
+          <td align="right">Apellidos :</td>
+          <td height="33" align="center"><input   type="text" id="idApellidos" size="40" 
+          		onKeyPress="if(event.keyCode==13)document.getElementById('idMail').focus();" /></td>
+          </tr>
+        <tr>
+          <td align="right">e-mail :</td>
+          <td height="21" align="center"><input   type="text" id="idMail" size="40" 
+          		onKeyPress="if(event.keyCode==13)document.getElementById('idPassword').focus();" /></td>
+        </tr>
+        <tr>
+          <td align="right">Contrase&ntilde;a :</td>
+          <td height="21" align="center"><input   type="password" id="idPassword" size="40"
+          	 onKeyPress="if(event.keyCode==13)sendMail(2);"  /></td>
+          </tr>
+        <tr>
+          <td align="center">&nbsp;</td>
+          <td height="65" align="center">
+          <input  type="button" class="input" onClick="sendMail(2);"  value="Aceptar"  /></td>
+          </tr>
+      </table>
+  <td>  </tr>
+  <tr>
+    <td height="19">&nbsp;</td>
+    <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td>  </tr>
+</table>
+<!--table width="1071" border="0" cellpadding="2" cellspacing="0" class="texto" id="tblAvisos"  datasrc=#xmlDoc>
+<thead>
+				<tr class="boton">
+				  <td width="19" height="16" align="center">ID </td>
+   				  <td width="113">&nbsp;FECHA</td>
+   				  <td width="67">&nbsp;TURNO</td>
+   				  <td width="137">&nbsp;EQUIPO</td>
+				  <td width="378">DESCRIPCION</td>
+				  <td width="101">RESPONSABLE</td>
+  				  <td width="68">TIPO T.</td>
+   				  <td width="83">N&ordm; REPORTE </td>
+   				  <td width="67" align="center">O.T.</td>
+      </tr>
+	</thead>
+			<tr>
+			<td valign="top" class="cell">
+            	<span  class="textBold13" name="TxtID" datafld="ID" 
+                	onclick="editBitacora(this.parentElement.parentElement.rowIndex);"></span></td>
+			<td valign="top" class="cell"><span class="texto" name="txtFecha" datafld="FECHA"></span></td>
+			<td valign="top" class="cell" align="center">
+            		<div align="center"><span class="texto"   name="txtTurno" datafld="TURNO"></span></div></td>
+			<td valign="top" class="cell"><span class="texto" name="txtCodEquipo" datafld="EQUIPO"></span></td>
+			<td valign="top" class="cell">
+           	  </td>
+		  <td class="cell" align="center" valign="top">
+				<span class="texto"  size="14" name="txtResponsable" datafld="RESPONSABLE"></span></td>
+			<td class="cell"align="center" valign="top">
+				<span class="texto"  size="12" name="txtTipo" datafld="TIPO_TURNO"></span></td>
+			<td class="cell" align="center" valign="top">
+			 <span class="texto"  size="12" name="txtTipo" datafld="REPORT"></span></td>
+			<td class="cell" align="center" valign="top" >
+        	<span class="textBold13" name="txtOT" datafld="FOLIO_OT"
+            		 onclick="editOT(this.parentElement.parentElement.rowIndex);"></span></td>
+	</tr>
+</table-->
+</form>
+</body>
+</html>

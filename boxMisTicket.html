@@ -1,0 +1,311 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+<link rel="stylesheet" href="css/style-ttm.css" type="text/css" media="screen" />
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+<style>
+.rowTitle{
+
+	color:#ffffff;
+	font-weight:bold;
+	font-size: 14px;
+	cursor:pointer;
+	text-align: left;
+ 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+.style3 {
+	font-size: 16;
+	color: #006699;
+	font-weight: bold;
+}
+</style>
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<SCRIPT language="JavaScript1.2" src="js/main.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<script>
+
+var inlinew7;
+
+function listTicket() {   
+
+	with (divWait.style){visibility = "visible";} 
+
+ var url = "js/mail.asp?RECURSO=listTickets";
+ 	 url += "&CLIENTE="+document.getElementById("idUsuario").innerText;
+//	 url += "&ROL="+rol;
+	 url += "&EMPRESA=" + getEmpresa();
+	 url += "&USERNAME=" + getSession();
+     url += "&VTZ=" + Math.random();
+ 
+//alert(url);
+		var data = ""; var j;
+		var tbl = document.getElementById('tblAvisos');
+		
+		limpiarTabla2(tbl);				
+
+	// window.open(url);
+
+		row = tbl.insertRow(-1);
+					
+													
+					row.bgColor= "#7E95BD";
+					row.heigth="10px";
+					row.className = "rowTitle";
+
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Folio "
+					cell.width = "20";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Fecha Pedido"
+					cell.width = "10";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Entrega"
+					cell.width = "10";
+
+				
+					
+ 					cell = row.insertCell(-1);
+					cell.innerHTML = "Observación "				
+				 	cell.width = "400";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Cliente "				
+					cell.width = "200";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Usuario"
+					cell.width = "150";
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "Solucionado"
+				 	cell.width = "10";
+					cell.align="center";
+  
+		total=0;total2=0;total3=0;j=1;
+					
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(i){
+				
+					 
+					var _item = i +1 ;	
+					var id = $(this).find("FOLIO").text();
+					
+					row = tbl.insertRow(-1);
+					row.style.cursor = 'pointer';
+					row.onclick = function (){verTicket(id)};
+												
+					if (j==1){row.bgColor= "#cccccc";j=2;}
+					else{row.bgColor= "#ffffff";j=1;}
+									
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("FOLIO").text();
+
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("FECHA").text();
+								
+					cell = row.insertCell(-1);
+					cell.innerHTML =  $(this).find("FECHA_FIN").text();
+
+					
+					cell = row.insertCell(-1);
+					cell.innerHTML = "<span>" + $(this).find("DESCRIPCION").text() +"</span>";
+					cell.align="left";
+					
+		  			cell = row.insertCell(-1);
+					cell.innerHTML = $(this).find("CLIENTE").text();
+			
+					cell = row.insertCell(-1);
+					cell.innerHTML = $(this).find("CONTACTO").text();
+					
+								
+					cell = row.insertCell(-1);
+					cell.align="center";
+					if($(this).find("IND_SOL").text()=='true'){
+						cell.innerHTML ="<input type='checkbox'  checked onclick='chg(this)' disable />";
+					}else{
+						cell.innerHTML ="<input type='checkbox'  onclick='chg(this)'  disable />";
+					}
+	
+		 			 
+			
+			 
+			}) , hidFrm();//end each
+		})//end $get
+					
+}
+		
+ 
+function excel() {   
+
+ 
+
+ var url = "js/mail.asp?RECURSO=listTickets";
+	 url += "&EXCEL=YES";
+	 url += "&EMPRESA=" + getEmpresa();
+	 url += "&USERNAME=" + getSession();
+     url += "&VTZ=" + Math.random();
+	 
+	 window.open(url);
+	 
+}
+	
+function salir(){
+	parent.document.location.href = "/sgm/Chart/newindexV2.html";
+}
+
+
+function verTicket(id){
+
+var url = "boxTicket.html";
+	url += "?ID=" + id;
+	url += "&CLIENTE="+document.getElementById("idUsuario").innerText;
+	url += "&DESC_CLIENTE="+scape(document.getElementById("idNombre").innerText);
+	url += "&VTZ=" + Math.random();
+	//alert(id);
+var w = 850;
+var h= 650;
+
+winCfg = "width="+w+"px,height="+h + "px,left=" + 50 + "px,top=" + 50 +"px,resize=1,scrolling=0";	
+ 	
+  inlinew7 =  parent.dhtmlwindow.open("boxSupp", "iframe", url , "Ticket de Soporte.", winCfg);
+  inlinew7.onclose=function(){listTicket();}
+  
+}
+
+function fn(){
+alert(1);
+}
+
+function inicio(){
+
+//alert( getSession());
+document.getElementById("idUsuario").innerText = getSession();
+document.getElementById("idRol").innerText = getRol();
+
+if(getSession()=='UNDEFINED'){
+	parent.document.location.href="index.html";
+	salir();
+}
+
+listTicket()
+ 
+}
+
+function showClientes(){
+frameClientes.showWin(divClientes);
+}
+
+function setCliente(_rut, _nombre){
+//	alert(_rut +" " + _nombre);
+document.getElementById("idCliente").innerText = _nombre;
+document.getElementById("idRutCliente").innerText = _rut;
+listTicket();
+}
+
+function hidFrm(){
+with (divWait.style){visibility = "hidden"};
+}
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0">
+ 
+
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+    
+<DIV id="divClientes" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameClientes" src="listClientes.html?X=2" frameBorder="0" width="350" height="280"></IFRAME>
+</DIV>
+
+<form name="formulario" cellSpacing="0" cellPadding="0" leftmargin="0" rightmargin="0" topmargin="0">
+<table width="99%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="29" colspan="2"  class="style3">&nbsp;&nbsp;TICKETS DE ATENCIÓN</td>
+    <td width="226">&nbsp;</td>
+    <td width="57">&nbsp;</td>
+    <td width="101">&nbsp;</td>
+    <td width="88">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="97" height="0"></td>
+    <td width="360"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  <tr class="titulo">
+     <td height="39" align="center">Usuario :</td>
+		<td align="left">
+        	<img src="mg/glassIcon.png" alt="Buscar" align="absmiddle" style="cursor:pointer;"  onClick="showClientes();"/>
+            <span  id="idUsuario"></span>&nbsp;<span id="idNombre"></span>
+            &nbsp;<span class="tituloBlanco" id="idRol"></span></td>
+  <td align="center" valign="middle">&nbsp;</td>
+ 	 <td align="center"><input  type="button" onClick="excel();"  value="Excel"  /></td>
+      <td align="center"><input  type="button" onClick="verTicket();"  value="Nuevo Ticket"  /></td>
+
+      <td align="center"><input  type="button" class="titulo" onClick="salir();"  value="Salir"  /></td>
+  </tr>
+    <tr><td height="282" colspan="6" valign="top">&nbsp; 
+    
+    <table width="100%"  id="tblAvisos" cellpadding="5" cellspacing="0" > 
+	</table>  </td>
+    </tr>
+  <tr>
+    <td height="39" colspan="2" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<!--table width="1071" border="0" cellpadding="2" cellspacing="0" class="texto" id="tblAvisos"  datasrc=#xmlDoc>
+<thead>
+				<tr class="boton">
+				  <td width="19" height="16" align="center">ID </td>
+   				  <td width="113">&nbsp;FECHA</td>
+   				  <td width="67">&nbsp;TURNO</td>
+   				  <td width="137">&nbsp;EQUIPO</td>
+				  <td width="378">DESCRIPCION</td>
+				  <td width="101">RESPONSABLE</td>
+  				  <td width="68">TIPO T.</td>
+   				  <td width="83">N&ordm; REPORTE </td>
+   				  <td width="67" align="center">O.T.</td>
+      </tr>
+	</thead>
+			<tr>
+			<td valign="top" class="cell">
+            	<span  class="textBold13" name="TxtID" datafld="ID" 
+                	onclick="editBitacora(this.parentElement.parentElement.rowIndex);"></span></td>
+			<td valign="top" class="cell"><span class="texto" name="txtFecha" datafld="FECHA"></span></td>
+			<td valign="top" class="cell" align="center">
+            		<div align="center"><span class="texto"   name="txtTurno" datafld="TURNO"></span></div></td>
+			<td valign="top" class="cell"><span class="texto" name="txtCodEquipo" datafld="EQUIPO"></span></td>
+			<td valign="top" class="cell">
+           	  </td>
+		  <td class="cell" align="center" valign="top">
+				<span class="texto"  size="14" name="txtResponsable" datafld="RESPONSABLE"></span></td>
+			<td class="cell"align="center" valign="top">
+				<span class="texto"  size="12" name="txtTipo" datafld="TIPO_TURNO"></span></td>
+			<td class="cell" align="center" valign="top">
+			 <span class="texto"  size="12" name="txtTipo" datafld="REPORT"></span></td>
+			<td class="cell" align="center" valign="top" >
+        	<span class="textBold13" name="txtOT" datafld="FOLIO_OT"
+            		 onclick="editOT(this.parentElement.parentElement.rowIndex);"></span></td>
+	</tr>
+</table-->
+</form>
+</body>
+</html>

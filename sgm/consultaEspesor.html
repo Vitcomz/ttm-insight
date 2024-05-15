@@ -1,0 +1,1051 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>ESPESOR</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+.style2 {
+	font-size: 18px
+}
+ 
+-->
+</style>
+
+
+
+
+
+
+</head>
+<xml id = xmlAvisos></xml>
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css">
+
+<style>
+
+
+
+h3{margin-bottom:5px; margin-top:5px;}
+.text{
+font-size:10px;
+width:25px;
+padding:1px;
+font-weight:bold;
+}
+
+  
+@media print{
+
+ 
+.noPrint{visibility:hidden;display:none;}
+ 
+  body{
+  overflow:hidden;
+  background-color:#FFFFFF;
+  font-size:9px;
+  font-family:Arial, Helvetica, sans-serif;
+ }
+ 
+ select{
+  font-size:9px;
+  font-family:Arial, Helvetica, sans-serif;
+  }
+
+input{
+  font-size:9px;
+  font-family:Arial, Helvetica, sans-serif; 
+}
+
+.water{
+
+  	LEFT: 60px;
+	TOP: 100px;
+	position:absolute;
+	width:843px;
+	height:668px;
+	background:url(mg/water.gif) no-repeat center; 
+	 
+}
+
+}
+
+</style>
+    <script language="Javascript1.2" src="js/jquery.js"></script>
+    <script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+	<script src="js/highstock.js"></script>
+   
+    <script type="text/javascript" src="/Scripts/cookie.js"></script>
+    <SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+	<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+	<script language="JavaScript1.2" src="js/main.js"></script>
+    
+<script>
+var inlinewin6;
+var folio;
+
+function getEquipos(){
+
+var url = "explorer2.0.html";
+	//url += "?EQUIPO=" + formulario.txtEquipo.value;
+	url += "?VTZ=" + Math.random();
+	//alert(url);
+		
+winCfg = "width=480px,height=360px,left=" + 410 + "px,top=" + 170 +"px,resize=1,scrolling=0";	
+ 
+if(inlinewin6) inlinewin6.show();
+else inlinewin6 = parent.dhtmlwindow.open("explorerBox", "iframe", url , "BUSCAR EQUIPOS", winCfg);
+
+//inlinewin6.onclose=function(){listTipos();}
+ 
+}
+
+function getEquipo(){
+//xmlEquipo.async=false;
+	
+		var url = "js/equipos.asp?RECURSO=getEquipo";
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+
+	// alert(url);
+	//window.open(url);
+	 
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			document.getElementById("idCodigo").value =  $(this).find("EQUIPO_PRI").text();
+			document.getElementById("idFecha").innerText =  $(this).find("FECHA").text();
+			document.getElementById("idAncho").innerText = $(this).find("ANCHO").text();
+			document.getElementById("idCarga").innerText = $(this).find("CARGA").text();
+			document.getElementById("idRetorno").innerText = $(this).find("RETORNO").text();	
+			document.getElementById("idSeg").innerText = $(this).find("SEG").text();		
+			_ancho = $(this).find("ANCHO").text();
+
+		}),listTipos();//End each
+	});//end $.get
+	
+	 document.getElementById("idEquipo").innerText = document.getElementById("idCodigo").value;
+	 			
+}
+
+function listEventos(){
+
+var tbl= document.getElementById('tabMedidas');
+limpiarTabla2(tbl);
+
+var sel = document.getElementById("selectTipos")
+
+fecha = sel.options[sel.selectedIndex].innerHTML;
+l = fecha.length
+
+fecha = fecha.substring(l-10, l);
+//alert(fecha);
+
+  var url ="js/mediciones.asp?RECURSO=listMediciones";
+ 	 url +="&EQUIPO="+document.getElementById("selectTipos").value;
+	 url +="&FECHA="+fecha;
+  	 url +="&USUARIO="+getSession();
+	 url +="&FAENA="+getEmpresa();
+	 url +="&VTZ=" + Math.random();
+	 
+	// window.open(url);
+	
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+				folio = $(this).find("FOLIO").text();
+				fecha = $(this).find("FECHA").text();
+				tipo = $(this).find("TIPO").text();
+				dist = $(this).find("DISTANCIA").text();
+			//	document.getElementById("idFecha").innerText = $(this).find("FECHA_INS").text();
+				listLecturas(folio, fecha, tipo, dist);
+		}), w_gr1();//End each
+	});//end $.get
+	
+	
+}
+
+function w_gr1(){
+
+setTimeout("gr1()",500);
+}
+
+
+function listTipos(){
+
+  var url = "js/equipos.asp?RECURSO=listEmpalmes";
+ 	  url += "&EQUIPO=" +  document.getElementById("idCodigo").value;
+	  url += "&HISTORIAL=" +  document.getElementById("idHist").checked;
+	  url += "&FAENA=" +  getEmpresa();
+      url += "&VTZ=" + Math.random();
+	//alert(1);
+	document.getElementById("selectTipos").length=0;
+	
+	//window.open(url);
+	
+	var i=0;
+	opcion = new Option("SELECCIONAR","");
+	document.getElementById("selectTipos").options[i] = opcion;
+								  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+					var folio = $(this).find("FOLIO").text();
+					//alert(codigo);
+        	   		opcion = new Option(descripcion, codigo);
+					if(getParametro("FOLIO")==folio) opcion.selected = true;
+					
+					if(($(this).find("DESCRIPCION").text().length)>=15){
+						opcion.style.color = 'black';
+						opcion.style.backgroundColor='#cccccc';	
+						}
+		 			i=i+1;	
+					
+	          		document.getElementById("selectTipos").options[i] = opcion;
+					
+				
+			}), verLectComp(); //end each
+		})//end $get
+
+} 
+ 
+function inicio(){
+
+document.getElementById("idFaena").innerText = getEmpresa();
+ 
+//alert(getParametro("FOLIO"));
+
+if (getParametro("EQUIPO")){
+	document.getElementById("idCodigo").value = getParametro("EQUIPO");
+	getEquipo();
+}
+
+parent._equipo = document.getElementById("idCodigo");
+parent._desc = document.getElementById("selectTipos");
+
+
+ 
+ 
+//parent._desc = document.getElementById("txtDescripcion");
+}
+
+function set(_equipo,_desc){
+
+	formulario.txtCodEquipo.value = _equipo;
+	formulario.txtEquipo.value = _desc;
+	setTimeout("ListBitacora();",1);
+	
+}
+
+function salir(){
+parent.document.getElementById('boxEspesor').close();
+}
+
+function verLectComp(){
+
+var tbl= document.getElementById('tabMedidas');
+limpiarTabla2(tbl);
+listEventos();
+
+}
+
+
+function getLecturas(){ //por borarr
+
+if(!document.getElementById("idCodigo").value){
+	alert("Seleccione el Equipo.");
+	return;
+}
+
+var url = "listMediciones.html";
+	url += "?EQUIPO=" + document.getElementById("idCodigo").value;
+	url += "&VTZ=" + Math.random();
+	
+		
+winCfg = "width=400px,height=300px,left=" + 350 + "px,top=" + 150 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("googlebox", "iframe", url , "LECTURAS", winCfg, "recal");
+
+//frameFolio.popsearchbox(formulario.txtEquipo, formulario.txtFolio, formulario.txtFecha, divFolio, 'getMedicion();');
+				 
+}
+
+
+
+function makeHead(tbl, _dist, _ancho, _cubierta, _retorno){
+
+//limpiarAllRows(tbl);
+
+var i=0;j=0;
+ 	ancho = Math.ceil(_ancho);
+ 	espesor = Math.ceil(_cubierta);
+	espesor_r = Math.ceil(_retorno);
+	
+var fechaCambio =document.getElementById("idFecha").innerText;
+
+var dFechaCambio = new Date(fechaCambio.substr(6,4), 
+						  fechaCambio.substr(3,2)-1,
+						  fechaCambio.substr(0,2));
+
+var fechaActual = document.getElementById("idFechaM").innerText;
+
+var dFecha = new Date(fechaActual.substr(6,4), 
+					  fechaActual.substr(3,2)-1,
+					  fechaActual.substr(0,2));
+
+var _diasOp = Math.round((dFecha.getTime()-dFechaCambio.getTime())/(24*1000*60*60));  
+document.getElementById("idDias").innerText = _diasOp;  
+						  
+if (ancho<=0){
+		alert("El equipo no registra el ancho.");
+		return;
+		}
+		
+	
+lenMedida = parseInt(_dist);
+
+
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(-1);
+	cell.innerHTML = "<INPUT class='subtitulos' name='n' size='20' value='N� DE LECTURA' />";
+	cell.width = 250;
+
+
+	while (i<=ancho){
+	//alert(i + " " + ancho);
+			var cell = row.insertCell(-1);
+			if(j==-1) cell.innerHTML = "<SPAN class='texto'> </SPAN>";
+					else cell.innerHTML = "<SPAN class='texto'> " + (j)+ "</SPAN>";
+				
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(-1);
+	cell.innerHTML = "<SPAN class='texto' name='n1'>DISTANCIA (mm)</SPAN>";
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(-1);
+					cell.innerHTML = "<SPAN class='texto'> " + i + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<SPAN class='texto'>CUBIERTA ORIGINAL</SPAN>";
+	var i=0;j=1;	
+	while (i<=ancho){
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<SPAN class='texto'> " + espesor + "</SPAN>";
+				i=i+lenMedida;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+}
+
+
+function creaLectura(_fecha, _dist, _inspector, _tipo){
+	
+	tblLecturas = document.getElementById("tabMedidas");
+	
+	//document.getElementById("idFecha").value =  $(this).find("FECHA").text();
+	
+	ancho=		document.getElementById("idAncho").innerText  
+	carga =		document.getElementById("idCarga").innerText  
+	retorno =	document.getElementById("idRetorno").innerText;	
+		
+ 
+	tipo = _tipo;
+	dist = _dist;
+	
+	//alert(_dist);
+	fecha = _fecha;
+	lenMedida = parseFloat(_dist);
+	inspector = _inspector;
+		
+	if(tblLecturas.rows.length<=0){
+		makeHead(tblLecturas, _dist, ancho, carga, retorno);
+	}
+	
+	
+	if (_tipo=="CAR"){
+    	row = tblLecturas.insertRow(-1);
+		onCh="onChange='cambio(this);'";
+		}
+	else{
+		row = tblLecturas.insertRow(-1);
+		onCh="onChange=' '";
+		}
+			
+	onKu="onkeyup=fn(this.form,this);";
+			
+	cell = row.insertCell(-1);
+	cell.innerHTML = "<span class='texto'>LECTURA " + fecha + "</SPAN>" + 
+					 "<SPAN>&nbsp;</SPAN><SPAN class='texto'>" + _tipo + "</SPAN>";
+					 
+	cell.width = 250;
+	var i=0;j=1;k=0;	
+	
+	
+	var cell = row.insertCell(j); //celda en blanco para los bordes de la cinta
+		cell.innerHTML = "<INPUT class='text' TYPE=TEXT SIZE=1  disabled /> ";
+		
+	j=2;
+	rnd = (Math.random()+" ").substring(1,3);	
+	k=k+parseInt(_dist);
+	//alert(k);
+		
+	while (k<=ancho){
+				var cell = row.insertCell(j);
+				cell.innerHTML = "<INPUT class='text' TYPE=TEXT SIZE=1 name='D" + j + rnd + "' " + 
+									onCh + " " + onKu + " /> ";
+				k=k+parseInt(_dist);
+				//alert(k + " " + ancho);
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+		row.children[2].focus();
+							
+}
+
+
+function newLectura(){
+
+
+if(document.getElementById("selectTipos").value==""){
+	alert("Seleccione un tramo/empalme.");
+	return;
+}
+
+var url = "boxNewLectura.html";
+	url += "?EQUIPO=" + getParametro("EQUIPO");
+	url += "&VTZ=" + Math.random();
+	
+winCfg = "width=350px,height=200px,left=" + 150 + "px,top=" + 20 +"px,resize=1,scrolling=0";	
+var inlinewin2= dhtmlwindow.open("newBox", "iframe", url , "NUEVA LECTURA", winCfg, "recal");
+
+//frameNewGr.showWin(formulario.txtEquipo, divNewGr);
+				 
+}
+
+function newFolio(_index, _fecha, _tipo){
+
+	var tbl= document.getElementById('tabMedidas');
+	
+	var url = "js/mediciones.asp?Recurso=newMedicion";
+	url += "&FECHA=" + _fecha;
+	url += "&INSPECTOR=" + inspector;
+	url += "&EQUIPO=" + document.getElementById("selectTipos").value;
+	url += "&DIST=" + dist;
+	url += "&FECHA_ULT_MAN=" + document.getElementById("idFecha").innerText;
+	//url += "&FECHA_CAMBIO=" + formulario.txtFechaProyec.value;
+	//url += "&DIAS_PROY=" + formulario.txtDiasProyectados.value;
+	//url += "&DUREZA=" + formulario.txtDureza.value;
+	//url += "&OBSERVACION=" + formulario.txtObservacion.value;
+	url += "&TIPO=" + _tipo;
+	url += "&FAENA=" + getEmpresa();
+	url += "&VTZ=" + Math.random();
+	
+	//alert(url);
+	
+	//window.open(url);
+	
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+				folio = $(this).find("FOLIO").text();
+				tbl.rows[_index].children[0].children[1].innerText = folio;
+				
+				guardarMediciones(folio, _tipo);
+
+		})//End each
+	});//end $.get
+	
+//		window.open(url);	
+
+}
+
+function del(_obj){
+
+//alert(_obj.parentElement.children[1].innerText);
+
+folio =_obj.parentElement.children[1].innerText;
+tipo =_obj.parentElement.children[2].innerText;
+
+if(!confirm("Seguro Elimina Folio " + folio))return;
+
+//alert(tipo);
+
+	var url = "js/mediciones.asp?RECURSO=delMedicion&FOLIO=" + folio;
+		url += "&TIPO=" + tipo;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+	$.get(url, function(theXML){
+		$('ROW',theXML).each(function(i){
+			alert("Lectura " + folio + " Eliminada.");
+		
+		})  //End each
+	});//end $.get
+	
+  	listEventos();
+}
+
+
+
+function guardarMediciones(_folio, _tipo){
+
+var muestreo="";
+var retorno="";
+var valor=0;
+
+var tbl= document.getElementById('tabMedidas');
+
+	ncols = tbl.rows[3].children.length;
+	
+	
+	for(var i = 3; i < tbl.rows.length; i++){
+			 // comparo fecha para insertar medicion ordenada
+	//alert("comp" + tbl.rows[i].children[0].children[1].innerText +" " + _folio);
+				if(tbl.rows[i].children[0].children[1].innerText == _folio){
+				    index = i;
+					break;
+				}
+	 }
+		
+ i=2;
+ 
+// alert(index);
+ 
+ while (i<ncols){
+	//alert(i);
+		if (tbl.rows[index].children[i].children[0].value){
+			valor = tbl.rows[index].children[i].children[0].value;
+			muestreo = muestreo + ";" + valor.replace(',','.');				
+		}
+		else{
+			muestreo = muestreo + ";" + valor.replace(',','.');
+		}
+		//end if
+	i=i+1;
+	}//end while
+	
+	
+	var url = "script/mediciones.asp?RECURSO=newMedValor&FOLIO=" + _folio;
+	 	url += "&MUESTREO=" + muestreo;
+		url += "&TIPO=" + _tipo;
+		url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+	//window.open(url);
+	
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			alert("Medicion Guardada Folio." + _folio + " Tipo " + _tipo);
+		})//End each
+	});//end $.get
+	
+		
+
+
+			
+}
+
+function guardar(){
+	
+	var tbl= document.getElementById('tabMedidas');
+	
+	for(var i = 3; i < tbl.rows.length; i++){ // comparo fecha para insertar medicion ordenada
+	
+		//alert(tbl.rows[i].children[0].children[1].innerText);
+		
+				if(tbl.rows[i].children[0].children[1]){
+				
+				    if(parseFloat(tbl.rows[i].children[0].children[1].innerText)>0){
+							folio = tbl.rows[i].children[0].children[1].innerText;
+							fecha = tbl.rows[i].children[0].children[0].innerText.substring(8,18);
+							tipo = tbl.rows[i].children[0].children[2].innerText;
+						//alert("Update " + folio + " Fecha " + fecha);
+							guardarMediciones(folio, tipo);
+							}
+					else{
+							
+							fecha = tbl.rows[i].children[0].children[0].innerText.substring(8,18);
+							tipo = tbl.rows[i].children[0].children[2].innerText;
+						//	alert("insert " + fecha + " " + tipo);
+							newFolio(i, fecha, tipo);
+						}
+					}	
+		}//end for
+			
+
+}
+
+function cambio(obj){
+tbl = obj.parentElement.parentElement.parentElement;
+col = obj.parentElement.cellIndex;
+
+return;
+
+valor = obj.value.replace(",",".");
+obj.value = valor;
+
+tbl.rows[4].children[col].innerText = redond(espesor - valor,2);
+
+desgaste = espesor - valor;
+
+tbl.rows[5].children[col].innerText = redond((desgaste / tbl.rows[2].children[col].innerText)* 100,2);
+tbl.rows[7].children[col].innerText = redond(desgaste / formulario.txtDiasOp.value * formulario.txtDiasProyectados.value,2);
+tbl.rows[6].children[col].innerText = redond(tbl.rows[2].children[col].innerText - tbl.rows[7].children[col].innerText,2);
+
+//alert(obj.parentElement.cellIndex);
+}
+
+
+function insertMedicion(_folio, _fecha, _tipo, _dist){
+
+i=1;
+_dist = parseFloat(_dist);
+alert(_dist);
+//ancho = parseFloat(getParametro("ANCHO"));
+
+var tbl= document.getElementById('tabMedidas');
+
+
+if (_tipo=="CAR"){
+  	for(var i = 3; i < tbl.rows.length; i++){ // comparo fecha para insertar medicion ordenada
+		// alert(parseFloat(tbl.rows[i].children[0].children[1].innerText) +"< " + parseFloat(_folio)); 
+				if(parseFloat(tbl.rows[i].children[0].children[1].innerText) < parseFloat(_folio)){
+				    row = tbl.insertRow(-1);
+					break;
+					}	
+				else{
+					if(!tbl.rows[i+1]){//!tbl.rows[i+1].children[0].children[1]
+						row = tbl.insertRow(-1);
+						break;
+						}//end if
+					}//end if
+		}//end for
+	}
+	else{
+		row = tbl.insertRow(-1);
+		//DE ES RETORNO SIEMPRE AL ULTIMO
+	}//end if
+	
+	
+	cell = row.insertCell(0);
+	cell.innerHTML = "<span class='texto'>LECTURA " + _fecha + " ID.</span><span class='texto'>" + _folio +
+	 				 "</span>&nbsp;<span class='texto'>" + _tipo + "</span>&nbsp;&nbsp;" ;
+					 //"<img src='mg/quitar.gif' border=0 onclick='del(this)' style='cursor:pointer' />";
+	cell.width = 250;
+	var i=0;j=1;k=0;	
+	
+	var cell = row.insertCell(j); //celda en blanco para los bordes de la cinta
+		cell.innerHTML = "<INPUT class='text' TYPE=TEXT SIZE=1 onChange='cambio(this);' /> ";
+	j=2;	
+	k=k+_dist;
+	
+	var url = "script/mediciones.asp?RECURSO=listMedValor&FOLIO=" + _folio;
+		url += "&FAENA=" + getEmpresa();
+		url += "&TIPO=" + _tipo;
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+		
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			
+			 	var valor = $(this).find("VALOR").text();
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='text' TYPE=TEXT SIZE=1 onChange='cambio(this);' value='"+ valor +"' /> ";
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+				k = k + _dist;
+			
+		})//End each
+	});//end $.get
+	
+//	setTimeout("whiteFill(" + row + "," + _dist+  "," +  k +");",1000);
+	
+		
+}
+
+
+function whiteFill(_row, _dist, k){
+
+	//alert(k + " " + _dist);
+	
+	while (k<=ancho){//inserta celdas vacias para completar
+				var cell = _row.insertCell(j);
+					cell.innerHTML = "<INPUT class='inputTiny'' TYPE=TEXT SIZE=3 onChange='cambio(this);' /> ";
+				k=k+_dist;
+				//j=j+1;
+				cell.align="center";
+				cell.width = 30;
+		}
+		
+}
+
+function listLecturas(_folio, _fecha , _tipo, _dist){
+ 
+var tbl= document.getElementById('tabMedidas');
+ 
+ document.getElementById("idFolio").innerText = _folio;
+ document.getElementById("idFechaM").innerText = _fecha;
+ //document.getElementById("idDias").innerText = _fecha;
+ 
+	ancho = document.getElementById('idAncho').innerText;
+	carga = document.getElementById('idCarga').innerText;
+	retorno = document.getElementById('idRetorno').innerText;
+
+_dist = parseFloat(_dist);
+
+
+if(tbl.rows.length<=0){
+	makeHead(tbl,_dist, ancho, carga, retorno);
+	}
+else{
+	setTimeout("insertMedicion(" + _folio + ",'"+ _fecha + "','" + _tipo+  "'," +  _dist +");",1000);
+	return;
+}
+
+i=1;
+
+	var url = "js/mediciones.asp?RECURSO=listMedValor&FOLIO=" + _folio;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&TIPO=" + _tipo;
+		url += "&VTZ=" + Math.random();
+		
+		folio=_folio;
+		//window.open(url);
+		
+	row = tbl.insertRow(-1);
+	cell = row.insertCell(0);
+	cell.innerHTML = "<span class='texto'>LECTURA " + _fecha + " ID.</span><span class='texto'>" + _folio +
+					 "</span>&nbsp;<span class='texto'>" + _tipo + "</span>&nbsp;&nbsp;"
+					 // +  "<img src='mg/quitar.gif' border=0 onclick='del(this)' style='cursor:pointer' />";
+
+	cell.width = 250;
+	var i=0;j=1;k=0;	
+	
+	var cell = row.insertCell(j);//celda en blanco para los bordes de la cinta
+		cell.innerHTML = "<INPUT class='text' TYPE=TEXT SIZE=1  disabled /> ";
+										
+		j=2;	
+		k=k+_dist;
+		
+		rnd = (Math.random()+" ").substring(1,3);	
+		k=k+parseInt(_dist);
+		
+		onKu="onkeyup=fn(this.form,this);";
+					
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			
+        	    valor = $(this).find("VALOR").text();
+				var cell = row.insertCell(j);
+					cell.innerHTML = "<INPUT class='text' size=1 TYPE=TEXT name='D" + j + rnd + "' " + 
+									 "onChange='cambio(this);' " + onKu + " value='" + valor + "' /> ";
+	
+				k=k+_dist;
+				j=j+1;
+				cell.align="center";
+				cell.width = 30;
+				//cell.style.color= "#FF0000";
+			})//End each
+				
+	});//end $.get
+			
+}
+
+
+function listMediciones(){
+
+  var url ="js/mediciones.asp?RECURSO=listMediciones";
+ 	 url +="&CODIGO=NULL";
+  	 url +="&USUARIO="+getSession();
+	 url +="&EQUIPO="+getParametro("EQUIPO");
+	 url +="&FAENA="+getEmpresa();
+	 url +="&VTZ=" + Math.random();
+	 
+	// window.open(url);
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+				folio = $(this).find("FOLIO").text();
+				fecha = $(this).find("FECHA").text();
+				tipo = $(this).find("TIPO").text();
+				dist = $(this).find("DISTANCIA").text();
+				
+				listLecturas(folio, fecha, tipo, dist);
+		})//End each
+	});//end $.get
+	
+	
+}
+
+
+function gr1(){
+
+var tbl= document.getElementById('tabMedidas');					
+var folios ="";
+var folio_ret="";
+
+for(var i = 3; i < tbl.rows.length; i++){
+			 // comparo fecha para insertar medicion ordenada
+			 //alert(tbl.rows[i].children[0].children[2].innerText + ' ' + i);
+			 if(tbl.rows[i].children[0].children[1]){
+					tipo = tbl.rows[i].children[0].children[2].innerText;
+					 
+					if(tipo=='RET')
+						folio_ret =  tbl.rows[i].children[0].children[1].innerText ;	
+					else
+						folios = folios + tbl.rows[i].children[0].children[1].innerText + ",";					
+				}			  
+	 }//end for
+	 
+	
+	 folios = folios + "9999";
+	 _equipo =document.getElementById("idCodigo").value;
+	 
+var options = {
+		chart: {renderTo: 'chart1', type: 'spline' , xAxis: {floor: 1}}, 
+		title: { text: _equipo },
+		xAxis: { categories: [],   floor: '1' },
+		yAxis: { title: { text: ' ' },  min:-5, max: 20,gridLineWidth: 1},
+		plotOptions: {line: { //dataLabels: {enabled: true} 
+					}
+        },
+		series: []
+		
+		}; //end options
+			
+	  	url = "js/graphics.asp?RECURSO=grEspesor&FAENA=" + getEmpresa();
+			url += "&FECHA_INST=" + document.getElementById("idFecha").innerText;
+			url += "&EQUIPO=" +  document.getElementById("idCodigo").value;
+			url += "&CHK_MEDIA=" +  document.getElementById("chkMedia").checked;
+			url += "&CHK_MAX=" +  document.getElementById("chkMax").checked;
+			url += "&ESPESOR_SEG=" + document.getElementById("idSeg").innerText;
+			url += "&FOLIOS=" + folios;
+			url += "&FOLIO_R=" + folio_ret;
+			url += "&CUBIERTA=" + document.getElementById("idCarga").innerText;
+			url += "&RETORNO=-"+ document.getElementById("idRetorno").innerText;
+			url += "&VTZ=" + Math.random();
+ 
+ 		//alert(url);
+		//window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				// push categories
+		 
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+					options.xAxis.floor=1;
+				});
+		
+				options.xAxis.floor = 1;
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: [],
+						marker: {radius: 0, lineWidth: 0},
+						point: {events: {click: function() {vr(this.category , this.y, 1);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseFloat($(point).text()) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+					var tasa = parseFloat($(series).find('tasa').text());	
+								
+					var dias = parseFloat(document.getElementById("idDias").innerText);
+					var carga = parseFloat(document.getElementById("idCarga").innerText);
+					var dMax = parseFloat($(series).find('dMax').text());
+					var seg = parseFloat(document.getElementById("idSeg").innerText);
+					var fechap = $(series).find('fechaP').text();
+					
+					//alert(fechap);
+					if(dMax>0) document.getElementById("idDMax").innerText = dMax;
+					if(tasa>0) document.getElementById("idTasa").innerText = tasa;
+					
+					if(fechap) document.getElementById("idFechaP").innerText = fechap;
+					
+				//	document.getElementById("idPerdida").innerText =   dMax;
+				 	document.getElementById("idVida").innerText = carga - seg;
+					var vida = carga - seg;
+					
+//					document.getElementById("idPDias").innerText = redond((vida*dias)/dMax,0);
+//					var pDias = parseFloat(document.getElementById("idPDias").innerText);
+//					document.getElementById("idPMes").innerText = redond(pDias/30,2);
+//					var pMes = parseFloat(document.getElementById("idPMes").innerText);
+//					document.getElementById("idPAnho").innerText = redond(pMes/12,2); 
+					
+				});  //end series
+
+			var chart1 = new Highcharts.Chart(options);
+		
+					
+		});
+	 //end get
+		
+}
+
+ 
+function toExcel(){
+
+
+	var url = "script/mediciones.asp?RECURSO=excelMediciones"
+		url += "&FOLIO=" + folio;
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	  
+	
+	  window.open(url);
+	  
+}
+	  
+</script>
+
+
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0" >
+	
+<form name="formulario" cellSpacing="0" cellPadding="0" leftmargin="0" rightmargin="0" topmargin="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="texto" id="tblAvisos">
+ 
+<thead>
+				
+				  <tr class="boton">
+				  <td height="22" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td colspan="2" align="right"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td width="31" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td colspan="3">
+                  <span id='idEquipo'></span>&nbsp;</td>
+				  <td><input type="checkbox" id="idHist" onChange="getEquipo();" class="hidden"/></td>
+				  <td></td>
+				  <TD width="64" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+				  <TD colspan="4" align="left" class="rotulo"><span id="idFaena"></span>&nbsp; </TD>
+	  </tr>
+				<tr class="boton">
+				  <td height="33" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td colspan="2" align="right">EQUIPO :</td>
+				  <td align="right">&nbsp;</td>
+    				<td colspan="2"><span class="subtitulos">
+				    <input type="text"  class="inputSht" id="idCodigo"  onBlur="getEquipo();" onChange="getEquipo();"
+                  		 onKeyPress="if(event.keyCode==13)getEquipo();" value="" size="20"   />
+				  </span></td>
+				  <td align="right">TRAMO :</td>
+				  <td align="left"><span class="textBold">
+			      <select name="selectTipos" id="selectTipos" class="select"  onChange="verLectComp();" >
+                    </select>
+				  </span></td>
+			    <td align="right"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <TD align="center" valign="middle">
+                  <input type="checkbox" id="chkMax"  class="hidden" checked onClick="gr1();"/></TD>
+				  <TD colspan="2" align="left" class="rotulo">
+                  <input type="checkbox" id="chkMedia" class="hidden"  onClick="gr1();"  /></TD>
+				  <td  class="text"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+				<tr class="boton">
+				  <td height="26" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td width="187" align="right">FOLIO :</td>
+				  <td colspan="3"><span id='idFolio'></span>&nbsp;                  </td>
+				  <td width="183" align="right">&nbsp;</td>
+				  <td width="140"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td width="105"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td align="right">ANCHO DE CINTA :</td>
+				  <TD valign="middle">&nbsp;<span id="idAncho"></span> </TD>
+				  <TD colspan="2" align="left" class="rotulo"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+				  <td  class="text"> 			    				  </td>
+				  <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+				<tr class="boton">
+				  <td height="25" align="center"><!--DWLayoutEmptyCell-->&nbsp;</td>
+				  <td align="right">FECHA MEDICI&Oacute;N :</td>
+				  <td colspan="3" align="left">&nbsp;<span id="idFechaM"></span></td>
+				  <td align="right"><span class="cell">FECHA INSTALACI&Oacute;N :</span></td>
+				  <td>&nbsp;<span id="idFecha"></span> &nbsp; </td>
+				  <td></td>
+				  <td align="right">ESPESOR VIDA UTIL :</td>
+				  <TD valign="middle">&nbsp;<span id="idVida"></span> </TD>
+				  <TD colspan="2" align="right">&nbsp;</TD>
+				  <td width="84"  align="left"  >&nbsp;  </td>
+				  <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+				<tr class="boton">
+				  <td width="11" height="26" align="center"><div align="right"></div></td>
+   				  <td align="right">DIAS COMPLETADOS :</td>
+   				  <td colspan="3" align="left">&nbsp;<span id='idDias'></span>&nbsp;D�as.
+                  &nbsp;</td>
+   				  <td align="right">TASA DE DESJASTE :</td>
+	              <td>&nbsp;<span id="idTasa" ></span>&nbsp;[mm/dia] </td>
+	              <td>&nbsp; <span id="idAncho"></span></td>
+	              <td align="right"><span class="cell"> ESPESOR CUBIERTA :</span></td>
+	              <TD align="left"  >&nbsp;<span id="idCarga"></span>&nbsp;[mm]   	               </TD>
+	              <TD colspan="2" align="right">PERDIDA :</TD>
+	              <td width="84"  align="left"  >&nbsp;<span id="idDMax" ></span>&nbsp;[mm]	               </td>
+	              <td width="45"><!--DWLayoutEmptyCell-->&nbsp;</td>
+	  </tr>
+	</thead>
+			<tr class="boton">
+			  <td height="31"></td>
+			  <td align="right" >PROYECCION :</td>
+			  <td colspan="5" align="left">
+              <!--
+              &nbsp;<span id="idPDias" ></span>&nbsp;[dias] 
+               &nbsp;<span id="idPMes" ></span>&nbsp;[meses]    
+               &nbsp;<span id="idPAnho" ></span>&nbsp;[a�os] &nbsp;-->
+               &nbsp;<span id="idFechaP" ></span>        </td>
+			  <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+			  <td align="right" >ESPESOR SEGURIDAD :</td>
+    <td align="left">&nbsp;<span id="idSeg"></span>&nbsp;[mm]</td>
+	<td colspan="2" align="right">ESPESOR RETORNO : </td>
+	<td>&nbsp;<span id="idRetorno" ></span>&nbsp;[mm] </td>
+	<td></td>
+            <tr class="boton">>
+              <td height="0"></td>
+              <td></td>
+              <td width="44" align="left"></td>
+              <td align="left"></td>
+              <td width="54" align="left"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td width="190"></td>
+              <td></td>
+              <td width="1"></td>
+              <td width="174"></td>
+              <td></td>
+              <td></td>
+            </tr>
+</table>
+<!--- AREA PARA IMPRESION !-->
+<table width="99%" class="boton">
+<tr><td>
+<TABLE id="tabMedidas" name="tabMedidas" border="1" cellSpacing="0" cellPadding="0" width="95%" align="center">
+</TABLE>
+</td></tr>
+<tr><td><hr></td></tr>
+<tr><td>
+<div id="chart1" style="height: 300px; min-width: 95%;"></div>
+</td></tr>
+</table>
+</form>
+</body>
+</html>

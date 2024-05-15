@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Untitled</title>
+<XML id="XMLDoc"></XML>
+
+
+
+
+
+
+
+<script>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var strs;
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+//function mostrarVentana(_Obj1, _Obj2, _popbox){
+
+function mostrarVentana(_codeobj, _nameobj,  _popbox, _function)
+{
+  //alert("hi");
+  parent.event.cancelBubble=true;
+   popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  popbox = _popbox;
+  functionName = _function
+  with (popbox.style){visibility = "visible";}
+ // Form1.txtCentroCosto.focus();
+ search();
+ 
+}
+
+
+
+//-->
+</script>
+
+<style>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</style>
+
+<body leftmargin=0 topmargin=0 style="font:normal 100% tahoma;" bgcolor="#dee6eb" scroll="no"  
+onLoad="input0.focus();">
+
+<center>
+
+<table width="100%" border=0 cellpadding=0 cellspacing=0>
+  <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;">&nbsp;Codigo</td>
+    <td align="right">
+      <img src="images/close.gif" width="16" height="14" onClick="set();">
+    </td>
+  </tr>
+</table>
+
+<!--table width="90%" border=0 cellpadding=0 cellspacing=0>
+  <tr>
+    <td style="font-size:75%;">ID</td>
+    <td style="font-size:75%;">Descripci�n</td>
+    <td style="font-size:75%;"></td>
+  </tr>
+  <tr>
+    <td><input type="text" class="input0" id="strc" name="calle"></td>
+    <td><input type="text" class="input1" id="strn"></td>
+    <td><input type="button" class="buttom" onclick="search(strc.value,strn.value);" value="Buscar"></td>
+  </tr>
+</table-->
+
+<span id="msg" class="text" style="display:none;"></span>
+
+<table width="100%" border=0 cellpadding=2 cellspacing=0 bordercolor="#6587a3">
+  <tr onClick="set(this);" style="cursor:hand;" height="9">
+    <td style="border-bottom:solid 1px #6587a3;">
+	<input type="text" class="input0" name="input0" size="20"><br>
+	<input type="button" class="buttom"  value="Aceptar">
+    </td>
+  </tr>
+</table>
+
+</center>
+</body>
+
+</html>

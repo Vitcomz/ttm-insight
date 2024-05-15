@@ -1,0 +1,1326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<TITLE>Cotizaciones - TTM</TITLE>
+		<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOC"></xml>
+		<xml id="xmlArea"></xml>
+		<xml id="xmlResponsables"></xml>
+		<xml id="xmlArticulos"></xml>
+		<xml id="xmlServicios"></xml>
+		<xml id="xmlTemp"></xml>
+        <xml id="xmlMonedas"></xml>
+		<xml id="xmlImages"></xml>
+	<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+	<LINK rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+	<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+	<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+//Funciones de Inicio de P�gina
+
+var Autoriza;
+	
+function inicio(){
+
+  mydate 	= new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  
+  
+  ListResponsables();
+  //listMonedas();
+	
+  formulario.txtUsuario.value = Usuario;  
+  formulario.listResponsables.value = Usuario;
+  formulario.listSucursal.value = getEmpresa();  
+  formulario.txtFecha.value = _hoy(); 
+	
+ 
+  if(getParametro("Folio")){
+				formulario.txtFolio.value = getParametro("Folio");
+				getCotizacion();
+				
+				}
+				
+//getDatosArea(Usuario);
+
+
+/*if(Autoriza!=Usuario)
+		document.getElementById('chkVB1').disabled = true;*/
+
+}
+
+
+
+function nuevo(){
+  //Variables generales
+
+	document.getElementById('title').innerText="COTIZACIONES";
+	window.location.href="cotizaciones.html";
+
+}
+
+function getDatosArea(UserName){
+
+    xmlArea.async = false;
+    var xmlDso = xmlArea.XMLDocument;
+	var url = "/sci/xml/Areas.asp?Recurso=GetAreaUsuario&USUARIO=" + UserName;
+    var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+		
+	var tree = xmlDso.documentElement;
+	
+		  var node = tree.childNodes.item(0); 
+		  //alert(node.text);
+		  Autoriza = getChildNodeValue(node,"AUTORIZA");
+		//  alert(Autoriza);
+	
+}
+
+
+function guardar(){
+
+//labelLoading.style.visibility = "visible";
+
+	if (formulario.listEstados.value=='NUL'){
+					alert("Cotizaci�n Anulada.");
+					labelLoading.style.visibility = "hidden";
+					getCotizacion();
+					return;
+					}
+								
+					
+	if (formulario.listEstados.value=='APR'){
+					alert("Cotizaci�n fue aprobada, no se puede actualizar.");
+					labelLoading.style.visibility = "hidden";
+					getCotizacion();
+					return;
+					}
+
+	if (formulario.listEstados.value=='ENV'){
+					alert("Cotizacion ya fue enviada al cliente.");
+					labelLoading.style.visibility = "hidden";
+					getCotizacion();
+					return;
+					}
+	
+	if (!formulario.txtRut.value){
+					alert("Ingrese el Cliente.");
+					labelLoading.style.visibility = "hidden";
+					return;
+					}
+	
+	if (!formulario.txtDescripcion.value){
+					alert("Ingrese la Descripcion o Motivo.");
+					labelLoading.style.visibility = "hidden";
+					return;
+					}
+																		
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;							
+	
+	if (formulario.txtFolio.value)
+			var url = "xml/cotizaciones.asp?Recurso=updateCotizacion&FOLIO=" + formulario.txtFolio.value;
+	else
+			var url = "xml/cotizaciones.asp?Recurso=newCotizacion";
+
+	url += "&FECHA=" + formulario.txtFecha.value;
+	url += "&RESPONSABLE=" + formulario.listResponsables.value;
+	url += "&DESCRIPCION=" + formulario.txtDescripcion.value;
+	url += "&ESTADO=" + formulario.listEstados.value;
+	url += "&TIPO_MONEDA=" + formulario.listMonedas.value;
+	url += "&SUCURSAL=" + formulario.listSucursal.value;
+	url += "&RUT_CLIENTE=" + formulario.txtRut.value;
+	url += "&PLAZO=" + formulario.txtPlazo.value;
+	url += "&COND_PAGO=" + formulario.listPago.value;
+	url += "&CONTACTO=" + formulario.txtContacto.value;
+	url += "&EMAIL=" + formulario.txtEmail.value;
+	url += "&FONO_CONTACTO=" + formulario.txtFonoContacto.value;
+	url += "&LUGAR_ENTREGA=" + formulario.listEntrega.value;
+	url += "&IND_DIRECTA=" + formulario.chkIndDirecta.checked;
+	url += "&VB1=" + formulario.chkVB1.checked;
+	url += "&VALIDEZ=" + formulario.txtValidez.value;
+	url += "&USERNAME=" + Usuario;
+	url += "&GARANTIA=" + scape(formulario.txtGarantia.value);
+	url += "&APORTE_EMP=" + scape(formulario.txtAporteEmp.value);
+    url += "&APORTE_CLI=" + scape(formulario.txtAporteCli.value);
+  	url += "&VIAJE_FALL=" + scape(formulario.txtViajeFall.value);
+ 	url += "&STAND_BY=" + scape(formulario.txtStandBy.value);
+	url += "&OBSERVACIONES=" + scape(formulario.txtObservaciones.value);
+	url += "&VTZ=" + Math.random();
+	
+	//alert(url);
+	var res =xmlDso.load(url);
+	if (res){
+		
+		formulario.txtFolio.value = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"FOLIO");
+		setTimeout("guardarArticulos();",200);
+		setTimeout("guardarServicios();",200);
+		}
+	else
+		window.open(url);
+		
+setTimeout("getCotizacion();",500);
+}
+
+
+function guardarArticulos(){
+ 
+ var Folio = formulario.txtFolio.value;
+ var tbl = document.getElementById('tabArticulos');
+ var lastRow = tbl.rows.length;
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+  
+	url = "xml/Articulos.asp?RECURSO=delArticulosCT";
+	url += "&FOLIO=" + Folio;
+	url += "&VTZ=" + Math.random();
+	
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);
+	
+   for (i=1; i<lastRow-1; i++){
+  	//alert(i);
+ 		url = "xml/Articulos.asp?RECURSO=newArticulosCT";
+		url += "&FOLIO=" + Folio;	
+		url += "&CODIGO=" + tbl.rows[i].children[0].children[0].value;
+		url += "&DESCRIPCION=" + tbl.rows[i].children[1].children[0].value;
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		url += "&VTZ=" + Math.random();
+		
+		if (tbl.rows[i].children[3].children[0].value)
+					_valor = tbl.rows[i].children[3].children[0].value;
+		else
+					_valor = 0;
+					
+		url += "&VALOR=" + _valor;
+		
+//	alert(url);
+	    var res =xmlDso.load(url);
+		if (!res) 
+			window.open(url);
+	}//FOR
+	 
+} 
+
+function guardarServicios(){
+
+ var tbl = document.getElementById('tabServicios');
+ var lastRow = tbl.rows.length;
+	xmlTemp.async = false;
+ var xmlDso = xmlTemp.XMLDocument;
+  
+	url = "xml/Servicios.asp?RECURSO=DeleteServiciosCT";
+	url += "&FOLIO=" + formulario.txtFolio.value;
+	url += "&EMPRESA=" + getEmpresa();
+
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);		
+ 
+ for (i=1; i<lastRow-1; i++){
+ 
+		url = "xml/Servicios.asp?RECURSO=InsertServiciosCT"
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&CODIGO=" + tbl.rows[i].children[0].children[0].value;
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		
+		if (tbl.rows[i].children[3].children[0].value)
+					_valor = tbl.rows[i].children[3].children[0].value;
+		else
+					_valor = 0;
+					
+		url += "&VALOR=" + _valor;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		
+	//alert(url);
+	    var res =xmlDso.load(url);
+				if (!res) 
+						window.open(url);
+	}
+	 
+} 
+
+function listMonedas(){
+
+  xmlMonedas.async = false;
+  var xmlDso = xmlMonedas.XMLDocument;
+  var url = "xml/monedas.asp?RECURSO=ListMonedas";
+  var res = xmlDso.load(url);
+
+ if (formulario.listMonedas.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"NOMBRE") ,getChildNodeValue(node,"SIMBOLO"));
+	            formulario.listMonedas.options[i] = opcion; }
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+  
+function getCotizacion(){
+
+    xmlOC.async = false;
+	labelLoading.style.visibility = "visible";
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/cotizaciones.asp?Recurso=getCotizacion&FOLIO=" + formulario.txtFolio.value;
+		url += "&SUCURSAL=" + getEmpresa();
+		url += "&USERNAME=" + Usuario;
+		url += "&VTZ=" + Math.random();
+	
+    var res =xmlDso.load(url);
+	
+	if (res){
+		if (xmlDso.documentElement.childNodes.length==0){
+			labelLoading.style.visibility = "hidden";
+			formulario.txtFolio.focus();
+			getDatosArea(Usuario);
+			limpiarTabla2('tabArticulos');
+			limpiarTabla2('tabServicios');
+			}
+		else{
+		setTimeout("mostrarArticulos();",1);
+		setTimeout("mostrarServicios();",1);
+		}
+	  }
+	else
+		window.open(url);
+	
+	listArchivos();
+	/*if(xmlDso.documentElement.childNodes.length>0)
+	getDatosArea(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"RESPONSABLE"));
+	
+	
+	/*if(getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"ESTADO")=='APR')
+				document.getElementById("btnEnviar").value = "Enviar a Adquisiciones.";*/
+	//alert(Autoriza);	
+/*		
+if(Autoriza!=Usuario)
+		document.getElementById('chkVB1').disabled = true;*/
+		
+	
+	
+}
+
+
+function anular(){
+
+	if(formulario.listEstados.value=="REC"){
+				alert("La Orden ya fue recepcionada.");
+				return;
+				}
+				
+	if (confirm("Desea anular orden de compra Nro " +formulario.txtFolio.value)){			
+		xmlOC.async = false;
+	    var xmlDso = xmlOC.XMLDocument;							
+	
+		var url = "xml/OrdenCompra.asp?Recurso=nullOrdenCompra&FOLIO=" + formulario.txtFolio.value;
+			url += "&USERNAME=" + Usuario;
+			url += "&EMPRESA=" + getEmpresa();
+
+		//alert(url);
+		var res =xmlDso.load(url);
+		if (!res)
+			window.open(url);
+	}
+	
+	getOC();
+	
+}
+	
+function enviar(){
+	
+					
+	if (formulario.listEstados.value=='ENV'){
+					alert("Orden fue enviada al proveedor.");
+					return;
+					}
+					
+					
+					
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+					
+	
+	if (formulario.txtFolio.value){
+		var url = "xml/OrdenCompra.asp?Recurso=UpdateOrdenCompra&FOLIO=" + formulario.txtFolio.value;
+		
+		url += "&FECHA=" + formulario.txtFecha.value;
+		url += "&RESPONSABLE=" + formulario.listResponsables.value;
+		url += "&TIPO=" + formulario.tipoMoneda.value;
+		url += "&OBSERVACION=" + formulario.txtObservacion.value;
+		url += "&RUT_PROVEEDOR=" + getRut(formulario.txtRutProveedor.value);
+		url += "&COND_PAGO=" + formulario.listPago.value;
+		url += "&ESTADO=ENV";
+		url += "&EMPRESA=" + formulario.listEmpresa.value;
+		url += "&USERNAME=" + Usuario;
+		url += "&TIPO=" + formulario.tipoMoneda.value;
+		
+		var res =xmlDso.load(url);
+	}
+	else
+		return;
+		
+	if (!res)
+		window.open(url);
+		
+	setTimeout("getOC();",400);
+}
+
+
+
+function creaArticulo(){
+
+var ID = formulario.txtID.value;
+var Cantidad = formulario.txtCantidad.value;
+var Precio = formulario.txtPrecio.value;
+
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=GetArticulo&ID="+ID;
+    var res =xmlDso.load(url);
+ 
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		
+			//alert(tbl.children(1).children(lastRow-1).children(3).children(0) + " " + lastRow);
+		 if (tbl.children(1).children(lastRow-1).children(3).children(0)){
+												tbl.deleteRow();
+												}
+				
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"ID") + "'>";
+
+			var cell = row.insertCell(1);
+				cell.innerHTML = "<textarea class='Campo' type='text' cols='70' rows=3>" + 
+										getChildNodeValue(node,"NOMBRE") + "</textarea>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' onkeyUp='cambiaTotal(this)' >";
+					 cell.align='center';
+					 
+			var cell = row.insertCell(3);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										Precio + "' onkeyUp='cambiaTotal(this)'>";
+					 cell.align='right';
+
+			var cell = row.insertCell(4);
+					 cell.innerHTML ="<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										Cantidad * Precio + "'>";
+					 cell.align='right';
+										
+			var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+			mostrarTotales();
+         }//for
+        }//if
+      }
+      else
+	  	window.open(url);
+	  
+  
+
+}
+ 
+function creaServicio(){
+
+var CODIGO = formulario.txtCodigo.value;
+var CantServ = formulario.txtCantidadServ.value;
+var PrecioServ = formulario.txtPrecioServ.value;
+
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Servicios.asp?RECURSO=GetServicio&CODIGO="+CODIGO;
+    var res =xmlDso.load(url);
+ 	//window.open(url);
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		if (tbl.children(1).children(lastRow-1).children(3).children(0)){
+				tbl.deleteRow();
+				}
+				
+         for (i=0; i< tree.childNodes.length; i++){
+         
+          var node = tree.childNodes.item(i);          
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<textarea class='Campo' type='text' cols='60' rows=3>" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</textarea>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										CantServ+ "' onkeyUp='cambiaTotal(this)'>";
+					cell.align='right';
+
+			var cell = row.insertCell(3);
+				cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										PrecioServ + "' onkeyUp='cambiaTotal(this)'>";
+				cell.align='right';
+
+			var cell = row.insertCell(4);
+					 cell.innerHTML ="<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										CantServ * PrecioServ + "' readonly='true'>";
+					 cell.align='right';
+				
+										
+			var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+         }//for
+        }//if
+      }
+      else
+      {alert("Ha ocurrido un error al cargar los datos.\n" + xmlDso.parseError.reason);
+	  window.open(url);}
+
+mostrarTotalesServicios();
+
+}
+
+function mostrarArticulos(){
+
+
+	limpiarTabla2('tabArticulos');
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	var folio = formulario.txtFolio.value;
+	
+    xmlArticulos.async = false;
+    var xmlDso = xmlArticulos.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=ListArticulosCT&FOLIO=" + folio;
+		url += "&VTZ=" + Math.random();
+	
+	if (!formulario.txtFolio.value)
+						return;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='15' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<textarea class='Campo' type='text' cols='70' rows=3>" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</textarea>";
+				
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' onkeyUp='cambiaTotal(this)' readonly='true' >";
+					cell.align='center';
+					
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										Valor + "' onkeyUp='cambiaTotal(this)' readonly='true'>";
+				cell.align='right';
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true'>";
+				cell.align='right';
+				
+			
+		/*	if (Autoriza==Usuario){
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked'/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand'/>";
+					}
+					
+			else{
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked' disabled/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' disabled/>";
+				}*/
+						
+			var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='eliminar(this);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+		   }//FOR
+         }
+      }
+      else
+      	window.open(url);
+		
+		
+ mostrarTotales();
+ 
+ labelLoading.style.visibility = "hidden";
+}
+
+ 
+function mostrarServicios(){
+
+limpiarTabla2('tabServicios');
+
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	var folio = formulario.txtFolio.value;
+	
+    xmlServicios.async = false;
+    var xmlDso = xmlServicios.XMLDocument;
+	var url = "xml/Servicios.asp?RECURSO=ListServiciosCT&FOLIO=" + folio;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+	if (!formulario.txtFolio.value)
+	return;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='15' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+  			var cell = row.insertCell(1);
+			cell.innerHTML = "<textarea class='Campo' type='text' cols='70' rows=3>" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</textarea>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' readonly='true'>";
+				cell.align='right';
+				
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										Valor + "' readonly='true'>";
+				cell.align='right';
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true'>";
+				cell.align='right';
+				
+			var cell = row.insertCell(5);
+			cell.innerHTML = "<IMG onclick='this.parentElement.parentElement.parentElement.deleteRow(this.parentElement.parentElement.rowIndex);' src='images/trash.jpg' align='middle' style='CURSOR:hand' />";
+										
+		if (Autoriza==Usuario){
+			
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked'/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand'/>";
+					}
+					
+			else{
+				var cell = row.insertCell(5);
+			
+				if (getChildNodeValue(node,"APROBADO")=="TRUE")
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' checked='checked' disabled/>";
+				else
+					cell.innerHTML = "<INPUT TYPE='checkbox' " + 
+							"class='input' align='middle' style='CURSOR:hand' disabled/>";
+				}
+			}
+										
+	  }//FOR
+      }
+      else
+      	window.open(url);
+	
+	mostrarTotalesServicios();
+	labelLoading.style.visibility = "hidden";
+ 
+}
+
+
+function cambiaTotal(obj){
+ var i = obj.parentElement.parentElement.rowIndex;
+ 
+var cantidad = obj.parentElement.parentElement.parentElement.children(i).children(2).children(0).value;
+var valor_unitario = obj.parentElement.parentElement.parentElement.children(i).children(3).children(0).value;
+obj.parentElement.parentElement.parentElement.children(i).children(4).children(0).value = cantidad * valor_unitario;
+
+mostrarTotales();
+mostrarTotalesServicios();
+ }
+ 
+function mostrarTotales(){
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	total=0;
+		
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + Math.round(parseFloat(tbl.children(1).children(i).children(4).children(0).value),4);
+	}
+	
+	if (lastRow<2)return;
+	if (tbl.children(1).children(lastRow-1).children(3).children(0).tagName=='SPAN')
+								tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" + 
+										total + "'>";
+	cell.align='right';
+
+	
+}
+
+function mostrarTotalesServicios(){
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	total=0;
+	//alert(tbl.children(1).children(lastRow-1).children(3).children(0).value);
+	if (lastRow<2) return;
+			
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + parseFloat(tbl.children(1).children(i).children(4).children(0).value);
+	}
+	
+
+	if (!tbl.children(1).children(lastRow-1).children(3).children(0).value)
+				tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='15' value='" + 
+										total + "'>";
+	
+	cell.align='right';
+
+	
+}
+
+
+//Funciones generales
+//*****************************************************************
+
+ function limpiarTabla(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+ }
+ 
+function limpiarTabla2(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(1);
+	 }
+}
+ 
+ 
+function imprimir(){
+
+var url = "imprCotizacion.html?FOLIO=" + formulario.txtFolio.value;
+    url += "&VTZ=" + Math.random();
+
+window.open(url);
+
+/*	xmlArea.async = false;
+    var xmlDso = xmlArea.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=SetImprime&FOLIO=" + formulario.txtFolio.value;
+		url += "&EMPRESA=" + getEmpresa();
+
+	    var res =xmlDso.load(url);*/
+		
+}
+
+
+function checkAll(){
+
+ checkAllArt();
+ checkAllServ();
+	 
+} 
+
+function checkAllArt(){
+
+ var tbl = document.getElementById('tabArticulos');
+ var chk = document.getElementById('chkVB1');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=1; i<lastRow-1; i++){
+	if (chk.checked)
+		tbl.rows[i].children[5].children[0].checked=true;
+	else
+		tbl.rows[i].children[5].children[0].checked=false;
+	}
+	 
+} 
+
+ function eliminar(obj){
+ obj.parentElement.parentElement.parentElement.deleteRow(obj.parentElement.parentElement.rowIndex);
+ mostrarTotales();
+ }
+ 
+
+function checkAllServ(){
+
+ var tbl = document.getElementById('tabServicios');
+ var chk = document.getElementById('chkVB1');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=1; i<lastRow-1; i++){
+	 if (chk.checked)
+		tbl.rows[i].children[5].children[0].checked=true;
+	else
+		tbl.rows[i].children[5].children[0].checked=false;
+	}
+	 
+} 
+
+function listArchivos(){
+	
+	xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=COTIZACIONES"; 
+		url += "&IDENTIFICADOR="+formulario.txtFolio.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);}
+	else{		
+	   total_registros_lista = xmlImages.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/1);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+
+document.frameFiles.src ="archivos.html";
+}
+
+function newFile(){
+document.frameFiles.mostrarVentana(formulario.txtFolio,"COTIZACIONES",divFiles);
+}
+
+function delFile(){
+xmlImages.async = false;
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "xml/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=COTIZACIONES"; 
+		url += "&IDENTIFICADOR="+formulario.txtFolio.value;
+		url += "&ID=" + formulario.txtId.value;
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);
+		}
+
+listArchivos();
+}
+
+
+</SCRIPT>
+</HEAD>
+
+<BODY onload="inicio();">
+
+<DIV ID="divFiles" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 150px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 100px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="frameFiles" SRC="archivos.html" frameBorder="0" WIDTH="450" SCROLLING="no" HEIGHT="220"></IFRAME>
+</DIV>
+	
+<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+	 style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+	<IFRAME frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+</DIV>
+	
+<DIV id="divClientes" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 207px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 165px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="listFrClientes" src="listClientes.html" frameBorder="0" width="312" scrolling="no" height="250"></IFRAME>
+</DIV>
+
+<DIV id="divCotiz" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 109px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 125px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameCotiz" src="ListCotiz.html" frameBorder="0" width="312" scrolling="no"	height="230"></IFRAME>
+</DIV>
+
+<DIV id="divArticulos" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 50px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 150px" 
+		onclick="event.cancelBubble=true">
+	<IFRAME name="frameArticulos" src="BuscarArticulos.html" frameBorder="0" width="350" scrolling="no" height="250"></IFRAME>
+</DIV>
+
+<DIV id="divServicios" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 50px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 150px" 
+ onclick="event.cancelBubble=true">
+<IFRAME name="frameServicios" src="BuscarServicios.html" frameBorder="0" width="350" scrolling="no" height="250"></IFRAME>
+</DIV>
+        
+<DIV id="DivObservacion" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 100px; width: 560px; height: 520px;" onclick="event.cancelBubble=true">
+<IFRAME name="frameObservacion" src="condiciones.html" frameBorder="0"
+	 width="560" scrolling="no" height="520">
+</IFRAME>
+</DIV>
+
+		<BR>
+		<BR>	
+		<FORM name="formulario">
+		<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+		<SPAN class="loading" id="labelLoading" 
+		style="Z-INDEX: 135; LEFT: 296px; VISIBILITY: hidden; WIDTH: 256px; POSITION: absolute; TOP: 204px; HEIGHT: 48px">
+				<IMG src="images/ajax-loader.gif"  />Cargando.... espere un momento </SPAN>
+			<TABLE height="66" cellspacing="0" cellpadding="0" width="758" border="0">
+              <!--DWLayoutTable-->
+              <TR>
+                <TH WIDTH="378" height="43"><SPAN CLASS="calibri_16" id="title">COTIZACIONES</SPAN></TH>
+                <TH WIDTH="380" class="LitleText">
+                <TABLE WIDTH="100%"  border="0" ALIGN="RIGHT" CELLPADDING="0"
+                  		cellspacing="0" DATAPAGESIZE="1" CLASS="calibri" ID="tabImages" DATASRC="#xmlImages">
+           		 <TR ALIGN="RIGHT">
+					  <TD>
+                       Archivo Adjunto <SPAN ID="ID_list_fraccion_reg"></SPAN>&nbsp;
+                   		 <A  href="javascript:irAtras('tabImages');">&lt;Anterior</A>         
+                   	     <A  href="javascript:irAdelante('tabImages');">Siguiente&gt;</A> 
+                       <IMG SRC="images/clip.jpg" onClick="newFile();" STYLE="cursor:hand;" /> 
+                       <IMG SRC="images/trash.jpg" STYLE="cursor:hand;" onClick="delFile();" /></TD>
+			  	  	</TR>
+				  <TR>
+					<TD align="RIGHT" >
+                            <A DATAFLD="FILEID" TARGET="_blank">
+               				<INPUT DATAFLD="ID" ID="txtId" TYPE="HIDDEN">
+                              	<SPAN DATAFLD="NOMBRE"></SPAN></A>
+                            	<SPAN ID="ID_list_cant_reg" STYLE="visibility:hidden"></SPAN></TD>
+				  </TR>
+			 </TABLE>   
+              </TH>
+              </TR>
+              <TR>
+                <TH height="23" COLSPAN="2" align="left" 
+				 background="images/blueBarLarge.jpg" class="titulo"> &nbsp;&nbsp;DESCRIPCION</TH>
+              </TR>
+            </TABLE>
+<TABLE height="474" cellSpacing="0" cellPadding="0" width="816" border="0">
+			  <!--DWLayoutTable-->
+<TR>
+					<TH height="142" colspan="2" > <!-- CABECERA SOLICITUD -->
+				    <TABLE id="tabCabecera1" cellSpacing="0" cellPadding="0"
+                     width="900" align="left" DATASRC="#xmlOC">
+						  <!--DWLayoutTable-->
+		  <TR align="center">
+							<TD width="66" HEIGHT="13" VALIGN="TOP"   class="Rotulo">FOLIO</TD>
+					<TD colSpan="4"  valign="top" class="Rotulo" >CLIENTE</TD>
+							<TD colspan="4"  valign="top" class="Rotulo" >FECHA </TD>
+							<TD WIDTH="5" class="Rotulo"  ></TD>
+					<TD colspan="3" valign="top" class="Rotulo"  >ESTADO</TD>
+							<TD width="4" class="Rotulo" ></TD>
+	                <TD width="224"  valign="top" class="Rotulo" >SUCURSAL</TD>
+			          </TR>
+						<TR align="center" vAlign="middle">
+						  <TD HEIGHT="21" align="left" VALIGN="MIDDLE"  >
+					  	    <INPUT class="Campo" type="text" size="5" name="txtFolio"
+							onKeyPress="if(event.keyCode==13)getCotiz();" datafld="FOLIO">
+			              <IMG src="images/refresh.gif" alt="Buscar"	align="middle" style="CURSOR: hand" 
+								onclick="frameCotiz.mostrarVentana(txtFolio, 0, divCotiz,'getCotizacion();',Usuario);">                             </TD>
+						  <TD colSpan="4" align="left" VALIGN="MIDDLE" >
+   							<INPUT name="txtRut" type="text"  readonly
+									class="input" size="12" datafld="RUT_CLIENTE"/>
+				            <INPUT name="txtCliente" type="text" class="input"
+						  		 readonly	  size="45" datafld="CLIENTE"/>
+						    <INPUT  class="Campo" id="idRol" type="hidden" size="1" name="txtRol">
+					        <INPUT  class="Campo" id="idUsuario" type="hidden" size="1" name="txtUsuario">
+				            <IMG src="images/lupa.jpg" ALT="Buscar" width="19" 
+                            		height="19" align="absmiddle" style="CURSOR: hand" 
+                         onclick="listFrClientes.popsearchbox(1,txtRut,txtCliente,divClientes);">
+                         </TD>
+						  <TD colspan="4" align="CENTER" VALIGN="MIDDLE" >
+						    <INPUT class="Campo" type="text" size="12" name="txtFecha"
+							   datafld="FECHA" readonly="true">
+						    </input>
+		  	                <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="ABSMIDDLE"
+							  onclick="FrameCalendar.fPopCalendar(txtFecha,
+							  txtFecha,divCalendar);return false"></TD>
+						  <TD >&nbsp;</TD>
+						  <TD colspan="3" align="CENTER" VALIGN="MIDDLE"  >				  	    	
+						    <SELECT  name="listEstados" class="input" disabled="disabled"
+											datafld="ESTADO">
+                              <OPTION value="ING">INGRESADA</OPTION>
+                              <OPTION value="ENV">ENVIADA</OPTION>
+                              <OPTION value="APR">APROBADA</OPTION>
+							  <OPTION value="EFE">EFECTUADA</OPTION>
+							  <OPTION value="NUL">ANULADA</OPTION>
+                            </SELECT> 
+				          </TD>
+						  <TD >&nbsp;</TD>
+						  <TD align="CENTER" VALIGN="MIDDLE" >
+						    <SELECT class="input" name="listSucursal" DISABLED>
+                              <OPTION VALUE="ANTOFAGASTA">ANTOFAGASTA</OPTION>
+                              <OPTION VALUE="CALAMA">CALAMA</OPTION>
+                              <OPTION VALUE="IQUIQUE">IQUIQUE</OPTION>
+                              <OPTION VALUE="SANTIAGO">SANTIAGO</OPTION>
+                              <OPTION VALUE="PROYECTO">PROYECTO</OPTION>
+                              <OPTION VALUE="REVESTIMIENTO">REVESTIMIENTO</OPTION>
+                            </SELECT>
+						  </TD>
+						</TR>
+							<TR >
+								<TD HEIGHT="13" colSpan="4" VALIGN="TOP"  class="Rotulo">MOTIVO / PROYECTO</TD>
+								<TD colspan="2" align="center" VALIGN="TOP"  class="Rotulo">VENDEDOR</TD>
+								<TD colspan="5" align="CENTER" VALIGN="TOP"  class="Rotulo">COND. DE PAGO </TD>
+								<TD COLSPAN="2" align="center" VALIGN="TOP"   class="Rotulo"> &nbsp;V&deg;B&deg;</TD>
+					            <TD colSpan="2" align="center" VALIGN="TOP"    class="Rotulo">&nbsp;TIPO DE MONEDA</TD>
+						    </TR>
+							<TR align="left">
+								<TD HEIGHT="20"  colSpan="4" VALIGN="TOP" >
+							      <INPUT class="Campo" type="text" size="60"
+									 name="txtDescripcion" datafld="DESCRIPCION" >
+								</TD>
+				      <TD colspan="2" align="center" VALIGN="TOP" >
+					    <SELECT name="listResponsables" class="input" datafld="RESPONSABLE" disabled>
+				        </SELECT>								
+				        </TD>
+							  <TD colspan="5" align="CENTER" VALIGN="TOP" >
+							  	<!--SELECT name="listPago" class="input" datafld="COND_PAGO" >
+									<OPTION value="Contado" selected="selected">Contado</OPTION>
+									<OPTION value="15 D�as" >15 D�as</OPTION>
+									<OPTION value="30 D�as" >30 D�as</OPTION>
+									<OPTION value="45 D�as" >45 D�as</OPTION>
+                                    <OPTION value="60 D�as" >60 D�as</OPTION>
+                                    <OPTION value="90 D�as" >90 D�as</OPTION>
+                                    <OPTION value="120 D�as" >120 D�as</OPTION>
+                                    <OPTION value="150 D�as" >150 D�as</OPTION>
+                           	     </SELECT-->	
+                                <INPUT name="listPago" class="input" value="30 D&iacute;as"  SIZE="25" datafld="COND_PAGO"/>					  
+						  	  </TD>
+						      <TD COLSPAN="2" align="CENTER" VALIGN="TOP" >
+						        <INPUT  NAME="chkVB1" TYPE="checkbox" CLASS="input"  ID="chkVB1"
+											 DATAFLD="VB1" onClick="checkAll();">
+						      </TD>
+						      <TD colSpan="2" align="center" VALIGN="TOP"  nowrap class="texto">
+						        <SELECT NAME="listMonedas" CLASS="input" DATAFLD="TIPO_MONEDA" >
+                                	<OPTION VALUE="PE" SELECTED>PESOS</OPTION>
+                                    <OPTION VALUE="UF">UF</OPTION>
+                                    <OPTION VALUE="DO">DOLAR</OPTION>
+                                    <OPTION VALUE="EU">EURO</OPTION>
+                                    <OPTION VALUE="LB">LIBRA</OPTION>
+                                </SELECT>
+                              </TD>
+						    </TR>
+							<TR>
+							  <TD HEIGHT="13" colspan="3" VALIGN="TOP" class="Rotulo">LUGAR ENTREGA Y/O EJECUCION</TD>
+							  <TD WIDTH="4" class="Rotulo"></TD>
+							  <TD colspan="4" align="CENTER" VALIGN="TOP"  class="Rotulo">
+							    <DIV ALIGN="CENTER">CONTACTO</DIV>
+							  </TD>
+						      <TD WIDTH="5"  class="Rotulo"></TD>
+						      <TD colspan="6" ALIGN="CENTER" VALIGN="TOP"  class="Rotulo">
+						        <DIV ALIGN="CENTER">EMAIL CONTACTO</DIV>
+						      </TD>
+						  </TR>
+							<TR>
+							  <TD HEIGHT="19" colspan="3" ALIGN="LEFT" VALIGN="TOP" >
+							    <INPUT name="listEntrega" class="input" datafld="LUGAR_ENTREGA"  SIZE="55">
+							  </TD>
+							  <TD >&nbsp;</TD>
+							  <TD colspan="4" ALIGN="CENTER" valign="top" >
+							    <INPUT class="Campo" type="text" size="35" name="txtContacto"
+							   datafld="CONTACTO"  ID="txtContacto">
+							  </TD>
+						      <TD>&nbsp;</TD>
+						      <TD colspan="6" ALIGN="CENTER" valign="top">
+							   <!--input class="Campo" type="text" size="50"
+									 name="txtObservacion" datafld="OBSERVACION">				
+						    	<IMG style="CURSOR: hand" 
+									onclick="FrameObservacion.mostrarVentana(txtObservacion,
+							  		txtObservacion,DivObservacion);return false"
+									src="images/table.png" align="middle"-->
+                               <INPUT class="Campo" type="text" size="50" name="txtEmail"
+							   datafld="EMAIL" ID="txtEmail">
+						      </TD>
+						  </TR>
+							<TR CLASS="Rotulo">
+							  <TD HEIGHT="13" colspan="2" align="center" >FONO CONTACTO</TD>
+							  <TD COLSPAN="5" align="center" VALIGN="MIDDLE" >PLAZO  ENTREGA</TD>
+							  <TD colspan="5" ALIGN="CENTER" VALIGN="TOP" >IMPORTACION DIRECTA</TD>
+							  <TD colspan="3" ALIGN="CENTER" VALIGN="MIDDLE" >CONDICIONES GENERALES</TD>
+					  </TR>
+							<TR>
+							  <TD HEIGHT="25" COLSPAN="2" ALIGN="center">
+							    <INPUT CLASS="Campo" TYPE="text" SIZE="25"
+                                	 NAME="txtFonoContacto"  DATAFLD="FONO_CONTACTO">							  </TD>
+							  <TD COLSPAN="5" ALIGN="CENTER" VALIGN="MIDDLE">
+							    <INPUT CLASS="Campo" TYPE="text" SIZE="45" NAME="txtPlazo"  DATAFLD="PLAZO">
+                               <IMG  SRC="images/calendar.jpg" ALT="Fecha" ALIGN="ABSMIDDLE" STYLE="CURSOR: hand"
+							  onClick="FrameCalendar.fPopCalendar(txtPlazo,txtPlazo,divCalendar);return false"> 
+                               </TD>
+							  <TD COLSPAN="5" ALIGN="CENTER" VALIGN="TOP">
+							    <INPUT NAME="chkIndDirecta" TYPE="checkbox" CLASS="input"  
+											 DATAFLD="IND_DIRECTA" >
+							  </TD>
+							  <TD COLSPAN="3" ALIGN="CENTER" VALIGN="TOP">
+                              <INPUT name="txtValidez" TYPE="hidden" datafld="VALIDEZ" >
+                              <INPUT NAME="txtGarantia" TYPE="hidden" DATAFLD="GARANTIA"/>
+                              <INPUT NAME="txtAporteEmp" TYPE="hidden" DATAFLD="APORTE_EMP"/>
+                              <INPUT NAME="txtAporteCli" TYPE="hidden" DATAFLD="APORTE_CLI"/>
+                              <INPUT NAME="txtViajeFall" TYPE="hidden" DATAFLD="VIAJE_FALL"/>
+                              <INPUT NAME="txtStandBy" TYPE="hidden" DATAFLD="STAND_BY"/>
+                              <INPUT NAME="txtObservaciones" TYPE="hidden" DATAFLD="OBSERVACIONES"/>
+                              <IMG style="CURSOR: hand" onclick="frameObservacion.mostrarVentana(txtValidez, 
+                              txtGarantia,txtAporteEmp, txtAporteCli, txtViajeFall, txtStandBy, txtObservaciones, DivObservacion);return false"             	src="images/table.png" align="middle"></TD>
+					  </TR>
+							<TR>
+							  <TD HEIGHT="0"></TD>
+							  <TD></TD>
+							  <TD WIDTH="140"></TD>
+							  <TD></TD>
+							  <TD WIDTH="113"></TD>
+							  <TD WIDTH="29"></TD>
+							  <TD WIDTH="12"></TD>
+							  <TD WIDTH="49"></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD WIDTH="81"></TD>
+							  <TD WIDTH="23"></TD>
+							  <TD WIDTH="21"></TD>
+							  <TD></TD>
+							  <TD></TD>
+					  </TR>
+							<TR>
+							  <TD HEIGHT="3"></TD>
+							  <TD WIDTH="122"></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+							  <TD></TD>
+					          <TD></TD>
+					  </TR>
+					  </TABLE>				  
+	  </TH>
+    </TR>
+			<TR>
+			
+			  <TH width="765" height="146" align="left" valign="top">
+			<!---- ARTICULOS --->
+				<TABLE width="323" border="0" cellPadding="0" cellSpacing="0" >
+			  <TBODY>
+								<TR  valign="top" align="left">
+									<TH  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;ARTICULOS</TH>	
+									<TH width="87" height="19" align="LEFT">
+                                    <IMG src="images/lupa.jpg" ALT="Buscar Productos" 
+                                    		width="19" height="19" style="CURSOR: hand" 
+									onclick="frameArticulos.popsearchbox(txtID,
+									txtCantidad, txtPrecio, divArticulos,'creaArticulo();'); return false;">
+						  	      <INPUT type="hidden" name="txtID" />
+										<INPUT type="hidden" name="txtCantidad" />
+									  	<INPUT type="hidden" name="txtPrecio"  />
+								</TH>
+			    </TR>
+						  </TBODY>
+			    </TABLE>
+		<TABLE width="718" border="0" id="tabArticulos" cellpadding="0" cellspacing="1">
+				 <!--DWLayoutTable-->
+			<TR class="Rotulo">
+			<TH width="77" height="18" align="left">CODIGO</TH>
+			<TH width="346" align="left">NOMBRE</TH>
+			<TH width="77" align="left" valign="middle">CANTIDAD</TH>
+			<TH width="109" align="center">VALOR UNI. </TH>
+			<TH width="77" align="center">TOTAL</TH>
+		    <TH width="7" align="center" valign="top"></TH>
+			</TR>
+		</TABLE>	  
+			  </TR>
+			<TR>
+			
+			  <TH width="765" height="148" align="left" valign="top">
+			<!---- SERVICIOS --->
+		<TABLE width="359" border="0" cellPadding="0" cellSpacing="0" >
+						  <TBODY>
+								<TR  valign="top" align="left">
+									<TH  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;SERVICIOS</TH>	
+									<TH width="123" height="19" align="LEFT">
+                                    <IMG src="images/lupa.jpg" ALT="Buscar Servicios" 
+                                    width="19" height="19" style="CURSOR: hand" 
+									onclick="frameServicios.popsearchbox(txtCodigo,
+									txtCantidadServ, txtPrecioServ, divServicios,'creaServicio()'); return false;">
+									  <INPUT type="hidden" name="txtCodigo"  size="2"  />
+                                      <INPUT type="hidden" name="txtCantidadServ"  size="2"  />
+                                      <INPUT type="hidden" name="txtPrecioServ"  size="2"  /></TH>
+						    </TR>
+						  </TBODY>
+			    </TABLE>
+    <TABLE width="700" border="0" id="tabServicios" >
+							  <!--DWLayoutTable-->
+<TR class="Rotulo">
+							<TH WIDTH="68" align="left">
+									CODIGO</TH>
+								<TH width="356" align="left">
+									DESCRIPCI&Oacute;N</TH>
+			<TH width="82" align="left" valign="middle">CANTIDAD</TH>
+			<TH width="105">VALOR UNI.</TH>
+			<TH width="60">TOTAL</TH>
+								<TH WIDTH="3" ><!---input type="checkbox"  id="chkAllServ" class="input" onClick="checkAllServ();"---></TH>
+	      </TR>
+				</TABLE>
+
+			  </TH>
+    </TR>
+
+			<TR>
+			  <TH colspan="3" align="left" vAlign="top" scope="row">
+			  		
+			<BR>	
+			  </TH>
+			  </TR>
+			<TR>
+			  <TD height="0"></TD>
+			  <TD width="1"></TD>
+			  <TD width="50"></TD>
+    </TR>
+		  <TR><TD colspan="3"></TBODY>
+	      </TABLE>
+<TABLE height="19" cellSpacing="0" cellPadding="0" width="752" border="0">
+				<TR>
+				  <TD align="center">
+                  <INPUT name="button" type="button" class="botonBlanco" 
+                  					onClick="nuevo();" value="Nuevo">
+				  </TD>
+					<TD align="center">&nbsp;</TD>
+				  <TD align="center">
+			        <INPUT name="button2" type="button" class="botonBlanco" 
+                  					onClick="guardar();" value="Guardar">
+				  </TD>
+							</td>
+					<TD align="center">
+							<INPUT class="botonBlanco" onclick="anular();" type="button" value="Anular"></TD>
+					<TD align="center">
+							<INPUT class="botonBlanco" onclick="imprimir();" type="button" value="Imprimir"></TD>
+					<TD align="center">&nbsp;</TD>
+					</TD></TR>
+			</TABLE>
+			</TR></TBODY></TABLE></FORM>
+</BODY>
+</HTML>

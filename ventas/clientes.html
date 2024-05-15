@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Clientes</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = XMLDoc></xml>
+<xml id = xmlList></xml>
+<xml id = xmlMenu></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+var newEvent = false;
+xmlDoc.async = false;
+
+function getCliente(){
+
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/clientes.asp?RECURSO=getCliente&RUT=" + getNumberRut(formulario.TxtRut.value);
+   // window.open(url);
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			window.open(url);
+}
+
+function Nuevo(){
+
+newEvent=true;
+limpiarForm();
+formulario.TxtRut.readOnly=false;
+formulario.btnNew.className='hidden';
+formulario.TxtRut.focus();
+}
+
+function limpiarForm(){
+
+		formulario.TxtRut.value="";
+		formulario.TxtNombre.value="";
+		formulario.TxtDireccion.value="";
+		formulario.TxtEMail.value="";
+		formulario.TxtWeb.value="";
+		formulario.TxtCelular.value="";
+		formulario.TxtContacto.value="";
+		formulario.TxtRubro.value="";
+		formulario.ListCiudades.value="";
+		formulario.TxtObservacion.value="";
+		formulario.TxtFono.value="";
+		formulario.TxtFax.value="";
+		formulario.ListIndice.value="";
+}
+
+function ListCiudades(){
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/ciudades.asp?RECURSO=listCiudades";
+   	 xmlDso.async = false;
+	res = xmlDso.load(url);
+	if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+	            var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"ID"));
+    	        if (opcion.value == "0") opcion.selected = true;
+	   		    formulario.ListCiudades.options[i] = opcion;   
+        		  }            
+         }
+	else
+		window.open(url);
+}
+
+function newCliente(){
+
+if (!validaRut(formulario.TxtRut.value)){
+							formulario.TxtRut.focus();
+							alert("Rut Invalido.");
+							return false;
+							}
+
+	Rut = getRut(formulario.TxtRut.value);
+	Dv = getDv(formulario.TxtRut.value);
+	
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/clientes.asp?RECURSO=newCliente&RUT=" + Rut;
+		url += "&DV=" + Dv;
+		url += "&NOMBRE=" + formulario.TxtNombre.value;
+		url += "&DIRECCION=" + formulario.TxtDireccion.value;
+		url += "&EMAIL=" + formulario.TxtEMail.value;
+		url += "&WEB=" + formulario.TxtWeb.value;
+		url += "&CELULAR=" + formulario.TxtCelular.value;
+		url += "&CONTACTO=" + formulario.TxtContacto.value;
+		url += "&FONO_CONTACTO=" + formulario.txtFonoContacto.value;
+		url += "&RUBRO=" + formulario.TxtRubro.value;
+		url += "&CIUDAD=" + formulario.ListCiudades.value;
+		url += "&OBSERVACION=" + formulario.TxtObservacion.value;
+		url += "&FONO=" + formulario.TxtFono.value;
+		url += "&FAX=" + formulario.TxtFax.value;
+		url += "&INDICE=" + formulario.ListIndice.value;
+		
+		xmlestado = xmlDso.load(url);
+		if(xmlestado)
+			alert("Cliente Ingresado");
+		else
+			window.open(url);
+}
+
+
+function updateCliente(){
+
+	if (!validaRut(formulario.TxtRut.value))
+							return false;
+
+	Rut = getRut(formulario.TxtRut.value);
+	Dv = getDv(formulario.TxtRut.value);
+	
+		var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/clientes.asp?RECURSO=updateCliente&RUT=" + Rut;
+			url += "&DV=" + Dv;
+			url += "&NOMBRE=" + formulario.TxtNombre.value;
+			url += "&DIRECCION=" + formulario.TxtDireccion.value;
+			url += "&EMAIL=" + formulario.TxtEMail.value;
+			url += "&WEB=" + formulario.TxtWeb.value;
+			url += "&CELULAR=" + formulario.TxtCelular.value;
+			url += "&CONTACTO=" + formulario.TxtContacto.value;
+			url += "&FONO_CONTACTO=" + formulario.txtFonoContacto.value;
+			url += "&RUBRO=" + formulario.TxtRubro.value;
+			url += "&CIUDAD=" + formulario.ListCiudades.value;
+			url += "&OBSERVACION=" + formulario.TxtObservacion.value;
+			url += "&FONO=" + formulario.TxtFono.value;
+			url += "&FAX=" + formulario.TxtFax.value;
+			url += "&INDICE=" + formulario.ListIndice.value;
+
+			xmlestado = xmlDso.load(url);
+	
+	if(xmlestado){
+			alert("Datos Actualizados");
+			getCliente();			
+			}
+		else 
+			window.open(url);
+		
+}
+
+function Guardar(){
+
+if (!formulario.TxtRut.value){
+				alert("Ingrese RUT. ");
+				return;
+				}
+				
+if (!formulario.TxtNombre.value){
+				alert("Ingrese Nombre. ");
+				return;
+				}
+				
+if (!formulario.TxtFono.value){
+				alert("Ingrese Fono. ");
+				return;
+				}
+				
+if (!formulario.TxtRubro.value){
+				alert("Ingrese Giro. ");
+				return;
+				}
+				
+if (!formulario.TxtDireccion.value){
+				alert("Ingrese Direccion. ");
+				return;
+				}				
+
+if (!validaRut(formulario.TxtRut.value))
+							return false;
+
+Rut = getRut(formulario.TxtRut.value);
+	
+	xmlDoc.async=false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/clientes.asp?RECURSO=existeCliente&RUT=" + Rut;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			}
+	else{
+		window.open(url);
+		return;}
+  
+	if (node.text=="True")
+		updateCliente();
+	else 
+		newCliente();
+}
+
+function delCliente(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/clientess.asp?RECURSO=delCliente&RUT=" + formulario.TxtRut.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);	
+	if(xmlestado){
+	  	alert("Cliente Eliminado");
+		LimpiarForm();
+		}
+	else alert("No se elimino el Cliente");
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="ListCiudades();">
+<BR>
+<BR>
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+
+<DIV id="divClientes" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="listFrClientes" src="listClientes.html" frameBorder="0" width="250" scrolling="no"	height="250"></IFRAME>
+</DIV>
+
+<BR>
+<TABLE width="686">
+<TR>
+  <TD width="740" height="31" class="titulo">Registro de Clientes</TD>
+</TR>
+<TR><TD>
+	<TABLE width="657"  height="247" border="0" cellpadding="1" cellspacing="1"  DATASRC="#xmlDoc">
+	  <!--DWLayoutTable-->
+	<TR class="texto" > 
+		<TD height="37" align="right">RUT:</TD> 
+		<TD width="242" align="left" valign="middle">
+			<INPUT name="TxtRut" type="text" class="input" id="TxtRut"
+             size="15" maxlength="15" datafld="RUT" onkeyup=fn(this.form,this) />
+			<IMG src="images/lupa.jpg" align="top"	style="cursor:hand" 
+            onclick="listFrClientes.popsearchbox(10, TxtRut, TxtNombre, divClientes,'getCliente();');" /> Ej. 78940490-9	</TD>
+		<TD width="107" align="right">Ciudad:</TD>
+		<TD width="216" align="left">
+		<SELECT name="ListCiudades" style="size:auto" class="input" datafld="CIUDAD" onkeyup=fn(this.form,this) >
+				<OPTION selected></OPTION>
+			</SELECT>			</TD>
+	</TR>
+	<TR class="texto" >
+	  <TD height="24" align="right">Nombre:</TD>
+	  <TD align="left">
+	  	<INPUT  name="TxtNombre" type="text" class="input" id="TxtNombre" size="40" datafld="NOMBRE"
+            onkeyup=fn(this.form,this) /></TD>
+	  <TD align="right">Direccion:</TD>
+	  <TD align="left">
+	  	<INPUT  name="TxtDireccion" type="text" class="input" id="TxtDireccion" size="40" datafld="DIRECCION" onkeyup=fn(this.form,this)  />		</TD>
+	  </TR>
+	<TR class="texto" >
+		<TD width="79" height="24" align="right">Fono :</TD>
+		<TD align="left"><INPUT  name="TxtFono" type="text" class="input" id="TxtFono" size="15" datafld="FONO" onkeyup=fn(this.form,this) /></TD>
+		<TD align="right">Fax:</TD>
+		<TD align="left"><INPUT  name="TxtFax" type="text" class="input" id="TxtFax" size="15" datafld="FAX" onkeyup=fn(this.form,this) /></TD>
+	</TR>
+	<TR class="texto" >
+	  <TD height="27" align="right" valign="middle">E-Mail :</TD>
+	  <TD align="left"><INPUT  name="TxtEMail" type="text" class="input" id="TxtEMail" size="40" datafld="EMAIL" onkeyup=fn(this.form,this) /></TD>
+	  <TD align="right"> Web:  </TD>
+	  <TD align="left"><INPUT  name="TxtWeb" type="text" class="input" id="TxtWeb" size="35" 
+      					datafld="WEB" onkeyup=fn(this.form,this) />
+	    <IMG src="images/web.jpg" alt="Ver Sitio" align="top"	
+        		style="cursor:hand" onclick="window.open(formulario.TxtWeb.value)" /></TD>
+	  </TR>
+	<TR class="texto" >
+	  <TD width="79" height="27" align="right" valign="middle"> Celular : </TD>
+	    <TD align="left"><INPUT  name="TxtCelular" type="text" class="input" id="TxtCelular" size="15" datafld="CELULAR" onkeyup=fn(this.form,this) />		</TD>
+	    <TD align="right">Contacto: </TD>
+	    <TD align="left"><INPUT  name="TxtContacto" type="text" class="input"
+        			 id="TxtContacto" size="35" datafld="CONTACTO" onkeyup=fn(this.form,this) />
+        </TD>
+	</TR>
+	<TR class="texto"  >
+	  <TD rowspan="3" align="right" valign="middle">Observaci&oacute;n:</TD>
+	  <TD rowspan="3" align="left">
+	    <TEXTAREA datafld="OBSERVACION" class="input" name="TxtObservacion" ROWS="4"
+         cols="44" id="TxtObservacion" onkeyup=fn(this.form,this) ></TEXTAREA>
+	    </TD>
+	  <TD height="31" align="right" valign="middle">Fono Contacto:</TD>
+	  <TD align="left" >
+	    <INPUT  name="txtFonoContacto" type="text" class="input"
+        			 size="20" datafld="FONO_CONTACTO" onkeyup=fn(this.form,this) >
+	  </TD>
+	  </TR>
+	<TR class="texto"  >
+	  <TD height="31" align="right" valign="middle">Giro:  </TD>
+	  <TD align="left" ><INPUT  name="TxtRubro" type="text" class="input" id="TxtRubro" size="35" datafld="RUBRO" 
+      onkeyup=fn(this.form,this) ></TD>
+	   </TR>
+	<TR class="texto"  >
+	  <TD height="31" align="right" valign="middle">Activado:  </TD>
+	  <TD align="left" valign="middle">
+      <SELECT name="ListIndice" class='input' id="ListIndice" datafld="INDICE" onkeyup=fn(this.form,this) >
+        <OPTION value="S">SI</OPTION>
+        <OPTION value="N">NO</OPTION>
+      </SELECT></TD>
+	</TR>
+	<TR align="left" valign="middle">
+	  <TD height="5" colspan="4"><P>&nbsp;</P>	    <P>
+        <INPUT name="btnNew" type="button" class="botonBlanco" onClick="Nuevo();" value="Nuevo">
+        <INPUT name="btnGuardar" type="button" class="botonBlanco" onClick="Guardar();" value="Guardar">
+        <INPUT name="btnCancel" type="button" class="botonBlanco" onClick="DelProv();" value="Eliminar">
+		&nbsp;&nbsp;
+		<INPUT name="btnCancel" type="button" class="botonBlanco" onClick="buscarOC();" value="Buscar O.C.">
+</P></TD>
+	  </TR>
+	</TABLE>
+</TD></TR>
+</TABLE>
+</FORM>
+<BR>
+<!--DIV id="menu"
+	 style="POSITION: absolute; TOP:0px;"
+	 onclick="event.cancelBubble=true">
+		<IFRAME name="menuframe" src="../menu/estandar.html" 
+		frameBorder="0" width="750" scrolling="no"
+		height="25">
+		</IFRAME>
+</DIV-->
+</BODY>
+</HTML>

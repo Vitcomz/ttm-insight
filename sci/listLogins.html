@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<TITLE>SGM</TITLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlMenu></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlTemp1></xml>
+<xml id = xmlList></xml>
+<xml id = xmlDoc></xml>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15" />
+<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<STYLE TYPE="text/css">
+<!--
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</STYLE>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+
+<SCRIPT>
+
+var newEvent = false;
+xmlDoc.async = false;
+
+function inicio(){
+
+//Equipo = formulario.txtCodEquipo.value;
+
+listUsuarios();
+listLoggins();
+
+		
+	
+  /*    if (res){
+        var tree = xmlDso.documentElement;
+		i=0;j=1;
+		while (i< tree.childNodes.length){
+				var node = tree.childNodes.item(i);
+					row = tbl.insertRow(-1);
+					var cell = row.insertCell(0);
+					cell.innerHTML =   "<SPAN class='titulo'> " +
+									  	getChildNodeValue(node,"EQUIPO_PRIN") + "</SPAN>";
+					cell.vAling='TOP';
+					
+			 		var cell = row.insertCell(1);
+					cell.innerHTML =  "<SPAN class='normal'>"+getChildNodeValue(node,"DESCRIPCION")+"</SPAN>";
+					cell.width = 500;  
+					i=i+1;j=j+1;
+			}//end while
+	}//end if*/
+	
+}//end function
+
+function listLoggins(){
+var tbl = document.getElementById('tabEquipos');
+
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Usuarios.asp?RECURSO=listLogins";
+		url += "&ID=" + formulario.listUsuarios.value;
+		url += "&SISTEMA=" + formulario.listSistemas.value;
+		url += "&VTZ=" + Math.random();
+		
+    var res =xmlDso.load(url);
+	if(!res)
+		window.open(url);
+}
+
+
+function excel(){
+
+//Equipo = formulario.txtCodEquipo.value;
+
+   
+    var xmlDso = xmlTemp.XMLDocument;
+	 xmlTemp.async = false;
+	 
+	var url = "xml/Bitacoras.asp?RECURSO=ListBitacora";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2009";
+		url += "&USUARIO=" + Usuario;
+		url += "&CRITICIDAD=ALTA";
+		url += "&FAENA=" + getEmpresa();
+		url += ("&VTZ=" + Math.random()).substr(0,8);
+		//url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&EQUIPO_PRIN=TOD";
+		url += "&EQUIPO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&EXCEL=YES";
+		
+    
+		window.open(url);
+	
+  
+	
+}//end function
+
+function listUsuarios(){
+       xmlList.async = false;
+        var xmlDso =  xmlList.XMLDocument;
+        var res = xmlDso.load("xml/usuarios.asp?RECURSO=ListUsuarios");
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"ID"),getChildNodeValue(node,"ID"));
+            formulario.listUsuarios.options[i] = opcion;   
+          }
+              
+			   opcion = new Option("TODOS" ,"TOD");
+			   formulario.listUsuarios.options[i] = opcion;
+         }
+}
+
+
+</SCRIPT>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" class=text  onLoad="inicio();">
+<BR>
+<BR>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+<BR>
+<form name="formulario">
+<table width="829" border="0">
+  <tr>
+    <td width="669"><font class="titulo">REGISTRO DE USUARIOS</font></td>
+    <td width="169"><div align="center">
+      <input type="button" class="botonBlancoLargo" value="Exportar a Excel"  onClick="excel();">
+    </div></td>
+  </tr>
+</table>
+<BR>
+<TABLE ID="tabEquipos" CELLPADDING="5" CELLSPACING="3" 
+	  CLASS="blueTr" BORDER="1" DATASRC="#xmlTemp">
+	<THEAD>
+	<TR class='titulo'>
+	<TD width="31">N�</TD>
+    <TD width="118">USUARIO</TD>
+	<TD width="179">SISTEMA</TD>
+    <TD width="184">FECHA</TD>
+    </TR>
+    <TR>
+      <TD VALIGN="TOP">&nbsp;</TD>
+      <TD  VALIGN="TOP">
+      <SELECT NAME="listUsuarios"  onchange="listLoggins();" >
+     
+      </SELECT></TD>
+      <TD><select name="listSistemas"  onchange="listLoggins();" >
+      		<option value="TOD">TODOS</option>
+            <option value="MOVIL">MOVIL</option>
+            <option value="CONFIABILIDAD">CONFIABILIDAD</option>
+            <option value="ANDINA">ANDINA</option>
+            <option value="PTMP">PTMP</option>
+            <option value="RADOMIRO TOMIC">RADOMIRO TOMIC</option>
+            <option value="CODELCO NORTE">CODELCO NORTE</option>
+            <option value="CERRO COLORADO">CERRO COLORADO</option>
+            <option value="EL ABRA - ESCORPION">EL ABRA - ESCORPION</option>
+            <option value="SPENCE">SPENCE</option>
+            <option value="INTRANET">INTRANET</option>
+      </select></TD>
+      <TD>&nbsp;</TD>
+    </TR>
+    </THEAD>
+  <TR>
+	<TD VALIGN="TOP"><SPAN class='normal' datafld='N'></SPAN></TD>
+	<TD  VALIGN="TOP"><SPAN class='normal' datafld='ID'></SPAN></TD>
+    <TD><SPAN class='normal' datafld='TIPO'></SPAN></TD>
+ 	<TD><SPAN class='normal' datafld='DATE'></SPAN></TD>
+</TR>
+</TABLE>
+</form>
+</BODY>
+
+</HTML>

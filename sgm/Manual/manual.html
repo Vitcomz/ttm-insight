@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-top: 0px;
+}
+.Estilo2 {font-size: 14px}
+-->
+</style><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Manual de Usuario</title>
+
+
+
+
+
+
+</head>
+<body>
+<script>
+function abrirAyuda(dirFlash)
+{
+ 
+ var wwidth = 500;
+ var hheight = 440;
+ var left = (screen.width/2) - wwidth/2;
+ var top = (screen.height/2) - hheight/2;
+
+ var popUpWin = open(dirFlash, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,copyhistory=yes,width='+wwidth+',height='+hheight+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+  //popUpWin=showModalDialog("visor.cfm",window,"resizable: no; help: no; status: no; scroll: no; ");
+}
+</script>
+<table width="966" height="10253">
+  <!--DWLayoutTable-->
+<tr align="center">
+  <td width="752" height="50" align="left" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+<td width="111">&nbsp;</td>
+<td width="87" valign="top" class="texto">
+	<a href="/sgm/index.html"><img src="computer.jpg" alt="Volver" width="39" height="41" border="0" /></a>
+	<a href="/sgm/index.html" >Inicio</a></td>
+</tr>
+<tr align="center" class="texto">
+  <td height="15">&nbsp;</td>
+  <td>&nbsp;</td>
+  <td></td>
+</tr>
+
+<tr class="HeaderLista" align="center">
+<td height="30" colspan="3"><span class="Estilo2">MANUAL DE USUARIO</span></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="28" colspan="3"><span class="Estilo2">SISTEMA S.G.M.</span></td>
+</tr>
+<tr>
+  <td height="18">&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+<tr class="texto">
+  <td height="27" colspan="3"><strong>INDICE</strong></td>
+</tr>
+<tr class="texto">
+  <td height="27" colspan="3"><a href="#1">1.- Acceso al sistema.</a></td>
+</tr>
+<tr>
+  <td height="23" colspan="3" class="texto"><a href="#2">2.- Menu.</a> </td>
+</tr>
+
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#3">3.- Equipos (Conceptos y Administraci&oacute;n).</a></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#4">4.- Horometros.</a> </td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#5">5.- Actividades de Mantenci&oacute;n.</a> </td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#6">6.- Bitacora del sistema.</a> </td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto">
+  	<p><a href="#7">7.- Mantenci&oacute;n Preventiva.</a></p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#7.1">7.1.- Consulta de O.T. (Mantenci&oacute;n Preventiva)</a></p></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#8">8.-  Mantenci&oacute;n Correctiva</a></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#9">9.- Orden de Trabajo.</a></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><a href="#10">10.- Informes.</a></td>
+</tr>
+<tr>
+  <td height="94" class="texto">&nbsp;</td>
+  <td class="texto">&nbsp;</td>
+  <td class="texto">&nbsp;</td>
+</tr>
+
+<tr class="HeaderLista">
+  <td height="30" colspan="3"><a name="1"> 1.- Acceso al Sistema</a> </td>
+</tr>
+<tr>
+  <td height="20" class="texto">&nbsp;</td>
+  <td class="texto">&nbsp;</td>
+  <td class="texto">&nbsp;</td>
+</tr>
+<tr>
+  <td height="72" colspan="3" class="texto">Para el control de acceso a usuarios, el sistema dispone de una interfase que verifica el nombre de usuario y su contrase&ntilde;a. Esta autenticacion tiene un tiempo de duraci&oacute;n de 12 Horas aprox., este tiempo puede ser modificado con el administrador del sistema a libre elecci&oacute;n. Transcurrido este tiempo el usuario deber&aacute; volver a ingresar su contrase&ntilde;a para acceder al sistema. </td>
+</tr>
+<tr>
+  <td height="183" colspan="3" align="center" valign="top" ><img src="login.jpg" width="359" height="181" border="1" /></td>
+  </tr>
+<tr>
+  <td height="18" >&nbsp;</td>
+  <td ><!--DWLayoutEmptyCell-->&nbsp;</td>
+  <td >&nbsp;</td>
+</tr>
+<tr>
+  <td height="18" >&nbsp;</td>
+  <td >&nbsp;</td>
+  <td ><div align="center"><a href="#indice">Volver.</a></div></td>
+</tr>
+
+<tr class="HeaderLista">
+  <td height="30" colspan="3" ><a name="2">2.-Menu</a></td>
+</tr>
+<tr>
+  <td height="18" >&nbsp;</td>
+  <td >&nbsp;</td>
+  <td >&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto" >El menu esta constituido de 4 categorias principales, SISTEMAS, ADMINISTRACION, OPERACIONES E INFORMES. Los accesos a menus se regular&aacute;n dependiendo del rol de sistema que cada usuario tenga asignado. </td>
+</tr>
+<tr>
+  <td height="224" colspan="3" ><img src="menu.jpg" alt="Menu" width="586" height="201" border="1" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" ><a href="javascript:abrirAyuda('Login_MenuPrincipal.htm')">Ver Ejemplo.</a></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" align="right" ><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="38" colspan="3" ><a  name="3">3.- Equipos (Conceptos y Administraci&oacute;n).</a></td>
+</tr>
+<tr>
+  <td height="22" colspan="3" ><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr class="texto">
+  <td height="47" colspan="3" ><p>Los equipos estan divididos en sub equipos y a su vez estos se dividen en  otros subequipos obteniendo 3 niveles de detalle por equipo. Por ejemplo tenemos que un Auto se podria dividir en motor y chasis, a su vez el Motor puede tener sub equipos como el Alternador, la secuencia de esto seria  Auto-&gt;motor-&gt;alternador.</p>
+    <p><a href="javascript:abrirAyuda('ListEquipos.htm')">Ver Ejemplo. </a></p>    </td>
+</tr>
+
+<tr>
+  <td height="17" colspan="3" class="texto" >Cada sub equipo se administra de forma unica, pero forman parte de un equipo principal, asi podremos  asignar alarmas de mantenci&oacute;n independientes para cada sub equipo.</td>
+</tr>
+<tr>
+  <td height="17" colspan="3" class="texto" ><img src="equipos.jpg" alt="Equipos" width="875" height="197" border="1" /></td>
+</tr>
+<tr>
+  <td height="17" colspan="3" class="texto">
+  	<p>Los atributos a considerar en los equipos son :<BR>
+  	    <BR>
+  	    <strong>CODIGO :</strong> Es de tipo alfanumerico lo cual nos permite crear codigos inteligentes.</p>
+  	<p><strong>DESCRIPCION </strong>: Nos servir&aacute; para describir el equipo en todo el sistema, es importante una descripcion lo mas representativa posible. </p>
+  	<p><strong>GRUPO </strong>: Identifica a que grupo de equipo pertenece, este nos servira para asignar un horometro del grupo seleccionado.</p>
+  	<p><strong>ESTADO </strong>: Los estados que puede tener un equipo son : Activo y En Mantenci&oacute;n.</p>
+  	<p><strong>PROVEEDOR </strong>: Indica el proveedor que distribuye la maquinaria.</p>
+  	<p><strong>MARCA :</strong> Marca de un equipo.</p>
+  	<p><strong>HOROMETRO :</strong> Especifica el horometro que controlara el equipo actual, dentro de un equipo complejo pueden existir varios horometros como el Diesel, Hoist, Etc. en este campo se debe asignar el que controlara el equipo. </p>
+  	<p><strong>FECHA :</strong> Fecha de Ingreso en el sistema.</p>
+  	<p><strong>UBICACI&Oacute;N </strong>: Lugar de Trabajo del Equipo.</p>
+  	<p><strong>HOROMETRO ACTUAL </strong>: Indica el estado actual del Horometro, en este ejemplo el horometro tiene 194 horas desde su activaci&oacute;n.</p>
+  	<p><strong>VENCIMIENTO HOROMETRO :</strong> Indica cuando vencer&aacute; el horometro, en este ejemplo no se ha especificado este vencimiento, por lo tanto se muestra en color rojo las horas vencidas 194.</p>
+  	<p><strong>PERIODO DE MANTENCI&Oacute;N </strong>: Indica cual ser&aacute; el lapso de tiempo, que deber&aacute; transcurrir para realizar la proxima mantenci&oacute;n.</p>
+  	<p><strong>ALARMA DE MANTENCI&Oacute;N :</strong> Nos indica cuantas horas antes queremos que el sistema nos advierta que el equipo necesita mantenci&oacute;n.</p>
+  	<p><strong>ULTIMA MANTENCI&Oacute;N :</strong> Fecha de la ultima mantenci&oacute;n realizada al equipo, esta se actualizar&aacute; cada vez que se ejecute una OT.<BR>	
+    </p></td>
+</tr>
+<tr>
+  <td height="17" colspan="3" class="texto" ><p>&nbsp;</p>    </td>
+</tr>
+<tr>
+  <td height="19" colspan="3" align="right" ><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="37" colspan="3" class="texto"><a  name="4">4.- Horometros.</a></td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto">&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>La administraci&oacute;n de alarmas se  hace a travez del  horometro el cual es ingresado por el administrador del sistema al momento de crear el equipo. Previamente debe crearce un grupo de equipos, este concepto nos ayudara a agrupar todos los  equipos para luego crear los correspondientes horometros del grupo.</p>
+    <p>Entonces tendremos Grupo G1 (Grua Gottwald) -&gt; Horometros (Diesel, Hoist, Luffing, etc) </p></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><img src="GrupoHorometros.jpg" alt="Grupos" width="711" height="682" border="1" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>Una vez creados los horometros podemos crear un equipo y asignar su grupo y horometro. </p>
+    <p>Tambien existe un modulo para la asignaci&oacute;n masiva de horometro, esta se encuentra en el menu de Administraci&oacute;n-&gt;Equipos-&gt;Horometros.</p></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">
+  	<img src="AsignacionHorometro.jpg" alt="Horometros" width="583" height="603" border="1" />	</td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="right" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="29" colspan="3" class="texto"><a  name="5">5.- Actividades de Mantenci�n.</a></td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="left" class="texto">Cada equipo tendra asigando un congunto de actividades de mantenci&oacute;n, estos son pasos que un supervisor debe seguir para realizar la adecuada mantenci&oacute;n del equipo, por lo general los equipos vienen con un manual de mantenci&oacute;n  otorgado por el proveedor, se debe transcribir los pasos al sistema, estas actividades luego ser&aacute;n incorporadas en la O.T. del equipo. sirviendo de guia para el supervisor encargado de realizar la operaci&oacute;n.</td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="right" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="center" class="texto"><img src="Actividades.jpg" alt="Actividades" width="754" height="352" border="1" /></td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="right" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="29" colspan="3" class="texto"><a  name="6">6.- Bitacora.</a></td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Para el registro diario de las actividades se encuentra el modulo de bitacoras, en este podemos registrar dos tipos de actividades: Mantenci&oacute;n o Servicios este nombre esta referido al tipo de trabajo que se ejecuta. Una actividad puede generar un incidente el cual nos generar&aacute; una OT de mantenci&oacute;n correctiva, en la interfase principal podemos encontrar filtros por equipo, turno, responsable y periodos de tiempo. </td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><img src="bitacora.jpg" alt="Bitacora" width="955" height="483" /></td>
+</tr>
+<tr>
+  <td height="67" colspan="3" class="texto">Para ingresar una bitacora debemos presionar sobre cualquier iconos <img src="http://localhost/sgm/images/add.gif" alt="Add" align="middle" onclick="newBitacora();" />, en esta ventana debemos ingresar el equipo asociado y la observaci&oacute;n  del trabajo o incidente a registrar, el correlativo ser&aacute; generado de forma automatica, las fechas y horas ser&aacute;n obtenidas desde el sistema. </td>
+</tr>
+<tr>
+  <td height="47" colspan="3" align="center" class="texto"><img src="newBitacora.jpg" width="684" height="452" border="1" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>Los atributos a considerar  son :
+      <br />
+      <strong>EQUIPO :</strong> Indica el equipo asociado a la observaci&oacute;n o incidente, este campo es opcional, debido que la bitacora esta para registrar cualquier actividad relevante y no necesariamente puede tener un equipo asociado.</p>
+    <p>
+        <strong>INCIDENTE </strong>: Nos indicara que huvo un incidente y este debera solucionarce con una mantencion correctiva, este estado de incidente se ver&aacute; visualizado en el modulo de mantenciones correctivas y no cambiara hasta que se ejecute la mantenci&oacute;n correspondiente.</p>
+    <p>
+        <strong>PRIORIDAD </strong>: Cuando existe un incidente grave se puede dar prioridad de ejecuci&oacute;n, este checkbox nos facitara el seguimiento.
+      <strong>ESTADO </strong>: Los estados que puede tener un equipo son : Activo y En Mantenci&oacute;n.</p>
+    <p><strong>TIPO </strong>: Esta referido al tipo de trabajo asociado, Mantenci&oacute;n o Servicio, cuando la bitacora es de servicio se deber&aacute; llenar los datos de Cinta, Operadores, Nave, Report y Da&ntilde;os.</p>
+    <p><strong>OBSERVACION </strong>: Este texto tiene una capacidad maxima de 750 caracteres. </p>
+    <p><strong>DA&Ntilde;OS :</strong> Si durante el turno ocurrio un da&ntilde;o, este deber&aacute; se debera registrar para su posterior gestion. </p>
+    <p><strong>REPORT :</strong> Nos servir&aacute; para asociar la bitacora al nro de report del servicio.</p>
+    <p><strong>CINTAS Y OPERADORES : </strong>En estos campos se debe registrar el personal y cintas transportadoras utilizadas. </p></td>
+</tr>
+<tr>
+  <td height="30" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="18" colspan="3" align="right" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="29" colspan="3" class="texto"><a  name="7">7.- Mantenci&oacute;n Preventiva.</a></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>Todos los equipos que tengan vencidos o por vencer su horometro contador ser&aacute;n desplegados en esta ventana, el coordinador podra asignar un color de prioridad siendo el  <em><strong>color rojo  una prioridad alta</strong></em> y <em><strong>color amarillo indica prioridad baja</strong></em>. Los equipos que esten por vencer, ser&aacute;n mostrados  seg&uacute;n las horas que se ingresar&oacute;n el el campo <em><strong>horometro alarma</strong></em> del modulo de equipos. </p>
+    <p align="center"><img src="prioridad.jpg" width="264" height="249" /></p></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Este listado ser&aacute; ordenado desde el equipo mas vencido en forma decendiente, el coordinador de mantenci&oacute;n deber&aacute; decidir que equipo deber&aacute; ser mantenido primero, generando una OT para este. </td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><img src="manPreventiva.jpg" width="927" height="495" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Para generar una OT debemos presionar sobre el icono <img src="generaOT.jpg" alt="OT" width="23" height="22" align="middle" onclick="GeneraOT(this.parentElement.parentElement.rowIndex);" datafld="IMAGE" />:</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><div align="center"><img src="generaOT2.jpg" width="327" height="212" /></div></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Solo nos bastar&aacute; asignar un responsable, la fecha y turno de realizaci&oacute;n. </td>
+</tr>
+<tr class="HeaderLista">
+  <td height="47" colspan="3" class="texto"><a  name="7.1" id="7.1">7.1- Consulta de O.T. (Mantenci&oacute;n Preventiva).</a></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Para supervisar el estado de las O.T. Generadas, existe un tag con un listado que nos permite filtrar por estados, equipo, responsables. Existe la posibilidad de impimir o bien visualizar este.</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><img src="consultaOT.jpg" width="933" height="492" border="1" /></td>
+</tr>
+<tr>
+  <td height="24" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="30" colspan="3" align="right" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="32" colspan="3"><a  name="8" id="8">8-  Mantenci&oacute;n Correctiva.</a></td>
+</tr>
+<tr>
+  <td height="22" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="22" colspan="3" class="texto">Este modulo entregara un listado de todos los incidentes ingresados en bitacora, esta listado estara ordenado por los dias transcurridos desde que se detecto el incidente, el coordinador de mantenci&oacute;n deber&aacute; generar la correspondiente OT asignando un responsable y fecha para realizar el trabajo, al igual que las mantenciones preventivas este modulo tiene una lengueta con la consulta de las OTs ya generadas.</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><img src="manCorrectiva.jpg" width="933" height="532" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" align="right" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="33" colspan="3" class="texto"><a  name="9" id="9">9.-  Orden de Trabajo O.T.</a></td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="27" colspan="3" class="texto"><p>La Orden de Trabajo es un modulo que permitira al supervisor ingresar las actividades de mantenci&oacute;n efectuadas, existen dos tipos de orden de trabajo la correctiva que se origina a partir de un incidente y la preventiva que se origina atravez del vencimiento del horometro del equipo.</p>
+    <p>Cada supervisor tendra un listado de sus propias OTs pendientes, estas desaparecer&aacute;n una vez ejecutadas.</p>
+    <p>Para las OT de tipo preventiva se adjuntaran en la OT de forma automatica las actividades de mantenci&oacute;n del equipo, para las OT correctivas es usuario deber&aacute; ingresar las actividades realizadas para solucionar el problema. </p>
+    <p>&nbsp;</p></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" align="center" class="texto"><img src="OT.jpg" width="781" height="463" border="1" /></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>Los atributos a considerar  son : </p>
+    <p><br />
+        <strong>FOLIO :</strong> Correlativo que se genera de forma automatica.</p>
+    <p> <strong>EQUIPO </strong>: Equipo al cual se le realiza la mantenci&oacute;n, cabe destacar que todas las OT estan asociadas a un EQUIPO, no puede existir un OT por si sola.</p>
+    <p> <strong>COMPONENTE </strong>: Es el elemento basico donde se produjo la falla en caso de ser una OT correctiva, esto nos ayudar&aacute; a realizar gestion sobre una maquina en el trascurso del tiempo.</p>
+    <p><strong>FECHA PROGRAMADA </strong>: Indica la fecha en que el coordinador de mantenci&oacute;n programo la ejecucion de este.</p>
+    <p><strong>ESTADO </strong>: Los estados que puede tener una OT son : Programada, Pendiente, Anulada y Ejecutada.</p>
+    <p><strong>TURNO </strong>: Indica el turno cuando fue ejecutado.</p>
+    <p><strong>OBSERVACION </strong>: Este texto tiene una capacidad maxima de 750 caracteres. </p>
+    <p><strong>RESPONSABLE :</strong> Responsable de ejecutar la OT.</p>
+    <p><strong>EJECUCION :</strong> Periodo que demor&aacute; en realizar la OT., en este caso se debe ingresar Fecha Inicio y Fecha Final.</p>
+    <p><strong>TIPO : </strong>Indica el tipo de OT. </p></td>
+</tr>
+<tr>
+  <td height="20" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr align="right">
+  <td height="18" colspan="3" class="texto"><a href="#indice">Volver.</a></td>
+</tr>
+<tr class="HeaderLista">
+  <td height="32" colspan="3" class="texto"><a  name="10" id="10">10.-  Informes.</a></td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">Todos los informes fueron realizados con un objeto de grilla parecido a excel, el cual nos permite ordenar por cualquier campo, tambien los informes son exportables a formato excel para un realizar analisis o graficos. </td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto"><p>Los informes implementados son los siguientes : </p>
+    <strong>Gestion Correctiva</strong><br/>
+    	&nbsp;&nbsp;&nbsp;-TPPF tiempo promedio por fallar<br />
+		&nbsp;&nbsp;&nbsp;-TPPR tiempo promedio por reparar<br />
+		&nbsp;&nbsp;&nbsp;-TPPS tiempo promedio por fallar en servicio<br />
+    <strong>Gestion Mantenci�n</strong><br/>
+    	&nbsp;&nbsp;&nbsp;-EMP Eficiencia en la mantenci�n preventica del personal<br />
+		&nbsp;&nbsp;&nbsp;-EMP2 Eficiencia en la mantenci�n preventica (EMP2) Demora en la Asignaci�n.<br />
+    <strong>Listado de OT</strong><br/>
+    <strong>Plan de Mantenci�n</strong><br/>
+	</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" class="texto">-</td>
+</tr>
+<tr>
+  <td height="25" colspan="3" class="texto"><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<tr>
+  <td height="47" colspan="3" align="right" class="texto"><p><a href="#indice">Volver.</a></p>    </td>
+  </tr>
+</table>
+</body>
+</html>

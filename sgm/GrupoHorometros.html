@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>GrupoHorometros</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+
+</head>
+<xml id = xmlGrupos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlTemp.async = false;
+
+function creaGrupo(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var codGrupo = prompt("Codigo Grupo","");
+		
+	if (codGrupo){
+		var nomGrupo = prompt("Nombre del Grupo","");
+		var url = "xml/Equipos.asp?RECURSO=NewGrupo";
+			url += "&CODIGO=" + codGrupo;
+			url += "&DESCRIPCION=" + nomGrupo
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		}
+		
+	ListGrupos();	
+}
+
+function creaHorometro(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var inputCod = prompt("Codigo Horometro.","");
+	var input = prompt("Nombre Horometro.","");
+	var url = "xml/Equipos.asp?RECURSO=NewHorometro&DESCRIPCION=" + input;
+		url+= "&CODIGO=" + inputCod;
+		url+= "&GRUPO=" + formulario.txtCodGrupo.value;
+		
+	if (input)
+		{xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+	ListHorometros(formulario.txtCodGrupo.value);
+}
+
+ 
+function ListGrupos(){
+
+  xmlGrupos.async = false;
+  var xmlDso =  xmlGrupos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListGrupos";
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+ 
+function ListHorometros(CodGrupo)
+{
+	var tbl = document.getElementById('tabHorometros');
+	//limpiarTabla(tbl);
+	xmlHorometros.async=false;
+	var xmlDso = xmlHorometros.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=ListHorometros";
+		url +="&GRUPO=" + CodGrupo;
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+}
+
+
+function EliminarGrupo(Index)
+{
+	var tabla = document.getElementById('tabActividades');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "xml/Actividades.asp?RECURSO=DelActividad&CODIGO=" + Codigo;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Actividad Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListActividades();
+	}
+}
+
+function EliminarHorometro(Index)
+{
+
+	var tabla = document.getElementById('tabHorometros');
+	var Codigo = tabla.rows[Index].children[0].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=DelHorometro&CODIGO=" + Codigo;
+		url += "&GRUPO=" + formulario.txtCodGrupo.value;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Horometro Codigo " + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListHorometros(formulario.txtCodGrupo.value);
+	}
+}
+
+function selGrupo(Index)
+{
+	var tabla = document.getElementById('tabGrupos');
+	var CodGrupo =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodGrupo.value = CodGrupo;
+	document.getElementById('idNombreGrupo').innerText = Nombre;
+	ListHorometros(CodGrupo);
+	//getDescripcionActividad(Actividad);
+	
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	xmlEstado = xmlDso.load(url);
+	
+	if(!xmlEstado)
+			window.open(url);
+
+
+}
+
+function inicio(){
+var parametro = getParametro("Equipo");
+if (parametro){
+		formulario.txtCodEquipo.value = parametro;
+		document.getElementById("idDesEquipo").innerText = getParametro("Descripcion");
+		}
+ListGrupos();
+}
+
+</script>
+
+
+<body onLoad="inicio();" >
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table width="583">
+<tr>
+  <td width="571" height="31" colspan="2" class="titulo">Administrador de Horometros </td>
+</tr>
+<tr>
+  <td height="18" class="titulo" colspan="2" align="right">Grupo :
+  <span class="input" id="idNombreGrupo" ></span>
+  &nbsp;</td>
+</tr>
+</table>
+
+<table width="710" border="0" cellpadding="5" cellspacing="5">
+  <tr><td width="366" valign="top" class="td">
+	<table width="358" cellpadding="0" cellspacing="4" class="texto" id="tabGrupos"  DATASRC="#xmlGrupos">
+			<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">GRUPOS</td>
+			</tr>
+			<tr class="HeaderLista" >
+			  <td width="79">CODIGO</td>
+			  <td width="200">NOMBRE</td>
+			  <td width="16" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaGrupo();" 
+									src="images/add.gif"></td>
+			 </tr>
+			</th>
+		</thead>
+		<tr onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dde3eb')" 
+			onClick="selGrupo(this.rowIndex)" bgcolor="#dde3eb" >
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="Eliminar(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+	</table>
+	</td>
+	<td width="22">&nbsp;&nbsp;</td>
+	<td width="314" align="center" valign="top" class="td">
+			<input type="hidden" name="txtCodGrupo">
+	  <table width="270" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabHorometros" DATASRC="#xmlHorometros">
+		<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">HOROMETROS</td>
+			</tr>
+			<tr class="HeaderLista">
+			  <td width="53">CODIGO</td>
+			  <td width="183">NOMBRE</td>
+			  <td width="16" height="20">
+			  <IMG style="CURSOR: hand" onclick="creaHorometro();" 
+								src="images/add.gif"></td>
+			</tr>
+		<thead>
+		<tbody>
+		<tr bgcolor="#dde3eb">
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="EliminarHorometro(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+		</tbody>
+	</table>
+</td></tr></table>
+</form>
+
+<div align="center" >
+  <input type="button" onClick="UpdateActividad();" value="Guardar" class="botonBlanco">&nbsp;
+  <input type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

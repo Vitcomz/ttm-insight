@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="no-cache">
+	<meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Cache-Control" content="no-cache">
+
+<title>Imagenes</title>
+
+
+
+
+
+
+</head>
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="Javascript1.2" src="vitcomz_m.js"></script>
+<script language="Javascript1.2" src="jquery.js"></script>
+<script>
+var imgArray = new Array();
+var nameArray = new Array();
+var total_bloque_listado;
+var curIndex;
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function listArchivos(){
+
+	var url = "../xml/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&IDENTIFICADOR="+getParametro("ID");
+    var j=0;
+  //window.open(url);
+	
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+		var strSrc;
+		
+			fileName =  "../" + $(this).find("NOMBRE").text();	
+			strSrc =  "../" + $(this).find("FILEIMAGE").text();
+			//alert(strSrc);
+			imgArray[j+1]= new Image();
+			imgArray[j+1].src = strSrc;
+			nameArray[j+1] = fileName;
+			
+			strSrc = strSrc.replace("\\","/");
+			fileName = fileName.replace("%5C","/"); 
+		
+			document.getElementById('link1ID').href = strSrc;
+			document.getElementById('link2ID').href = strSrc;
+			document.getElementById('link2ID').innerText = strSrc;
+			document.getElementById('imgID').src = strSrc;
+			j=j+1;
+			
+		})//End each
+				
+			total_bloque_listado = Math.ceil(j/1);
+			curIndex = j;
+			
+			if (j==0)
+				document.getElementById("ID_list_fraccion_reg").innerText = "0/" + total_bloque_listado;
+			else
+				document.getElementById("ID_list_fraccion_reg").innerText = curIndex + "/" + total_bloque_listado;
+			
+	});//end $.get
+}
+
+function _go(_step){
+
+curIndex = curIndex + _step;
+if (curIndex==0)curIndex=1;
+if (curIndex==total_bloque_listado+1)curIndex=total_bloque_listado;
+document.getElementById("ID_list_fraccion_reg").innerText = curIndex + "/" + total_bloque_listado;
+//document.getElementById('imgID').src = imgArray[curIndex].src;
+document.getElementById('link1ID').href = imgArray[curIndex].src;
+document.getElementById('link2ID').href = imgArray[curIndex].src;
+document.getElementById('link2ID').innerText = nameArray[curIndex];
+
+obj = MM_findObj('imgID');
+obj.src=imgArray[curIndex].src;
+
+			
+$('#imgID').attr('src', imgArray[curIndex].src); 
+
+
+}
+
+</script>
+<body  bgcolor="#999999" onLoad="listArchivos();">
+<TABLE border="0" CELLPADDING="0" 
+    cellspacing="0" DATAPAGESIZE="1" class="texto" ID="tabImages" >
+			     	 <TR>
+					  <TD VALIGN="top" >
+                       &nbsp;&nbsp;Vista: <SPAN ID="ID_list_fraccion_reg"></SPAN>&nbsp;
+                   		<A  class="menu1" href="javascript:_go(-1);">&lt; Anterior</A>         
+                   	  	<A  class="menu1" href="javascript:_go(1);">Siguiente &gt;</A>
+                      </TD>
+				  	 </TR>
+  						<TR>
+							<TD WIDTH="233" HEIGHT="196"  align="center" VALIGN="top">
+                            <A  id="link1ID" TARGET="_blank">
+                   	  		<IMG SRC="../sgm/images/noDisponible.png"  border="1" WIDTH="180" 
+                             		align="middle"  id="imgID"></A><BR>
+                           
+                            <a id="link2ID" target="_blank"></a><BR>
+                            </TD>
+  				</TR>			
+</TABLE>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<HTML>
+	<HEAD>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+
+		<xml id=xmlTemp></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlResponsables></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+
+var divBox = new Object();
+var recomen = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function showWin(_code,  _divBox){
+// alert(_code.value);
+
+ formulario.txtFecha.value = _hoy();
+ codeobj = _code;
+ divBox = _divBox;
+ divBox.style.visibility = 'visible'
+
+  
+ 
+}
+
+function getData(){
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/historial.asp?RECURSO=listHisBit";
+		url += "&ID=" + codeobj.value;
+		url += "&VTZ=" + Math.random();
+		
+	var res = xmlDso.load(url);
+	if (!res)
+		window.open(url);
+				
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+function guardar(){
+
+parent.creaLectura(formulario.txtFecha.value,
+				   formulario.listDist.value,
+				 formulario.listInspectores.value,
+					 formulario.listTipo.value);
+					 
+parent.document.getElementById('newBox').close();
+
+} 
+
+//window.onLoad = _inicio();
+
+</script>
+	<body onLoad="formulario.txtFecha.value=_hoy();">
+    <DIV ID="divCalendar" onClick="event.cancelBubble=true" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+    <form name="formulario">
+<br/> 
+<table width="323" align="center"  class="CampoBold" >
+  <!--DWLayoutTable-->
+    <tr bgcolor="#EEEEEE">
+      <td height="11" colspan="2" onClick="return;"></td>
+    </tr>
+				<tr>
+				  <TD width="142" height="21" valign="top">Fecha</td>
+				  <TD width="169" valign="top">Distancia entre mediciones</td>
+	</tr>
+				<tr>
+				  <TD height="20">
+                  <input type="text" class="tinyInput" size="12" DATAFLD='FECHA' name="txtFecha" id="txtFecha"/>
+                  &nbsp;<IMG  src="images/calendar.jpg" alt="Calendar" ALIGN="top" STYLE="CURSOR: hand"
+					  onclick="FrameCalendar.fPopCalendar(txtFecha,txtFecha,divCalendar);return false"></td>
+				  <TD>
+                  <SELECT NAME="listDist" CLASS="input" >
+                    <OPTION VALUE="50" selected>50mm</OPTION>
+                    <OPTION VALUE="100">100mm</OPTION>
+                  </SELECT></td>
+    		</tr>
+		    <tr bgcolor="#EEEEEE">
+		     <td height="17" valign="top" onClick="return;">Tipo</td>
+    		<td> Inspector</td>
+    		</tr>
+           <tr bgcolor="#EEEEEE">
+		     <td height="21" valign="top" onClick="return;">
+				<SELECT NAME="listTipo" CLASS="input" >
+                 <OPTION VALUE="CAR" selected>CARGA</OPTION>
+                 <OPTION VALUE="RET">RETORNO</OPTION>
+                                         </SELECT></td>
+		     <td valign="top">
+             
+             <select name="listInspectores" class="input" >
+             	<option value="SSEPULVEDA">SERGIO SEPULVEDA</option>
+                <option value="NORTIZ">NELSON ORTIZ</option>
+				<option value="PBRAVO">Patricio Bravo</option>
+				<option value="DFERNANDEZ">David Fernández</option>
+				<option value="SALARCON">Sebastian Alarcón</option>
+				<option value="DARAYA">Daniel Araya</option>
+				<option value="HZELADA">Humberto Zelada</option>
+				<option value="ASEGOVIA">Alejandro Segovia</option>
+             </select>
+             
+             </td>
+           </tr>
+		  <tr bgcolor="#EEEEEE">
+		  <td height="22" colspan="2" bgcolor="#EEEEEE" onClick="return;">
+         <input type="button" class="tinyInput" onClick="guardar();" value="Aceptar">&nbsp;</td>
+	 </tr>
+  </table>
+<br>
+</form>
+
+</body>
+</HTML>

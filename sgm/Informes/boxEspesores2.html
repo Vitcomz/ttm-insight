@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Indicadores</title>
+<link rel="stylesheet" href="/sgm/standard/menu.css" type="text/css" />
+ 
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />
+
+
+
+
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script language="Javascript1.2" src="/sgm/windowfiles/dhtmlwindow.js"></script>
+<script src="/sgm/js/highstock.js"></script>
+<!--script src="js/modules/exporting.js"></script-->
+<script language="JavaScript1.2" src="/sgm/js/main.js"></script>
+<style>
+
+body{
+	background-color:#FFFFFF;
+	opacity:0.96;
+	filter:alpha(opacity=96);
+	margin-left: 0px;
+	margin-right: 0px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.menu {
+	color: #FFFFFF;
+	font-size: 16px;
+	font-weight: bold;
+	vertical-align:bottom;
+	cursor:pointer;
+	
+}
+
+.menu:hover {
+text-decoration:underline;
+
+}
+
+a{color:#FFFFFF; text-decoration:none;}
+
+a:hover {text-decoration:underline;
+
+}
+
+
+.bottom {
+	font-size: 16px;
+	color: #0072C6;
+	vertical-align:text-bottom;
+
+}
+
+.logo{
+width:150px;
+height:50px;
+margin:5px 0px 0px 0px;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+.style8 {
+	color: #666666;
+	font-weight: bold;
+	font-size: 18px;
+}
+</style>
+	
+   
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+//alert(getSession());
+
+	if( getSession() == "UNDEFINED")
+	self.location.href="/index.html";
+		
+if(getEmpresa()=="DESCONOCIDO")
+	this.location.href="/index.html";
+	
+	
+});
+
+function inicio(){
+
+if(getSession()=='UNDEFINED'){
+	parent.document.location.href="index.html";
+	salir();
+}
+
+//alert(getEmpresa());
+with (divWait.style){visibility = "visible";} 
+
+//listFaenas();
+
+
+	gr1();
+	 gr6();
+	//gr4();
+	//gr5();
+	//gr6();
+	//gr7();
+	//gr8();
+
+}
+
+function actualizar(){
+ 
+ with (divWait.style){visibility = "visible";} 
+ 
+	gr1();
+	//gr2();
+//	gr3();
+//	gr10();
+//	gr11();
+	gr6();
+	//gr7();
+	//gr8();
+}
+
+function chFaena(obj){
+
+var val = obj.options[obj.selectedIndex].text;
+//alert(val);
+
+crearSessionEmpresa(val);
+parent.document.location.href="indicadores.html";;
+}
+
+ 
+
+function verAvisos(equipo, valor, tipo){
+
+return true;
+
+var comp="";
+
+	if(tipo==2){
+			equipo = document.getElementById("idEquipos").value;
+		  }
+
+	if(tipo==3){
+			equipo = document.getElementById("idEquipos").value;
+		  }
+
+	if(document.getElementById("idEquipos").value.length==0&&tipo==4){
+			comp=equipo;
+			equipo = "";
+			
+		  }
+		  
+	var url =  "boxAvisosInd.html?EQUIPO=" + equipo;
+		url += "&CRI="+valor;
+		url += "&TIPO="+tipo;
+		url += "&COMP="+comp;
+		url += "&HIST=" + document.getElementById("idHistorial").checked;
+		url += "&AREA=" + document.getElementById("selectTipos").value;
+		url += "&VTZ=" + Math.random();
+		
+	//alert(url);
+		
+		winCfg = "width=950px,height=530px,left=" + 120 + "px,top=" + 120 +"px,resize=1,scrolling=0";	
+	var inlinewin2= parent.dhtmlwindow.open("boxDetAvisos", "iframe", url , "DETALLE AVISOS", winCfg);
+
+
+}
+
+
+function listEquipos(){
+
+   var i=0;
+   
+   var url = "js/equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		url += "&AREA=" + document.getElementById("selectTipos").value;
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+ 		url += "&VTZ=" + Math.random();
+	  	
+	//window.open(url);
+				document.getElementById("idEquipos").length = 0;
+						  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+					var desc = codigo + ' ' + descripcion;
+					
+        	   	opcion = new Option(desc,codigo);
+	          	document.getElementById("idEquipos").options[i+1] = opcion;
+				
+			}), //end each
+			
+	           	opcion = new Option("TODOS","");
+				opcion.selected = true;
+	          	document.getElementById("idEquipos").options[0] = opcion;
+				inicio();
+		})//end $get
+		
+		
+	
+ } 
+ 
+function listAreas(){
+  var i=1;
+  var url = "js/equipos.asp?Recurso=explorer&CODIGO=NULL";
+	  url += "&UBICACION=" + getEmpresa();
+	  url += "&USUARIO=" + getSession();
+	  url += "&VTZ=" + Math.random();
+	  
+//window.open(url);	
+			  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	if(codigo==1)opcion.selected=true;
+				document.getElementById("selectTipos").options[i] = opcion;
+				i=i+1;
+			}) , listEquipos(); //end each
+		})//end $get
+		
+} 
+
+function salir(){
+parent.document.getElementById('boxIndicadores').close();
+}
+
+
+function gr1(){
+
+var options = {
+		chart: {renderTo: 'chart1', zoomtype: 'xy'}, //, inverted: true
+		title: { text: 'Criticidades por Equipos.' },
+		colors: ['#FF3300'],
+		plotOptions: {
+            series: {    dataLabels: {  enabled: false  }
+            },
+			
+			column: { events: { legendItemClick: function(){return false}}
+			},
+        },
+		
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+		
+		yAxis: [{ title: { text: 'Nro Avisos' } ,   min:0, dataLabels:{ enabled: true}   } ,
+			    { title: { text: 'Acumulado' }, min:0 , max:70 ,  opposite: true, dataLabels:{ enabled: false} }
+			
+			] ,
+			
+			 
+		
+			series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = '/sgm/js/graphics.asp?RECURSO=nroAvisos';
+				url += '&AREA=' ;
+
+				url += '&HIST=' ;
+				url += '&EQUIPO=' ;
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+		window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var cri =$(series).find('cri').text();
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						yAxis: parseInt($(series).find('yAx').text()),
+						data: [],
+						point: {events: {click: function() {verAvisos(this.category, cri, 1);}}} 
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				});  //end series
+
+			
+				
+			var chart1 = new Highcharts.Chart(options);
+					
+			});
+		
+	 //end get
+			
+}
+
+function gr6(){
+
+	var equipo="";
+	var equipos="";
+	var desgastes="";
+	var rema="";
+	var segs="";
+	
+var tbl= parent.document.getElementById('idTbl2');
+	nrows = tbl.rows.length;
+
+i=1;
+	
+
+while (i<nrows){
+	
+
+	//alert(tbl.rows[i].children[0].children[0].checked);
+		if(tbl.rows[i].children[0].children[0].checked){
+			
+		//	alert(tbl.rows[i].children[1].innerHTML);
+			
+			equipo = tbl.rows[i].children[1].innerText;
+			equipos = equipos + ";" + equipo;
+			desgastes = desgastes +  ";" + tbl.rows[i].children[5].innerHTML;
+			rema = rema	+  ";" + tbl.rows[i].children[6].innerHTML;
+			segs = segs	+  ";" + tbl.rows[i].children[3].innerHTML;
+		}
+
+	i=i+1;
+	}
+	
+	
+
+var options = {
+		chart: {renderTo: 'chart6', type: 'column'}, //, inverted: true
+		title: { text: 'ESPESOR EN CINTAS TRANSPORTADORAS' },
+		xAxis: { categories: [],  labels: { rotation: -75, align: 'right' } },
+		yAxis: { title: { text: '[mm]' }  },
+		
+	    plotOptions: { column: {stacking: 'normal'}    },
+		series: []
+		
+		}; //end options
+			
+			// Load the data from the XML file 
+			var url = '/sgm/js/graphics.asp?RECURSO=grEspesor3';
+				url += '&SEGS=' + segs;
+				url += '&REMA=' + rema;
+				url += '&EQUIPOS=' + equipos;
+				url += '&DESGASTES=' + desgastes;
+				url += '&FAENA=' + getEmpresa();
+				url += "&VTZ=" + Math.random();
+		
+	//	window.open(url);
+			
+			$.get(url, function(xml) {
+				// Split the lines
+				var $xml = $(xml);
+				
+				// push categories
+				$xml.find('categories item').each(function(i, category) {
+					options.xAxis.categories.push($(category).text());
+				});
+				
+				//options.yAxis.max = 100;
+	
+				// push series
+				$xml.find('series').each(function(i, series) {
+					var seriesOptions = {
+						name: $(series).find('name').text(),
+						color: $(series).find('color').text(),
+						type: $(series).find('type').text(),
+						data: []
+					};
+					
+					// push data points
+					$(series).find('data point').each(function(i, point) {
+						seriesOptions.data.push( parseInt( $(point).text() ) );
+					});
+					// add it to the options
+					options.series.push(seriesOptions);
+				});//end series
+			
+				
+			var chart6 = new Highcharts.Chart(options);
+					
+			});
+	 //end get	
+}
+
+
+function hideFrm(){
+	 with (divWait.style){visibility = "hidden";} 
+}
+
+jQuery(document).ready(function($){ 
+//	gr6();
+	gr1();
+});
+
+
+function getRadioVal(obj) {
+    //var coffee = document.forms[0];
+//	alert(obj.tagName);
+    var txt = "";
+    var i;
+    for (i = 0; i < obj.length; i++) {
+        if (obj[i].checked) { return obj[i].value; }
+    }
+  
+}
+
+
+</script>		
+
+</head>
+<body onLoad="">
+<div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 350px; top: 90px; height: 130;">
+<font class="calibri_16">CARGANDO...</font><img src="/sgm/mg/cargando.gif" /></div>
+
+<table width="100%" bgcolor="#999999">
+  <tr>
+    <td>	
+
+      <table width="98%" align="center">
+      <tr>
+        <td height="252" colspan="2" valign="top">   		 
+   		  <div id="chart6" style="height: 250px; min-width: 300px;"></div></td>
+      </tr>
+      <tr>
+        <td height="252" colspan="2" valign="top">   		 
+   		  <div id="chart1" style="height: 250px; min-width: 300px;"></div></td>
+      </tr>
+    </table> 
+      <!--chart-->
+    </td>
+  </tr>
+</table> <!-- main charts -->
+</td>
+    </tr>
+</table> <!-- backg charts -->
+</body>
+</html>

@@ -1,0 +1,818 @@
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META http-equiv="Pragma" content="no-cache,no-store">
+<TITLE>Aviso</TITLE>
+<link rel="stylesheet" href="/css/jquery-ui.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+ <link rel='stylesheet' href='/css/swipebox.css'>
+<style type="text/css">
+body{background-color:#dee6eb;}
+.style2 {	color: #996600;
+	font-weight: bold;
+}
+.hidden {
+  
+  display: none;
+  visibility: hidden;
+
+}
+</style>
+</HEAD>
+
+<script   src="/windowfiles/dhtmlwindow.js"></script>
+<script   src='/js/jquery-1.9.1.js'></script>
+<script  src='/js/jquery.swipebox.js'></script>
+<SCRIPT language="JavaScript1.2" src="js/main.js"></SCRIPT>
+<script  src='/js/jquery-ui-1.9.2.custom.min.js'></script> 
+<script>
+
+var inlinewin6;
+
+var imgA = new Array(10);
+var imgNom = new Array(10);
+var imgId = new Array(10);
+var indx = 0;
+
+
+
+function newAviso(ID){
+
+	
+	var _url = "js/avisos.asp?RECURSO=newAviso";
+		_url += "&ID=" + document.getElementById("idFolio").value;
+		_url += "&EQUIPO=" + document.getElementById("txtEquipoAv").value;
+		_url += "&DESCRIPCION=" + scape(document.getElementById("idDescripcion").value);
+		_url += "&TRATAMIENTO=" + scape(document.getElementById("idTratamiento").value);
+		_url += "&FECHA=" + document.getElementById("idFecha").value;
+//		_url += "&RESPONSABLE=" + document.getElementById("idResponsable").value;
+		_url += "&ESTADO=" + document.getElementById("idEstado").value;
+		//_url += "&TIPO_TURNO=" + formulario.listTurno.value;
+		//url += "&IND_SOLUCION=" + formulario.chkSolucion.checked;
+		_url += "&GSAP=" + document.getElementById("idGSAP").value;
+		_url += "&USERNAME=" + getSession();
+		_url += "&UBICACION=" + getEmpresa();
+		_url += "&CAUSA=" + document.getElementById("idCausa").value;
+
+//window.open(_url);
+
+//document.getElementById('btnGuardar').disabled=true;
+
+ 
+$.get(_url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			document.getElementById("idFolio").innerText =  $(this).find("ID").text();
+				_id = $(this).find("ID").text();
+			//document.getElementById("idFolio").innerText =  _id;
+			url = "/sgm/js/archivos.asp?RECURSO=saveFile";
+  			url = url + "&FAMILIA=BITACORAS"
+  			url = url + "&IDENTIFICADOR="+_id;
+			url += "&EMPRESA=" + getEmpresa();
+  			document.formulario.action=url;
+		})//End each
+	, formulario.submit();  alert("Aviso de mantención creado.");
+	  //document.getElementById('btnGuardar').disabled=false;
+	  
+	});//end $.get
+
+			
+}
+
+function cerrarBox(){
+	listArchivos();
+}
+
+
+function listArchivos(){
+
+	var url = "js/archivos.asp?RECURSO=listArchivos";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&IDENTIFICADOR="+getParametro("ID");
+    
+var data = ""; 
+var j=0;
+
+var tbl = document.getElementById('tblFiles');
+	 
+limpiarTabla2(tbl);								
+//window.open(url);
+
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+
+					if (j==1){_bgColor="#fff";j=2;}
+	 						else{_bgColor="#ccc";j=1;}
+	
+				var	id =$(this).find("ID").text();
+				var	lnk =$(this).find("FILEID").text();
+				var nom = $(this).find("NOMBRE").text();
+				
+ 				 var row = tbl.insertRow(-1);
+					 row.bgColor= _bgColor;
+					 row.className = "handCursor";
+				
+	 
+ 			var cell = row.insertCell(-1);
+				cell.align ="center";
+				cell.width="100px";
+				cell.height ="80px";
+		 		cell.innerHTML = "<a href='" + lnk + "' class='swipebox'> " +
+								 "<img width='200px'  style='cursor:pointer' src='" +
+											 $(this).find("FILEPR").text()+ "' /></a>";
+				
+				
+		  var cell = row.insertCell(-1);
+				cell.align ="center";cell.width="30px";
+				 
+		 		cell.innerHTML = " <img src='/mg/trash.jpg' style='cursor:pointer' />";
+				cell.onclick = function (){delFile(id,nom)};
+				
+			}) //end each
+	})//end $get
+		
+
+document.frameFiles.src ="archivos.html";
+
+}
+
+
+
+function getEquipos(){
+
+var url = "explorer.html";
+	//url += "?EQUIPO=" + formulario.txtEquipo.value;
+	url += "?VTZ=" + Math.random();
+	//alert(url);
+		
+winCfg = "width=480px,height=360px,left=" + 410 + "px,top=" + 170 +"px,resize=1,scrolling=0";	
+
+if(inlinewin6) inlinewin6.show();
+else inlinewin6 = parent.dhtmlwindow.open("explorerBox", "iframe", url , "BUSCAR EQUIPOS", winCfg);
+
+inlinewin6.onclose=function(){getEquipo()}
+
+}
+
+ 
+
+function inicio(){
+
+parent._equipo = document.getElementById("txtEquipoAv");
+parent._desc = document.getElementById("idDescripcion");
+equipo = getParametro("EQUIPO");
+
+
+if (equipo==false)equipo="";
+//document.getElementById("idResponsable").value = getSession();
+//alert(getParametro("ID"));
+
+	if(getParametro("ID")>0){
+		getAviso();
+		//listArchivos();
+		}
+	else{
+		formulario.txtFecha.value = _hoy();
+		document.getElementById("txtEquipoAv").value = equipo;
+		}
+		
+
+}
+
+function guardar(){
+
+if (!document.getElementById("idDescripcion").value){
+alert("Ingrese la descripción");
+return;
+}
+
+var folio = document.getElementById("idFolio").innerText;
+
+if (!document.getElementById("txtEquipoAv").value){
+alert("Ingrese el componente.");
+return;
+}
+ 
+
+ 
+if (folio.length>0)
+	updateAviso(folio);
+else
+	newAviso();
+	
+	
+		
+}
+
+
+
+function process(_d){
+
+alert(_d);
+
+}
+
+function updateAviso(ID){
+
+	var color;
+	//alert(document.getElementById("idEstado").value);
+
+	if (document.getElementById("idEstado").value == '1'){
+								criticidad="33.3";
+								color="BAJA";
+	}
+	 
+	
+	if (document.getElementById("idEstado").value  == '2'){
+		color="MEDIA";
+		criticidad="66.7";
+	}
+	
+	if (document.getElementById("idEstado").value == '3'){
+		color="ALTA";
+		criticidad="100";
+	}
+	
+	var url = "js/avisos.asp?RECURSO=updateAviso";
+		url += "&ID=" + document.getElementById("idFolio").innerText;
+		url += "&EQUIPO=" + document.getElementById("txtEquipoAv").value;
+		url += "&DESCRIPCION=" + scape(document.getElementById("idDescripcion").value);
+		url += "&TRATAMIENTO=" + scape(document.getElementById("idTratamiento").value);
+		url += "&FECHA=" + document.getElementById("idFecha").value;
+		//url += "&RESPONSABLE=" + document.getElementById("idResponsable").value;
+		url += "&VALOR=" + document.getElementById("idEstado").value;
+		url += "&COLOR=" + color;
+		url += "&CRITICIDAD=" + criticidad;
+		url += "&GSAP=" + document.getElementById("idGSAP").value;
+		url += "&IND_SOLUCION=" + document.getElementById("chkCerrado").checked;
+		url += "&USERNAME=" + getSession();
+		url += "&UBICACION=" + getEmpresa();
+		url += "&CAUSA=" + document.getElementById("idCausa").value;
+		url += "&VTZ=" + Math.random();
+	/*	window.open(url);
+		return;*/
+		
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			document.getElementById("idFolio").innerText =  $(this).find("ID").text();
+			//alert($(this).find("ID").text());
+			_id = $(this).find("ID").text();
+			//document.getElementById("idFolio").innerText =  _id;
+			url = "/sgm/js/archivos.asp?RECURSO=saveFile";
+  			url = url + "&FAMILIA=BITACORAS"
+			url += "&EMPRESA=" + getEmpresa();
+  			url = url + "&IDENTIFICADOR="+_id;
+  			document.formulario.action=url;
+  			
+		
+		})//End each
+		, updateChk(); formulario.submit(); 
+		alert("Actualización realizada.");
+	});//end $.get
+		
+}
+function updateChk(){
+
+var url = "xml/Checklist.asp?RECURSO=UpdCheckBitacora";
+	url += "&ID=" + document.getElementById("idFalla").value;
+	url += "&FOLIO=" + document.getElementById("idFolio").innerText;
+	url += "&VALOR=1";
+	url += "&VTZ=" + Math.random();
+// window.open(url);
+
+		$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+ 
+		})//End each
+	});//end $.get
+				
+}
+
+
+function getAviso(){
+
+	if (getParametro("ID")=="undefined")
+		var url = "js/avisos.asp?RECURSO=getAviso&ID=" + formulario.txtFolio.value;
+	else
+		var url = "js/avisos.asp?RECURSO=getAviso&ID=" + getParametro("ID");
+		
+	 	url += "&FAENA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		//	alert(url);
+		//return;
+		//window.open(url);
+
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+var valor=1;
+
+		if ($(this).find("COLOR").text()  == 'BAJA'){
+				valor="1";
+				criticidad="33.3";
+			}
+
+		if ($(this).find("COLOR").text()  == 'MEDIA'){
+				valor="2";
+				criticidad="66.7";
+			}
+			if ($(this).find("COLOR").text()  == 'ALTA'){
+				valor="3";
+				criticidad="100";
+			}
+ 
+			document.getElementById("idFolio").innerText =  $(this).find("ID").text();
+			document.getElementById("idFecha").value =  $(this).find("FECHA").text();
+			document.getElementById("txtEquipoAv").value =  $(this).find("EQUIPO").text();
+			//document.getElementById("idResponsable").value =  $(this).find("RESPONSABLE").text();
+			document.getElementById("idEstado").value =  valor;
+			document.getElementById("idDescripcion").value = $(this).find("DESCRIPCION").text();
+			document.getElementById("idImagen").src =  $(this).find("IMG_EST").text();
+			
+			if ($(this).find("IND_SOLUCION").text()=="TRUE"){
+					document.getElementById("chkCerrado").checked = true;
+				}
+				
+			document.getElementById("idTratamiento").value =  $(this).find("TRATAMIENTO").text();
+			document.getElementById("idCausa").value =  $(this).find("CAUSA").text();
+			document.getElementById("idTipo").innerText =  $(this).find("TIPO_EQUIPO").text();
+			
+		}),listFalla();historial();//End each
+	});//end $.get
+	
+	
+listArchivos();
+	
+}
+	
+function historial(){
+
+//frameHistorial.showWin(document.getElementById("formulario").txtID, divHistorial);
+		var url ="boxHistorialv2.html?ID=" + document.getElementById("idFolio").innerText ;
+	//window.open(url);
+ 	 document.getElementById("IFHistorial").src = url;
+ 
+}
+
+
+function cerrarAviso(){
+
+	
+	var url = "js/avisos.asp?RECURSO=cerrarAviso";
+		url += "&ID=" + document.getElementById("idFolio").innerText;
+		url += "&EQUIPO=" + document.getElementById("txtEquipoAv").value;
+		url += "&USERNAME=" + getSession();
+		url += "&UBICACION=" + getEmpresa();
+		//url += "&CAUSA=" + document.getElementById("idCausa").value;
+		url += "&VTZ=" + Math.random();
+	/*	window.open(url);
+		return;*/
+		
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+	 
+		})//End each
+	,  	alert("Actualización realizada.");
+	});//end $.get
+		
+}
+	
+
+function newFile(){
+
+if(document.getElementById("idFolio").innerText==""){
+	guardar();
+	return;
+}
+	
+document.frameFiles.mostrarVentana(document.getElementById("idFolio").innerText,"BITACORAS",divFiles);
+// parent.refrshVtz=true;
+}
+
+function delFile(id, nom){
+
+	var url = "js/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=BITACORAS"; 
+		url += "&ID=" + id;   
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+	//window.open(url);
+	
+	if(!confirm("Seguro desea eliminar archivo." + nom))
+			return;
+	
+	 $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					alert("Archivo Eliminado.");
+			}) //end each
+		})//end $get
+
+listArchivos();
+parent.refrshVtz=true;
+
+}
+
+function salir(){
+	//alert("salir");
+parent.document.getElementById('boxDetAvisos').close();
+}
+
+function verFallas(){
+
+var url ="boxFallas.html?ID=" + document.getElementById("idFolio").innerText;
+	//url +="&TIPO_EQUIPO=" + formulario.txtFolio.value;
+	url += "&VTZ=" + Math.random();
+	//alert(id);
+winCfg = "width=400px,height=430px,left=" + 220 + "px,top=" + 50 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxFallas", "iframe", url , "MODOS DE FALLA", winCfg);
+
+}
+	
+	
+function listFalla(){
+
+  var url = "xml/checklist.asp?RECURSO=listFallas";
+  	  url += "&TIPO_EQUIPO=" + document.getElementById("idTipo").innerText;
+	  url += "&FOLIO=" + document.getElementById("idFolio").innerText;
+  	  url += "&FAENA=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+//	window.open(url);
+	
+	var j=0;
+	document.getElementById('idFalla').innerText=0;
+	document.getElementById("idFalla").length =0;
+
+	opcion = new Option("SELECCIONAR","");
+	document.getElementById("idFalla").options[j] = opcion;
+	opcion.selected = true;
+
+				  j=j+1;	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+					var valor = $(this).find("VALOR").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	document.getElementById("idFalla").options[j] = opcion;
+				if(valor == 1)
+					opcion.selected = true;
+				
+				j=j+1;
+			}) //end each
+
+				//listTratamiento();
+		}) //end $get
+
+ } 
+ 
+function listCausa(){
+
+	with (divWait.style){visibility = "visible";} 
+	
+  var url = "/js/equipos.asp?RECURSO=listCausas";
+  	  url += "&CODIGO=" + document.getElementById('idComp').value;
+	  url += "&TIPO_FALLA=" + document.getElementById('idFalla').value;
+  	  url += "&FAENA=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+//window.open(url);
+	
+	var j=0;
+	document.getElementById('idCausa').innerText=0;
+	document.getElementById("idCausa").length =0;
+					  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	document.getElementById("idCausa").options[j] = opcion;
+				j=j+1;
+			}) //end each
+	     	
+			opcion.selected = true;
+				opcion = new Option("n/a","");
+	          	document.getElementById("idCausa").options[j] = opcion;
+				hidWait();
+		}) //end $get
+
+ } 
+ 
+  
+function listTratamiento(){
+
+
+	with (divWait.style){visibility = "visible";} 
+  var url = "/js/equipos.asp?RECURSO=listTrataComp";
+  	  url += "&CODIGO=" + document.getElementById('idComp').value;
+  	  url += "&FAENA=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+
+//window.open(url);
+	
+	var j=0;
+	document.getElementById('idTratamiento').innerText=0;
+	document.getElementById("idTratamiento").length =0;
+					  	
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion, codigo);
+	          	document.getElementById("idTratamiento").options[j] = opcion;
+				j=j+1;
+			}) //end each
+	     		hidWait();
+				opcion.selected = true;
+				opcion = new Option("n/a","");
+	          	document.getElementById("idTratamiento").options[j] = opcion;
+				
+		}) //end $get
+
+ } 
+	
+ 
+function listFallas(){
+
+var i=0;
+
+var url = "xml/Checklist.asp?RECURSO=ListCheckDesc";
+  	url += "&UBICACION=" + getEmpresa();
+  	url += "&TIPO_EQUIPO=" + document.getElementById("idTipo").innerText;
+  	url += "&EMPRESA=" + getEmpresa();
+	url += "&VTZ=" + Math.random();
+  //window.open(url);
+
+$.get(url, function(theXML){
+			  $('ROWS',theXML).each(function(j){
+				  var codigo = $(this).find("CODIGO").text();
+				  var descripcion = $(this).find("DESCRIPCION").text();
+			  //alert(codigo);
+				 opcion = new Option(descripcion,codigo);
+				document.getElementById("idFalla").options[i] = opcion;
+			  i=i+1;
+		  }) //end each
+			  opcion = new Option("SELECCIONAR" ,"");
+			  document.getElementById("idFalla").options[i] = opcion;
+			  
+	  })//end $get
+  
+} 
+
+
+function enviar(){
+
+var url ="boxMail.html?ID=" + document.getElementById("idFolio").innerText;
+	url += "&VTZ=" + Math.random();
+	//alert(id);
+	
+winCfg = "width=550px,height=430px,left=" + 220 + "px,top=" + 50 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxMail", "iframe", url , "ENVIAR MAILS", winCfg);
+
+}
+
+
+function fw(){
+
+indx = indx + 1;
+
+if(!imgA[indx])
+	indx = indx - 1 ;
+
+document.getElementById("imgObj").src = imgA[indx];
+document.getElementById("ID_list_cant_reg").innerText=imgNom[indx];
+document.getElementById("idFile").value = imgId[indx];
+
+}
+
+function rw(){
+
+indx = indx - 1;
+
+//alert(imgA[indx]);
+
+if(!imgA[indx])
+	indx = indx + 1;
+
+document.getElementById("imgObj").src = imgA[indx];
+document.getElementById("ID_list_cant_reg").innerText=imgNom[indx];
+document.getElementById("idFile").value = imgId[indx];
+
+}
+
+
+function visor(obj){
+
+var left=60;
+var top=20;
+var width=950;
+var height=550;
+
+var URLStr ="visor.html?PATH="+obj.src;
+
+ popUpSic = open(URLStr, 'popUpFotos', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,copyhistory=yes,width='+width+',height='+height+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+ 
+
+}
+
+jQuery(document).ready(function($){ 
+
+	rol = getRol();
+
+if (rol!="ADMIN"){
+	  
+	document.getElementById("btnGuardar").className='hidden';
+ 
+}
+
+	
+	$( '.swipebox' ).swipebox();
+	inicio();
+
+	$.datepicker.regional['es'] = {
+       closeText: 'Cerrar',
+       prevText: '<Ant',
+       nextText: 'Sig>',
+       currentText: 'Hoy',
+       monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+       monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+       dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+       dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+       dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+       weekHeader: 'Sm',
+       dateFormat: 'dd/mm/yy',
+       firstDay: 1,
+       isRTL: false,
+       showMonthAfterYear: false,
+       yearSuffix: ''};
+	   
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+		 
+	$("#idFecha").datepicker({
+    showOn: 'both',
+    buttonImage: 'mg/calendar.jpg',
+    buttonImageOnly: true,
+    changeYear: true,
+	currentText: "Now",
+    numberOfMonths: 1,
+    onSelect: function(textoFecha, objDatepicker){		 }
+ 	});
+	
+});
+
+</script>
+
+
+<BODY >
+<FORM name="formulario"  METHOD="POST" enctype="multipart/form-data">
+
+
+<DIV ID="divFiles" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 130px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 60px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="frameFiles" id="frameFiles" SRC="archivos.html?v=9" frameBorder="0" WIDTH="580" SCROLLING="no" HEIGHT="360"></IFRAME>
+</DIV>
+  
+<DIV ID="divFallas" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 130px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 60px"
+onclick="event.cancelBubble=true">
+<IFRAME  id="frameFallas"  frameBorder="0" WIDTH="360" SCROLLING="no" HEIGHT="420"></IFRAME>
+</DIV>
+
+
+ 
+  
+  <table width="960" cellpadding="4" cellspacing="0" >
+    <!--DWLayoutTable-->
+    <tr>
+      <td colspan="10">
+        <table width="877" border="0" align="center" cellpadding="0" cellspacing="0">
+          <!--DWLayoutTable-->
+          <tr>
+            <td width="316" height="19" valign="top"><strong>Folio :&nbsp;<span id='idFolio'></span></strong></td>
+            <td width="414" valign="top">            Fecha 
+            <input type="text"  name="txtFecha" class="inputSht" id="idFecha"/></td>
+            <td width="147">&nbsp;</td>
+          </tr>
+      </table></td>
+    <tr>
+      <td width="4">&nbsp;</td>
+      <td width="139" align="right">Equipo  :&nbsp;</td>
+      <td width="23" align="right" valign="middle"><img src="/sgm/mg/headSearch.png" style="cursor: pointer;" onClick="getEquipos();" /></td>
+      <td colspan="5" valign="middle">
+      <input name="txtEquipo" id="txtEquipoAv" type="text" class="inputSearch"  onChange="listFalla();"  /></td>
+      <td colspan="2" align="center"><span class="style2">Registro Fotografico</span>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right">Tipo de Falla </td><span id="idTipo"></span>
+      <td colspan="6"><select name="idFalla" id='idFalla' onChange="listCausa();">
+      </select>
+	</td>
+      <td width="4" rowspan="6">&nbsp;</td>
+      <td width="248" rowspan="6" valign="top">
+        <div style="overflow-y:auto;height:250px" >
+          <table width="100%"  id="tblFiles" cellspacing="0" class="tinyText" >
+          </table>
+       </div></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right">Inspecci&oacute;n :&nbsp;</td>
+      <td colspan="6" valign="top">  
+        <textarea  cols="65" rows="5" class="textArea" id="idDescripcion"></textarea>      </td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right"><span class="calibri">Causa :</span></td>
+      <td colspan="3" valign="top"><select name="idCausa" id='idCausa2' onChange="setComentario();">
+      </select></td>
+      <td colspan="2" align="right"><!--DWLayoutEmptyCell-->&nbsp;</td>
+      <td width="1"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right">Criticidad :&nbsp;</td>
+      <td colspan="2" valign="top">
+        
+        <select name="listEstado" class="select"   id="idEstado">
+          <option value="3" style="background-color:#FF0000">Alta <24 Hrs</option>
+          <option value="2" style="background-color:#FFEE00">Media <7 Días</option>
+          <option value="1" selected style="background-color:#00FF00">Buen Estado</option>
+        </select>&nbsp;&nbsp;
+      <IMG BORDER="0" id="idImagen" ALIGN="middle" src="mg/null.png" /></td>
+      <td width="284" align="right"><span style="vertical-align:top">Aviso Cerrado : </span></td>
+     <td colspan="2">
+		 <input  type="checkbox"  onClick="cerrarAviso();" name="chkCerrado"  id="chkCerrado"  class="subtitulos" />
+		</td>
+      <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right">Folio SAP :&nbsp;</td>
+      <td colspan="5" valign="top">
+        <input name="txtSAP" type="text" class="inputSht" size="25" id="idGSAP" /></td>
+      <td valign="top"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td rowspan="2" align="right" valign="middle"><span class="calibri">Causa  :&nbsp;</span></td>
+      <td colspan="6" rowspan="2" valign="top">
+        <textarea  cols="65" rows="4" class="textArea" id="idCausa"></textarea></td>
+    </tr>
+	<tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td rowspan="2" align="right" valign="middle"><table width="178" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="89">&nbsp;</td>
+          <td width="89">&nbsp;</td>
+          </tr>
+        <tr>
+          <td height="19">
+			<input name="button"  type="button" class="input" style="cursor:pointer;" id="btnGuardar" onClick="guardar();" value="Guardar" alt="Guardar" /></td>
+          <td align="center">
+			<input name="button"  type="button" class="input" style="cursor:pointer;" onClick="salir();" value="Salir" /></td>
+          </tr>
+      </table></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="right" valign="middle">&nbsp;&nbsp;&nbsp;&nbsp;<span class="calibri">Tratamiento :&nbsp;</span></td>
+      <td colspan="6"><textarea  name="txtTratamiento" cols="65" rows="4" class="textArea" id="idTratamiento"></textarea></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td align="center" valign="middle">Imagen :</td>
+      <td colspan="6"><input name="attach1" type="file" class="input" SIZE="45" ></td>
+      <td>&nbsp;</td>
+      <td align="right" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td width="125"></td>
+      <td></td>
+      <td width="50"></td>
+      <td width="0"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+
+  <div align="center">
+	 <strong>HISTORIAL DE CAMBIOS DE CRITICIDAD</strong><br>
+		<iframe id="IFHistorial" style="width:98%" height="194" frameborder="0" scrolling="no">
+		  <p>Este Navegador de internet no soporta Iframes</p>
+		</iframe> 
+ </div>
+</FORM>
+</BODY>
+</HTML>

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>SQL RUNNER</TITLE>
+<xml id="xmlTemp"></xml>
+<META http-equiv=Content-Type CONTENT="text/html; charset=iso-8859-1">
+	<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+	<LINK rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+</HEAD>
+
+<script>
+function run(){
+
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	 
+ 	url = "xml/sql.asp?RECURSO=runSql";
+	url += "&SQL="+txtSql.value;
+	
+	    //var res =xmlDso.load(url);
+		
+ 		window.open(url);
+}
+</script>
+<BODY bgColor=#ffffff leftMargin=5 topMargin=0 onLoad="">
+VITCOMZ SQL COMMAND LINE
+<BR>
+<TABLE width=522 HEIGHT="112" border=0 bgColor=#880000 HEIGTH="126" cellpadding="0" cellspacing="0">
+  <TBODY>
+  <TR bgColor=#880000>
+    <TD WIDTH="516">
+    	<TEXTAREA COLS="120" ROWS="20" CLASS="normal" NAME="txtSql"></TEXTAREA>
+    </TD>
+  </TR>
+  </TBODY>
+</TABLE>
+<INPUT TYPE="BUTTON" CLASS="botonBlanco" VALUE="Run" onClick="run();">
+
+</BODY>
+</HTML>
+
+  

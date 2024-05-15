@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+
+</head>
+<xml id = xmlDoc></xml>
+<xml id = xmlSistemas></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlMenu></xml>
+
+
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlDoc.async = false;
+
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function Nuevo(){
+var url ="NewMenu.html?SISTEMA=" + formulario.listSistemas.value;
+	//window.open(url,'','width=600,height=300,toolbar=no,statusbar=no,align=middle');
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:510px;dialogHeight:200px");	
+	ListMenu();
+}
+
+
+function UpdateTable()
+{
+
+
+	var Sistema = formulario.listSistemas.value;
+	var tabla;
+        tabla = document.getElementById('Tabla1');
+		for (i=1; i< tabla.rows.length; i++)
+		{
+			Codigo = tabla.rows[i].children[0].children[0].value;
+			Nombre = tabla.rows[i].children[1].children[0].value;
+			CodPadre= tabla.rows[i].children[2].children[0].value;
+			Orden = tabla.rows[i].children[3].children[0].value;
+			Link = tabla.rows[i].children[4].children[0].value;
+			UpdateMenu(Codigo, CodPadre, Nombre, Link, Orden, Sistema);
+		}
+ListMenu(); 
+
+}
+
+function UpdateMenu(CodMenu, CodMenuPadre, Nombre, Link, Orden, Sistema)
+{
+	var xmlDso = xmlDoc.XMLDocument;
+		var url = "xml/Menu.asp?RECURSO=UpdateMenu"
+			url += "&CODIGO=" + CodMenu;
+			url += "&NOMBRE=" + Nombre;
+			url += "&COD_MENU_PADRE=" + CodMenuPadre;
+			url += "&LINK=" + Link;
+			url += "&ORDEN=" + Orden;
+			url += "&SISTEMA=" + Sistema;
+		//window.open(url);
+	xmlestado = xmlDso.load(url);
+	if(!xmlestado)
+			window.open(url);
+			
+}
+
+ function cargarSistemas(){
+        xmlSistemas.async = false;
+        var xmlDso =  xmlSistemas.XMLDocument;
+		url = "xml/sistemas.asp?RECURSO=ListSistemas";
+		//window.open(url);
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"NOMBRE"),getChildNodeValue(node,"ID"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.listSistemas.options[i] = opcion;   
+          }
+                 
+         }
+ }
+ 
+function cargarMenu(){
+        xmlSistemas.async = false;
+        var xmlDso =  xmlSistemas.XMLDocument;
+		var url = "xml/menu.asp?RECURSO=ListMenu&SISTEMA=" + formulario.listSistemas.value;
+		//window.open(url);
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"COD_MENU_PADRE"),getChildNodeValue(node,"COD_MENU_PADRE"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.listMenu.options[i] = opcion;   
+          }
+                 
+         }
+ }
+	  
+function ListMenu()
+{
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.asp?RECURSO=ListMenu&SISTEMA=" + formulario.listSistemas.value;
+	//url += "&COD_MENU=" + formulario.listMenu.value;
+	//window.open(url);
+	xmlestado = xmlDso.load(url);
+}
+
+
+function Eliminar(Index)
+{
+
+	var tabla = document.getElementById('Tabla1');
+	var Codigo =  tabla.rows[Index].children[0].children[0].value;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/menu.asp?RECURSO=DelMenu&CODIGO=" + Codigo;
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Menu Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListMenu();
+	}
+}
+
+</script>
+
+
+<body onLoad="cargarSistemas();ListMenu();cargarMenu();" >
+<form name="formulario">
+
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table>
+<tr>
+  <td height="31" class="titulo">Men&uacute;s</td>
+</tr>
+	<tr class="texto">
+	<td  valign="top">Sistema:
+	      	<SELECT name="listSistemas" id="listSistemas"   style="size:auto;z-index:100;" class="input"
+					onchange="ListMenu();" >
+					<OPTION selected></OPTION>
+			</SELECT>
+			Menu :
+	      	<SELECT name="listMenu" id="listMenu"   style="size:auto;z-index:100;" class="input"
+					onchange="ListMenu();" >
+					<OPTION selected></OPTION>
+			</SELECT>
+	</td>
+ </tr>
+</table>
+<table cellpadding="0" cellspacing="1" class="texto" id="Tabla1"  DATASRC="#xmlDoc">
+		<thead>
+		<tr class="HeaderLista">
+		  <td>CODIGO</td>
+		  <td>NOMBRE</td>
+		  <td>PADRE</td>
+  		  <td>ORDEN</td>
+		  <td>LINK</td>
+		  <td>&nbsp;</td>
+		</th>
+	</thead>
+	<tr class="ItemLista">
+		  <td onClick="return;"><input name="TxtCodigo" type="text" class="input" size="15" datafld="CODIGO"/></td>
+			<td><input  name="TxtNombre" type="text" class="input" size="25" datafld="NOMBRE"/></td>
+			<td><input name="TxtPadre" type="text" class="input"  size="15" datafld="COD_MENU_PADRE"/></td>
+			<td><input name="TxtOrden" type="text" class="input"  size="3" datafld="ORDEN"/></td>
+			<td><input  name="TxtLink" type="text" class="input"  size="40" datafld="LINK"/></td>
+			<td onClick="Eliminar(this.parentElement.rowIndex);"><img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+
+</table>
+<br>
+</form>
+<br>
+<div align="center">
+  <input name="button" type="button" class="botonBlanco"  onClick="Nuevo();" value="Nuevo">&nbsp;
+  <input type="button" onClick="UpdateTable();" value="Guardar" class="botonBlanco">&nbsp;
+  <input type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

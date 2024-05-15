@@ -1,0 +1,251 @@
+<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Ficha de Existencias</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</HEAD>
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+</HEAD>
+<xml id = XMLDoc></xml>
+<xml id = xmlRoles></xml>
+<xml id= xmlArticulo></xml>
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+function inicio(){
+
+	formulario.txtFechaIni.value = '01/01/' + (_hoy().substring(6,12) -1);
+    days = (daysInMonth(_hoy().substring(0,2),2009)) - 2;
+	formulario.txtFechaFin.value = days + _hoy().substring(2,12);
+	
+     if(getParametro("ID")){
+				formulario.txtID.value = getParametro("ID");
+				formulario.txtNombre.value = getParametro("DESC");
+				getFicha();
+				}
+	formulario.txtID.focus();			
+}
+
+function daysInMonth(month,year) {
+var dd = new Date(year, month, 0);
+return dd.getDate();
+} 
+				
+function GetArticulo(){
+
+	xmlArticulo.async = false;
+	var xmlDso = xmlArticulo.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=GetArticulo&ID=" + formulario.txtID.value;
+	
+	if (!formulario.txtID.value)
+			return;
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado)
+			    window.open(url);
+	else{
+		var tree = xmlDso.documentElement;
+		var node = tree.childNodes.item(0);
+		url = "ficha.html?ID=" + formulario.txtID.value;
+		url +="&DESC=" + getChildNodeValue(node,"NOMBRE");
+		window.location.href= url;
+		}
+
+				
+}
+
+function getFicha(){
+	
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url = "xml/Articulos.asp?RECURSO=Ficha&ID="+formulario.txtID.value;
+  	  url += "&FECHA_INI="+formulario.txtFechaIni.value;
+	  url += "&FECHA_FIN="+formulario.txtFechaFin.value;
+	
+  var res = xmlDso.load(url);
+ 
+  if (!res)
+	   window.open(url);
+		 
+
+}
+
+
+
+function verMov(Index){
+var tabla = parent.document.getElementById('tabFicha');
+
+
+if(tabla.rows[Index].children[0].innerText){
+	Folio = tabla.rows[Index].children[0].innerText;
+
+	if(tabla.rows[Index].children[4].innerText>0)
+		window.location.href="Ingreso.html?Folio=" + Folio;
+	else
+		window.location.href="Egreso.html?Folio=" + Folio;
+	}
+}
+
+function toExcel(){
+
+  	var url = "xml/Articulos.asp?RECURSO=Ficha&ID="+formulario.txtID.value;
+  	 	url += "&FECHA_INI="+formulario.txtFechaIni.value;
+	 	url += "&FECHA_FIN="+formulario.txtFechaFin.value;
+	  	url += "&EXCEL=YES";
+	 // alert(Url);
+		window.open(url);
+      }
+
+function newServicio(){
+
+document.frameNew.mostrarVentana(formulario.strc,formulario.strc,'PRE',divNew,'buscar()');
+
+}
+
+function buscar(){
+setTimeout("search(formulario.strc.value)",100);
+}
+
+</SCRIPT>
+
+<BODY onLoad="inicio();">
+
+<DIV id="divNew" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameNew" src="newServicio.html" frameBorder="0" width="350"
+		 scrolling="no" height="200"></IFRAME>
+</DIV>
+
+<DIV id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden;
+				 width: 10; z-index: 100; left: 95; top: 278; height: 23;
+				 border-style: ridge; border-width: 2px">
+			<IFRAME frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+		</DIV>
+		
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<DIV id="divArticulos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 99px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 98px; width: 450px; height: 235px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameArticulos" src="ListArticulos.html" frameBorder="0" width="450" scrolling="no" height="235"></IFRAME>
+</DIV>
+
+<FORM name="formulario" method="post" action="">
+
+  <P>&nbsp;</P>
+  <P class="titulo">&nbsp;</P>
+  <TABLE width="662" border="0" class="texto"  DATASRC="#xmlArticulo">
+    <TR>
+      <TD width="373" class="titulo">FICHA DE EXISTENCIAS</TD>
+      <TD width="277">&nbsp;</TD>
+    </TR>
+	<TR align="center">
+    	<TD colspan="2" align="left" class="text" style="color:#000000; font-weight:bold;"> ARTICULO : 
+				  <INPUT NAME="txtID" size="5" class="input" datafld="ID" 
+				  			onKeyPress="if(event.keyCode==13)GetArticulo();">
+				  <INPUT NAME="txtCodigo" size="5" class="hidden" >
+				  <IMG src="images/lupa.jpg" alt="Buscar" width="19" height="19" align="middle" style="CURSOR: hand" 
+									onClick="frameArticulos.popsearchbox(txtID,txtCodigo,
+									 divArticulos,'GetArticulo();','EXISTENCIA'); return false;">
+				  <INPUT class="input" name="txtNombre" type="text" id="txtNombre" size="80" datafld="NOMBRE">
+	   </TD>
+  </TR>
+  <TR align="center">
+    	<TD colspan="2" align="left" class="text" style="color:#000000; font-weight:bold;">
+				MOVIMIENTOS DESDE: 
+				 <INPUT NAME="txtFechaIni" size="12" class="input"  
+				  			onKeyPress="">
+				 <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaIni,
+							  txtFechaIni,divCalendar);return false">
+				HASTA :
+				  <INPUT class="input" name="txtFechaFin" type="text"
+				  			  size="12" >
+				 <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaFin,
+							  txtFechaFin,divCalendar);return false">
+							  
+				<INPUT  type="button" value="Buscar" onClick="getFicha();"  class="botonBlanco">
+	   <INPUT type="button" onClick="toExcel()" value="Exportar a Excel." class="botonBlancoLargo">	   </TD>
+  </TR>
+</TABLE>
+  <TABLE width="732" border="0" cellpadding="1" cellspacing="0"  class="tablaBordesTitle"
+	  	datasrc="#XMLDoc" id="tabFicha" >
+    <THEAD>
+	 <TR >
+        <TD  colspan="4" class="bordes1">&nbsp; </TD>
+        <TD  colspan="3" class="bordes1">CANTIDADES</TD>
+		<TD class="bordes1">&nbsp; </TD>
+		<TD  colspan="3" class="bordes1" align="center">VALOR</TD>
+		<TD  colspan="2" class="bordes1">&nbsp;</TD>
+      </TR>
+	  <TR  class="tablaBordesTitle">
+        <TD width="43" class="bordes1">FOLIO</TD>
+        <TD  width="117" class="bordes1">FECHA</TD>
+		<TD  width="94" class="bordes1">TIPO DOCUMENTO</TD>
+		<TD  width="87" class="bordes1">NRO DOCUMENTO</TD>
+		<TD  width="80" class="bordes1">ENTRADA</TD>
+		<TD  width="50" class="bordes1">SALIDA</TD>
+		<TD  width="56" class="bordes1">SALDO</TD>
+		<TD  width="87" class="bordes1">VALOR $USD</TD>
+		<TD  width="87" class="bordes1">ENTRADA</TD>
+		<TD  width="87" class="bordes1">SALIDA</TD>
+		<TD  width="87" class="bordes1">SALDO</TD>
+		<TD  width="64" class="bordes1">PPP $USD </TD>
+		<TD  width="32" class="bordes1" colspan="2">&nbsp;</TD>
+      </TR>
+    </THEAD>
+    <TR>
+      <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="FOLIO"/></TD>
+      <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="FECHA"/></TD>
+	  <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="TIPO"/></TD>
+	  <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="NRO_DOC"/></TD>
+	  <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="ENTRADAS"/></TD>
+	  <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="SALIDAS"/></TD>
+	  <TD align="center"  class="tablaBordes">&nbsp;<SPAN   datafld="SALDO"/></TD>
+	  <TD align="right"   class="tablaBordes">&nbsp;<SPAN   datafld="VALORIZACION"/></TD>
+	  <TD align="right"   class="tablaBordes">&nbsp;<SPAN   datafld="ENTRADAS_V"/></TD>
+	  <TD align="right"   class="tablaBordes">&nbsp;<SPAN   datafld="SALIDAS_V"/></TD>
+	  <TD align="right"   class="tablaBordes">&nbsp;<SPAN   datafld="SALDO_V"/></TD>
+	  <TD align="right"   class="tablaBordes">&nbsp;<SPAN   datafld="PPM"/></TD>
+	  <TD class="tablaBordes" onClick="verMov(this.parentElement.rowIndex);">
+	  	<IMG src="images/table.png" style="cursor:hand;"></TD>
+    </TR>
+	<!--tfoot>
+  	 <tr  align="left" >
+	   <td class="input" colspan="20">&nbsp;&nbsp;&nbsp;&nbsp;
+ 			<input  class="littleButton" type="button" value=" << " onClick="irInicio('tabServicios');">
+			<input  class="littleButton" type="button" value="  <  " onClick="irAtras('tabServicios');">
+			<input  class="littleButton" type="button" value="  >  " onClick="irAdelante('tabServicios');">
+			<input  class="littleButton" type="button" value=" >> " onClick="irFinal('tabServicios');">&nbsp;&nbsp;
+			Registros: <span id="ID_list_cant_reg"></span>&nbsp;| Vista: <span id="ID_list_fraccion_reg"></span>
+	 </td>
+    </tr>
+	</tfoot-->
+	</TABLE>
+  <BR>
+  <INPUT type="button" value="PRINT" class="botonBlanco">
+
+</FORM>
+</BODY>
+</HTML>

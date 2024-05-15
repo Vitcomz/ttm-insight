@@ -1,0 +1,282 @@
+<HTML>
+<HEAD>
+<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+
+ <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+
+
+<script language="JavaScript1.2" src="js/main.js"></script>
+<script language="Javascript1.2" src="js/jquery.js"></script>
+        
+<style type="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	background-color: #ccc; 
+}
+.style1 {color: #7B869A}
+.style2 {font-family: Geneva, Arial, Helvetica, sans-serif}
+-->
+</style></HEAD>
+
+<script>
+
+var divBox = new Object();
+var recomen = new Object();
+var codeobj;var eq;
+var nameobj;var sec;
+var tipo;
+var functionName;
+
+function show(_divBox, _eq , _sec){
+  divBox = _divBox;
+  eq = _eq;
+  sec = _sec;
+//   document.getElementById("codPadre").innerText = eq;
+  with (divBox.style){ 	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	  document.getElementById("idCodigo").focus();
+	  listPadres();
+	  
+	} 
+}
+
+	function inicio(){
+		listTipos();
+		listSectores();
+	}
+	
+function listTipos(){
+
+  var i=0;
+  var url = "js/equipos.asp?RECURSO=listTipos";
+	url += "&UBICACION=" + getEmpresa();
+	url += "&EMPRESA=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+  //window.open(url);
+	
+  $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idTipos").options[i] = opcion;
+				i=i+1;
+			}) //end each
+				opcion = new Option("SELECCIONAR" ,"");
+				document.getElementById("idTipos").options[i] = opcion;
+				
+		})//end $get
+	
+ } 
+
+	
+function listSectores(){
+
+  var url = "js/equipos.asp?RECURSO=explorer";
+  	  url += "&UBICACION=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+	//  window.open(url);
+	  
+  var i=0;
+  
+ $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	formulario.listSector.options[i] = opcion;
+				i=i+1;
+			}) //end each
+				opcion = new Option("SELECCIONAR" ,"");
+				formulario.listSector.options[i] = opcion;
+				
+		})//end $get
+		
+ 
+    
+	
+ } 
+	
+function listPadres(){
+
+ 
+
+
+  var url = "js/equipos.asp?RECURSO=listComp";
+ 	  url += "&EQUIPO=" + eq;
+	  url += "&FAENA=" +  getEmpresa();
+      url += "&VTZ=" + Math.random();
+	
+	document.getElementById("idPadres").length=0;
+	//window.open(url);
+	
+	var i=0;
+		opcion = new Option("SELECCIONAR","");
+	    document.getElementById("idPadres").options[i] = opcion;
+		i=1;
+		opcion = new Option(eq,eq);
+	    document.getElementById("idPadres").options[i] = opcion;
+				
+								  	
+$.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+					//alert(codigo);
+        	   		opcion = new Option(codigo+' ' +descripcion, codigo);		
+		 			i=i+1;	
+	          		document.getElementById("idPadres").options[i] = opcion;
+				
+			}) //end each
+		})//end $get
+
+}  
+
+function guardar(){
+
+if(!document.getElementById("idCodigo").value){
+		    alert("Ingrese Codigo.");
+			return;
+			}
+				
+if(!document.getElementById("idDescripcion").value){
+		    alert("Ingrese Descripci�n.");
+			return;
+			}
+
+	var ex;
+	var url = "js/equipos.asp?RECURSO=getEquipo";
+		url += "&CODIGO=" + document.getElementById('idCodigo').value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	    
+	//window.open(url);
+	
+		$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				alert("Codigo de Equipo Existente!." + document.getElementById('idCodigo').value);
+				ex=true;
+			}), newEq(ex); //end each
+		})//end $get
+		
+	
+
+}
+
+
+function newEq(_ex){
+
+if(_ex)return;			
+
+var id;
+var codigo;
+var nombre;
+
+	var url = "js/equipos.asp?RECURSO=newEquipo";
+		url += "&DESCRIPCION=" + document.getElementById("idDescripcion").value;
+		url += "&ESTADO=ACT";
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&COD_EQUIPO_PADRE=" + document.getElementById("idPadres").value;
+		url += "&TIPO_EQUIPO=" + document.getElementById("idTipos").value;
+		url += "&SECTOR=" + document.getElementById("idSector").value;
+		url += "&USERNAME=" + getSession();
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+	//window.open(url);
+	//return;
+			
+	$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+					 codigo = $(this).find("CODIGO").text();
+					 nombre= $(this).find("DESCRIPCION").text();
+					 document.getElementById("idCod").innerText = document.getElementById("idCodigo").value;
+					
+			}) , parent.setCodEquipo(document.getElementById("idTD"));salir();
+		})//end $get
+		
+
+
+}
+
+function salir(){
+
+divBox.style.visibility = 'hidden';
+}
+
+//window.onLoad = _inicio();
+
+</script>
+<body onLoad="inicio();">
+
+<form name="formulario" class="style1">
+<table width="573" align="left" class="row-3" >
+  <!--DWLayoutTable-->
+    <tr >
+      <td height="11" colspan="3" onClick="return;"><span class="style2"></span></td>
+    </tr>
+<tr>
+				  <TD width="208" height="24" valign="top"><span class="style2"><strong>CODIGO</strong></span></td>
+				  <TD width="340" valign="top" >
+                 		 <input type="text"  id="idCodigo" size="20"/>           		  </td>
+                        <TD width="14" valign="top" id='idTD' ><span id='idCod'></span></td>
+	</tr>
+				
+		        <tr>
+		          <td height="17" valign="top" onClick="return;"><span class="style2"><strong>DESCRIPCION</strong></span></td>
+		          <td colspan="2"><input   type="text" id="idDescripcion" size="50"/></td>
+    </tr>
+	        <tr >
+		     <td height="17" valign="top" onClick="return;"><span class="style2"><strong>TIPO DE EQUIPO</strong></span></td>
+    		<td colspan="2">
+              <span class="style2"><strong>
+              <select name="listTipos" id='idTipos'  >
+              </select>
+              </strong></span></td>
+    		</tr>
+            <tr >
+              <td height="21" valign="top" onClick="return;">
+				  <span class="style2"><strong>SECTOR /AREA</strong></span></td>
+              <td colspan="2" valign="top"> 
+				  <select name="listSector" id='idSector'>
+                </select>
+				  &nbsp;</td>
+            </tr>
+            <tr >
+              <td height="21" valign="top" onClick="return;">
+              <span class="style2"><strong>EQUIPO PRINCIPAL</strong></span></td>
+              <td colspan="2" valign="top">
+                 
+                <select name="listPadres" id='idPadres'>
+                </select>
+              <span id='codPadre'></span></strong> </td>
+            </tr>
+           <tr>
+		     <td height="21" valign="top" onClick="return;"><span class="style2"></span></td>
+		     <td colspan="2" valign="top"><span class="style2"></span></td>
+           </tr>
+		   <tr >
+		     <td height="12" colspan="3" align="center" ><span class="style2"></span> </td>
+    </tr>
+	      <tr >
+		  <td height="22" colspan="3" align="center"  onClick="return;">
+         <input type="button" class="tinyInput "  id="btnGuardar" onClick="guardar();" value="Guardar "></td>
+    </tr>
+  </table>
+<img src="mg/close.gif" alt="Cerrar"  style="cursor:pointer;" onClick="salir();"><br>
+</form>
+</body>
+</HTML>

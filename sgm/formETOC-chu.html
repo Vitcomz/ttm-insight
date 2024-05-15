@@ -1,0 +1,598 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Formulario de Comportamiento</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+
+
+
+
+
+</HEAD>
+<STYLE TYPE="text/css">
+<!--
+body {
+	margin-left: 20px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.style3 {
+	color:#666666;
+	font-weight: bold;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:16px;
+}
+-->
+</STYLE>
+<xml id = xmlNew></xml>
+<xml id = xmlResponsables></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlDel></xml>
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+//	alert(browser);
+//	alert(navigator.userAgent.toLowerCase());
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+//	alert(browser);
+//	var title = document.getElementsByTagName("title")[0].innerHTML;
+//	document.getElementsByTagName("title")[0].innerHTML = title + " " + browser;
+
+  mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth()+1;
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+
+  var indOT;
+
+/*************************************************************/
+function inicio(){
+	ListHoras();
+	
+	document.getElementById("idResponsable").innerText = GetSession();
+	document.getElementById("idFaena").innerText = getEmpresa();
+
+	if 	(GetSession() == "DESCONOCIDO")
+		self.location.href="LoginETOC.html";
+	else		
+		mostrarCheckList();
+}
+/*************************************************************/
+function Cerrar(){
+	if (document.getElementById("txtID").value=="")
+		return null;
+	var r = confirm("�Cerrar la observaci�n?");
+	if(r=true)
+		res="Cerrada"
+	else
+		return;
+
+ 	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/observaciones.asp?Recurso=updateObs&FOLIO=" + document.getElementById('txtID').value;
+		url += "&FAENA=" + getEmpresa();
+		url += "&USERNAME=" + GetSession();
+		url += "&EMPRESA=" + document.getElementById("txtEmpresa").value;
+		url += "&CONTRATO=" + document.getElementById("txtCto").value;
+		url += "&NOMBRE=" + document.getElementById("txtNombre").value;
+		url += "&RUT=" + document.getElementById("txtRut").value;
+		url +="&FECHA=" + document.getElementById("txtFecha").value.substr(0,10) + 
+			 " " + document.getElementById("ListHora").value  + ":" + document.getElementById('ListMin').value;
+		url += "&SUCURSAL=" + document.getElementById("txtSucursal").value;
+		url += "&DISCIPLINA=" + document.getElementById("listDisciplina").value;
+		url += "&AREA=" + scape(document.getElementById("txtArea").value);
+		url += "&OBSERVACION=" + document.getElementById("txtObservacion").value;
+		url += "&COMENTARIO=" + document.getElementById("txtComentario").value;
+		url += "&FECHA2=" + document.getElementById("txtFecha2").value;
+		url += "&ACCION=" + document.getElementById("txtAccion").value;
+		url += "&ESTADO=" + res;
+		url += "&HSA=" + Math.random();
+
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado){
+			window.open(url);
+			return;
+			}
+	getObs();
+}
+/************************************************************/
+function ListHoras(){
+
+var sHora="";
+
+var Hora = 0
+ for(var i = 0; i < 24; i++){
+	   if ((Hora+"").length==1) sHora = '0' + Hora;
+	   else	sHora = Hora;
+       opcion = new Option(sHora,sHora);
+	   formulario.ListHora.options[i] = opcion; 
+	   Hora = Hora +1;
+	}
+
+var sMin ="";
+var Min=0;
+
+for(var i = 0; i < 12; i++){
+	   if ((Min+"").length==1) sMin = '0' + Min;
+	   else	sMin = Min;
+       opcion = new Option(sMin,sMin);
+	   formulario.ListMin.options[i] = opcion; 
+ 	Min = Min + 5;
+	}
+	
+} 
+ /***********************************************************/
+ function mostrarCheckList(){
+
+	var tbl = document.getElementById("tabCheckList");
+	
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+ 
+ 
+	if (id_br == "IE")
+	{
+		var xmlTemp = document.getElementById("xmlTemp");
+		xmlTemp.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp = document.implementation.createDocument("", "", null);
+	}	
+	var xmlDso = xmlTemp.XMLDocument;
+	
+	var url = "xml/observaciones.asp?RECURSO=listComportamientoschuqui";
+		url += "&FAENA=" + getEmpresa();
+		url += "&FOLIO=" + document.getElementById("txtID").value;
+		url += "&HSA=" + Math.random();
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlTemp=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlTemp, "text/xml"); 
+					res = parser.parseFromString(xmlTemp, "text/xml"); 
+//					alert(xmlDso);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+	//window.open(url);
+	
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		i=0;j=1;
+		var row = tbl.insertRow(-1);
+		var node = tree.childNodes.item(0);
+		var categoriaAnt = getChildNodeValue(node,"CATEGORIA");
+		var cell = row.insertCell(0);
+		while (i< tree.childNodes.length){
+			var node = tree.childNodes.item(i);
+			categoriaAnt = getChildNodeValue(node,"CATEGORIA");
+			row = tbl.insertRow(-1);
+			var cell = row.insertCell(0);
+			row = tbl.insertRow(-1);
+			j=1; 
+
+			var cell = row.insertCell(0);
+			cell.innerHTML =  "<INPUT TYPE='HIDDEN' VALUE='"+getChildNodeValue(node,"ID")+"' />"+
+					"<INPUT class='noBorder' SIZE=110 VALUE='" + getChildNodeValue(node,"NOMBRE") + "'/>"+
+					"<SELECT  class='LitleText'>"+
+					"<OPTION value='NA' " + setValor(getChildNodeValue(node,"VALOR"),"NA")+">NO APLICA</OPTION>"+
+					"<OPTION value='B00' " + setValor(getChildNodeValue(node,"VALOR"),"B00")+">CONDUCTA SEGURA</OPTION>"+
+					"<OPTION value='B01' " + setValor(getChildNodeValue(node,"VALOR"),"B01")+">B1 NO PERCIBE EL RIESGO</OPTION>"+
+					"<OPTION value='B02' " + setValor(getChildNodeValue(node,"VALOR"),"B02")+">B2 AHORRO DE TIEMPO</OPTION>"+
+					"<OPTION value='B03' " + setValor(getChildNodeValue(node,"VALOR"),"B03")+">B3 NO ES C�MODO</OPTION>"+
+					"<OPTION value='B04' " + setValor(getChildNodeValue(node,"VALOR"),"B04")+">B4 PROCEDIMIENTO NO ACTUALIZADO / SIN PROCEDIMIENTO</OPTION>"+
+					"<OPTION value='B05' " + setValor(getChildNodeValue(node,"VALOR"),"B05")+">B5 NO SE ENCUENTRA DISPONIBLE O NO EXISTE</OPTION>"+
+					"<OPTION value='B06' " + setValor(getChildNodeValue(node,"VALOR"),"B06")+">B6 NO RECIBI� ENTRENAMIENTO/INSTRUCCI�N/CAPACITACI�N</OPTION>"+
+					"<OPTION value='B07' " + setValor(getChildNodeValue(node,"VALOR"),"B07")+">B7 ALTA PRESI�N DE TRABAJO</OPTION>"+
+					"<OPTION value='B08' " + setValor(getChildNodeValue(node,"VALOR"),"B08")+">B8 DISE�O DE INSTALACIONES</OPTION>"+
+					"<OPTION value='B09' " + setValor(getChildNodeValue(node,"VALOR"),"B09")+">B9 FALTA DE RECURSOS</OPTION>"+
+					"</SELECT>";
+				cell.width = 600;  
+				i=i+1;
+			}//end while
+		}//end if mq 0
+	}// end if res
+}//end function
+/*************************************************************************/
+function getObs(){
+	if (id_br == "IE")
+	{
+		var xmlNew = document.getElementById("xmlNew");
+		xmlNew.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlNew = document.implementation.createDocument("", "", null);
+	}	
+	var xmlDso = xmlNew.XMLDocument;
+	
+	var url = "xml/observaciones.asp?RECURSO=getObservaciones";
+		url +="&FOLIO=" + document.getElementById("txtID").value;
+		url +="&FAENA=" + getEmpresa();
+		url += "&HSA=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlNew=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlNew, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlNew, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	setTimeout('mostrarCheckList()',500);
+	setTimeout('validaPermisos()',500);
+}
+/*************************************************************************/
+function validaPermisos(){
+	Responsable=document.getElementById("hidResponsable").value;
+
+	if(document.getElementById("hidEstado").value.toUpperCase()=="CERRADA") {
+		document.getElementById("guarda").disabled=true;
+		document.getElementById("idCerrar").disabled=true;
+		return;
+		}
+
+	if(GetSession()==Responsable)
+		document.getElementById("guarda").disabled=false
+	else 
+		document.getElementById("guarda").disabled=true;
+
+	if(GetCookie('perf')=="SUP") {
+		document.getElementById("txtFecha2").disabled=false;
+		document.getElementById("txtAccion").disabled=false;
+		document.getElementById("idCerrar").disabled=false;
+		}
+	else {
+		document.getElementById("txtFecha2").disabled=true;
+		document.getElementById("txtAccion").disabled=true;
+		document.getElementById("idCerrar").disabled=true;
+		};
+}
+/*************************************************************************/
+function guardar(){
+	if(document.getElementById("txtNombre").value==""){
+		alert("Falta ingresar Observador");
+		document.getElementById("txtNombre").focus();
+		return;}
+	if(document.getElementById("txtRut").value==""){
+		alert("debe ingresar Rut Observador");
+		document.getElementById("txtRut").focus();
+		return;}
+	if(document.getElementById("txtFecha").value==""){
+		alert("Falta ingresar Fecha de Observacion");
+		document.getElementById("txtFecha").focus();
+		return;}
+	if(document.getElementById("txtObservacion").value==""){
+		alert("debe Ingresar Tarea Observada");
+		document.getElementById("txtObservacion").focus();
+		return;}
+	if(document.getElementById("txtFecha2").value!="")
+		document.getElementById("txtFecha2").value="";
+	cont = 0;
+	var tbl = document.getElementById("tabCheckList");
+	var lastRow = tbl.rows.length;
+	var cadena = "";
+	var CONT1=0;
+
+	for (i=0; i<lastRow; i++){
+		if(tbl.rows[i].children[0].children[2]){
+						CONT1++;
+						if (tbl.rows[i].children[0].children[2].value=="NA")
+							cont++;
+						}
+		if(tbl.rows[i].children[1]){
+						CONT1++;
+						if (tbl.rows[i].children[1].children[2].value=="NA")
+							cont++;
+						}
+	}
+	if(cont==CONT1){
+		alert("Debe ingresar al menos una observaci�n a la tarea");
+		document.getElementById("tabCheckList").focus();
+		return;}
+
+	
+	xmlNew.async = false;
+	var xmlDso = xmlNew.XMLDocument;
+	
+	if (document.getElementById("txtID").value!="")
+			var url = "xml/observaciones.asp?Recurso=updateObs&FOLIO=" + document.getElementById('txtID').value;
+	else
+			var url = "xml/observaciones.asp?Recurso=newObs";
+	
+		url += "&FAENA=" + getEmpresa();
+		url += "&USERNAME=" + GetSession();
+		url += "&EMPRESA=" + document.getElementById("txtEmpresa").value;
+		url += "&CONTRATO=" + document.getElementById("txtCto").value;
+		url += "&NOMBRE=" + document.getElementById("txtNombre").value;
+		url += "&RUT=" + document.getElementById("txtRut").value;
+		url +="&FECHA=" + document.getElementById("txtFecha").value.substr(0,10) + 
+			 " " + document.getElementById("ListHora").value  + ":" + document.getElementById('ListMin').value;
+		url += "&SUCURSAL=" + document.getElementById("txtSucursal").value;
+		url += "&DISCIPLINA=" + document.getElementById("listDisciplina").value;
+		url += "&AREA=" + scape(document.getElementById("txtArea").value);
+		url += "&OBSERVACION=" + document.getElementById("txtObservacion").value;
+		url += "&COMENTARIO=" + document.getElementById("txtComentario").value;
+		url += "&FECHA2=" + document.getElementById("txtFecha2").value;
+		url += "&ACCION=" + document.getElementById("txtAccion").value;
+		url += "&HSA=" + Math.random();
+		//alert(url);
+		xmlestado = xmlDso.load(url);
+		
+		if (!xmlestado)
+			window.open(url);
+		else{
+			 var tree = xmlDso.documentElement;
+			 var node = tree.childNodes.item(0);
+			 if ((tree.childNodes.length > 0)&&(document.getElementById("txtID").value=="")){
+				 var folioNew = getChildNodeValue(node,"FOLIO");
+				 document.getElementById("txtID").value = folioNew;
+			 }//end if mq 0
+		 if (document.getElementById("txtID").value!="")
+		 	folioNew = document.getElementById("txtID").value;
+		 guardarCheckList(folioNew);
+		 }
+	//alert(folioNew);
+}
+
+function guardarCheckList(folioNew){
+
+	var tbl = document.getElementById("tabCheckList");
+	var lastRow = tbl.rows.length;
+	var cadena = "";
+ 			
+	for (i=0; i<lastRow; i++){
+		if(tbl.rows[i].children[0].children[2])
+						cadena = cadena + "L" + tbl.rows[i].children[0].children[0].value + " " + tbl.rows[i].children[0].children[2].value;
+		if(tbl.rows[i].children[1])
+						cadena = cadena + "L" + tbl.rows[i].children[1].children[0].value + " " + tbl.rows[i].children[1].children[2].value;
+	}
+	//alert(cadena+" largo:"+cadena.length);
+	 	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	cadena=cadena.substr(1,cadena.length-1);
+	var url = "xml/observaciones.asp?RECURSO=UpdComp";
+		url += "&FOLIO=" + folioNew;
+		url += "&CADENA=" + cadena;
+		url += "&HSA=" + Math.random();
+	
+	xmlestado = xmlDso.load(url);
+	if (!xmlestado){
+			window.open(url);
+			return;
+			}
+	getObs();
+}
+
+
+function getHora(){
+	document.getElementById("ListHora").value = document.getElementById("txtFecha").value.substr(11,2);
+	document.getElementById("ListMin").value = document.getElementById("txtFecha").value.substr(14,2);
+}
+
+function _close(){
+	DelSession(0);
+	DelSessionEmpresa(0);
+	DeleteCookie ("perf")
+	document.location.href='LoginETOC.html';		
+}
+
+
+function setValor(C1, C2){
+
+	if (C1==C2)
+		return "SELECTED";
+	else
+		return "";
+
+}
+
+function graphics(){
+this.location.href="grETOC-chu.html";
+}
+
+function limpiarTablaCheck(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+}
+
+</SCRIPT>
+<BODY onload="inicio();">
+<DIV ID="divCalendar" onClick="event.cancelBubble=true" STYLE="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 2; height: 23; border-style: ridge; border-width: 2px">
+  <IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+</DIV>
+<DIV ID="DivEquipo" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; 
+	 Z-INDEX: 145; LEFT: 150px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute;
+	 TOP: 90px; width: 380px; height: 320px;" onClick="event.cancelBubble=true">
+<IFRAME NAME="ListFrameEquipo" SRC="listObservacionesChu.html" frameBorder="0" WIDTH="380" SCROLLING="no"	height="320">
+</IFRAME>
+</DIV>
+
+
+        
+<FORM NAME="formulario">
+  <TABLE id="inicio"  DATASRC="#xmlNew">
+    <!--DWLayoutTable-->
+     <TR>
+      <TD WIDTH="207" ROWSPAN="2"><IMG SRC="images/Logo1.jpg" WIDTH="206" HEIGHT="112"></TD>
+      <TD HEIGHT="40" COLSPAN="2" VALIGN="TOP"  CLASS="style3"> 
+        Formulario de Ingreso<BR/>
+        Observaci&oacute;n del Comportamiento  E.T.O.C.<BR/>
+      </TD>
+    <TD COLSPAN="3"><SPAN ID="idFecha" CLASS="blueTr"></SPAN></TD>
+    </TR>
+     <TR>
+       <TD class="titulo" WIDTH="351" HEIGHT="72">Faena: <SPAN ID="idFaena" CLASS="titulo" DATAFLD="FAENA"></SPAN></TD>
+       <TD WIDTH="80">&nbsp;</TD>
+       <TD WIDTH="18">&nbsp;</TD>
+       <TD WIDTH="49">&nbsp;</TD>
+       <TD WIDTH="49">&nbsp;</TD>
+     </TR>
+     
+    <TR>
+      <TD HEIGHT="29"  CLASS="titulo"> Observaci&oacute;n&nbsp;N&ordm;&nbsp;
+      <INPUT NAME="txtID" id="txtID" TYPE="TEXT" disabled CLASS="inputBold" SIZE="5" datafld="FOLIO" />
+      <IMG SRC="images/lupa2.gif" ALIGN="top"
+		style="cursor:hand" onClick="ListFrameEquipo.popsearchbox(this.parentElement.children(0), this.parentElement.children(1), 
+        DivEquipo, 'getObs();');" /></TD>
+      <TD  CLASS="titulo"> Responsable de Ingreso: <SPAN ID="idResponsable" CLASS="titulo"></SPAN>
+      <TD COLSPAN="2" ALIGN="right">
+        <INPUT  type="button" CLASS="botonBlanco" onClick="graphics();" VALUE="Indicadores" >
+	</TD>
+      <TD CLASS="LitleText">
+        <INPUT  type="button" CLASS="botonBlanco" onClick="_close();" VALUE="Salir" >
+      </TD>
+      <TD>&nbsp;</TD>
+    </TR>
+  </TABLE>
+  <TABLE id="medio" WIDTH="861" HEIGHT="262" BORDER="0" CLASS="texto"  DATASRC="#xmlNew">
+    <!--DWLayoutTable-->
+    <TR>
+      <TD WIDTH="140" HEIGHT="25" ALIGN="left" VALIGN="top">EMPRESA:</TD>
+<TD COLSPAN="2" VALIGN="top">
+              <input type="hidden" ID="hidResponsable" datafld="RESPONSABLE">
+              <input type="hidden" ID="hidEstado" datafld="ESTADO">
+
+        <input class="input" id="txtEmpresa" type="text" size="65" name="txtEmpresa" datafld="EMPRESA" value="TTM S.A.">
+      </TD>
+      <TD COLSPAN="2" VALIGN="top">N&deg; CONTRATO:
+        <input id="txtCto" name="txtCto" type="text" class="input" size="17" datafld="CONTRATO" value="4600012405"/>
+      </TD>
+    <TD WIDTH="93" VALIGN="TOP"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+    </TR>
+     <TR>
+      <TD WIDTH="140" HEIGHT="25" ALIGN="left" VALIGN="top">OBSERVADOR:</TD>
+      <TD COLSPAN="2" VALIGN="top">
+        <input class="input" id="txtNombre" type="text" size="65" name="txtNombre" datafld="NOMBRE">
+      </TD>
+      <TD COLSPAN="2" VALIGN="top">RUT:
+        <input id="txtRut" name="txtRut" type="text" class="input" size="29" datafld="RUT"/>
+      </TD>
+    <TD WIDTH="93" VALIGN="TOP"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+    </TR>   <TR>
+      <TD HEIGHT="27" VALIGN="middle">FECHA :</TD>
+      <TD COLSPAN="1" VALIGN="middle" >
+      <INPUT NAME="txtFecha" id="txtFecha" TYPE="text" CLASS="input" SIZE="12" readonly DATAFLD="FECHA"/>
+        &nbsp;<IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top"
+					  onclick="FrameCalendar.fPopCalendar(txtFecha,txtFecha,divCalendar);return false"> &nbsp;&nbsp;HORA :
+        <SELECT NAME="ListHora" id="ListHora" CLASS="input" DATAFLD="HORA">
+        </SELECT>
+        <SELECT NAME="ListMin" id="ListMin" CLASS="input" DATAFLD="MIN">
+        </SELECT>
+      </TD>
+       <TD COLSPAN="4" VALIGN="middle" >GERENCIA :
+        <INPUT  TYPE="text" CLASS="input" SIZE="40" NAME="txtSucursal" id="txtSucursal" DATAFLD="SUCURSAL" value="Mantenimiento y Servicio">
+      </TD>
+
+ 
+ 
+    </TR>
+    <TR>
+      <TD HEIGHT="35" VALIGN="MIDDLE">TAREA OBSERVADA :&nbsp;</TD>
+    <TD WIDTH="217" VALIGN="MIDDLE">
+<SELECT NAME="listDisciplina" id="listDisciplina"  CLASS="input"  datafld="DISIPLINA">
+     		 <OPTION VALUE="CARGUIO">RUTINARIA</OPTION>
+              <OPTION VALUE="TRANSPORTE">NO RUTINARIA</OPTION>
+      </SELECT>
+    </TD>
+      <TD COLSPAN="4" VALIGN="MIDDLE">AREA &nbsp;:&nbsp;
+        <INPUT NAME="txtArea" id="txtArea" TYPE="text" CLASS="input" SIZE="45"  DATAFLD="AREA" />&nbsp;</TD>
+    </TR>    <TR>
+      <TD HEIGHT="80" COLSPAN="6">
+      <STRONG>Tarea Observada:</STRONG>
+        <TEXTAREA NAME="txtObservacion" id="txtObservacion"  ROWS="2" COLS="114" CLASS="textArea" DATAFLD="OBSERVACION"
+		   onKeyPress="validaKeys(this,749, window.event);"></TEXTAREA>
+      </TD>
+    </TR>
+
+    <TR >
+      <TD HEIGHT="82"  COLSPAN="6" VALIGN="top">
+        <TABLE ID="tabCheckList"  CLASS="tablaBordes" CELLSPACING="5" BORDER="0">
+        </TABLE></TD>
+    </TR>
+    
+    
+    <TR>
+      <TD HEIGHT="80" COLSPAN="6">COMENTARIOS<BR>
+        <TEXTAREA NAME="txtComentario" id="txtComentario"  ROWS="4"
+		  COLS="114" CLASS="textArea" DATAFLD="COMENTARIO" onKeyPress="validaKeys(this,749, window.event);"></TEXTAREA>
+      </TD>
+    </TR>
+     <TR>
+      <TD HEIGHT="10" COLSPAN="6">&nbsp;
+      </TD>
+    </TR>
+    <TR>
+      <TD id="acc" HEIGHT="80" COLSPAN="6">ACCIONES
+         &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FECHA DE CONTROL&nbsp;
+        <INPUT NAME="txtFecha2" id="txtFecha2" TYPE="text" CLASS="input" SIZE="12" readonly DATAFLD="FECHA2"/>
+        <IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top" onclick="FrameCalendar.fPopCalendar(txtFecha2,txtFecha2,divCalendar);return false" >
+     <br>
+        <TEXTAREA NAME="txtAccion" id="txtAccion"  ROWS="4" COLS="114" CLASS="textArea" DATAFLD="ACCION" disabled
+		   onKeyPress="validaKeys(this,749, window.event);"></TEXTAREA>
+      </TD>
+    </TR>
+    
+    <TR>
+         <TD HEIGHT="10"></TD>
+         <TD></TD>
+         <TD width="114"></TD>
+      <TD width="0"></TD>
+         <TD WIDTH="269"></TD>
+      <TD></TD>
+    </TR>
+  </TABLE>
+  <DIV align="left">
+  <TABLE width="68%">
+  <TR>
+    <TD width="14%"><INPUT id="guarda" type="button" CLASS="botonBlanco" onClick="guardar();" VALUE="Guardar" >
+    </TD>
+    <TD width="14%"><INPUT type="button" CLASS="botonBlanco" onClick="window.location.reload();" VALUE="Nuevo">
+    </TD>
+    <TD width="72%"><INPUT id="idCerrar" type="button" CLASS="botonBlanco" onClick="Cerrar();" VALUE="Cerrar Observacion" disabled>
+    </TD>
+  </TR>
+  </TABLE>
+  </DIV>
+</FORM>
+</BODY>
+</HTML>

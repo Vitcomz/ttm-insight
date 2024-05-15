@@ -1,0 +1,1046 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+	<HEAD>
+		<title>Genera O.C.</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id="xmlOC"></xml>
+		<xml id="xmlActividades"></xml>
+		<xml id="xmlResponsables"></xml>
+		<xml id="xmlTemp"></xml>
+		<xml id="xmlMonedas"></xml>
+	<link rel="stylesheet" href="standard/menu.css" type="text/css">
+	<link rel="stylesheet" href="sci.css" type="text/css">
+
+
+
+
+
+
+	<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+	<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+//Funciones de Inicio de P�gina
+var folio;
+var Autoriza;
+var Monedas = new Array();
+var Pagos = new Array("Contado","15 D�as","30 D�as","60 D�as");
+var Entrega = new Array("Inmediata","3 D�as","7 D�as","15 D�as","30 D�as","60 D�as");
+
+
+function inicio(){
+
+  //Variables generales
+  mydate 	= new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getYear();    
+  day       = mydate.getDay(); 
+  
+  ListResponsables(); 
+  listMonedas();
+  formulario.txtUsuario.value = Usuario;    
+  formulario.txtFecha.value = _hoy();  
+  formulario.listResponsables.value = Usuario;  
+ 	
+/*	
+	if(getParametro("modo")==3){
+		document.getElementById('title').innerText = "GENERAR ORDEN DE COMPRA";
+		formulario.btnNuevo.style.visibility = "hidden";
+		formulario.btnEnviar.style.visibility = "hidden";
+		}
+	else{
+		document.getElementById('title').innerText = "SOLICITUD DE COMPRA";
+		formulario.btnGenerar.style.visibility = "hidden";
+		}
+	*/
+		
+  	if(getParametro("Folio")){
+				formulario.txtFolio.value = getParametro("Folio");
+				getSolicitud();
+				}
+	else
+			getDatosArea(Usuario);
+				
+formulario.txtFolio.focus();
+
+}
+
+
+
+function generar(){
+var genera = true;
+labelLoading.style.visibility = "visible";
+
+if (formulario.listEstados.value=='GEN'){
+					alert("La solicitud ya fue Generada.");
+					labelLoading.style.visibility = "hidden";
+					return;
+					}
+					
+ var tbl = document.getElementById('tabArticulos');
+ var lastRow = tbl.rows.length;
+ 
+ for (i=1; i<lastRow -1 ; i++){
+	 if (!tbl.rows[i].children[5].children[0].value)
+	 						genera=false;
+							}
+							
+ for (i=1; i<lastRow; i++){
+	 if (tbl.rows[i].children[4].children[0].value<=0)
+	 						genera=false;
+							}
+																				
+var tbl = document.getElementById('tabServicios');
+ var lastRow = tbl.rows.length;
+ for (i=1; i<lastRow - 1; i++){
+	 if (!tbl.rows[i].children[5].children[0].value)
+	 						genera=false;
+							}
+ 
+ if(!genera){
+		alert("Faltan articulos o servicios por asignar!");
+		labelLoading.style.visibility = "hidden";
+		return;
+		}
+		
+ var tbl = document.getElementById('tabArticulos');
+ var lastRow = tbl.rows.length;
+ //alert(lastRow);
+ if (lastRow>1){
+ 	var proveedorAnt = tbl.rows[1].children[5].children[0].value;
+ 	var monedaAnt =  tbl.rows[1].children[7].children[0].value;; 
+ }
+ 
+ for (i=1; i<lastRow -1; i++){
+  proveedor = tbl.rows[i].children[5].children[0].value;
+  moneda = tbl.rows[i].children[7].children[0].value
+  //alert(moneda + " " + monedaAnt);
+  
+	 if (proveedorAnt == proveedor){
+	 						if (moneda!=monedaAnt){
+									alert("error, distinta moneda para un mismo proveedor.");
+									labelLoading.style.visibility = "hidden";
+									return;
+									}
+							else{
+								monedaAnt = tbl.rows[i].children[7].children[0].value;
+								proveedorAnt = tbl.rows[i].children[5].children[0].value;
+								}
+					}
+		else{
+			monedaAnt = tbl.rows[i].children[7].children[0].value;
+			proveedorAnt = tbl.rows[i].children[5].children[0].value;
+			}
+			
+	
+	}
+	
+	guardarArticulos();
+	guardarServicios();
+	setTimeout("generaOC();",1);
+			
+}
+
+function generaOC(){
+
+var indGenerada;
+
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/OrdenCompra.asp?Recurso=GenerarOrden&FOLIO_ST=" + formulario.txtFolio.value;
+		url += "&USERNAME=" + Usuario;
+		url += "&AUTORIZA=" + formulario.txtAutoriza.value;
+		url += "&EMPRESA=" + getEmpresa();
+
+		//url += "&MAIL=NO";
+		
+	var res =xmlDso.load(url);
+	
+	if (res){
+			alert("Ordenes Generadas.");
+			indGenerada = true;
+			}
+	else{
+		infGenerada = false;
+		window.open(url);
+		}
+		
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Solicitud.asp?Recurso=UpdateEstadoSolicitud&FOLIO=" + formulario.txtFolio.value;
+		url += "&USERNAME=" + Usuario;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&ESTADO=GEN";
+	
+	if(indGenerada)
+		var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+		
+setTimeout("getSolicitud();",1);
+
+}
+
+function guardar(){
+
+labelLoading.style.visibility = "visible";
+
+folio = formulario.txtFolio.value;
+
+
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+						
+	if (formulario.listEstados.value=='GEN'){
+					alert("La solicitud ya fue Generada.");
+					labelLoading.style.visibility = "hidden";
+					return;
+					}
+					
+	if (formulario.listEstados.value=='ENV'){
+					alert("La solicitud fue enviada a proveedor.");
+					labelLoading.style.visibility = "hidden";
+					return;
+					}
+					
+
+//		formulario.txtFolio.value = getChildNodeValue(xmlDso.documentElement.childNodes.item(0),"FOLIO");
+		guardarArticulos();
+		guardarServicios();
+//		guardarArticulos();
+	
+	setTimeout("getSolicitud();",1);
+}
+
+
+
+function guardarArticulos(){
+
+folio = formulario.txtFolio.value;
+
+ var tbl = document.getElementById('tabArticulos');
+ var lastRow = tbl.rows.length;
+
+	xmlTemp.async = false;
+ var xmlDso = xmlTemp.XMLDocument;
+  
+	
+  for (i=1; i<lastRow-1; i++){
+  
+  	
+		url = "xml/Articulos.asp?RECURSO=UpdateArticulosST";
+		url += "&CODIGO=" + tbl.rows[i].children[0].children[0].value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		
+		if (tbl.rows[i].children[3].children[0].value)
+					_valor = tbl.rows[i].children[3].children[0].value;
+		else
+					_valor = 0;
+					
+		url += "&VALOR=" + _valor;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		url += "&RUT_PROVEEDOR=" + tbl.rows[i].children[5].children[0].value;
+		url += "&COND_PAGO=" + tbl.rows[i].children[6].children[0].value;
+		url += "&TIPO_MONEDA=" + tbl.rows[i].children[7].children[0].value;
+		url += "&PLAZO_ENTREGA=" + tbl.rows[i].children[8].children[0].value;
+		url += "&IND_EXENTA=" + tbl.rows[i].children[9].children[0].checked;
+			
+
+	
+	    var res =xmlDso.load(url);
+				if (!res) 
+						window.open(url);
+	}
+	 
+} 
+
+function anular(){
+
+
+	if (formulario.listEstados.value=='NUL'){
+					alert("La solicitud ya fue anulada.");
+					return;
+					}
+					
+					
+	
+
+					
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+					
+	
+	if (formulario.txtFolio.value){
+		var url = "xml/Solicitud.asp?Recurso=UpdateSolicitud&FOLIO=" + formulario.txtFolio.value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&FECHA=" + formulario.txtFecha.value;
+		url += "&RESPONSABLE=" + formulario.listResponsables.value;
+		url += "&OBSERVACION=" + formulario.txtObservacion.value;
+		url += "&EMPRESA=" + formulario.listEmpresa.value;
+		url += "&ESTADO=NUL";
+		url += "&USERNAME=" + Usuario;
+		
+		if (confirm("Desea anular Solicitud Nro " +formulario.txtFolio.value))	
+						var res =xmlDso.load(url);
+	}
+	else
+		return;
+		
+		
+	setTimeout("getSolicitud();",1);
+}
+
+function guardarServicios(){
+
+ var tbl = document.getElementById('tabServicios');
+ var lastRow = tbl.rows.length;
+	xmlTemp.async = false;
+ var xmlDso = xmlTemp.XMLDocument;
+  
+    if(getParametro("modo")==1){
+	url = "xml/Servicios.asp?RECURSO=DeleteServiciosST";
+	url += "&FOLIO=" + formulario.txtFolio.value;
+	url += "&EMPRESA=" + getEmpresa();
+
+    var res =xmlDso.load(url);
+	if (!res) 
+		window.open(url);
+	}		
+ 
+ for (i=1; i<lastRow -1 ; i++){
+ 
+   		url = "xml/Servicios.asp?RECURSO=UpdateServiciosST";
+		
+		
+		url += "&CODIGO=" + tbl.rows[i].children[0].children[0].value;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&CANTIDAD=" + tbl.rows[i].children[2].children[0].value;
+		
+		if (tbl.rows[i].children[3].children[0].value)
+					_valor = tbl.rows[i].children[3].children[0].value;
+		else
+					_valor = 0;
+					
+		url += "&VALOR=" + _valor;
+		url += "&FOLIO=" + formulario.txtFolio.value;
+		url += "&RUT_PROVEEDOR=" + tbl.rows[i].children[5].children[0].value;
+		url += "&COND_PAGO=" + tbl.rows[i].children[6].children[0].value;
+		url += "&TIPO_MONEDA=" + tbl.rows[i].children[7].children[0].value;
+		url += "&PLAZO_ENTREGA=" + tbl.rows[i].children[8].children[0].value;
+		url += "&IND_EXENTA=" + tbl.rows[i].children[9].children[0].checked;
+
+//	alert(url);
+	    var res =xmlDso.load(url);
+				if (!res) 
+						window.open(url);
+	}
+	 
+} 
+
+function listMonedas(){
+
+  xmlMonedas.async = false;
+  var xmlDso = xmlMonedas.XMLDocument;
+  var url = "xml/monedas.asp?RECURSO=ListMonedas";
+  var res = xmlDso.load(url);
+
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	     Monedas[i] = getChildNodeValue(node,"SIMBOLO");
+				//alert(getChildNodeValue(node,"SIMBOLO"));
+				 }
+    	     }
+		else
+			  window.open(url);
+}
+ 
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.listResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+function cargarSolicitud(){
+
+ if (isNaN(formulario.txtFolio.value)){
+          alert("Nro Invalido!");
+        }else{
+          labelLoading.style.visibility = "visible";
+          setTimeout("getSolicitud()",1);
+        }
+}
+
+function getSolicitud(){
+
+	xmlOC.async=false;
+	labelLoading.style.visibility = "visible";
+	
+    var xmlDso = xmlOC.XMLDocument;
+	var url =  "xml/Solicitud.asp?Recurso=GetSolicitud&FOLIO=" + formulario.txtFolio.value;
+		url += "&USERNAME=" +  Usuario;
+		url += "&EMPRESA=" + getEmpresa();
+		 
+    var res =xmlDso.load(url);
+	
+	if (res){
+		if (xmlDso.documentElement.childNodes.length==0){
+			labelLoading.style.visibility = "hidden";
+			formulario.txtFolio.focus();
+			getDatosArea(Usuario);
+			limpiarTabla2('tabArticulos');
+			limpiarTabla2('tabServicios');
+			}
+		else{
+		setTimeout("mostrarArticulos();",1);
+		setTimeout("mostrarServicios();",1);
+		}
+	  }
+	else
+		window.open(url);
+	
+}
+	
+function getDatosArea(_usuario){
+
+    xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "/sci/xml/Areas.asp?Recurso=GetAreaUsuario&USUARIO=" + _usuario;
+    var res =xmlDso.load(url);
+	
+	if (!res)
+		window.open(url);
+		
+}
+	
+	
+  		
+
+function mostrarArticulos(){
+
+limpiarTabla2('tabArticulos');
+
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	
+	var url = "xml/Articulos.asp?RECURSO=ListArticulosST&FOLIO=" + formulario.txtFolio.value;
+		url += "&EMPRESA=" + getEmpresa();
+	
+	if (!formulario.txtFolio.value)
+	return;
+	
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"ID") + "'>";
+
+			var cell = row.insertCell(1);
+					cell.innerHTML = "<INPUT class='Campo' type='text' size='50' value='"+ 
+										getChildNodeValue(node,"DESCRIPCION") + "'>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' onkeyUp='cambiaTotal(this)' >";
+					 cell.align='right';
+					 
+			var cell = row.insertCell(3);
+				cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										Valor + "' onkeyUp='cambiaTotal(this)' >";
+				cell.align='right';
+				
+
+			var cell = row.insertCell(4);
+				cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true'>";
+				cell.align='right';
+				
+		var cell = row.insertCell(5);
+			cell.innerHTML = "<INPUT class='texto' type='text' size='8' value='"+ 
+										getChildNodeValue(node,"PROVEEDOR") + "'><BR><SPAN class='texto'>"+
+										getChildNodeValue(node,"NOMBRE_PRO") + "</SPAN>";
+			cell.align='right';
+	
+								
+			var cell = row.insertCell(6);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Pagos.length; j++){
+					if (Pagos[j]==getChildNodeValue(node,"COND_PAGO"))
+						txtHtml += "<option value='" + Pagos[j] +"' selected>" + Pagos[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Pagos[j] +"' >" + Pagos[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				
+				cell.innerHTML = txtHtml;
+			
+			var cell = row.insertCell(7);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Monedas.length; j++){
+					if (Monedas[j]==getChildNodeValue(node,"TIPO_MONEDA"))
+						txtHtml += "<option value='" + Monedas[j] + "' selected>" + Monedas[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Monedas[j] + "' >" + Monedas[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				cell.innerHTML = txtHtml;
+			
+			var cell = row.insertCell(8);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Entrega.length; j++){
+					if (Entrega[j]==getChildNodeValue(node,"PLAZO_ENTREGA"))
+						txtHtml += "<option value='" + Entrega[j] + "' selected>" + Entrega[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Entrega[j] + "' >" + Entrega[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				cell.innerHTML = txtHtml;
+										
+			var cell = row.insertCell(9);
+			if (getChildNodeValue(node,"IND_EXENTA")=="TRUE")
+				cell.innerHTML = "<INPUT class='Campo' type='checkbox' checked='TRUE'/>";
+			else
+				cell.innerHTML = "<INPUT class='Campo' type='checkbox' />";
+				
+			}//FOR
+         }
+      }
+      else
+      	window.open(url);
+ 
+ mostrarTotales();
+}
+
+
+
+function mostrarServicios(){
+
+limpiarTabla2('tabServicios');
+
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	
+    xmlActividades.async = false;
+    var xmlDso = xmlActividades.XMLDocument;
+	var url = "xml/Servicios.asp?RECURSO=ListServiciosST&FOLIO=" + formulario.txtFolio.value;
+	url += "&EMPRESA=" + getEmpresa();
+	
+	
+	if (!formulario.txtFolio.value)
+	return;
+					
+    var res =xmlDso.load(url);
+ 	
+	if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+         for (i=0; i< tree.childNodes.length; i++){
+		  var node = tree.childNodes.item(i);   
+		  Cantidad = getChildNodeValue(node,"CANTIDAD").replace(",",".");
+		  Valor = getChildNodeValue(node,"VALOR").replace(",",".");
+          var row = tbl.insertRow(-1);
+          
+  			var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='Campo' type='text' size='8' value='" + 
+										getChildNodeValue(node,"CODIGO") + "'>";
+
+  			var cell = row.insertCell(1);
+			cell.innerHTML = "<textarea class='Campo' type='text' cols='50' rows=3>" + 
+										getChildNodeValue(node,"DESCRIPCION") + "</textarea>";
+										
+			var cell = row.insertCell(2);
+					 cell.innerHTML = "<INPUT class='campoNum' type='text' size='3' value='" 	+ 
+										Cantidad + "' onkeyUp='cambiaTotal(this)' >";
+				cell.align='right';
+				
+				
+			var cell = row.insertCell(3);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										Valor + "' onkeyUp='cambiaTotal(this)'>";
+				cell.align='right';
+				
+
+			var cell = row.insertCell(4);
+				 cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" 	+ 
+										(parseFloat(Valor)
+										*parseFloat(Cantidad)) + "' readonly='true' >";
+				cell.align='right';
+				
+				
+			
+			var cell = row.insertCell(5);
+			cell.innerHTML = "<INPUT class='texto' type='text' size='8' value='"+ 
+										getChildNodeValue(node,"PROVEEDOR") + "'><BR><SPAN class='texto'>"+
+										getChildNodeValue(node,"NOMBRE_PRO") + "</SPAN>";
+			cell.align='right';
+			
+										
+			var cell = row.insertCell(6);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Pagos.length; j++){
+					if (Pagos[j]==getChildNodeValue(node,"COND_PAGO"))
+						txtHtml += "<option value='" + Pagos[j] +"' selected>" + Pagos[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Pagos[j] +"' >" + Pagos[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				
+				cell.innerHTML = txtHtml;
+			
+			var cell = row.insertCell(7);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Monedas.length; j++){
+					if (Monedas[j]==getChildNodeValue(node,"TIPO_MONEDA"))
+						txtHtml += "<option value='" + Monedas[j] + "' selected>" + Monedas[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Monedas[j] + "' >" + Monedas[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				cell.innerHTML = txtHtml;
+					
+			var cell = row.insertCell(8);
+				txtHtml = "<select class='input'>";
+				for (j=0; j< Entrega.length; j++){
+					if (Entrega[j]==getChildNodeValue(node,"PLAZO_ENTREGA"))
+						txtHtml += "<option value='" + Entrega[j] + "' selected>" + Entrega[j] + "</option>";	
+					else
+						txtHtml += "<option value='" + Entrega[j] + "' >" + Entrega[j] + "</option>";	
+						}
+						
+				txtHtml += "</select>";
+				cell.innerHTML = txtHtml;
+								
+			var cell = row.insertCell(9);
+			
+			if (getChildNodeValue(node,"IND_EXENTA")=="TRUE")
+				cell.innerHTML = "<INPUT class='Campo' type='checkbox' checked='TRUE'/>";
+			else
+				cell.innerHTML = "<INPUT class='Campo' type='checkbox' />";
+				 
+			 }//FOR
+         }
+      }
+      else
+      	window.open(url);
+
+mostrarTotalesServicios();
+labelLoading.style.visibility = "hidden";
+ 
+}
+
+function buscarProv(obj){
+/*row = obj.parentElement.parentElement.rowIndex;
+alert(row);*/
+var tbl = document.getElementById('tabArticulos');
+var lastRow = tbl.rows.length;
+
+frameProv.popsearchbox(tbl, divProveedores); 
+
+}
+
+function eliminar(obj){
+ obj.parentElement.parentElement.parentElement.deleteRow(obj.parentElement.parentElement.rowIndex);
+ }
+ 
+ function cambiaTotal(obj){
+ var i = obj.parentElement.parentElement.rowIndex;
+ 
+var cantidad = obj.parentElement.parentElement.parentElement.children(i).children(2).children(0).value;
+var valor_unitario = obj.parentElement.parentElement.parentElement.children(i).children(3).children(0).value;
+obj.parentElement.parentElement.parentElement.children(i).children(4).children(0).value = cantidad * valor_unitario;
+
+mostrarTotales();
+mostrarTotalesServicios();
+ }
+ 
+ function mostrarTotales(){
+	var tbl = document.getElementById('tabArticulos');
+	var lastRow = tbl.rows.length;
+	total=0;
+	//alert(tbl.children(1).children(lastRow-1).children(3).children(0).value);
+	if (lastRow<2) return;			
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + Math.ceil(tbl.children(1).children(i).children(4).children(0).value);
+	}
+	
+	if (tbl.children(1).children(lastRow-1).children(3).children(0).tagName=='SPAN')
+								tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" + 
+										total + "'>";
+	
+	cell.align='right';
+
+	
+}
+
+function mostrarTotalesServicios(){
+	var tbl = document.getElementById('tabServicios');
+	var lastRow = tbl.rows.length;
+	total=0;
+	//alert(tbl.children(1).children(lastRow-1).children(3).children(0).value);
+	if (lastRow<2) return;
+			
+	for (i=1;i<lastRow; i++){
+		if (tbl.children(1).children(i).children(3).children(0).value)
+			total = total + Math.ceil(tbl.children(1).children(i).children(4).children(0).value);
+	}
+	
+
+	if (!tbl.children(1).children(lastRow-1).children(3).children(0).value)
+				tbl.deleteRow();
+				
+	var row = tbl.insertRow(-1);
+          
+  	var cell = row.insertCell(0);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(1);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(2);
+			cell.innerHTML = "<INPUT class='hidden' type='text' >";
+			
+	var cell = row.insertCell(3);
+			cell.innerHTML = "<SPAN class='texto'>Total</SPAN>";
+			
+	var cell = row.insertCell(4);
+			cell.innerHTML = "<INPUT class='campoNum' type='text' size='10' value='" + 
+										total + "'>";
+	
+	cell.align='right';
+
+	
+}
+
+
+//Funciones generales
+//*****************************************************************
+
+ function limpiarTabla(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++)
+	  var row = tbl.deleteRow(0);
+ }
+ 
+function limpiarTabla2(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=1; i<lastRow; i++)
+	 {
+	  var row = tbl.deleteRow(1);
+	 }
+}
+ 
+function imprimirST(){
+//showModalDialog(url,window,"status:no;help:no;dialogWidth:510px;dialogHeight:200px");
+var url = "ImprOC.html?OC=" + formulario.txtFolio.value;
+window.open(url);
+}
+
+</script>
+</HEAD>
+
+<body onload="inicio();">
+	
+	<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+
+<DIV id="divProveedores" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge;
+		Z-INDEX: 150; LEFT: 141px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; WIDTH: 550px;
+				 BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 195px; HEIGHT: 300px" 
+				 onclick="event.cancelBubble=true">
+		<IFRAME name=frameProv src="AsignarProveedor.html" frameBorder=0 width=550 scrolling=no height=300></IFRAME>
+</DIV>
+
+<DIV id="divOC" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 41px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 139px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameOC" src="ListSolicitud.html" frameBorder="0" width="312" scrolling="no"	height="240"></IFRAME>
+</DIV>
+	
+	<DIV id="divArticulos" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 50px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 150px" onclick="event.cancelBubble=true">
+			<IFRAME name="frameArticulos" src="BuscarArticulos.html" frameBorder="0" width="350" scrolling="no" height="250"></IFRAME>
+	</DIV>
+	
+	<DIV id="divServicios" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; LEFT: 50px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 150px" onclick="event.cancelBubble=true">
+			<IFRAME name="frameServicios" src="BuscarServicios.html" frameBorder="0" width="350" scrolling="no" height="250"></IFRAME>
+	</DIV>
+
+		<br>
+		<br>	
+		<form name="formulario">
+		<script language="JavaScript1.2" src="standard/menudata.js"></script>
+		<span class="loading" id="labelLoading" 
+		style="Z-INDEX: 135; LEFT: 296px; VISIBILITY: hidden; WIDTH: 256px; POSITION: absolute; TOP: 204px; HEIGHT: 48px">
+				<img src="images/ajax-loader.gif"  />Cargando.... espere un momento </span>
+			<table height="45" cellSpacing="0" cellPadding="0" width="758" border="0">
+				<!--DWLayoutTable-->
+				<tr>
+					<th class="titulo" colSpan="3" height="19">
+						<span id="title">GENERAR ORDEN DE COMPRA</span></th>
+				</tr>
+				<tr>
+				<th width="747" height="19" align="left" vAlign="bottom"
+				 background="images/blueBarLarge.jpg" class="titulo">
+						&nbsp;&nbsp;DESCRIPCION</th>
+				
+				</tr>
+		  </table>
+			<table height="396" cellSpacing="0" cellPadding="0" width="1099" border="0">
+			  <!--DWLayoutTable-->
+				<tr>
+					<th height="102" colspan="3" vAlign="middle">
+					   <!-- CABECERA SOLICITUD -->
+						<table id="tabCabecera1" cellSpacing="0" cellPadding="0" 
+								height="105" width="793" align="left" DATASRC="#xmlOC">
+						  <!--DWLayoutTable-->
+						<TR align="center">
+							<TD width="88" height="16" valign="top" class="Rotulo">FOLIO SOL.</TD>
+							<TD colspan="4" valign="top" class="Rotulo">MOTIVO / PROYECTO </TD>
+							<TD colspan="2" valign="top" class="Rotulo">ESTADO</TD>
+						  <TD width="145" valign="top" class="Rotulo">EMPRESA</TD>
+						</TR>
+						<TR align="center" vAlign="middle">
+						  <TD height="39" align="left" valign="middle">
+						  	<input class="Campo" type="text" size="5" name="txtFolio" 
+							onKeyPress="if(event.keyCode==13)getSolicitud();"
+							onBlur="if(this.value)getSolicitud();" datafld="FOLIO">
+				          <IMG src="images/refresh.gif" alt="Buscar"	align="middle" style="CURSOR: hand" 
+								onclick="frameOC.mostrarVentana(txtFolio,'3', divOC,'getSolicitud();',0,Usuario); return false;">						  						  </TD>
+						  <TD colSpan="4" align="left" valign="middle">
+						    <input class="Campo" type="text" size="75"
+									 name="txtObservacion" datafld="OBSERVACION">
+						    <input  class="Campo" id="idRol" type="hidden" size="1" name="txtRol">
+   						    <input  class="Campo" id="idUsuario" type="hidden" size="1" name="txtUsuario">
+&nbsp;						  </TD>
+							  <TD colspan="2" align="left" valign="middle">
+							  <select  name="listEstados" class="input" disabled="disabled"
+											datafld="ESTADO">
+                                <option value="ING" selected>INGRESADA</option>
+                                <option value="SOL">SOLICITADA</option>
+                                <option value="ENV">ENVIADA</option>
+                                <option value="GEN">GENERADA</option>
+                                <option value="NUL">ANULADA</option>
+                          </select></TD>
+						  <TD align="left">
+						  <SELECT  name="listEmpresa" class="campo" 
+											 disabled datafld="EMPRESA">
+                            <option value="ATI" selected>ATI</option>
+                            <option value="MATI">MATI</option>
+                            <option value="LOA">LOA</option>
+                          </SELECT></TD>
+						</TR>
+							<TR align="left">
+								<td height="16" colSpan="2" align="center" valign="top"  class="Rotulo">FECHA </td>
+								<td width="116" align="center" valign="top" class="Rotulo">SOLICITANTE</td>
+								<td width="147" align="center" valign="top"  class="Rotulo">AUTORIZA</td>
+							<td colspan="2" align="center" valign="top"  class="Rotulo">AREA SOLICITANTE </td>
+							<td colspan="2" align="center" valign="top"  class="Rotulo"><!--DWLayoutEmptyCell-->&nbsp;</td>
+							</TR>
+							<TR align="left">
+							  <td height="28" colSpan="2" align="left" valign="top">
+							  	<input class="Campo" type="text" size="12" name="txtFecha"
+							   	datafld="FECHA" readonly="true">                         	 </td>
+							  <td align="left" valign="top">
+							    <input name="hidden" type="hidden"  class="Campo" id="txtRol" size="1">
+                                <input name="hidden" type="hidden"  class="Campo" id="txtUsuario" size="1">
+                                <select name="listResponsables" class="input"
+								  	onChange="getDatosArea(this.value);"
+									 datafld="RESPONSABLE" disabled="disabled">
+                              </select></td>
+						      <td align="left" valign="top" class="texto">		
+					            <input class="Campo" type="text" size="15" name="txtAutoriza"
+							   datafld="AUTORIZA"  readonly="true"></td>
+							  <TD colspan="2" align="center" valign="top"><span class="texto">
+							    <input class="Campo" type="text" size="55"
+									 name="txtObservacion2" datafld="AREA">
+							  </span></TD>
+							  <TD colspan="2" align="center" valign="top">
+						<span class="texto">								</span></TD>
+							</TR>
+							<tr>
+							  <td height="10"></td>
+							  <td width="39"></td>
+							  <td></td>
+							  <td></td>
+							  <td width="120"></td>
+							  <td width="131"></td>
+					          <td width="5"></td>
+					          <td></td>
+						  </tr>
+					  </table>				  </th>
+			    </tr>
+			<tr>
+			
+			  <th width="1033" height="114" align="left" valign="top">
+			<!---- ARTICULOS --->
+						<table width="313" border="0" cellPadding="0" cellSpacing="0" >
+							<TBODY>
+								<TR  valign="top" align="left">
+									<th  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;ARTICULOS</th>	
+									<th width="77" height="19" align="center">
+									
+								</th>
+								</TR>
+						  </TBODY>
+			    </table>
+					<TABLE width="949" border="0" id="tabArticulos">
+							  <!--DWLayoutTable-->
+							<TR class="Rotulo">
+								<TH width="66" height="18" align="left">
+									Codigo </TH>
+								<TH width="208" align="left">
+									Descripci&oacute;n </TH>
+								<TH width="60" align="left" valign="middle">Cantidad</TH>
+								<th width="62">Valor Unitario </th>
+								<th width="60">Total</th>
+								<th width="236" align="center" valign="top">Proveedor&nbsp;
+								<IMG src="images/lupa.jpg" width="19" height="19" align="absmiddle" style="CURSOR: hand" 
+									onclick="frameProv.popsearchbox(getElementById('tabArticulos'),divProveedores); return false;"></th>
+									<th width="58" align="center" valign="top">Condici&oacute;n de Pago</th>
+								<th width="66" align="center" valign="top">Moneda</th>
+								<th width="47" align="center" valign="top">Plazo de Entrega</th>
+							    <th width="44">Exenta</th>
+					  </TR>
+				</TABLE>
+			  </th>
+			 </tr>
+
+			<tr>
+			
+			  <th width="1033" height="148" align="left" valign="top">
+			<!---- SERVICIOS --->
+						<table width="294" border="0" cellPadding="0" cellSpacing="0" >
+							<TBODY>
+								<TR  valign="top" align="left">
+									<th  background="images/blueBarShort.jpg" class="titulo"
+											 vAlign="bottom" align="left" width="236">
+										&nbsp;&nbsp;SERVICIOS</th>	
+									<th width="58" height="19" align="center">
+							<!--IMG src="images/lupa.jpg" width="19" height="19" style="CURSOR: hand" 
+									onclick="frameServicios.popsearchbox(txtCodigo,
+									txtCantidadServ, txtPrecioServ, divServicios,'creaServicio()'); return false;">
+								<input type="hidden" name="txtCodigo"  size="2"  />
+								<input type="hidden" name="txtCantidadServ"  size="2"  />
+								<input type="hidden" name="txtPrecioServ"  size="2"  /-->
+								</th>
+								</TR>
+						  </TBODY>
+			    </table>
+			 <TABLE width="949" border="0" id="tabServicios" >
+							  <!--DWLayoutTable-->
+							<TR class="Rotulo">
+							<TH width="59" align="left">
+									Codigo</TH>
+								<TH width="218" align="left">
+									Descripci&oacute;n </TH>
+								<TH width="62" align="left" valign="middle">Cantidad</TH>
+								<th width="54">Valor Unitario </th>
+								<th width="52">Total</th>
+								<th width="245" align="center">Proveedor&nbsp;<IMG src="images/lupa.jpg" width="19" height="19" align="absmiddle" style="CURSOR: hand" 
+									onclick="frameProv.popsearchbox(getElementById('tabServicios'),divProveedores); return false;"></th>
+								<th width="65" align="center" valign="top">Condici&oacute;n de Pago </th>
+								<th width="58" align="center" valign="top">Moneda</th>
+								<th width="49" align="center" valign="top">Plazo Entrega</th>
+								<th width="45">Exenta</th>
+			   </TR>
+				</TABLE>
+			  </th>
+			  </tr>
+			
+
+			<tr>
+			  <th colspan="3" align="left" vAlign="top" scope="row">
+			  		
+			<BR>	
+			  </th>
+			  </tr>
+			<tr>
+			  <td height="0"></td>
+			  <td width="61"></td>
+			  <td width="5"></td>
+			  </tr>
+		  <tr><td colspan="3"></TBODY>
+	      </TABLE>
+			<table height="19" cellSpacing="0" cellPadding="0" width="752" border="0">
+				<TR>
+					<td align="center">
+				  <input class="botonBlanco" onclick="generar();" 
+								type="button" value="Generar O.C." name="btnGenerar"></td>
+					<td align="center">
+							<input class="botonBlanco" onclick="guardar();" type="button" value="Aceptar"></td>
+					<td align="center">
+				  </td>
+					<td align="center">
+							<input class="botonBlanco" onclick="anular();" type="button" value="Anular"></td>
+				  <td align="center">&nbsp;				  </td>
+					<td align="center">&nbsp;</td>
+					</TD></TR>
+			</table>
+			</TR></TBODY></TABLE></form>
+</body>
+</HTML>

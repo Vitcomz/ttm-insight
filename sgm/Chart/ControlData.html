@@ -1,0 +1,215 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>-->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="layout.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" language="javascript">
+	var browser =  DetectBrowser();
+	var id_br = browser.substring(0,2);
+	var hz=window.screen.height;
+	var wz=window.screen.width;
+	//alert('alto=' + hz + ' ancho=' + wz );	
+</script>
+
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script type="text/javascript" language="javascript">
+		if (getParametro("EMPRESA")!=''){var EMPRESA = getParametro("EMPRESA");};
+		Usuario = "CONSOLATTM";
+		CrearSession(Usuario);
+		CrearSessionEmpresa(EMPRESA);
+
+</script>
+
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+<style>
+BODY{margin:0};
+</style>
+
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+</head>
+<script>
+<!--
+
+
+
+var layout = new Array();
+var t;
+/**********************************************************************/
+function verBitacora(equipo){
+	var url ="Layout.html?EQUIPO=" + equipo;
+	//CrearSessionEmpresa(EMPRESA);	
+		this.location.href=url;
+}
+/**********************************************************************/
+function getBitacora(){
+
+	document.getElementById("idMap").style.background="url(ly/" + EMPRESA + ".jpg) no-repeat";
+	document.getElementById("idMap").style.height= "700px";
+	// remuevo todos los elementos del mapa
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+
+	// **************** cargo las maquinas principales ****************
+		if (id_br == "IE")
+		{
+			var xmlTemp2 = document.getElementById("xmlTemp2");
+			xmlTemp2.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var xmlTemp2 = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlTemp2.XMLDocument;
+		if (id_br == 'IE'){
+			var emp = EMPRESA; //getEmpresa();
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+			var emp = EMPRESA; //getEmpresaMoz();
+		}		
+		var url = "../xml/Bitacoras.asp?RECURSO=LayoutFaena";
+	 	url += "&FAENA=" + emp;
+		url += "&USUARIO=" + Usuario;
+		url += "&VTZ=" + Math.random();
+		//window.open(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}		 
+		if (xmlestado){
+    	     var tree = xmlDso.documentElement;	
+			 var _largo = tree.childNodes.length;
+			 //var _largo=1;
+	          for(var i = 0; i < _largo; i++){
+    	        var node = tree.childNodes.item(i);
+				equipo = getChildNodeValue(node,"EQUIPO");
+				imagen = getChildNodeValue(node,"EQUIPO") + ".png";
+				switch(getChildNodeValue(node,"COLOR")) {
+					case 'BAJA':
+						ColorFondo = '#3366FF';
+						break
+					case 'MEDIA':
+						ColorFondo = '#CCCC00';
+						break
+					case 'ALTA':
+						ColorFondo = '#CC0000';
+						break
+					default:
+						ColorFondo = '#00CC00';
+							}
+				
+				var miDt = new Element('dt',{'id': equipo+'dt'}).injectInside(idMap);
+				
+				var miIMG = new Element('img', {
+
+						'src' : "ly/L"+imagen, 
+						'class': 'polLnk',
+						'title': equipo + " CRITICIDAD:" + getChildNodeValue(node,"COLOR") ,
+						'id': equipo,
+						styles: {
+							'left' : getChildNodeValue(node,"X") + 'px',
+							'top'  : getChildNodeValue(node,"Y") + 'px',
+							background : ColorFondo
+						},
+						events: {
+							click: function(){
+								//alert(this.id);
+								verBitacora(this.id);
+							},
+							mouseover: function(){ 
+								//alert(this.tagName);
+								this.style.opacity=1;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=100;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=100)';
+								}
+							},
+							mouseout: function(){ 
+								this.style.opacity=0.65;
+								if (id_br == "IE"){
+									this.filters.alpha.opacity=65;
+								}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"){
+									this.filters = 'alpha(opacity=65)';
+								}
+							}
+						}
+					}).injectInside(equipo+'dt');
+					
+				var miDd = new Element('dd', {
+						'id': equipo+'Title',
+						html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+					}).injectInside(idMap);
+ 			 }//end for
+			 equipo=null;
+    	  }//end If
+	else
+	  window.open(url);
+	  
+	 /* t=setTimeout("loadPage();",60000); */
+	  
+}
+
+function loadPage(){
+
+clearTimeout(t);
+window.document.location = 'ControlData.html?EMPRESA='+EMPRESA;
+
+}
+
+
+//-->
+</script>
+
+<body onload="getBitacora();" >
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br/><br/>
+<form name="formulario">
+<br/>
+<div id="holder" align="left">
+<div style="height:730px;overflow-y:auto;">
+<dl class="map" id="idMap">
+	<dt><a onclick="verOT('semilla');" class="polLnk" id="semilla" target="_blank"></a></dt>
+	<dd id="pol1Title"></dd>
+</dl>
+</div>
+</div>
+</form>
+</body>
+</html>

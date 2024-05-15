@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Marcas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+
+</head>
+<xml id = xmlMarcas></xml>
+<xml id = xmlModelos></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlTemp.async = false;
+
+function creaMarca(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var codGrupo = prompt("Codigo Marca","");
+		
+	if (codGrupo){
+		var nomGrupo = prompt("Descripci�n","");
+		var url = "/existencias/xml/Marcas.asp?RECURSO=NewMarca";
+			url += "&CODIGO=" + codGrupo;
+			url += "&DESCRIPCION=" + nomGrupo
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		}
+		
+	ListMarcas();	
+}
+
+function creaModelo(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre del Modelo.","");
+	var url = "/existencias/xml/Modelos.asp?RECURSO=NewModelo";
+		url+= "&DESCRIPCION=" + input;
+		url+= "&MARCA=" + formulario.txtCodMarca.value;
+		
+	if (input)
+		{xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+	ListModelos(formulario.txtCodMarca.value);
+}
+
+ 
+function ListMarcas(){
+
+  xmlMarcas.async = false;
+  var xmlDso =  xmlMarcas.XMLDocument;
+  var url = "/existencias/xml/Marcas.asp?RECURSO=ListMarcas";
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+ 
+function ListModelos(CodMarca){
+
+	var tbl = document.getElementById('tabModelos');
+	//limpiarTabla(tbl);
+	xmlModelos.async=false;
+	var xmlDso = xmlModelos.XMLDocument;
+	var url = "/existencias/xml/Modelos.asp?RECURSO=ListModelos";
+		url +="&MARCA=" + CodMarca;
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+}
+
+
+function EliminarMarca(Index)
+{
+	var tabla = document.getElementById('tabMarcas');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "/existencias/xml/Marcas.asp?RECURSO=DelMarca&CODIGO=" + Codigo;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Marca Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListMarcas();
+		}
+}
+
+function EliminarModelo(Index)
+{
+
+	var tabla = document.getElementById('tabModelos');
+	var Codigo = tabla.rows[Index].children[0].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "/existencias/xml/Modelos.asp?RECURSO=DelModelo&CODIGO=" + Codigo;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Modelo Codigo " + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListModelos(formulario.txtCodMarca.value);
+	}
+}
+
+function selMarca(Index){
+
+	var tabla = document.getElementById('tabMarcas');
+	var CodMarca =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodMarca.value = CodMarca;
+	document.getElementById('idNombreMarca').innerText = Nombre;
+	ListModelos(CodMarca);
+	//getDescripcionActividad(Actividad);
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+	xmlEstado = xmlDso.load(url);
+	
+	if(!xmlEstado)
+			window.open(url);
+
+
+}
+
+function inicio(){
+var parametro = getParametro("Equipo");
+if (parametro){
+		formulario.txtCodEquipo.value = parametro;
+		document.getElementById("idDesEquipo").innerText = getParametro("Descripcion");
+		}
+ListMarcas();
+}
+
+</script>
+
+
+<body onLoad="inicio();" >
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table width="583">
+<tr>
+  <td width="571" height="31" colspan="2" class="titulo">Marcas</td>
+</tr>
+<tr>
+  <td height="18" class="titulo" colspan="2" align="right">
+  		MARCA :<span class="input" id="idNombreMarca" ></span>
+  &nbsp;</td>
+</tr>
+</table>
+
+<table width="710" border="0" cellpadding="5" cellspacing="5">
+  <tr><td width="366" valign="top" class="td">
+	<table width="358" cellpadding="0" cellspacing="4" class="texto"
+										id="tabMarcas"  DATASRC="#xmlMarcas">
+			<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">MARCAS</td>
+			</tr>
+			<tr class="HeaderLista" >
+			  <td width="79">CODIGO</td>
+			  <td width="200">NOMBRE</td>
+			  <td width="16" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaMarca();" 
+									src="images/add.gif"></td>
+			 </tr>
+			</th>
+		</thead>
+		<tr onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')" 
+			onClick="selMarca(this.rowIndex)"  >
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="EliminarMarca(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+	</table>
+	</td>
+	<td width="22">&nbsp;&nbsp;</td>
+	<td width="314" align="center" valign="top" class="td">
+			<input type="hidden" name="txtCodMarca">
+			
+	  <table width="270" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabModelos" DATASRC="#xmlModelos">
+		<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">MODELOS</td>
+			</tr>
+			<tr class="HeaderLista">
+			  <td width="53">CODIGO</td>
+			  <td width="183">NOMBRE</td>
+			  <td width="16" height="20">
+			  <IMG style="CURSOR: hand" onclick="creaModelo();" 
+								src="images/add.gif"></td>
+			</tr>
+		<thead>
+		<tbody>
+		<tr >
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="EliminarModelo(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+		</tbody>
+	</table>
+</td></tr></table>
+</form>
+
+<div align="center" >
+  <!--input type="button" onClick="UpdateActividad();" value="Guardar" class="botonBlanco"-->&nbsp;
+  <input type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

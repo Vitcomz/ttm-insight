@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Familias</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+
+
+
+
+
+
+
+</head>
+<xml id = xmlMarcas></xml>
+<xml id = xmlModelos></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<link rel="stylesheet" href="standard/menu.css" type="text/css">
+<link rel="stylesheet" href="sci.css" type="text/css">
+<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+
+<script>
+
+xmlTemp.async = false;
+
+function creaFamilia(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var codGrupo = prompt("Codigo","");
+		
+	if (codGrupo){
+		var nomGrupo = prompt("Descripci�n","");
+		var url = "/existencias/xml/familias.asp?RECURSO=NewFamilia";
+			url += "&CODIGO=" + codGrupo;
+			url += "&DESCRIPCION=" + nomGrupo
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		}
+		
+	ListFamilias();	
+}
+
+function creaSubFamilia(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var input = prompt("Nombre Sub Familia.","");
+	var url = "/existencias/xml/familias.asp?RECURSO=NewSubFamilia";
+		url+= "&DESCRIPCION=" + input;
+		url+= "&FAMILIA=" + formulario.txtCodFamilia.value;
+		
+	if (input)
+		{xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+			window.open(url);
+		}
+	ListSubFamilias(formulario.txtCodFamilia.value);
+}
+
+ 
+function ListFamilias(){
+
+  xmlMarcas.async = false;
+  var xmlDso =  xmlMarcas.XMLDocument;
+  var url = "/existencias/xml/familias.asp?RECURSO=ListFamilias";
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+ 
+function ListSubFamilias(CodFamilia){
+
+	var tbl = document.getElementById('tabSubFamilias');
+	//limpiarTabla(tbl);
+	xmlModelos.async=false;
+	var xmlDso = xmlModelos.XMLDocument;
+	var url = "/existencias/xml/familias.asp?RECURSO=ListSubFamilias";
+		url +="&FAMILIA=" + CodFamilia;
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+}
+
+function updateFamilia(){
+
+	var CodFamilia = formulario.txtCodFamilia.value;
+	var IndExistencia = document.getElementById('idIndExistencia').checked;
+	
+	xmlModelos.async=false;
+	var xmlDso = xmlModelos.XMLDocument;
+	var url = "/existencias/xml/familias.asp?RECURSO=UpdateFamilia";
+		url +="&CODIGO=" + CodFamilia;
+		url +="&IND_EXISTENCIA=" + IndExistencia
+		
+	 	xmlestado = xmlDso.load(url);		
+	if (!xmlestado)
+			window.open(url);
+			
+	ListFamilias();
+}
+
+
+
+function EliminarFamilia(Index)
+{
+	var tabla = document.getElementById('tabFamilias');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "/existencias/xml/familias.asp?RECURSO=DelFamilia&CODIGO=" + Codigo;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Familia Codigo =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					ListFamilias();
+		}
+}
+
+function EliminarSubFamilia(Index){
+
+	var tabla = document.getElementById('tabSubFamilia');
+	//alert(tabla.tagName);
+	var Codigo = tabla.rows[Index].children[0].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "/existencias/xml/familias.asp?RECURSO=DelSubFamilia&CODIGO=" + Codigo;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Sub Familia Codigo " + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+	ListSubFamilias(formulario.txtCodFamilia.value);
+	}
+	
+}
+
+function selFamilia(Index){
+
+	var tabla = document.getElementById('tabFamilias');
+	var CodFamilia =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	var IndExistencia =  tabla.rows[Index].children[2].children[0].checked;
+
+	formulario.txtCodFamilia.value = CodFamilia;
+	document.getElementById('idNombreFamilia').innerText = Nombre;
+	document.getElementById('idIndExistencia').checked = IndExistencia;
+	ListSubFamilias(CodFamilia);
+	//getDescripcionActividad(Actividad);
+}
+
+
+function inicio(){
+
+ListFamilias();
+}
+
+</script>
+
+
+<body onLoad="inicio();" >
+<form name="formulario">
+<script language="JavaScript1.2" src="standard/menudata.js"></script>
+<br>
+<br>
+<br>
+<table width="551">
+<tr>
+  <td height="25" class="titulo">Familias</td>
+</tr>
+<tr>
+  <td height="18" class="titulo" colspan="3" align="left">
+  		FAMILIA :<span class="input" id="idNombreFamilia" ></span>&nbsp;	  </td>
+</tr>
+<tr><td height="18" class="titulo" colspan="3" align="left">
+ 	   INDICADOR EXISTENCIA
+      <INPUT id="idIndExistencia" type="checkbox"  class="input"/></td>
+   </tr>
+</table>
+
+<table width="710" border="0" cellpadding="5" cellspacing="5">
+  <tr><td width="366" valign="top" class="td">
+	<table width="358" cellpadding="0" cellspacing="4" class="texto"
+						id="tabFamilias"  DATASRC="#xmlMarcas">
+			<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">FAMILIAS</td>
+			</tr>
+			<tr class="HeaderLista" >
+			  <td width="79">CODIGO</td>
+			  <td width="200">NOMBRE</td>
+  			  <td width="50">IND EXIST.</td>
+			  <td width="16" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaFamilia();" 
+									src="images/add.gif"></td>
+			 </tr>
+			</th>
+		</thead>
+		<tr onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')" 
+			onClick="selFamilia(this.rowIndex)"  >
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center"><INPUT type="checkbox" datafld="IND_EXISTENCIA"  class="input"   disabled="disabled" /></td>
+			<td align="center" onClick="EliminarFamilia(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+	</table>
+	</td>
+	<td width="22">&nbsp;&nbsp;</td>
+	<td width="314" align="center" valign="top" class="td">
+			<input type="hidden" name="txtCodFamilia">
+		
+	  <table width="359" cellpadding="0" cellspacing="4"
+	  			class="texto" id="tabSubFamilia" DATASRC="#xmlModelos">
+		<thead>
+			<tr class="HeaderLista" >
+			  <td colspan="3">SUB FAMILIAS</td>
+			</tr>
+			<tr class="HeaderLista">
+			  <td width="57">CODIGO</td>
+			  <td width="261">NOMBRE</td>
+			  <td width="23" height="20">
+			  <IMG style="CURSOR: hand" onclick="creaSubFamilia();" 
+								src="images/add.gif"></td>
+			</tr>
+		<thead>
+		<tbody>
+		<tr >
+			<td><span name="TxtCodigo" datafld="CODIGO"/></td>
+			<td align="left"><span name="TxtNombre" datafld="DESCRIPCION"/></td>
+			<td align="center" onClick="EliminarSubFamilia(this.parentElement.rowIndex);">
+				<img src="images/trash.jpg" style="cursor:hand;"></td>
+		</tr>
+		</tbody>
+	</table>
+</td></tr></table>
+</form>
+
+<div align="center" >
+  <input type="button" onClick="updateFamilia();" value="Guardar" class="botonBlanco"-->&nbsp;
+  <input type="button" onClick="window.close();" value="Salir" class="botonBlanco">
+</div>
+</body>
+</html>

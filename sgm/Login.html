@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>Autenticar</title>
+
+<style type="text/css">
+ 
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+ 
+</style>
+
+<xml id = xmlDoc></xml>
+<link rel="stylesheet" href="sci.css" type="text/css" />
+
+
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script type="text/javascript" language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="js/main.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<script type="text/javascript" language="javascript">
+ 
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresa();
+}
+
+function loadXMLDoc(myURL)
+ {
+ if (window.XMLHttpRequest)
+   {
+   xhttp=new XMLHttpRequest();
+   }
+ else
+   {
+   xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+   }
+ xhttp.open("GET",myURL,false);
+ xhttp.send();
+ return xhttp.responseXML;
+ } 
+ //-----------------------------------------------------------------------------------
+ var username=GetSession();
+//  alert(username);
+  if (username!=null && username!="DESCONOCIDO")
+  {}
+else 
+  {
+	  	alert("Session Cerrada");
+		document.location ='/index.html';
+  }
+ //-------------------------------------- 
+
+function ValidaSession(){
+	if (getParametro("modo")){
+			DelSession(formulario.TxtID.value);
+			DelSessionEmpresa(formulario.TxtID.value);
+			this.location.href="/index.html";
+			}
+}
+ 
+
+function creaFaena(ListFaena){
+	CrearSessionEmpresa(ListFaena);
+	var url="../sci/xml/usuarios.asp?RECURSO=newLogin&ID=" + GetSession();
+		url += "&TIPO="+ListFaena;
+	if (id_br == "IE")
+	{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+	}
+	var xmlDso =  xmlDoc.XMLDocument;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+
+		
+	//xmlDoc=loadXMLDoc(url);
+	switch (ListFaena) { 
+		case 'ANDINA':
+			url="Chart/ConsolaLCD.html?EMPRESA=ANDINA";
+  			break;
+		case 'EL ABRA - ESCORPION':
+			url="Chart/layout.html";
+  			break;
+		case 'CODELCO NORTE':
+			url='Chart/layout2.html';
+			break;
+		case 'ESCONDIDA':
+		case 'ESCONDIDA OXIDO':
+		case 'ESCONDIDA OLAP':
+		case 'ESCONDIDA LAGUNA SECA':
+		case 'COLLAHUASI CHANCADO':
+		case 'COLLAHUASI LIXIVIACION':
+		case 'COLLAHUASI CONCENTRADORA':
+		case 'COLLAHUASI PUERTO PATACHE':
+		case 'QUEBRADA BLANCA':
+		case 'LOS PELAMBRES':
+		case 'LOS PELAMBRES CONCENTRADORA':
+			case 'LOS PELAMBRES CHANCADO':
+		case 'EL PE?ON':	
+		case 'ESCONDIDA PUERTO COLOSO':	
+		   url='Chart/newindexV2.html';
+			this.location.href=url;
+		   break; 
+		case 'SPENCE': 
+		case 'VALE BAYOVAR MINA': 
+		case 'VALE BAYOVAR PUERTO': 
+		   url='Chart/newindex.html';
+		   break 
+		case 'CERRO COLORADO':
+		   url='Chart/newindexV4.html';
+			this.location.href=url;
+		   break; 
+		default: 
+		   url="index.html"; 
+	} 
+	this.location.href=url;
+}
+	
+	
+function listFaenas(){
+
+		var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+		url += "&ID=" + GetSession();
+		url += "&VTZ=" + Math.random();
+   
+	//window.open(url);
+    
+	 $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+            opcion = new Option($(this).find("DESCRIPCION").text(),$(this).find("DESCRIPCION").text());
+		 
+			//formulario.ListFaenas.options[i] = opcion;
+			document.getElementById("ListFaenas").options[i] = opcion; 
+	
+ 		})//End each
+	});//end $.get
+		 	 
+}
+	
+function listFaenas2(){
+	
+	var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+		url += "&ID=" + GetSession();
+	//window.open(url);
+	 
+	if (id_br == "IE")
+	{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+	}
+	var xmlDso =  xmlDoc.XMLDocument;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+
+		
+	var tree = xmlDso.documentElement;			
+	for(var i = 0; i < tree.childNodes.length; i++){
+		var node = tree.childNodes.item(i);
+		alert(getChildNodeValue(node,"DESCRIPCION"));
+		opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"DESCRIPCION"));
+		if (opcion.value == "0") opcion.selected = true;
+			//formulario.ListFaenas.options[i] = opcion;
+			document.getElementById("ListFaenas").options[i+1] = opcion;   
+		} 
+	}
+
+function _close(){
+	this.location.href="/intranet.html";
+	}
+
+function getFaena(_usuario){
+	//xmlTemp.async = false;
+    //var xmlDso =  xmlTemp.XMLDocument;
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+		var xmlDso = xmlDoc.XMLDocument;
+	
+	var url = "xml/Usuarios.asp?RECURSO=GetUsuario";
+		url += "&ID=" + _usuario;
+		url += "&VTZ=" + Math.random();
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+				
+ 
+	var tree = xmlDso.documentElement;				
+	//var tree = xmlDoc.documentElement;
+	//if (xmlDso){
+		//var tree = xmlDso.documentElement;
+		var node = tree.childNodes.item(0);
+		if(getChildNodeValue(node,"ACCESO_DB")=="false")
+			creaFaena(getChildNodeValue(node,"DESC_FAENA"));
+		//}
+	//else
+		//window.open(url);			
+	}
+ 
+window.onload = function(){
+	if(GetSession()=='DESCONOCIDO')
+		this.location.href="/index.html";
+	getFaena(GetSession());
+	listFaenas();
+	}
+
+</script>
+
+
+<body>
+	<form name="formulario" action="">
+		<table width="292" border="0" align="center" class="texto">
+              <tr align="center">	
+				<td height="23" colspan="2" class="input">
+					Sistema de Confiabilidad TTM <BR>
+                    Selecci&oacute;n de Faena</td>
+          	</tr>
+    		<tr align="center">	
+				<td height="16" colspan="2">
+	  				<P class="titulo">
+					  <script type="text/javascript" language="javascript">
+                        document.write("Usuario Actual <b>" + GetSession() + "</b>");
+                      </script>
+                    </P></td>
+			</tr>
+       		<tr>
+      			<td align="right">FAENA :</td>
+      			<td>
+                    <select  name="ListFaenas" id="ListFaenas">
+                            <option value="0">SELECCIONAR</option>
+                    </select>
+				</td>
+			</tr>
+			<tr valign="middle">
+			  <td height="45" colspan="2"  align="center">
+                <input type="button" class="botonBlanco" onClick="creaFaena(document.getElementById('ListFaenas').value);" value="Aceptar">&nbsp;&nbsp;
+                <input type="button" class="botonBlanco" onClick="_close();" value="Volver al Home">
+              </td>
+            </tr>
+	</table>
+     <div align="center"><img alt=" " src="../images/logo.png" border="0" ></div>
+</form>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Listado de Paradas</TITLE>
+		<xml id="xmlTemp1"></xml>
+		<xml id="xmlEquipos"></xml>
+        <xml id="xmlListFaenas"></xml>
+		
+		<LINK REL="stylesheet" HREF="../standard/menu.css" TYPE="text/css">
+
+
+
+
+
+
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/coolmenus4.js"></SCRIPT>
+		<LINK HREF="../AW/grid.css" TYPE="text/css" REL="stylesheet">
+		<LINK REL="stylesheet" HREF="../sci.css" TYPE="text/css">
+		<SCRIPT LANG="es-cl" SRC="../AW/grid.js"></SCRIPT>
+		<SCRIPT LANG="es-cl" SRC="../AW/paging1.js"></SCRIPT>
+		<SCRIPT SRC="../standard/vitcomz.js"></SCRIPT>
+		<STYLE> 
+			.active-controls-grid {height: 100%; font: menu;}
+			.active-column-0 {width: 100px;}
+			.active-column-1 {width: 100px;}
+			.active-column-2 {width: 50px;}
+			.active-column-3 {width: 120px;}
+			.active-column-4 {width: 120px;}
+			.active-column-5 {width: 150px;}
+			.active-column-6 {width: 150px;}
+			.active-column-7 {width: 370px;}
+			/*	.active-column-4 {text-align: left;}
+			.active-column-5 {text-align: left;}
+			.active-column-6 {text-align: left;}
+			.active-column-7 {text-align: left;}*/
+		.style1 {
+	font-size: large
+}
+        </STYLE>
+
+<SCRIPT>
+	
+  	  var grid = new Active.Controls.Grid;
+	  var table = new Active.XML.Table;
+
+      function setXmlGrid(xmlTemp, url){
+       xmlTemp.async = false;
+       var res = xmlTemp.load(url);
+	 // window.open(url);
+       var xml, node = xmlTemp; 
+
+       if (window.ActiveXObject)
+       {//	IE
+		xml = node;
+	   }
+	  else 
+	   {//	Mozilla
+	    xml = document.implementation.createDocument("","", null);
+	    xml.appendChild(node.selectSingleNode("*"));
+	   }
+	   //	provide data XML
+       var nRows = xml.childNodes.item(1).childNodes.length;
+       //alert(nRows);
+       table.setXML(xml);
+	   grid.setModel("row", new Active.Rows.Page);
+	   grid.setProperty("row/count", nRows);
+	   grid.setProperty("column/count",8);
+	   grid.setProperty("row/pageSize", 25);
+	   grid.setDataModel(table);
+     }
+
+     function setGrid(){
+      //	create data formats
+	  var string = new Active.Formats.String;
+	  var number1 = new Active.Formats.Number;
+	  var number2 = new Active.Formats.Number;
+	  var date = new Active.Formats.Date;
+
+      // define formatting rule for text output
+	  // number1.setTextFormat("#.###,##");
+	  // number2.setTextFormat("");
+
+    	xmlTemp1.async = false;
+	  var xmlDso = xmlTemp1.XMLDocument;
+	 	   	var url = "../xml/Paradas.asp?RECURSO=infParadas";
+  	  		url+= "&FAENA=" + getEmpresa();
+	  		url+= "&FECHA_INI=" + formulario.txtFechaIni.value;
+			url+= "&FECHA_FIN=" + formulario.txtFechaFin.value;
+	  		if (formulario.listSecciones.value=='AREA SECA'){
+			url += "&SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+		}
+		else
+			url += "&SECCION='" + formulario.listSecciones.value + "'";
+			url+= "&EQUIPO=" + formulario.ListEquipos.value;
+			url+= "&TIPO=" + formulario.listTipo.value;
+			url+= "&VTZ=" + Math.random();
+	
+		//window.open(url);
+   	  setXmlGrid(xmlDso, url);
+      //define column labels
+	  var columns = ["Inicio","Termino", "Tiempo","Equipo", "Tipo", "Causa", "Seccion", "Observaci�n "];
+	  
+	  grid.setColumnProperty("texts", columns);
+      grid.setAction("click", function(src){
+        var row = src.getRowProperty("index");
+        var count = this.getColumnProperty("count");
+        var column, result;
+        result = this.getDataProperty("text", row, 0);
+        result1 = this.getDataProperty("text", row, 1);
+        
+	   }
+	  );
+
+      //row.setEvent("ondblclick", function(){this.action("dblClickAction")});
+      grid.setAction("dblClickAction", function(src){
+      var i = src.getProperty("item/index");
+      alert(this.getDataText(i,0) + ' ' + this.getItemProperty("text"));
+      });
+
+      //grid.getColumnTemplate(4).setStyle("color", myColor);
+	  document.write(grid);
+     }
+      
+      function ActualizaGrid(){
+	  	
+		
+       xmlTemp1.async = false;
+	  	var xmlDso = xmlTemp1.XMLDocument;
+	   	var url = "../xml/Paradas.asp?RECURSO=infParadas";
+  	  		url+= "&FAENA=" + getEmpresa();
+	  		url+= "&FECHA_INI=" + formulario.txtFechaIni.value;
+			url+= "&FECHA_FIN=" + formulario.txtFechaFin.value;
+	  		if (formulario.listSecciones.value=='AREA SECA'){
+				url += "&SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+			}
+			else
+				url += "&SECCION='" + formulario.listSecciones.value + "'";
+			
+			url+= "&EQUIPO=" + formulario.ListEquipos.value;
+			url+= "&TIPO=" + formulario.listTipo.value;
+			url+= "&VTZ=" + Math.random();
+	 // window.open(url);
+	   setXmlGrid(xmlDso, url);
+	   grid.refresh();
+	   goToPage(0);
+	   
+	   	with (divWait.style){visibility = "hidden";} 
+		
+}
+ 
+ 
+     
+function toExcel(){
+
+	 var xmlDso = xmlTemp1.XMLDocument;
+	 	   	var url = "../xml/Paradas.asp?RECURSO=infParadas";
+  	  		url+= "&FAENA=" + getEmpresa();
+	  		url+= "&FECHA_INI=" + formulario.txtFechaIni.value;
+			url+= "&FECHA_FIN=" + formulario.txtFechaFin.value;
+			
+	  		if (formulario.listSecciones.value=='AREA SECA'){
+			url += "&SECCION= 'CHANCADO', 'CHANYHAR', 'AGLOAPI', 'APILADO' ";
+		}
+		else
+			url += "&SECCION='" + formulario.listSecciones.value + "'";
+			
+			url+= "&EQUIPO=" + formulario.ListEquipos.value;
+			url+= "&TIPO=" + formulario.listTipo.value;
+	    	url += "&EXCEL=YES";
+			
+			url+= "&VTZ=" + Math.random();
+			
+	 // alert(Url);
+		window.open(url);
+      }
+	 
+
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+	  url+= "&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+	
+function listSecciones(){
+       xmlListFaenas.async = false;
+        var xmlDso =  xmlListFaenas.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url+= "&VTZ=" + Math.random();
+			
+        var res = xmlDso.load(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            if (opcion.value == empresa) opcion.selected = true;
+          	formulario.listSecciones.options[i] = opcion;   
+          			}
+					
+			opcion = new Option("TODOS","TOD");
+			formulario.listSecciones.options[i] = opcion;
+		  }
+		 else
+		 	window.open(url); 
+}
+ 
+ function inicio(){
+ formulario.txtFechaFin.value= _hoy();
+ ListEquipos();
+ listSecciones();
+ setTimeout("ActualizaGrid();",200);
+ }
+</SCRIPT>
+</HEAD>
+<BODY  onLoad="inicio();">
+  <DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+		style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95;
+        top: 278; height: 23; border-style: ridge; border-width: 2px">
+		<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="../DTPicker.htm" WIDTH="180"></IFRAME>
+   </DIV>
+   
+   <div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 100; top: 80; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="../images/cargando.gif" />	</div>
+    
+    
+			<SCRIPT LANGUAGE="JavaScript1.2" SRC="../standard/menudata.js"></SCRIPT>
+		<BR><BR>
+		<FORM NAME="formulario" >
+			<TABLE  cellSpacing="0" cellPadding="0" WIDTH="750" BORDER="0">		
+				<TR>
+				  <TH width="750" HEIGHT="23" ALIGN="left" vAlign="bottom" BACKGROUND="images/tag_center.jpg"  class="titulo style1">INFORME DE PARADAS </TH>
+			  </TR>
+			</TABLE>
+		  <TABLE WIDTH="897">
+			<TR  class="titulo">
+			  <TD WIDTH="222" CLASS="titulo">FECHA DESDE:</TD>
+			  <TD WIDTH="286" >
+			    <input name="txtFechaIni" class="input" value="01/01/2010" size="12" >
+                <img  src="../images/calendar.jpg" alt="Fecha" align="ABSBOTTOM" style="CURSOR: hand"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaIni,txtFechaIni,divCalendar);"> &nbsp;HASTA :
+                <input name="txtFechaFin" size="12" class="input" >
+                <img  src="../images/calendar.jpg" alt="Fecha" align="ABSBOTTOM" style="CURSOR: hand"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaFin,txtFechaFin,divCalendar);"></TD>
+			  <TD WIDTH="333">&nbsp;</TD>
+		    </TR>
+			<TR  class="titulo">
+			  <TD ALIGN="left" VALIGN="BOTTOM">SECCION:</TD>
+			  <TD>
+              <select name="listSecciones" datafld="SECCION" onChange="with(divWait.style){visibility='visible'};ActualizaGrid();">
+              </select>              </TD>
+			  <TD>&nbsp;</TD>
+		    </TR>
+			<TR CLASS="titulo">
+			<TD CLASS="titulo">EQUIPO PRINCIPAL  :</TD>
+			<TD><SELECT NAME="ListEquipos"  class="input"  onChange="ActualizaGrid();"></SELECT></TD>
+			<TD>&nbsp;</TD>
+			</TR>
+			<TR CLASS="titulo">
+			  <TD CLASS="titulo">TIPO DE DETENCI&Oacute;N :</TD>
+			  <TD>
+              <SELECT name="listTipo" CLASS="tinyText" style="width:150px" 
+              	 onChange="ActualizaGrid();" DATAFLD="COD_TIPO" >
+               <OPTION VALUE="TO">TODAS</OPTION>
+               <OPTION VALUE="FO">FALLA OPERACIONAL</OPTION>
+               <OPTION VALUE="OP">OPERACIONAL PROGRAMADA</OPTION>
+               <OPTION VALUE="FM">FALLA MTTO MECANICO</OPTION>
+               <OPTION VALUE="FE">FALLA MTTO ELECTRICO</OPTION>
+               <OPTION VALUE="FI">FALLA MTTO INSTRUMENTAL</OPTION>
+               <OPTION VALUE="FG">FALLA MTTO GENERAL</OPTION>
+               <OPTION VALUE="MP">MTTO PROGRAMADO</OPTION>
+               <OPTION VALUE="RS">RESERVA</OPTION>
+               <OPTION VALUE="ST">STANDBY</OPTION>
+               <OPTION VALUE="MI">MINA</OPTION>
+             </SELECT>
+              <input type="button" onClick="with(divWait.style){visibility='visible';};ActualizaGrid();" value="Buscar" class="botonBlanco"></TD>
+			  <TD><INPUT TYPE="button" onClick="" VALUE="Grafico Pareto" CLASS="botonBlancoLargo">
+		      <input type="button" onClick="toExcel()" value="Exportar a Excel." class="botonBlancoLargo"></TD>
+		    </TR>
+			</TABLE>
+<TABLE HEIGHT="355" cellSpacing="0" cellPadding="0" WIDTH="100%" BORDER="0">
+			  <TR>
+	
+				<TR>
+					<TH>
+						<TABLE ID="tabSolicitud" HEIGHT="427" cellSpacing="0" cellPadding="0" WIDTH="100%" BORDER="0">
+							<TR valign="top">
+								<TD HEIGHT="400">
+									<SCRIPT>
+											setGrid();
+									</SCRIPT>
+							  </TD>
+							</TR>
+					  </TABLE>
+					</TH>
+				</TR>
+				<TR>
+					<TH>
+						<!--//botonera para avanzar por paginas-->
+						<TABLE>
+							<TR HEIGHT="20">
+								<TD WIDTH="1" BACKGROUND="images/BorderTable.jpg"></TD>
+								<TD CLASS="controlButon" ALIGN="right">
+									<INPUT CLASS="littleButton" onClick="goToPage(-Infinity)" TYPE="button" VALUE="<<">
+									<INPUT CLASS="littleButton" onClick="goToPage(-1)" TYPE="button" VALUE="<"> <SPAN ID="pageLabel">
+									</SPAN><INPUT CLASS="littleButton" onClick="goToPage(1);" TYPE="button" VALUE=">">
+									<INPUT CLASS="littleButton" onClick="goToPage(Infinity);" TYPE="button" VALUE=">>">
+								</TD>
+								<TD WIDTH="1" BACKGROUND="images/BorderTable.jpg"></TD>
+							</TR>
+						</TABLE>
+					<!--******************************************-->
+					</TH>
+				</TR>
+			</TABLE>
+</FORM>
+		<SCRIPT>
+		
+	function goToPage(delta)
+	{
+		var count = grid.getProperty("row/pageCount");
+		var number = grid.getProperty("row/pageNumber");
+		number += delta;
+		if (number < 0) {number = 0}
+		if (number > count-1) {number = count-1}
+		document.getElementById('pageLabel').innerHTML = "P�gina " + (number + 1) + " de " + count + " ";
+
+		grid.setProperty("row/pageNumber", number);
+		grid.refresh();
+	}
+	goToPage(0);
+		</SCRIPT>
+	</BODY>
+</HTML>

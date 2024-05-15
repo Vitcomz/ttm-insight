@@ -1,2 +1,6 @@
-/files
-/Files
+node_modules/
+sgm/Files/
+sgm/Files/
+sgm/Chart/ly
+.gitignore
+

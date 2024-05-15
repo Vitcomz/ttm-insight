@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang="en">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<TITLE>Equipos</TITLE>
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+<LINK rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+<STYLE TYPE="text/css">
+<!--
+.style4 {color: #FF0000}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="equipos.js"></SCRIPT>
+
+
+<BODY onLoad="inicio();">
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+
+<DIV id="divFiles" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 290px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameFiles" src="archivos.html" frameBorder="0" width="450" scrolling="no" height="220"></IFRAME>
+</DIV>
+
+<DIV id="DivProv" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge;
+ 	BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; 
+	BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+		onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameProv" src="ListProveedores.html" frameBorder="0" width="300" scrolling="no"	height="230"></IFRAME>
+</DIV>
+
+<DIV id="DivEquipo" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 150px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px; width: 380px; height: 320px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="ListFrameEquipo" src="ListEquiposPadres.html" frameBorder="0" width="380" scrolling="no"	height="320"></IFRAME>
+</DIV>
+
+  <DIV id="divMarcas" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; 
+  	LEFT: 369px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; TOP: 280px"	onclick="event.cancelBubble=true">
+		<IFRAME name="frameMarcas" src="ListMarcas.html" frameBorder="0"
+				 width="250" scrolling="no" height="170"></IFRAME>
+  </DIV>
+  
+<DIV id="divCalendar" onClick="event.cancelBubble=true" style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+		<IFRAME frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></IFRAME>
+  </DIV>
+  
+ <DIV id="divLayout" style="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 1045; 
+  	LEFT: 369px; VISIBILITY: hidden; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; 
+	POSITION: absolute; TOP: 280px"	onclick="event.cancelBubble=true">
+		<IFRAME name="frameLayout" src="boxLayout.html" frameBorder="0"
+				 width="250" scrolling="no" height="250"></IFRAME>
+  </DIV>
+  
+<BR>
+
+
+<TABLE width="1134" cellpadding="10" cellspacing="5">
+  <!--DWLayoutTable-->
+<TR>
+  <TD width="1102" height="34" valign="bottom" class="titulo" >Registro de Equipos</TD>
+</TR>
+<TR>
+  <TD height="588" valign="top" >
+  
+    <TABLE  border="0" width="1081" cellpadding="0" cellspacing="0" DATASRC="#xmlDoc">
+      <!--DWLayoutTable-->
+      <TR align="center" class="rotulo" width="872" >
+        <TD HEIGHT="19" COLSPAN="2" valign="top">Codigo</TD>
+            <TD colspan="10" ALIGN="LEFT" valign="top">Descripci&oacute;n</TD>
+            <TD colspan="6" ALIGN="LEFT" valign="top">Codigo GSAP</TD>
+          <TD colspan="4" ALIGN="center" valign="top">Secuencia</TD>
+          <TD colspan="2">Ultimo Cambio y/o Mantenci&oacute;n.</TD>
+          </TR>
+      <TR align="center">
+        <TD HEIGHT="22" COLSPAN="2" align="left" valign="top">
+          <INPUT name="TxtCodigo" type="text" class="Campo" id="TxtCodigo" size="17" datafld="CODIGO"
+		  	   onKeyPress="if(event.keyCode==13)GetEquipo();" />
+          <IMG src="images/lupa.jpg" align="top"
+				style="cursor:hand" onClick="ListFrameEquipo.popsearchbox(10, 
+				 TxtCodigo, TxtDescripcion, DivEquipo, 'GetEquipo();');" /></TD>
+            <TD colspan="10" align="left" valign="top">
+                 <INPUT name="TxtDescripcion" type="text" class="Campo"
+            		 id="TxtDescripcion" value="" size="70" datafld="DESCRIPCION">            </TD>
+            <TD colspan="6" align="left" valign="top" >
+		    <INPUT name="txtGSAP" type="text" class="input" datafld="GSAP"	size="25" ID="txtGSAP" />            </TD>
+          <TD colspan="4" align="center"  >
+            <INPUT NAME="txtSecuencia" TYPE="text" CLASS="input" SIZE="17" DATAFLD="SECUENCIA"></TD>
+          <TD colspan="2" valign="top">
+          	<INPUT name="txtFechaUltima" type="text" class="input"  size="12" datafld="FECHA_ULT_MAN" />
+            <IMG  src="images/calendar.jpg" alt="" align="top" style="CURSOR: hand"
+		onClick="FrameCalendar.fPopCalendar(txtFechaUltima,txtFechaUltima,divCalendar);return false"></TD>
+          </TR>
+      
+      <TR align="center" class="rotulo">
+        <TD height="19" colspan="5" align="left" valign="top" >Proveedor</TD>
+            <TD width="107"  align="left" valign="top" >Estado</TD>
+            <TD colspan="5"  align="left" valign="top" ><div align="center">Fecha Ingreso </div></TD>
+            <TD colspan="4" ALIGN="LEFT" valign="top" ><SPAN CLASS="style4">% Criticidad</SPAN></TD>
+			<TD colspan="5" valign="top" >Ubicaci&oacute;n/Faena</TD>
+          <TD width="5" >&nbsp;</TD>
+			<TD colspan="3" >Ton. Hora</TD>
+          </TR>
+      <TR align="center">
+        <TD height="22" colspan="5" align="left" valign="top">
+          <INPUT name="TxtRutProveedor" type="text" class="hidden"  size="1" datafld="RUT_PROVEEDOR"/>
+          <INPUT name="TxtProveedor" type="text" class="input"  size="40" datafld="NOMBRE_PROVEEDOR"/>
+          <IMG src="images/lupa.jpg" align="top"
+				style="cursor:hand" onClick="ListFrameProv.popsearchbox(10, TxtRutProveedor, TxtProveedor, DivProv);" /></TD>
+            <TD align="left" valign="top">
+			  <SELECT name="ListEstado" datafld="ESTADO" >
+                <OPTION value="ACT" selected>ACTIVO</OPTION>
+                <OPTION value="MAN" >MANTENCION</OPTION>
+                <OPTION value="REP" >REPARACION</OPTION>
+				<OPTION value="REP" >SINIESTRO</OPTION>
+             </SELECT>			</TD>
+            <TD colspan="5" valign="top">
+              <INPUT name="TxtFecha" id="TxtFecha" type="text" class="input"  size="12" datafld="FECHA" />
+            <IMG style="CURSOR: hand"  src="images/calendar.jpg" align="top"
+									  onClick="FrameCalendar.fPopCalendar(TxtFecha,TxtFecha,divCalendar);return false"> </TD>
+            <TD colspan="4" align="left" valign="top">
+              <INPUT name="txtCriticidad" type="text" class="input" size="10" datafld="CRITICIDAD">			  	</TD>
+	        <TD colspan="5" align="center" valign="top">
+		      <SELECT name="ListFaenas" datafld="UBICACION" DISABLED>
+              </SELECT>				</TD>
+          <TD>&nbsp;</TD>
+	        <TD colspan="3"><input name="txtCapacidad" type="text" class="input"
+						size="15" datafld="CAPACIDAD" id="txtCapacidad"></TD>
+          </TR>
+		   <TR align="center" class="rotulo">
+	        <TD height="19" colspan="6" valign="top" >Equipo Superior</TD>
+            <TD colspan="4" valign="top" >Tipo Horometro</TD>
+            <TD  colspan="6" valign="top">Ancho</TD>
+          	<TD  colspan="5" valign="top" >Espesor Cubierta</TD>
+  	      	<TD  colspan="3" valign="top" >Espesor Retorno</TD>
+      	  </TR>
+		  	    <TR align="center">
+		  	      <TD height="22" colspan="6" align="left" valign="top">
+				    <INPUT name="TxtCodEquipoPadre" type="text" class="input" 
+					 value="" size="15" datafld="COD_EQUIPO_PADRE" >
+		  	        <INPUT name="TxtDesEquipoPadre" type="text" class="input" 
+					  value="" size="40" datafld="EQUIPO_PADRE">
+                    <IMG src="images/lupa.jpg" alt="Buscar.." align="top" style="cursor:hand" 
+					onClick="ListFrameEquipo.popsearchbox(10, TxtCodEquipoPadre, TxtDesEquipoPadre, DivEquipo,'ListHorometros(2);');" />				  </TD>
+		  	      <TD colspan="4" align="left" valign="top" class="texto">
+				       <SELECT name="listTipoHr" datafld="TIPO_HOROMETRO" onchange="changeTipoHrm();">
+				            <OPTION value="">-SELECCIONAR-</OPTION>
+				            <OPTION value="SEC">SECUENCIAL</OPTION>
+				            <OPTION value="CRO">CRONOLOGICO</OPTION>
+				            </SELECT></TD>
+		  	      <TD colspan="6" align="center" valign="top" class="texto">
+                  <INPUT type="hidden" name="TxtCodHorometro" datafld="HOROMETRO_PADRE">
+	  	          <INPUT name="txtLargo" type="text" class="input"
+						size="15" datafld="ANCHO" ID="txtAncho"></TD>
+  	              <TD colspan="5" align="center" valign="top" ><SPAN class="texto">
+                    <INPUT name="txtEspesor" type="text" class="input"
+					size="8" datafld="ESPESOR" id="txtEspesor">		  	      </TD>
+          			<TD colspan="3" valign="top" >
+                    <input name="txtEspesorR" type="text" class="input"
+						size="8" datafld="ESPESOR_R" ></TD>
+		        </TR>
+		  	    <TR align="center" class="rotulo">
+		  	      <TD height="19" colspan="3" align="left" valign="top" >Seccion</TD>
+		  	      <TD colspan="4" valign="top" >Tipo de Equipo </TD>
+		  	      <TD colspan="6" valign="top" >Marca</TD>
+		  	      <TD colspan="4" align="left" valign="top" >Modelo</TD>
+  	      <TD colspan="7" valign="top" >Dimensiones</TD>
+  	      </TR>
+		  	    <TR align="center">
+		  	      <TD height="19"  colspan="3" align="left" valign="top">
+		  	           <SELECT name="ListSecciones" datafld="SECCION">
+		  	                </SELECT>		  	      </TD>
+		  	      <TD colspan="4" align="left" valign="top" >
+				       <SELECT name="listTipos" datafld="TIPO_EQUIPO" >
+				                 </SELECT></TD>
+		  	      <TD colspan="6" align="left" valign="top" >
+				  	<INPUT name="txtCodMarca" type="hidden"
+	  				class="input" datafld="COD_MARCA"/>
+                    <INPUT name="txtMarca" type="text" class="input" size="18" datafld="MARCA"/>
+                    <IMG src="images/lupa.jpg" alt="Marcas" width="19" height="19" align="top"
+	  					 style="CURSOR: hand" 
+						 onClick="frameMarcas.popsearchbox(txtCodMarca,txtMarca, divMarcas,'clrModelo();'); return false;">				  </TD>
+		  	      <TD colspan="4" align="left" valign="top" >
+                    <INPUT type="text" name="txtModelo" class="input" datafld="MODELO">                  </TD>
+  	              <TD colspan="7" valign="top" >
+                    <INPUT name="txtDimensiones" type="text" class="input"
+						  size="35" datafld="DIMENSIONES" ID="txtDimensiones">  	              </TD>
+          </TR>
+		  	    <TR align="center">
+		  	      <TD height="4" colspan="24" valign="bottom" class="texto" ><HR></TD>
+          </TR>
+		  	    <TR align="center" class="rotulo">
+		  	      <TD WIDTH="117" height="38" valign="top" >Fecha Instalaci&oacute;n</TD>
+		  	      <TD colspan="3" align="center" valign="top"  >Dias Trabajados</TD>
+		  	      <TD colspan="4" align="center" valign="top" >Proxima Mantenci&oacute;n Proyectada</TD>
+		  	      <TD colspan="6" align="center" valign="top"  >Alarma de Mantenci&oacute;n / Escala </TD>
+                  <TD colspan="5" align="center" valign="top"  >Horometro / Ton. Actual</TD>
+                  <TD colspan="4" align="center" valign="top"  >Vida Util</TD>
+		  	      <TD width="218"  >Ton. Prom. Semanal</TD>
+          </TR>
+		  	    <TR align="center">
+	              <TD height="24" align="left" valign="top">
+	                <INPUT name="TxtFechaInstalacion" type="text" datafld="FECHA_INST" class="input" size="12" />
+                  <IMG  src="images/calendar.jpg" ALT="Fecha" align="top" style="CURSOR: hand"
+									  onClick="FrameCalendar.fPopCalendar(TxtFechaInstalacion,TxtFechaInstalacion,divCalendar);return false">	              </TD>
+	              <TD colspan="3" align="center" valign="top" class="texto">
+                    <INPUT name="TxtHorometroVen" type="text" 
+									class="inputBold"  size="12" datafld="HOROMETRO_VEN"  /></TD>
+            <TD colspan="4" align="center" valign="top" class="texto"><P>
+                <INPUT name="TxtHorometroMan" type="text" 
+								class="input"  size="12"  datafld="HOROMETRO_MAN">
+            </TD>
+            <TD colspan="6" align="left" valign="top" class="texto">
+			  <INPUT name="TxtHorometroAlarm" type="text" class="input" size="10"  datafld="HOROMETRO_ALARM">
+              <SELECT name="listEscalaAlr" datafld="ESCALA_ALARM">
+                <OPTION value="H">Horas</OPTION>
+                <OPTION value="D">D&iacute;as</OPTION>
+                <OPTION value="M" selected>Meses</OPTION>
+                <OPTION value="A">A&ntilde;os</OPTION>
+              </SELECT>            </TD>
+            <TD colspan="5" valign="top">
+              <INPUT name="TxtHorometro" type="text" datafld="HOROMETRO" class="input" size="12" />            </TD>
+            <TD colspan="4">
+            <INPUT name="txtVidaUtil" type="text" datafld="VIDA_UTIL" class="input" size="12" /></TD>
+            <TD><INPUT name="txtTonSemanal" type="text" datafld="TON_SEMANAL" class="input" size="12" /></TD>
+          </TR>
+		  	    <TR align="center">
+		  	      <TD height="2" colspan="24" align="left" valign="top"><HR></TD>
+          </TR>
+                <TR>
+                  <TD colspan="4" ROWSPAN="2"  align="left" valign="top">
+				   
+			     <TABLE height="89%" border="0" cellpadding="0" cellspacing="0" datapagesize="1"
+                  id="tabImages" DATASRC="#xmlImages">
+			      <TR>
+					  <TD height="23" valign="top">
+                       <FONT class="calibri">&nbsp;Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>&nbsp;</FONT>
+                   		 <A  href="javascript:irAtras('tabImages');">&lt; Anterior</A>         
+                   	   <A  href="javascript:irAdelante('tabImages');">Siguiente &gt;</A>                         </TD>
+				   </TR>
+  				<TR>
+							<TD width="233" height="194"  align="center" valign="top">
+                            <A datafld="FILEID" target="_blank">
+                   	  		<IMG src="images/noDisponible.png"  border="1" width="180" 
+                             		align="middle" datafld="FILEIMAGE"
+                                	 onerror="this.src='images/noDisponible.png';"><BR>
+           	      			<BR><SPAN DATAFLD="ID" ID="txtId" STYLE="visibility:hidden"></SPAN>
+                              <SPAN DATAFLD="NOMBRE"></SPAN></A>
+                                       <SPAN id="ID_list_cant_reg" style="visibility:hidden"></SPAN>                           	</TD>
+  				</TR>
+					
+					<TR>
+                        <TD valign="top">
+                          <INPUT name="button2" type="button" class="botonBlanco"  value="Nuevo Archivo" onClick="newFile();">
+                          <INPUT name="button3" type="button" class="botonBlanco"  value="Eliminar" onClick="delFile();">                          </TD>
+					  </TR>
+		 </TABLE>         </TD>
+            	<TD height="147" colspan="20" valign="top" >
+                <SPAN class="calibri">Observaciones</SPAN><BR>
+                <TEXTAREA  name="txtObservacion" cols="100" rows="10" class="Rotulo" datafld="OBSERVACION"></TEXTAREA>            	</TD>
+          </TR>
+                <TR>
+                  <TD WIDTH="59" height="97" >&nbsp;</TD>
+                  <TD >&nbsp;</TD>
+                  <TD WIDTH="25" >&nbsp;</TD>
+                  <TD WIDTH="4" >&nbsp;</TD>
+                  <TD WIDTH="52" >&nbsp;</TD>
+                  <TD  colspan="15" ROWSPAN="2"  align="right" valign="middle" >
+                    <TABLE width="58%" cellpadding="5" cellspacing="1" style="BORDER-LEFT: #3b5998 1px ridge; ">
+                    <TR>
+                      <TD> <A href="javascript:verSubEquipos();">Componentes o Subequipos.</A></TD>
+                    </TR>
+                    <TR>
+                      <TD><A href="javascript:verLayout();">Informacion Grafica (Layout)</A></TD>
+                    </TR>
+                    <TR>
+                      <TD><A href="javascript:verActividades();">Actividades de Mantenci&oacute;n.</A></TD>
+                    </TR>
+                    
+                    <TR>
+                      <TD><A href="javascript:verHistorial();">Historial de Mantenci&oacute;n.</A></TD>
+                    </TR>
+                  </TABLE>                  </TD>
+                </TR>
+                <TR>
+                  <TD height="27"  colspan="9" valign="middle">
+                    <INPUT  type="button" class="botonBlanco" 
+                    onClick="LimpiaF();option='New';formulario.TxtCodigo.focus();" value="Nuevo Equipo">
+                    <INPUT  type="button" class="botonBlanco" onClick="Guardar();" value="Guardar">
+                    <INPUT  type="button" class="botonBlanco" onClick="DelEquipo();" value="Eliminar">
+                    <INPUT type="button" class="botonBlanco" onClick="document.location.href='index.html'"
+                     value="Salir">                  </TD>
+                </TR>
+                <TR>
+                  <TD HEIGHT="19">&nbsp;</TD>
+                  <TD WIDTH="26">&nbsp;</TD>
+                  <TD WIDTH="58">&nbsp;</TD>
+                  <TD WIDTH="30">&nbsp;</TD>
+                  <TD>&nbsp;</TD>
+                  <TD>&nbsp;</TD>
+                  <TD>&nbsp;</TD>
+                  <TD>&nbsp;</TD>
+                  <TD>&nbsp;</TD>
+                  <TD WIDTH="53" >&nbsp;</TD>
+                  <TD WIDTH="8" >&nbsp;</TD>
+                  <TD WIDTH="12" >&nbsp;</TD>
+                  <TD WIDTH="7" >&nbsp;</TD>
+                  <TD WIDTH="56" >&nbsp;</TD>
+                  <TD WIDTH="28" >&nbsp;</TD>
+                  <TD WIDTH="46" >&nbsp;</TD>
+                  <TD WIDTH="5" >&nbsp;</TD>
+                  <TD WIDTH="13" >&nbsp;</TD>
+                  <TD width="54" >&nbsp;</TD>
+                  <TD width="47" >&nbsp;</TD>
+                  <TD >&nbsp;</TD>
+                  <TD WIDTH="34" >&nbsp;</TD>
+                  <TD WIDTH="17" >&nbsp;</TD>
+                  <TD >&nbsp;</TD>
+                </TR>
+      </TABLE>
+  </TD>
+</TR>
+  </TABLE>
+</td></tr>
+</table>
+
+</FORM>
+</BODY>
+</HTML>

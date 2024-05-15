@@ -1,0 +1,461 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<meta http-equiv="Cache-Control" content="no-cache">
+<head><TITLE>Modos de Fallas</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<STYLE TYPE="text/css">
+
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+.texto{
+cursor:pointer;
+}
+
+
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlGrupos></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlHorometros></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK REL="stylesheet" HREF="standard/menu.css" TYPE="text/css">
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" language="javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT>
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+
+
+function newModo(){
+	
+		 
+		desc = prompt("Nombre de Falla");
+		var url = "xml/Checklist.asp?RECURSO=newFalla";
+			url += "&DESCRIPCION=" + desc;
+			url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+			url += "&VTZ=" + Math.random();
+		 
+		 $.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+
+			}) , listModos(document.getElementById("ListEquipos").value)//end each
+		})//end $get	
+}
+
+function newCausa(){
+	var id;
+		 
+		desc = prompt("Causa de Falla");
+		var url = "xml/Checklist.asp?RECURSO=newCausa";
+			url += "&DESCRIPCION=" + desc;
+			url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+			url += "&COD_FALLA=" + document.getElementById("idCodFalla").innerText;
+			url += "&VTZ=" + Math.random();
+		 
+		 //window.open(url);
+		 
+		 $.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				  id = $(this).find("ID").text();
+			}) , verCausa( document.getElementById("idCodFalla").innerText)//end each
+		})//end $get	
+}
+ 
+function listModos(cod){
+
+	document.getElementById("idCod").innerText = cod;
+	
+		 
+	  var url = "xml/Checklist.asp?RECURSO=Listafallas";
+		  url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+		  url += "&VTZ=" + Math.random();
+
+	var tbl = document.getElementById('tbl');
+	
+		limpiarTabla2(tbl);
+		
+		row = tbl.insertRow(-1);
+		//row.bgColor= "#F8C305";
+		row.align="center";
+		row.className = "titulo";
+					
+					var cell = row.insertCell(-1);
+					cell.innerHTML = " ID "
+					cell.width = "40";
+					cell.align="center";
+					
+					var cell = row.insertCell(-1);
+					cell.innerHTML = "NOMBRE "
+					cell.width = "40";
+					cell.align="center";
+					//cell.onclick = function (){verCompra()};
+				 
+		 
+				var j=0;
+ 
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+					//var title = $(this).find("firstname").attr("title");
+				 
+					var id 	= $(this).find("ID").text();
+					 
+					var desc	= $(this).find("DESCRIPCION").text();
+		 			
+					var row = tbl.insertRow(-1);
+				  if (j==1){_bgColor= "#cccccc";j=2;}
+					else{ _bgColor="#ffffff";j=1;}
+
+				row.className = "texto";
+				row.bgColor= _bgColor;
+				
+	
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span>" + id+ "</span>"; cell.align="center";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span style='text-decoration:underline'>" + desc  +  "</span>";
+				cell.align="left";
+				cell.onclick = function (){verCausa(id, desc)};
+						 			 		
+			 
+				
+		
+			}) , hidd()//end each
+		})//end $get	
+	
+ } 
+
+function verCausa(id, desc){
+
+document.getElementById("idCodFalla").innerText = id;
+document.getElementById("idDesFalla").innerText = desc;
+	
+ var url = "xml/Checklist.asp?RECURSO=listCausas";
+	 url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+	 url += "&COD_FALLA=" + id;
+	 url += "&VTZ=" + Math.random();
+
+	var tbl = document.getElementById('tbl2');
+	
+		limpiarTabla2(tbl);
+		
+		row = tbl.insertRow(-1);
+		//row.bgColor= "#F8C305";
+		row.align="center";
+		row.className = "titulo";
+					
+					var cell = row.insertCell(-1);
+					cell.innerHTML = " ID "
+					cell.width = "40";
+					cell.align="center";
+					
+					var cell = row.insertCell(-1);
+					cell.innerHTML = "NOMBRE "
+					cell.width = "40";
+					cell.align="center";
+					//cell.onclick = function (){verCompra()};
+				 
+		 
+				var j=0;
+ 
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+					//var title = $(this).find("firstname").attr("title");
+				 
+					var id 	= $(this).find("ID").text();
+					 
+					var desc	= $(this).find("DESCRIPCION").text();
+		 			
+					var row = tbl.insertRow(-1);
+				  if (j==1){_bgColor= "#cccccc";j=2;}
+					else{ _bgColor="#ffffff";j=1;}
+
+				row.className = "texto";
+				row.bgColor= _bgColor;
+	
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span>" + id+ "</span>"; cell.align="center";
+			
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  "<span >" + desc  +  "</span>";
+				cell.align="left";
+		 
+ 
+			}) , hidd()//end each
+		})//end $get	
+
+}
+
+function hidd(){
+//with (divWait.style){visibility = "hidden"};
+}
+
+
+function ListTipos(){
+
+		if (id_br == "IE")
+		{
+			var xmlEquipos = document.getElementById("xmlEquipos");
+			xmlEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipos = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListTipos";
+	  	  
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+
+  if (res){
+					  opcion = new Option("TODOS" ,"TOD");
+						if (opcion.value == "TOD") opcion.selected = true;
+						document.getElementById("ListEquipos").options[0] = opcion; 
+						
+					  var tree = xmlDso.documentElement;
+					  //alert(tree.childNodes.length);
+					  for(var i = 1; i < tree.childNodes.length+1; i++){
+						var node = tree.childNodes.item(i-1);
+						opcion = new Option(getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+						document.getElementById("ListEquipos").options[i] = opcion;
+						 }
+  
+    	  }
+	else
+	  window.open(url);
+	
+ }
+ 
+//function ListCheck(CodEquipo){
+//
+//	var tbl = document.getElementById('tabCheck');
+//	//limpiarTabla(tbl);
+//		if (id_br == "IE")
+//		{
+//			var xmlHorometros = document.getElementById("xmlHorometros");
+//			xmlHorometros.async = false;
+//		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+//			var xmlHorometros = document.implementation.createDocument("", "", null);
+//		}
+//	var xmlDso = xmlHorometros.XMLDocument;
+//	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+//		url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+//		url += "&VTZ=" + Math.random();
+//		
+//		
+//		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+//		{
+//					if (window.XMLHttpRequest)
+//					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+//					  xmlhttp=new XMLHttpRequest();
+//					  }
+//					else
+//					  {// code for IE6, IE5
+//					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+//					  }
+//					xmlhttp.open("GET",url,false);
+//					xmlhttp.send();
+//					xmlDoc=xmlhttp.responseText;
+//                    parser = new DOMParser();
+//            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+//					res = parser.parseFromString(xmlDoc, "text/xml"); 
+//					//alert(xmlDso);
+//					//window.open(url);
+//		}
+//		else if (id_br == "IE")
+//		{
+//			res = xmlDso.load(url);
+//		}
+//		//window.open(url);
+//	if (!res)
+//			window.open(url);
+//}
+
+
+
+function EliminarCheck(Index){
+
+	var tabla = document.getElementById('tabCheck');
+	var Codigo = tabla.rows[Index].children[0].innerHTML;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=DelCheck&ID=" + Codigo;
+		url += "&TIPO_EQUIPO=" + document.getElementById("ListEquipos").value;
+		url += "&VTZ=" + Math.random();
+		
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar CheckList Codigo " + Codigo)){
+					if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+					{
+								if (window.XMLHttpRequest)
+								  {// code for IE7+, Firefox, Chrome, Opera, Safari
+								  xmlhttp=new XMLHttpRequest();
+								  }
+								else
+								  {// code for IE6, IE5
+								  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+								  }
+								xmlhttp.open("GET",url,false);
+								xmlhttp.send();
+								xmlDoc=xmlhttp.responseText;
+								parser = new DOMParser();
+								xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+								res = parser.parseFromString(xmlDoc, "text/xml"); 
+								//alert(xmlDso);
+								//window.open(url);
+					}
+					else if (id_br == "IE")
+					{
+						res = xmlDso.load(url);
+					}
+					if(!res)
+							window.open(url);
+	//ListCheck(document.getElementById("ListEquipos").value);
+	}
+	ListCheck();	
+}
+
+function selGrupo(Index){
+	var tabla = document.getElementById('tabGrupos');
+	var CodGrupo =  tabla.rows[Index].children[0].innerText;
+	var Nombre =  tabla.rows[Index].children[1].innerText;
+	formulario.txtCodGrupo.value = CodGrupo;
+	document.getElementById('idNombreGrupo').innerText = Nombre;
+	ListHorometros(CodGrupo);
+	//getDescripcionActividad(Actividad);
+	
+}
+
+function getDescripcionActividad(Actividad){
+	var xmlDso = xmlDesc.XMLDocument;
+	var url = "xml/Actividades.asp?RECURSO=GetActividad&CODIGO=" + Actividad;
+		url += "&COD_EQUIPO=" + formulario.txtCodEquipo.value;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+	
+	if(!res)
+			window.open(url);
+
+
+}
+
+function inicio(){
+ListTipos();
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM NAME="formulario">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE WIDTH="764">
+<TR>
+  <TD HEIGHT="31" COLSPAN="2" CLASS="titulo">MODOS DE FALLAS</TD>
+</TR>
+<TR CLASS="titulo">
+<TD WIDTH="148" height="44">Componente  :</TD>
+<TD WIDTH="604">
+		<SELECT NAME="ListEquipos" ID="ListEquipos" onChange="listModos(this.value);" CLASS="Campo"></SELECT>
+        <span id="idCod"></span>&nbsp; <span id="idCodFalla"></span>&nbsp; <span id="idDesFalla"></span></TD>
+</TR>
+</TABLE>
+
+<TABLE WIDTH="714" BORDER="0" CELLPADDING="5" CELLSPACING="5">
+  <tr>
+  	<td WIDTH="8" height="193">&nbsp;&nbsp;</td>
+	<td WIDTH="328" ALIGN="center" VALIGN="top" CLASS="td">
+    <table id="tbl" width="100%" ></table>  </td>
+	<td WIDTH="328" ALIGN="center" VALIGN="top" CLASS="td">
+    	 <table id="tbl2" width="100%" ></table>   </td>
+    </tr>
+    <tr>
+    <td WIDTH="8"  >&nbsp;&nbsp;</td>
+    <td><input type="button" value="Nuevo Modo"  onClick="newModo();"/></td>
+    <td><input type="button" value="Nueva Causa"  onClick="newCausa();"/></td>
+    </tr>
+</TABLE>
+
+</FORM>
+
+<!--<DIV ALIGN="left" >
+  <INPUT TYPE="button"  onClick="document.location.href='index.html'" VALUE="Salir" CLASS="botonBlanco">
+</DIV>
+--></BODY>
+</HTML>

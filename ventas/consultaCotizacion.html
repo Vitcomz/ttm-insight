@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Consulta Cotizaciones</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlEquipos></xml>
+		<LINK REL="stylesheet" HREF="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+		<!-- MENU -->
+		<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+		<!-- MENU -->
+        <STYLE TYPE="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </STYLE>
+</HEAD>
+
+<SCRIPT>
+function inicio(){
+listCotizaciones();
+
+}
+
+function list(){
+ListIncidentes();
+ListIncidentesOT();
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsablesInc.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsablesInc.options[0] = opcion; 
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsablesInc.options[i] = opcion;
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+
+
+
+
+function verCotizacion(Index){
+var tabla = parent.document.getElementById('tabSolicitudes');
+//alert(Index);
+Folio = tabla.rows[Index].children[0].innerText;
+
+	window.location.href="cotizaciones.html?modo=1&Folio=" + Folio;
+
+}
+
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabSolicitudes');
+	Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="OrdenCompra.html?Folio=" + Folio + "&EMPRESA=" + getEmpresa();
+
+}
+
+
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+function listCotizaciones(){
+
+/*
+for (i=0;i<formulario.tipoSolicitud.length;i++)
+			if(formulario.tipoSolicitud[i].checked)
+					tipo=formulario.tipoSolicitud[i].value;	
+	*/
+					
+	xmlSolicitudes.async = false;
+	var xmlDso =xmlSolicitudes.XMLDocument;
+	var url = "xml/cotizaciones.asp?RECURSO=queryCotizaciones";
+		url +="&USERNAME=" + GetSession();
+		url +="&CLIENTE=" + formulario.txtRut.value;
+		url +="&ESTADO=" + formulario.listEstados.value;
+		url +="&SUCURSAL=" + getEmpresa();
+
+	//alert(tipo);
+		//window.open(url);
+	var res = xmlDso.load(url);
+	if(res){
+		//BLOQUE DE NAVEGACION
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/10);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+	else
+		window.open(url);
+
+}
+
+
+function GetInsumo(){
+}
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</SCRIPT>
+	<BODY>
+		<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+	</DIV>
+	
+<DIV ID="DivInsumos" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameInsumos" SRC="ArticulosOT.html" frameBorder="0" WIDTH="560" SCROLLING="no" HEIGHT="270">
+</IFRAME>
+</DIV>
+
+<DIV ID="divClientes" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 150; LEFT: 207px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 165px; width: 312px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="listFrClientes" SRC="listClientes.html" frameBorder="0" WIDTH="312" SCROLLING="no" HEIGHT="250"></IFRAME>
+</DIV>
+		
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+	<BR>
+	<BR>
+		<FORM NAME="formulario">
+		  <INPUT NAME="TxtCodigo" TYPE="hidden" CLASS="input" />
+				  <TABLE BORDER="0" ID="tableTitulo" CELLSPACING="5">
+						  <TR CLASS="titulo">
+						    <TD WIDTH="504" COLSPAN="2">Consulta de Cotizaciones.</TD>
+				    </TR>
+						  <TR CLASS="titulo">
+						    <TD COLSPAN="2">Cliente : 
+						      <INPUT NAME="txtRut" TYPE="text" 
+									class="input" SIZE="12" DATAFLD="RUT_CLIENTE"/>
+                              <INPUT NAME="txtCliente" TYPE="text" CLASS="input"
+						  					  size="40" DATAFLD="CLIENTE"/>
+                              <INPUT  class="Campo" ID="idRol" TYPE="hidden" SIZE="1" NAME="txtRol">
+                              <INPUT  class="Campo" ID="idUsuario" TYPE="hidden" SIZE="1" NAME="txtUsuario">
+                              <IMG SRC="images/lupa.jpg" ALT="Buscar" WIDTH="19" 
+                            		height="19" ALIGN="absmiddle" STYLE="CURSOR: hand" 
+                         onclick="listFrClientes.popsearchbox(1,txtRut,txtCliente,divClientes,'listCotizaciones();');"> </TD>
+				    </TR>
+						  <TR CLASS="titulo">
+						    <TD COLSPAN="2">Estado :
+                             <SELECT  name="listEstados" CLASS="input" DATAFLD="ESTADO" onChange="listCotizaciones();">
+                              <OPTION VALUE="ING">INGRESADA</OPTION>
+                              <OPTION VALUE="ENV">ENVIADA</OPTION>
+                              <OPTION VALUE="APR">APROBADA</OPTION>
+							  <OPTION VALUE="EFE">EFECTUADA</OPTION>
+							  <OPTION VALUE="NUL">ANULADA</OPTION>
+                            </SELECT></TD>
+				    </TR>
+				  </TABLE>
+				  
+<TABLE>
+					  <TR>
+					   <TD CLASS="input">
+					   <INPUT  class="littleButton" TYPE="button" 
+					   				value=" << " onClick="irInicio('tabSolicitudes');">
+						<INPUT  class="littleButton" TYPE="button"
+									 value="  <  " onClick="irAtras('tabSolicitudes');">
+						<INPUT  class="littleButton" TYPE="button" 
+								value="  >  " onClick="irAdelante('tabSolicitudes');">
+						<INPUT  class="littleButton" TYPE="button" VALUE=" >> " 
+									onClick="irFinal('tabSolicitudes');">&nbsp;&nbsp;
+							Registros: <SPAN ID="ID_list_cant_reg"></SPAN>
+							&nbsp;| Vista: <SPAN ID="ID_list_fraccion_reg"></SPAN>						</TD>
+						</TR>
+					</TABLE>
+			<TABLE WIDTH="1105"  border="0" CELLPADDING="1" CELLSPACING="2"
+					  		datapagesize="10" CLASS="texto" ID="tabSolicitudes"
+					  	 datasrc=#xmlSolicitudes>
+					 
+					<THEAD>
+					<TR CLASS="HeaderLista">
+						  <TD WIDTH="32" HEIGHT="15">Folio</TD>
+						  <TD WIDTH="282" >Motivo</TD>
+					  <TD WIDTH="71" >Fecha </TD>
+  						  <TD WIDTH="202" >Cliente</TD>
+					  <TD WIDTH="93">Estado</TD>
+   						  <TD WIDTH="115">Monto</TD>
+   						  <TD WIDTH="115">Sucursal</TD>
+   						  <TD WIDTH="115">Vendedor</TD>
+					  <TD WIDTH="42">Tipo Moneda</TD>
+					</TR>
+					</THEAD>
+					<TR BGCOLOR="#dee6eb"  class="tituloLista"
+						onClick="verCotizacion(this.rowIndex);" STYLE="cursor:hand">
+					  	<TD  align="CENTER" >
+					 	 <SPAN  datafld="FOLIO"/></TD>
+					    <TD  align="LEFT"><SPAN DATAFLD="DESCRIPCION"/></TD>
+					  	<TD  align="center">
+						<SPAN DATAFLD="FECHA"/></TD>
+						<TD ALIGN="LEFT">
+						<SPAN DATAFLD="CLIENTE"/></TD>
+						<TD ALIGN="center">
+							<SPAN  datafld="ESTADO"/></TD>
+						<TD  ALIGN="RIGHT"><SPAN  datafld="TOTAL_NETO"/></TD>
+						<TD ALIGN="center"><SPAN  datafld="SUCURSAL"/></TD>
+						<TD ALIGN="center">
+						<SPAN  datafld="RESPONSABLE"/></TD>	
+                        						<TD ALIGN="center">
+						<SPAN  datafld="TIPO_MONEDA"/></TD>
+					</TR>
+				</TABLE>
+	   
+				 			
+	</FORM>
+
+	</BODY>
+</HTML>

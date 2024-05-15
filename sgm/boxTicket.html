@@ -1,0 +1,541 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+<link rel="stylesheet" href="css/jquery-ui.css" type="text/css" media="screen">
+<link rel="stylesheet" href="css/style-ttm.css" type="text/css" media="screen">
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css">
+
+<style>
+
+body{
+font-size:9px;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+
+.text{ 
+font-size:9px;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+ .text:hover{
+ cursor:pointer; 
+ text-decoration:underline;
+ }
+ 
+  .textSub{
+ cursor:pointer; 
+ text-decoration:underline;
+ }
+  
+</style>
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<script language="JavaScript1.2" src="js/main.js"></SCRIPT>
+<script src="js/jquery-ui-1.8.20.min.js"></script>
+<script>
+
+   $(document).ready(function() {	
+
+  
+	$("#idFecha").datepicker({
+    showOn: 'both',
+    buttonImage: 'mg/calendar.jpg',
+    buttonImageOnly: true,
+    changeYear: true,
+	currentText: "Now",
+    numberOfMonths: 1,
+    onSelect: function(textoFecha, objDatepicker){		 }
+ 	}); 
+	
+	
+	  
+	 $("#idFechaFin").datepicker({
+    showOn: 'both',
+    buttonImage: 'mg/calendar.jpg',
+    buttonImageOnly: true,
+    changeYear: true,
+	currentText: "Now",
+    numberOfMonths: 1,
+    onSelect: function(textoFecha, objDatepicker){		 }
+ 	}); 
+	
+	
+	  $.datepicker.regional['es'] = {
+       closeText: 'Cerrar',
+       prevText: '<Ant',
+       nextText: 'Sig>',
+       currentText: 'Hoy',
+       monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+       monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+       dayNames: ['Domingo', 'Lunes', 'Martes', 'Mi�rcoles', 'Jueves', 'Viernes', 'S�bado'],
+       dayNamesShort: ['Dom','Lun','Mar','Mi�','Juv','Vie','S�b'],
+       dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','S�'],
+       weekHeader: 'Sm',
+       dateFormat: 'dd/mm/yy',
+       firstDay: 1,
+       isRTL: false,
+       showMonthAfterYear: false,
+       yearSuffix: ''};
+	   
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+	
+	} );
+	
+	
+ function listClientes(){
+
+  var i=0;
+  var url = "js/clientes.asp?RECURSO=listClientes";
+  	url += "&EMPRESA=" + getEmpresa();
+	url += "&USERNAME=" + getSession();
+	url += "&VTZ=" + Math.random();
+	//	window.open(url);
+	opcion = new Option("SELECCIONAR" ,"");
+	document.getElementById("idClientes").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("RUT").text();
+					var descripcion = $(this).find("NOMBRE").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idClientes").options[i] = opcion;		
+		}) ,listContactos();//end each
+			
+	})//end $get
+
+}
+
+function listFaenas(){
+	
+	var url = "xml/Usuarios.asp?RECURSO=listFaenas";
+		url += "&ID=" + getSession();
+	 	url += "&EMPRESA=" + getEmpresa();
+		url += "&USERNAME=" + getSession();
+		url += "&VTZ=" + Math.random();
+		
+		//window.open(url);
+	
+	var i=0;
+	
+	opcion = new Option("TTM INSIGHT --" ,"0");
+	document.getElementById("idFaena").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion, codigo);
+	          	document.getElementById("idFaena").options[i] = opcion;		
+		}), getTicket(); //end each
+	})//end $get
+
+
+}	
+		
+function listContactos(){
+
+  var i=0;
+  
+  document.getElementById("idContactos").lenght=0;
+  
+  opcion = new Option("SELECCIONAR" ,"");
+  document.getElementById("idContactos").options[i] = opcion;
+			
+  var url = "js/clientes.asp?RECURSO=listContactos";
+  		url += "&CLIENTE=" + document.getElementById("idClientes").value;
+  		url += "&EMPRESA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	//	window.open(url);
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("NOMBRES").text() + ' '+ $(this).find("APELLIDOS").text() ;
+				//alert(codigo);
+				i=i+1;
+				opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idContactos").options[i] = opcion;
+			}),getTicket(); //end each
+			
+	})//end $get
+	
+			
+}
+
+function guardar(){
+
+/*
+alert(getParametro("ID"));
+return;
+*/
+
+if(!getParametro("ID")){
+	sendMail();return;
+	}
+
+
+if(getParametro("ID")!='undefined'){save()}
+	else{sendMail();}
+	
+
+}
+
+
+function sendMail(){
+			
+	 if (document.getElementById("idObs").value==""){
+	 			alert("Ingrese su consulta.");
+				return;}
+ 
+	 with (divWait.style){visibility = "visible";} 
+	 
+	var sel = document.getElementById("idFaena");
+	var desc_cliente = sel.options[sel.selectedIndex].innerHTML;
+ 	
+	url = "js/mail.asp?RECURSO=newMailSupp";
+	url += "&FROM="+getSession();
+	url += "&USERNAME="+document.getElementById("idUsuario").innerText;
+	url += "&FECHA="+document.getElementById("idFecha").value;
+	url += "&FECHA_FIN="+document.getElementById("idFechaFin").value;
+	url += "&CONTACTO="+document.getElementById("idUsuario").innerText;
+	url += "&IND_SOL="+document.getElementById("idSolucion").checked;
+	url += "&DESC_FAENA=" + desc_cliente;
+	url += "&FAENA="+document.getElementById("idFaena").value;
+	url += "&EMPRESA="+getEmpresa();
+	url += "&IMPORTANCIA="+ document.getElementById("idPri").value;
+	url += "&OBS="+ scape(document.getElementById("idObs").value);
+	url += "&VTZ=" + Math.random();	
+
+	//window.open(url);
+ 
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			  	alert("Datos enviados a: " + $(this).find("MAIL").text());
+		}),salir();//End each
+	});//end $.get
+}
+
+function save(){
+
+	 var mail;
+	 mail="";
+ 
+				
+	 if (document.getElementById("idObs").value==""){
+	 			alert("Ingrese su consulta.");
+				return;}
+ 
+ 	if(confirm("Envia Mail con Cambios?")){
+			mail = "YES";}
+	
+	 with (divWait.style){visibility = "visible";} 
+	 
+	var sel = document.getElementById("idFaena");
+	var desc_cliente = sel.options[sel.selectedIndex].innerHTML;
+ 
+ 	url = "js/mail.asp?RECURSO=updateMailSupp";
+	url += "&ID="+getParametro("ID");
+	url += "&USERNAME="+document.getElementById("idUsuario").innerText;
+	url += "&IND_MAIL="+mail;
+	url += "&FECHA="+document.getElementById("idFecha").value;
+	url += "&FECHA_FIN="+document.getElementById("idFechaFin").value;
+	url += "&CLIENTE="+document.getElementById("idFaena").value;
+	url += "&DESC_FAENA="+desc_cliente;
+	url += "&IND_SOL="+document.getElementById("idSolucion").checked;
+	//url += "&IND_FAC="+document.getElementById("idFacturado").checked;
+	url += "&EMPRESA="+getEmpresa();
+	url += "&IMPORTANCIA="+ document.getElementById("idPri").value;
+	url += "&OBS="+ scape(document.getElementById("idObs").value);
+	url += "&VTZ=" + Math.random();	
+
+	//window.open(url);
+ 
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			if(mail=="YES")
+			  	alert("Datos enviados a: " + $(this).find("MAIL").text());
+		}), salir();//End each
+	});//end $.get
+		
+	
+}
+
+function setUsuario(_cod, _nombre){
+//	alert(_rut +" " + _nombre);
+document.getElementById("idUsuario").innerText = _cod;
+document.getElementById("idNombre").innerText  = _nombre;
+document.getElementById("idObs").focus();
+}
+
+ 
+
+function showCont(){
+frameCont.showWin(divCont);
+}
+
+
+function sendComent(obj){
+
+var tbl = document.getElementById('tblChat');
+var i = obj.parentElement.parentElement.rowIndex;
+var text = obj.parentElement.parentElement.children[0].children[0].value;
+
+// alert(text+" " + i);
+
+	  var url = "js/mail.asp?RECURSO=newMsj";
+	   		url += "&FOLIO=" + getParametro("ID");
+			url += "&DESCRIPCION=" + text;
+			url += "&USERNAME=" + getSession();
+	     	url += "&EMPRESA=" + getEmpresa();
+		  	url += "&VTZ=" + Math.random();
+
+	 // window.open(url);
+
+  
+	   $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+		//	document.getElementById("idFolio").value =  $(this).find("ID").text();
+
+			}), listMsj();//End each
+	});//end $.get
+	
+
+
+}
+
+function newCliente(){
+frameNewCliente.show(document.getElementById("divNewCliente")); 
+}
+
+function newMsj(){
+
+	var tbl = document.getElementById('tblChat');
+	
+	 var row = tbl.insertRow(0);
+		 	// row.onclick = function (){set(id, nom)};
+		// row.bgColor= _bgColor;
+			//row.className = "text";
+		 
+  			var cell = row.insertCell(-1);
+			cell.innerHTML =  "<textarea rows=4 cols=80 id='idComent'></textarea>";
+			cell.aling ='left';
+			cell.width="97%";
+			
+			var cell = row.insertCell(-1);
+			cell.innerHTML =  "<input type='button' onclick='sendComent(this);' value='Enviar'></input>";
+			cell.aling='left';
+			cell.width="97%";
+			document.getElementById('idComent').focus();
+			
+				
+}
+
+
+function listMsj(){
+
+	var j=1;
+ 	var tbl = document.getElementById('tblChat');
+//  if(_value.length>3)
+
+	  var url = "js/mail.asp?RECURSO=listMsj";
+	  	  url += "&FOLIO=" + getParametro("ID");
+	      url += "&EMPRESA=" + getEmpresa();
+		  url += "&VTZ=" + Math.random();
+		  
+limpiarTabla2(tbl);	
+
+	//  window.open(url);
+	  
+	   $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+		//	document.getElementById("idFolio").value =  $(this).find("ID").text();
+
+		if (j==1){_bgColor="#f4fafe";j=2;}
+	 		else{_bgColor="#d2f2ea";j=1;}
+			
+		var text = $(this).find("TEXTO").text();
+		var user = $(this).find("USERNAME").text();
+		var userdate = $(this).find("USERDATE").text();
+			
+ 		 var row = tbl.insertRow(-1);
+		 	// row.onclick = function (){set(id, nom)};
+			 row.bgColor= _bgColor;
+			//row.className = "text";
+		 
+  			var cell = row.insertCell(-1);
+			cell.innerHTML =  text;
+			cell.width="50%";
+			
+			var cell = row.insertCell(-1);
+			cell.innerHTML =  user;
+			cell.aling='left';
+			cell.width="97%";
+			
+				var cell = row.insertCell(-1);
+			cell.innerHTML =  userdate;
+			cell.aling='left';
+			cell.width="97%";
+				
+		})//End each
+	});//end $.get
+	
+}
+
+
+function getTicket(){	
+ 
+ 	url = "js/mail.asp?RECURSO=getTicket";
+	url += "&FOLIO="+getParametro("ID");
+	url += "&EMPRESA="+getEmpresa();
+	url += "&VTZ=" + Math.random();	
+	
+	//window.open(url);
+ 
+$.get(url, function(theXML){
+			$('ROWS',theXML).each(function(i){
+			
+			  	document.getElementById("idFaena").value	= $(this).find("CLIENTE").text();
+				document.getElementById("idPri").value			= $(this).find("IMPORTANCIA").text();
+				document.getElementById("idObs").value 			= $(this).find("DESCRIPCION").text();
+				document.getElementById("idUsuario").innerText		= $(this).find("CONTACTO").text();
+				document.getElementById("idFecha").value		= $(this).find("FECHA").text();
+				document.getElementById("idFechaFin").value		= $(this).find("FECHA_FIN").text();
+				
+				if($(this).find("IND_SOL").text()=='true')	
+					document.getElementById("idSolucion").checked=true;
+				else 	document.getElementById("idSolucion").checked=false;
+				
+			
+				
+		}), listMsj();//End each
+	});//end $.get
+
+}
+
+function newContacto(){
+frameNewCont.show(document.getElementById("divNewCont")); 
+}
+
+
+function salir(){
+
+parent.document.getElementById('boxSupp').close();
+ 
+}
+	
+
+function inicio(){
+
+if(getSession()=='UNDEFINED'){
+	parent.document.location.href="index.html";
+	salir();
+}
+//alert(getParametro("ID"));
+document.getElementById("idFecha").value		= _hoy();
+document.getElementById("idUsuario").innerText 	= getSession();
+
+if(getRol()!="ADMIN")
+	document.getElementById("idEnviar").className ="hidden";
+
+if(getParametro("ID")!="undefined"){
+	document.getElementById("idID").innerText = getParametro("ID");
+	}
+	
+listFaenas();
+ 
+document.getElementById("idObs").focus();
+
+}
+
+	
+</script>
+<body   leftmargin="0" rightmargin="0" topmargin="0" onLoad="inicio();"  >
+<div id="divWait" 	style="position: absolute; visibility: hidden; width: 100; z-index: 100000;left: 350px; top: 150px; height: 130;"><font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+
+<DIV id="divCont" style="background-color:#CCCCCC;VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+	<IFRAME name="frameCont" src="listUsuarios.html?v=15" frameBorder="0" width="350" height="280"></IFRAME>
+</DIV>
+
+ 
+ 
+
+<form name="formulario">
+    <table width="96%" border="0" align="center" cellpadding="0" cellspacing="0">
+ 	 <!--DWLayoutTable-->
+ 	 <tr>
+  	  <td height="29"   class="titulo">&nbsp;&nbsp;TICKET DE SOPORTE</td>
+  	  <td width="282"><span id='idID'></span>&nbsp;</td>
+		<td   align="right"><strong>Solución : </strong></td>
+		<td >
+		  <input type="checkbox" id="idSolucion" />
+				 </td>
+  	  </tr>
+ 	              
+        <tr>
+          <td height="35" align="left">
+          	Usuario :
+            <img src="mg/glassIcon.png" alt="Buscar" style="cursor:pointer;"  onClick="showCont();"/>            </td>
+          <td width="247" align="left" valign="top" class="texto">
+          <span id="idUsuario"></span>&nbsp;<span id="idNombre"></span></td>
+          <td width="89" align="right">Faena :</td>
+          <td   class="link">
+          <select id="idFaena"  onChange="document.getElementById('idObs').focus();" >
+            
+          </select></td>
+          <td colspan="2" align="right"> 
+            <input  type="button" class="input" onClick="guardar();" id="idEnviar"  value="Guardar"  />
+            <input  type="button" class="input" onClick="salir();"  value="Salir"  /></td>
+          </tr>
+        
+        <tr>
+          <td width="133" height="34" align="left">Prioridad :</td>
+          <td align="left">
+            <select  id="idPri"  onChange="document.getElementById('idObs').focus();" >
+                <option value="1">Alta</option>
+                <option value="2" selected>Media</option>
+                <option value="3">Baja &nbsp;</option>
+            </select></td>
+          <td align="right">Fecha Pedido:</td>
+          <td width="150"  ><input type="text" id="idFecha" size="10" />  &nbsp;</td>
+     
+        </tr>
+        
+        <tr>
+          <td  width="170"  colspan="2" align="left">Observaci&oacute;n</td>
+		  <td  width="170"  align="left">Fecha Cierre:</td>
+		  <td  width="170" align="left"  ><input type="text" id="idFechaFin" size="10" /></td>
+          </tr>
+        <tr>
+          <td height="103" colspan="4" align="left"><textarea cols="100" rows="6" id="idObs"></textarea> </td>
+          </tr>
+        <tr>
+          <td height="39" colspan="4" align="center" class="link">
+          <div align="left" class="textSub" onClick="newMsj();">Nuevo Comentario</div></td>
+        </tr>
+        <tr>
+          <td height="80" colspan="4" align="left">
+          <table id="tblChat" width="95%"></table></td>
+          </tr>
+        <tr>
+          <td height="9"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td width="23"></td>
+          <td width="121"></td>
+          <td></td>
+        </tr>
+      </table> 
+	 
+ 
+	 
+</form>
+</body>
+</html>

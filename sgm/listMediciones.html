@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV='Expires' CONTENT='Tue, 01 Jan 1980 1:00:00 GMT'>
+<META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<META HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+
+
+
+
+
+
+</HEAD>
+<XML id="XMLTemp"></XML>
+<XML id="xmlEquipos"></XML>
+
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var codeobj = new Object();
+var nameobj = new Object();
+var strs;
+var functionName;
+
+var popbox = new Object();
+var Obj1 = new Object();
+var Obj2 = new Object();
+
+
+function mostrarVentana(_codeobj, _nameobj,  _popbox, _function){
+  //alert("hi");
+  parent.event.cancelBubble=true;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  popbox = _popbox;
+  functionName = _function
+  with (popbox.style){visibility = "visible";}
+ 
+  ListEquipos();
+ 
+  
+}
+
+function popsearchbox(_servstr, _codeobj, _nameobj, _popbox, _function){
+  parent.event.cancelBubble=true;
+  strs = _servstr;
+  popbox = _popbox;
+  codeobj = _codeobj;
+  nameobj = _nameobj
+  functionName = _function
+  var point = getXY(nameobj);
+  with (popbox.style){
+    left = point.x + 2;
+    top  = point.y + nameobj.offsetHeight + 10;
+    visibility = "visible";
+  }
+   ListEquipos();
+ search();
+
+}
+
+function setcodeandname(code, name){
+
+  codeobj.value = code;
+  
+  if (nameobj.tagName =='SPAN'){
+  		  nameobj.innerText = name;
+		  }
+	else
+	  nameobj.value = name;
+ popbox.style.visibility = "hidden";
+  event.cancelBubble=true;
+ runFunction();
+}
+
+function close(){
+  //nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;
+}
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+  XMLTemp.async = false;
+  var xmlDso = XMLTemp.XMLDocument;
+  var cr = 0;
+  var url = "xml/mediciones.asp?RECURSO=listMediciones";
+ 	 url +="&CODIGO=NULL";
+  	 url +="&USUARIO="+GetSession();
+	 url +="&EQUIPO="+formulario.ListEquipos.value;
+	 url +="&FAENA="+getEmpresa();
+	 url +="&VTZ=" + Math.random();
+	 
+  var res = xmlDso.load(url);
+   //window.open(url);
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	window.open(url);
+  }
+}
+
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =  xmlEquipos.XMLDocument;
+  var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+  var res = xmlDso.load(url);
+
+  if (res){
+    	     var tree = xmlDso.documentElement;
+ 			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.ListEquipos.options[0] = opcion; 
+				
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"DESCRIPCION")+"   " ,getChildNodeValue(node,"CODIGO"));
+	            formulario.ListEquipos.options[i] = opcion;
+ 			 }
+    	  }
+	else
+	  window.open(url);
+	
+ } 
+ 
+function buscaHijos(itr){
+var i;
+
+  if (itr){
+    XMLTemp.async=false;
+	 var xmlDso = XMLTemp.XMLDocument;
+	 var url = "xml/Equipos.asp?RECURSO=ListEquiposPadres";
+	 	 url +="&CODIGO=" + itr.children[0].children[0].innerText
+		 url +="&FAENA="+getEmpresa();
+	 var res = xmlDso.load(url);
+	 
+	 if (xmlDso.documentElement.childNodes.length==0){
+	 	//alert('hh');
+		 setcodeandname(itr.children[0].children[0].innerText, itr.children[1].children[0].innerText);
+			}
+			
+	}
+	
+	if (!res)
+	 		window.open(url);
+	//alert(itr.tagName);
+}
+
+function set(itr){
+	setcodeandname(itr.children[0].children[0].innerText,
+	itr.children[1].children[0].innerText);
+
+}
+
+function runFunction(){
+
+setTimeout("parent." + functionName, 400);
+
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;"
+ bgcolor="#dee6eb" SCROLL="no" onLoad="">
+
+<CENTER>
+
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;B�squeda de Mediciones </TD>
+    <TD ALIGN="right">
+	<IMG SRC="images/refresh.gif" ALT="Inicio" STYLE="CURSOR: hand" 
+										onclick="search();">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" 
+	  		onClick="popbox.style.visibility = 'hidden';">
+    </TD>
+  </TR>
+</TABLE>
+<form name="formulario" style="margin:0PX;">
+   <SELECT NAME="ListEquipos"  CLASS="input"  	onChange="search();">
+   </SELECT>
+ </form>
+<span id="msg" class="text" style="display:none;"></span>
+<SPAN ID="cont" STYLE="height:190px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLTemp" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+  <!--tr bgcolor="#c0ceda">
+    <td class="text" align="center" style="border-bottom:solid 1px #6587a3;">ID</td>
+  </tr-->
+  </THEAD>
+  <TR  STYLE="cursor:hand;" onMouseOver="mOvr(this,'#ABCCE5')" 
+  			onMouseOut="mOut(this,'#dee6eb')" HEIGHT="9">
+    <TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="FOLIO" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="FECHA" CLASS="text"></SPAN>&nbsp;
+    </TD>
+    <TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="EQUIPO" CLASS="text"></SPAN>&nbsp;
+    </TD>
+	<TD STYLE="border-bottom:solid 1px #6587a3;" onClick="set(this.parentElement);">
+      <SPAN DATAFLD="INSPECTOR" CLASS="text"></SPAN>&nbsp;
+    </TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+</BODY>
+
+</HTML>

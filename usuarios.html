@@ -1,0 +1,543 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Usuarios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+.listText {text-decoration:underline;
+font-family:Geneva, Arial, Helvetica, sans-serif;
+font-size:10px;
+font-style:italic;
+}
+-->
+</style>
+
+
+
+</HEAD>
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" >
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+<SCRIPT language="JavaScript1.2" src="js/main.js"></SCRIPT>
+<link rel="stylesheet" href="css/style-ttm.css" type="text/css" media="screen" />
+<SCRIPT>
+
+function getUsuario(){
+
+
+	var url = "js/usuarios.asp?RECURSO=getUsuario&ID=" + document.getElementById("idCodigo").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+		
+	//	window.open(url);
+		
+		$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+				document.getElementById('idNombres').value = $(this).find("NOMBRES").text();
+				document.getElementById('idApellidos').value = $(this).find("APELLIDOS").text();
+				document.getElementById('idPassword').value = $(this).find("PASSWORD").text();
+				document.getElementById('idRut').value = $(this).find("RUT").text();
+				document.getElementById('idDv').value = $(this).find("DV").text();
+				document.getElementById('idFono').value = $(this).find("FONO").text();
+				document.getElementById('idMail').value = $(this).find("E_MAIL").text();
+				document.getElementById('idClientes').value = $(this).find("LUGAR").text();
+				document.getElementById('idRol').value = $(this).find("ROL").text();
+				document.getElementById('idCargo').value = $(this).find("CARGO").text();
+				document.getElementById('idEmpresa').value = $(this).find("EMPRESA").text();
+				document.getElementById('idEstado').value = $(this).find("ESTADO").text();
+				if($(this).find("IND_SGI").text()=='true') document.getElementById('idSGI').checked=true;
+							else document.getElementById('idSGI').checked=false;
+				if($(this).find("IND_CONF").text()=='true') document.getElementById('idConf').checked=true;
+							else document.getElementById('idConf').checked=false;
+			}) //end each
+		})//end $get
+	
+}
+
+
+
+function sendMail(mod){
+
+	 
+ 
+if (document.getElementById("idMail").value==""){
+			alert("Ingrese e-mail.");
+		   return;}
+
+if (document.getElementById("idNombres").value==""){
+			alert("Ingrese su nombre.");
+		   return;}
+
+if (document.getElementById("idApellidos").value==""){
+			alert("Ingrese su Apellido(s).");
+		   return;}
+									   
+
+ url = "js/mail.asp?RECURSO=getMailPass";
+url += "&MAIL="+ document.getElementById("idMail").value;
+url += "&NOMBRES="+ document.getElementById("idNombres").value;
+url += "&APELLIDOS="+ document.getElementById("idApellidos").value;
+url += "&PASSWORD="+ document.getElementById("idPassword").value;
+url += "&EMPRESA=" + getEmpresa();
+url += "&SEND=YES";
+url += "&USERNAME="+getSession();
+url += "&VTZ=" + Math.random();	
+
+window.open(url);
+//return;
+$.get(url, function(theXML){
+	   $('ROW',theXML).each(function(i){
+		   resp =  $(this).find("ERROR").text();
+		   alert("Datos enviados. " + resp);
+		   parent.document.getElementById('boxPass').close();
+   })//End each
+
+});//end $.get
+   
+
+}
+
+
+
+function newPass(){
+
+	var url = "newPass.html";
+	url += "?VTZ=" + Math.random();
+
+winCfg = "width=622px,height=400px,left=" + 210 + "px,top=" + 60 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxPass", "iframe", url , "REGISTRO DE USUARIO", winCfg);
+			
+}
+
+function guardar(){
+
+var url = "js/usuarios.asp?RECURSO=updateUsuario" 
+	url += "&ID=" + document.getElementById("idCodigo").value;
+	url += "&PASSWORD=" + document.getElementById("idPassword").value;
+	url += "&NOMBRES=" + document.getElementById("idNombres").value;
+	url += "&APELLIDOS=" + document.getElementById("idApellidos").value;
+	url += "&RUT=" + document.getElementById("idRut").value;
+	url += "&FONO=" + document.getElementById("idFono").value;
+	url += "&EMAIL=" + document.getElementById("idMail").value;
+	url += "&EMPRESA=" +  document.getElementById('idEmpresa').value;
+	url += "&ESTADO=" +  document.getElementById('idEstado').value;
+	url += "&CLIENTE=" +  document.getElementById('idClientes').value;
+	url += "&ROL=" + document.getElementById('idRol').value
+	url += "&CARGO=" + document.getElementById('idCargo').value;
+	url += "&IND_SGI=" + document.getElementById('idSGI').checked;
+	url += "&IND_CONF=" + document.getElementById('idConf').checked;			
+	url += "&VTZ=" + Math.random();
+			
+    //window.open(url);
+		
+	$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			resp = $(this).find("RESP").text();
+			}), alert(resp);//End each
+	});//end $.get
+			
+					
+}
+
+ 
+ 
+function LimpiarForm(){
+for (var i=0;i<document.formulario.length;i++){
+	if (document.formulario.elements[i].className=="input")
+				document.formulario.elements[i].value="";
+	}
+}
+
+function listUsuarios_(){
+
+   frameUsuarios.popsearchbox(10, formulario.txtUsuario, formulario.txtUsuario, divUsuarios)
+}
+
+
+ 
+
+function listUsuarios(){
+
+    var n = 0;j=0;
+  	var tbl = document.getElementById('tblAgenda');
+	limpiarTabla2(tbl);
+  
+ var url = "js/usuarios.asp?RECURSO=listUsuarios&txtSrc="+document.getElementById('searchText').value;
+	      url += "&EMPRESA=" + getEmpresa();
+		  url += "&VTZ=" + Math.random();
+		  
+		
+  //window.open(url);
+		
+  $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+		//	document.getElementById("idFolio").value =  $(this).find("ID").text();
+		n=n+1;
+		if (j==1){_bgColor="#f4fafe";j=2;}
+	 		else{_bgColor="#d2f2ea";j=1;}
+		
+		 var cod = $(this).find("ID").text();
+ 		 var row = tbl.insertRow(-1);
+		 	 row.onclick = function (){setUsuario(cod)};
+			 row.bgColor= _bgColor;
+		
+		 	var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("ID").text();
+				
+			var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("NOMBRES").text()+" "+$(this).find("APELLIDOS").text();
+															
+		var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("ROLES").text();
+				
+		
+		var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("E_MAIL").text();
+	
+		
+		var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("ESTADO").text();
+				
+		var cell = row.insertCell(-1);
+				cell.innerHTML =  $(this).find("UBICACION").text();
+				
+				
+		}),	document.getElementById("nroReg").innerText = n;//End each
+	});//end $.get
+	
+
+	
+}
+
+function listClientes(){
+
+  var i=0;
+  var url = "js/usuarios.asp?RECURSO=listFaenas";
+  //	url += "&EMPRESA=" + getEmpresa();
+	url += "&VTZ=" + Math.random();
+	//window.open(url);
+		opcion = new Option("SELECCIONAR" ,"");
+		document.getElementById("idClientes").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idClientes").options[i] = opcion;
+				
+			}) //end each
+			
+	})//end $get
+
+}
+
+function verFaenas(){
+
+var url = "listFaenas.html";
+	url += "?USUARIO=" + document.getElementById("idCodigo").value;
+	url += "&P=1";
+	url += "&VTZ=" + Math.random();
+	//alert(url);
+		
+winCfg = "width=480px,height=360px,left=" + 210 + "px,top=" + 100 +"px,resize=1,scrolling=0";	
+var inlinewin6 = dhtmlwindow.open("boxTipos", "iframe", url , " FAENAS USUARIO ", winCfg);
+
+}
+
+
+function listRol(){
+
+	var i=0;
+  	var url = "xml/Roles.asp?RECURSO=ListRol";
+		url += "&VTZ=" + Math.random();
+	//window.open(url);
+		opcion = new Option("SELECCIONAR" ,"");
+		document.getElementById("idRol").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("NOMBRE").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idRol").options[i] = opcion;
+				
+			}) //end each
+			
+	})//end $get
+       
+}
+
+function listCargos(){
+
+	var i=0;
+  	var url = "xml/Usuarios.asp?RECURSO=ListCargos";
+		url += "&VTZ=" + Math.random();
+	//window.open(url);
+		opcion = new Option("SELECCIONAR" ,"");
+		document.getElementById("idCargo").options[i] = opcion;
+			
+  $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					var codigo = $(this).find("ID").text();
+					var descripcion = $(this).find("NOMBRE").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idCargo").options[i] = opcion;
+				
+			}) //end each
+			
+	})//end $get
+       
+}
+
+function daysinmonth(lnMonth,lnYear) {
+	var dt1, cmn1, cmn2, dtt, lflag, dycnt, lmn;
+	lmn = lnMonth-1;
+	dt1 = new Date(lnYear,lmn,1);
+	cmn1 = dt1.getMonth();
+	dtt=dt1.getTime()+2332800000;
+	lflag = true;
+	dycnt=28;
+	while (lflag) {
+	   dtt = dtt + 86400000;
+	   dt1.setTime(dtt);
+	   cmn2 = dt1.getMonth();
+	   if (cmn1!=cmn2) {
+	      lflag = false;
+	   } else {
+		  dycnt = dycnt + 1;
+	   }
+	}
+	if (dycnt > 31) {
+		dycnt = 31;
+	}
+	return dycnt;
+}
+
+function setContacto(_cod, _nombre){
+//	alert(_rut +" " + _nombre);
+document.getElementById("idNombres").value = _nombre;
+document.getElementById("idCodigo").innerText = _cod;
+getCont();
+}
+
+
+function setUsuario(codigo, nombre){
+
+//alert(codigo);
+
+with (divNew.style){visibility = "hidden"};
+document.getElementById("idCodigo").value = codigo;
+
+getUsuario();
+
+}
+
+
+
+function newFile(){
+document.frameFiles.mostrarVentana(formulario.TxtID,"USUARIOS",divFiles);
+}
+
+
+function delFile(){
+
+	var url = "xml/archivos.asp?RECURSO=delFile";
+		url += "&FAMILIA=USUARIOS"; 
+		url += "&IDENTIFICADOR="+formulario.TxtID.value;
+		url += "&ID=" + formulario.txtId.value;
+		url += "&VTZ=" + Math.random();
+    
+	xmlestado = xmlImages.load(url);
+	//window.open(url);
+	if(!xmlestado){
+			window.open(url);
+		}
+
+listArchivos();
+}
+
+function inicio(){
+
+document.getElementById('searchText').focus();
+
+listCargos();
+listUsuarios();
+listClientes();
+listRol();
+}
+
+function salir(){
+parent.document.getElementById('boxUsuarios').close();
+}
+
+
+</SCRIPT>
+
+<BODY onLoad="inicio();">
+<FORM name="formulario">
+
+<DIV id="divNew" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 65px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameNew" src="newUsuario.html?a=4" frameBorder="0" width="420" scrolling="no" height="300">
+</IFRAME>
+</DIV>
+
+
+
+<table width="100%">
+<tr>
+  <td width="763" align="left" valign="top">
+    <table width="100%" border=0 cellpadding=5 cellspacing=0>
+      <!--DWLayoutTable-->
+      <tr class="InfoLayoutCenter" height="35">
+        <td width="468"  align="left" class="text">Buscar :
+          <input  id="searchText" type="text"  size="50"
+      		onKeyPress="if(event.keyCode==13)listUsuarios(this.value);"></td>
+        <td width="1" align="left">&nbsp;</td>
+      </tr>
+      <tr><td height="410" colspan="2" valign="top">
+      	 <div style="width:100%;height:450px;overflow-y:auto; overflow-x:none; background-color:#cccccc;" >
+      	   <table id="tblAgenda" width="98%"  cellpadding="5" cellspacing="2" class="listText" style="cursor:pointer;">
+      	     </table>
+         </div></td>
+        </tr>
+     <tr align="left"><td>Nro de Registros <span id='nroReg'></span>  </td>
+       <td>&nbsp;</td>
+     </tr>
+    </table>
+    
+  </td>
+  <td width="523" height="300" align="center" valign="top">
+	<table width="98%"  border="0" align="center" cellpadding="5" cellspacing="0">
+	  <!--DWLayoutTable-->
+	  <tr height="35">
+	    <td width="111" height="35" align="right" class="text"></TD>
+	    <td height="35" colspan="4" align="left" class="TxtPnUsuario" >USUARIOS DE SISTEMA</TD>
+	    <td width="60" height="35" align="left" class="text" >&nbsp;</TD>
+	  </tr>
+	  <tr class="texto" > 
+		<td align="right">Usuario  </td> 
+		<td colspan="4">
+          <input name="txtUsuario" type="text"  class="texto" id="idCodigo"	onSelect="getUsuario();" 
+      									onKeyPress="if(event.keyCode==13)getUsuario();" size="25"   />       </td>
+      <td><span class="text">
+        <input  type="button" class="input"  onClick="salir();"  value="Salir" />
+      </span></td>
+	  </tr>
+	  
+	  <tr class="texto" >
+	    <td align="right">Password </td>
+	    <td colspan="5" align="left" valign="top">
+		<input id="idPassword" size="25"  type="password" /></td>
+	  </tr>
+	  <TR class="texto" >
+	    <TD align="right">RUT </TD>
+	    <TD colspan="5" align="left" valign="top" >
+       		<input type="text" id='idRut' size="20" onKeyUp=fn(this.form,this) />-
+            <input type="text" id='idDv' size="2" onKeyUp=fn(this.form,this) />     Ej. 12666124-k </TD>
+	    </TR>
+	  <TR class="texto" >
+		<TD align="right">Nombres </TD>
+		<TD colspan="5" align="left" valign="top" >
+        <INPUT  id='idNombres' type="text" onkeyup=fn(this.form,this) size="40" /></TD>
+		</TR>
+	  <TR class="texto" >
+	    <TD align="right">Apellidos </TD>
+	    <TD colspan="5" align="left" valign="top" >
+        <INPUT id='idApellidos' type="text" onKeyUp=fn(this.form,this) size="40"/></TD>
+	    </TR>
+	  
+	  
+	  <TR class="texto" >
+	    <TD align="right">Fono  </TD>
+	    <TD colspan="5" align="left" valign="top" >
+        <INPUT  id="idFono" type="text" onKeyUp=fn(this.form,this) /></TD>
+	    </TR>
+	  
+	  <TR class="texto" >
+	  <TD align="right">E-Mail </TD>
+	    <TD colspan="5" align="left" valign="top" >
+		  <INPUT  type="text" id="idMail" size="40" onkeyup=fn(this.form,this) /></TD>
+	    </TR>
+	  
+	  <TR class="texto">
+	    <TD align="right">Empresa </TD>
+	    <TD colspan="5" align="left" valign="top" >
+        <INPUT  type="text" id="idEmpresa" size="40" onkeyup=fn(this.form,this) />
+        
+        <!--SELECT name="idEmpresa"   id="idEmpresa" >
+          <OPTION  VALUE="0">SELECCIONAR</OPTION>
+          <OPTION  VALUE="12614899" >TECFULL</OPTION>
+          <OPTION  VALUE="12614898">VITCOMZ</OPTION>
+        </SELECT-->        </TD>
+	    </TR>
+	  
+	  <TR class="texto">
+	  <TD align="right">Cliente </TD>
+	  <TD colspan="5" align="left" valign="top" >
+      	<SELECT  id="idClientes" >
+		</SELECT></TD>
+	  </TR>
+	
+	<TR class="texto">
+	  <td align="right">Rol  Sistema </td>
+	  <td colspan="2" align="left" valign="top" >
+	    <select name="listRoles" id="idRol" style="size:auto"  >
+	        </select>      </td>
+	<TD width="106" align="right">Estado </TD>
+	  <TD colspan="2">
+       <SELECT   id="idEstado" style="size:auto"  >
+        <OPTION  VALUE="ACTIVO">ACTIVO</OPTION>
+        <OPTION  VALUE="ACT">ACT</OPTION>
+        <OPTION  VALUE="">NULL</OPTION>
+         <OPTION  VALUE="ELI">ELIMINADO</OPTION>
+          <OPTION  VALUE="BLOQ">BLOQ</OPTION>
+       </SELECT></TD>
+	  </TR>
+	<TR class="texto">
+	  <TD align="right">Cargo </TD>
+		<TD colspan="5" align="left" >
+		<SELECT id='idCargo'>
+        </SELECT>        </TD>
+		</TR>
+	<TR align="center" valign="middle">
+	  <TD height="46" valign="middle">Acceso SIG </TD>
+	  <TD width="20"><input type="checkbox" id="idSGI" /></TD>
+	  <TD width="64" valign="top"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+	  <TD colspan="2" align="right" valign="middle">Acceso Confiabilidad </TD>
+	  <TD align="left" valign="middle"><input type="checkbox" id="idConf" /></TD>
+	</TR>
+	<TR align="center" valign="middle">
+	  <TD colspan="6" valign="middle"><a href="javascript:verFaenas()" >Ver Faenas</a></TD>
+	  </TR>
+	<TR align="center" valign="middle">
+	  <TD colspan="6" valign="middle"><input  type="button" class="input" value="Nuevo"  onClick="newPass();" />
+&nbsp;&nbsp;
+<input  type="button" class="input" value="Guardar"  onClick="guardar();"/>
+&nbsp;&nbsp;
+<input  type="button" class="input" value="Envio Mail."  onClick="sendMail(1);"/>
+&nbsp;&nbsp;
+<p></p></TD>
+	  </TR>
+	<tr>
+	  <td height="11"></td>
+	  <td></td>
+	  <td></td>
+	  <td></td>
+	  <td width="94"></td>
+	  <td></td>
+	  </tr>
+	</TABLE></TD></TR>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>

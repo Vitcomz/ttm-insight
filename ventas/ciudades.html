@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Ciudades</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlMarcas></xml>
+<xml id = xmlModelos></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+xmlTemp.async = false;
+
+function creaMoneda(){
+	
+	xmlTemp.async = false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var codGrupo = prompt("Codigo","");
+		
+	if (codGrupo){
+		var nomGrupo = prompt("Nombre ","");
+		var url = "xml/ciudades.asp?RECURSO=newCiudad";
+			url += "&ID=" + codGrupo;
+			url += "&DESCRIPCION=" + nomGrupo
+		xmlestado = xmlDso.load(url);
+		if(!xmlestado)
+				window.open(url);
+		}
+		
+	listMonedas();	
+}
+
+ 
+function listMonedas(){
+
+  xmlMarcas.async = false;
+  var xmlDso =  xmlMarcas.XMLDocument;
+  var url = "xml/ciudades.asp?RECURSO=listCiudades";
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+ } 
+
+ 
+
+function EliminarMoneda(Index)
+{
+	var tabla = document.getElementById('tabMarcas');
+	var Codigo =  tabla.rows[Index].children[0].innerText;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url  = "xml/ciudades.asp?RECURSO=delCiudad&ID=" + Codigo;
+
+	//alert(url);
+	//window.open(url);
+	if(confirm("Eliminar Ciudad id =" + Codigo)){
+					xmlEstado = xmlDso.load(url);
+					if(!xmlEstado)
+							window.open(url);
+					listMonedas();
+		}
+}
+
+
+
+function inicio(){
+		
+listMonedas();
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE width="583">
+<TR>
+  <TD width="571" height="31" colspan="2" class="titulo">Ciudades</TD>
+</TR>
+<TR>
+  <TD height="18" class="titulo" colspan="2" align="right"><SPAN class="input" id="idNombreMarca" ></SPAN>
+  &nbsp;</TD>
+</TR>
+</TABLE>
+
+<TABLE width="415" border="0" cellpadding="5" cellspacing="5">
+  <TR><TD width="366" valign="top" class="td">
+	<TABLE width="358" cellpadding="0" cellspacing="4" class="texto"
+										id="tabMarcas"  DATASRC="#xmlMarcas">
+			<THEAD>
+			<TR class="HeaderLista" >
+			  <TD colspan="3">CIUDADES</TD>
+			</TR>
+			<TR class="HeaderLista" >
+			  <TD width="79">ID</TD>
+			  <TD width="200">NOMBRE</TD>
+			  <TD width="16" align="center">
+			  	<IMG style="CURSOR: hand" onclick="creaMoneda();" 
+									src="images/add.gif"></TD>
+			 </TR>
+			</th>
+		</THEAD>
+		<TR onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')" 
+			onClick="selMarca(this.rowIndex)"  >
+			<TD><SPAN name="TxtCodigo" datafld="ID"/></TD>
+			<TD><SPAN name="TxtNombre" datafld="DESCRIPCION"/></TD>
+			<TD align="center" onClick="EliminarMoneda(this.parentElement.rowIndex);">
+				<IMG src="images/trash.jpg" style="cursor:hand;"></TD>
+		</TR>
+	</TABLE>
+	</TD>
+  </TR></TABLE>
+</FORM>
+
+<DIV align="left" >
+  <!--input type="button" onClick="pdateActividad();" value="Guardar" class="botonBlanco"-->&nbsp;
+  <INPUT type="button" onClick="window.location='index.html';" value="Salir" class="botonBlanco">
+</DIV>
+</BODY>
+</HTML>

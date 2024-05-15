@@ -1,0 +1,176 @@
+<html XMLNS="http://www.w3.org/1999/xhtml">
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1" />
+<title>TTM Insight</title>
+<link HREF="css/estilo_web.css" REL="stylesheet" TYPE="text/css" />
+<link rel="stylesheet" href="sgm/windowfiles/dhtmlwindow.css" type="text/css" />
+
+
+
+
+
+
+<script language="Javascript1.2" src="sgm/js/jquery.js"></script>
+<script language="Javascript1.2" src="sgm/windowfiles/dhtmlwindow.js"></script>
+<script language="JavaScript1.2" src="sgm/js/main.js"></SCRIPT>
+ 
+<style TYPE="text/css">
+ 
+body {
+	background-image: url(img/fdoSitio.gif);
+}
+
+.Estilo1 {font-size:14px; color: #a9131b; font-family:Verdana, Arial, Helvetica, sans-serif;}
+.hidden{ visibility:hidden; display:none;}
+.visible{ visibility:visible; display:inherit;}
+ 
+</style>
+</head>
+
+<script TYPE="text/JavaScript">
+//alert(getSGI());
+
+function inicio(){
+
+
+	document.getElementById("idUser").innerText = getSession();
+	
+if(getSGI()){
+		document.getElementById("idSGI").className='visible';
+		}
+else{
+		document.getElementById("idSGI").className ="hidden";
+	}
+	
+if(getConf()){
+		document.getElementById("idSGM").className='visible';
+		}
+else{
+		document.getElementById("idSGM").className ="hidden";
+	}
+
+
+}
+
+function misTicket(){
+
+var w = screen.width-55;
+var h= screen.height-200;
+
+var url = "sgm/boxMisTicket.html";
+	url += "?VTZ=" + Math.random();
+
+winCfg = "width="+w+"px,height="+h+"px,left=" + 20 + "px,top=" + 10 +"px,resize=1,scrolling=0";		
+var winOT = dhtmlwindow.open("boxMTicket", "iframe", url , "---== TICKET DE SOPORTE ==---", winCfg);
+			
+}
+ 
+</script>
+
+
+<body onLoad="inicio();">
+<TABLE WIDTH="980" BORDER="0" ALIGN="center" CELLPADDING="0" CELLSPACING="0">
+  <TR>
+    <TD WIDTH="293" ROWSPAN="3" ALIGN="center" VALIGN="top" SCOPE="col"><IMG SRC="img/logo.png" WIDTH="293" HEIGHT="93"></TD>
+    <TD HEIGHT="10" COLSPAN="6" ALIGN="left" VALIGN="middle" SCOPE="col"></TD>
+  </TR>
+  <TR>
+    <TD WIDTH="27" ALIGN="left" VALIGN="middle" SCOPE="col">&nbsp;</TD>
+    <TD WIDTH="74" ALIGN="left" VALIGN="middle" SCOPE="col">&nbsp;</TD>
+    <TD WIDTH="336" ALIGN="left" VALIGN="middle" SCOPE="col">&nbsp;</TD>
+    <TD WIDTH="129" ALIGN="left" VALIGN="middle" SCOPE="col">&nbsp;</TD>
+    <TD WIDTH="89" ALIGN="left" VALIGN="bottom" SCOPE="col">&nbsp;</TD>
+    <TD ALIGN="right" VALIGN="bottom" SCOPE="col">&nbsp;</TD>
+  </TR>
+  <TR>
+    <TD height="94" COLSPAN="6" ALIGN="left" VALIGN="middle">&nbsp;</TD>
+  </TR>
+  <TR>
+    <TH SCOPE="row">&nbsp;</TH>
+    <TD COLSPAN="5" align="right">Usuario :<span id="idUser"></span></TD>
+    <TD WIDTH="25">&nbsp;</TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="6" ALIGN="center" VALIGN="middle" SCOPE="row">
+    <TABLE WIDTH="900" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR>
+        <TD WIDTH="563" ALIGN="left" VALIGN="top" SCOPE="col">
+        <p class="subtitulos"> Acceso a Sistemas  </p>
+        <table height="53" cellpadding="5" cellspacing="0" >
+         
+        	<tr>
+        	  <td><span class="Estilo1" id="idSGM"> 
+              <img src="img/ico_flecha2.gif" width="9" height="7"> 
+              <a href="/sgm/Login.html" target="_self" class="menu1">Sistema de Confiabilidad </a></span></td>
+      	  </tr>
+        
+            
+        	<tr>
+        	  <td>&nbsp;</td>
+      	  </tr>
+        	<tr>
+        	  <td>&nbsp;</td>
+      	  </tr>
+        	<tr><td width="267"><span class="new"><span class="subtitulos">
+             <img src="img/ico_flecha2.gif" alt="" width="9" height="7"></span> 
+             <span class="Estilo1"> <a href="/index.html" target="_self" class="menu1">Volver al Login</a></span></span></td>
+        	</tr>
+        </table>
+        
+        <SPAN CLASS="subtitulos"> </SPAN><SPAN CLASS="Estilo1"><A HREF="/ventas" TARGET="_self" CLASS="menu1"></A></SPAN>
+            
+            <BR>
+        </P>
+          <P CLASS="new"><BR>
+            <BR>
+          </P>
+          <BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD>
+        <TD WIDTH="30" VALIGN="top" BACKGROUND="img/linea.gif" SCOPE="col">&nbsp;</TD>
+        <TD WIDTH="307" ALIGN="left" VALIGN="top" SCOPE="col"><IMG SRC="img/Soluciones.jpg" WIDTH="303" HEIGHT="225"><BR>
+            <IMG SRC="img/divisor.gif" WIDTH="250" HEIGHT="7"><BR>
+          <BR>
+          <TABLE WIDTH="260" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+            <TR>
+              <TD ALIGN="center" VALIGN="middle" CLASS="textos" SCOPE="col">&nbsp;</TD>
+            </TR>
+            <TR>
+              <TD HEIGHT="103" ALIGN="center" VALIGN="middle" SCOPE="col">&nbsp;</TD>
+            </TR>
+          </TABLE></TD>
+      </TR>
+    </TABLE>      </TD>
+    <TD>&nbsp;</TD>
+  </TR>
+  
+  <TR>
+    <TD HEIGHT="20" COLSPAN="6" ALIGN="center" VALIGN="middle" BACKGROUND="img/puntos2.gif" SCOPE="row"></TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="6" SCOPE="row">&nbsp;</TD>
+    <TD>&nbsp;</TD>
+  </TR>
+  <TR>
+    <TH COLSPAN="6" SCOPE="row"><TABLE WIDTH="973" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+      <TR>
+        <TD BACKGROUND="img/puntos2.gif" SCOPE="col">&nbsp;</TD>
+      </TR>
+      <TR>
+        <TD BACKGROUND="img/puntos2.gif" SCOPE="row">&nbsp;</TD>
+      </TR>
+    </TABLE></TH>
+    <TD>&nbsp;</TD>
+  </TR>
+  <TR>
+    <TD COLSPAN="6" ALIGN="center" VALIGN="middle" SCOPE="row">
+    <P CLASS="pies2">
+    		Av. El Arrayan 1306 - Parque Industrial ENEA - Pudahuel - Santiago - Chile - Tel&eacute;fono: +56.02 680 5900 - 
+       correo: info@ttmchile.cl<BR>
+	    <SPAN id="rtime" title="1015 | 1025 | 1025 | 1025">&copy;</SPAN> 
+    <SPAN title="10.130.52.108">20</SPAN>11 Todos los derechos reservados</P>      </TD>
+    <TD>&nbsp;</TD>
+  </TR>
+</TABLE>
+
+</body>
+</html>

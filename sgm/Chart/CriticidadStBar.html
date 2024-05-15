@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+<title>SGM TTM - INDICADORES DE CONFIABILIDAD</title>
+<link rel="stylesheet" href="Style.css" type="text/css" />
+
+
+
+
+
+
+<script language="JavaScript" src="FusionCharts.js"></script>
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+<link rel="stylesheet" href="layout2.css" type="text/css">
+
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" src="../standard/jquery.min.js"></script>
+<script type="text/javascript" src="/Scripts/stayontop.js"></script>
+
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+<xml id = xmlEquipos></xml>
+<xml id = xmlSecciones></xml>
+
+</head>
+<script>
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+
+
+function setFecha(){
+ 	
+ mydate = new Date();
+  hour      = mydate.getHours();
+  minute    = mydate.getMinutes();
+  day_month = mydate.getDate();
+  month     = mydate.getMonth();
+  year      = mydate.getFullYear();
+  day       = mydate.getDay();  
+
+//alert(day_month);
+monthFin = month +1;
+if ((day_month+"").length==1) day_month ='0'+day_month;
+if ((month+"").length==1) month ='0' + month;
+if ((monthFin+"").length==1) monthFin ='0' + monthFin;
+
+//formulario.txtFechaIni.value = "01/" + month +"/"+ year;
+//formulario.txtFechaFin.value = day_month + "/" + monthFin + "/" + year;
+
+listFechas();
+listSecciones();
+criticidad();
+}
+
+function mostrarBitacora(index){
+
+var tabla = document.getElementById('tabEquipos');
+
+		if (id_br == "IE")
+		{
+			var id =  tabla.rows[index].children[0].innerText;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var id =  tabla.rows[index].children[0].innerHTML.replace("              ","").replace("   ","");
+		}
+								
+		document.getElementById('ajaxdiv').innerHTML = "";
+		loadrisk(id);
+
+
+//var url ="../detalleInspecciones.html?EQUIPO=" + id.replace(" ", "");
+//	url += "&VTZ=" + Math.random();
+//			var w = 840;
+//			var h = 650;
+//			LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+//			TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+//			var winHandle = window.open(url, "window_bit", "modal,toolbar=false,location=false,directories=false,status=false,menubar=false,scrollbars=yes,resizable=no,top="+TopPosition+",left="+LeftPosition+",width=840px,height=650px");
+//			winHandle.focus();
+	
+//	showModalDialog(url,window,"status:no;help:no;dialogWidth:850px;dialogHeight:600px;scroll:yes");
+	
+}
+
+function listSecciones(){
+
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "../xml/Secciones.asp?RECURSO=listSecciones";
+			url += "&FAENA=" + empresa;
+			url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+        if (res){
+          var tree = xmlDso.documentElement;
+			opcion = new Option("TODOS" ,"TOD");
+			document.getElementById("listSecciones").options[0] = opcion; 		
+          for(var i = 1; i-1 < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i-1);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+          	document.getElementById("listSecciones").options[i] = opcion;   
+          	}
+			
+		  }
+		 else
+		 	window.open(url); 
+}
+
+
+function listFechas(){
+		if (id_br == "IE")
+		{
+			var xmlTemp2 = document.getElementById("xmlTemp2");
+			xmlTemp2.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp2 = document.implementation.createDocument("", "", null);
+		}
+	
+        var xmlDso =  xmlTemp2.XMLDocument;
+		var url = "../xml/Informes.asp?RECURSO=fechasCriticidad";
+			url += "&FAENA=" + empresa;
+			
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		
+		opcion = new Option(day_month + "/" + monthFin + "/" + year,day_month + "/" + monthFin + "/" + year);
+        opcion.selected = true;
+        document.getElementById('listFechas').options[0] = opcion;  
+		
+        if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"FECHA"),getChildNodeValue(node,"FECHA"));
+            //if (opcion.value == "AGLOAPI") opcion.selected = true;
+          	document.getElementById('listFechas').options[i+1] = opcion;   
+          			}
+		  }
+		 else
+		 	window.open(url); 
+			 
+}
+
+function criticidad(){
+
+		url = "../xml/Informes.asp?RECURSO=listEqCriticidad";
+		url += "&FAENA=" + emp;
+		url += "&FECHA=" + document.getElementById('listFechas').value;
+		url += "&SECCION=" + document.getElementById('listSecciones').value;
+		url += "&VTZ=" + Math.random();
+		//window.open(url);
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+  		var xmlDso = xmlTemp.XMLDocument;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+			//window.open(url);
+			if (id_br == "IE")
+			{
+				
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+////				document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+////				bloque_listado = 1;
+////				total_bloque_listado = Math.ceil(total_registros_lista/9);
+////				var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+////				objLabelReg.innerText = "1/" + total_bloque_listado;
+//				var tbody = document.getElementById("tabBitacora").getElementsByTagName("tbody")[0];
+//				var ttr = tbody.getElementsByTagName('tr');
+//				if (ttr.length > 1){
+//					for(i=ttr.length-1;ttr.length > 0;i--){
+//						ttr[i].parentNode.removeChild(ttr[i]);
+//					}
+//				}
+//				if (total_registros_lista > 0){
+//					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+//					for (i=0; i<x.length; i++) {
+//					  //context = context +  "<td><IMG style='CURSOR: hand' onclick='editBitacora(this.parentElement.parentElement.rowIndex);' src='images/lupa2.gif' align='middle'/></td>";
+//					  //context = context +  "<td>&nbsp;&nbsp;</td>";
+//					
+//						var row = document.createElement("TR");
+//						var cell1 = document.createElement("TD");
+//						if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+//							cell1.innerHTML = "<center>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</center>"
+//						}else{
+//							cell1.innerHTML = "<center>&nbsp;</center>"
+//						}
+//						var cell2 = document.createElement("TD");
+//						if (x[i].getElementsByTagName("VALOR")[0].childNodes[0] != null){
+//							cell2.innerHTML = "<center>"+  x[i].getElementsByTagName("VALOR")[0].childNodes[0].nodeValue + "</center>"
+//						}else{
+//							cell2.innerHTML = "<center>&nbsp;</center>"					
+//						}
+//						var cell3 = document.createElement("TD");
+//						 if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null){
+//							cell3.innerHTML = "<center><img src='images/"+  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + ".png' width='35'  alt='"+  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + "'/></center>"
+//						}else{
+//							cell3.innerHTML = "&nbsp;"
+//						 }
+//						row.appendChild(cell1);
+//						row.appendChild(cell2);
+//						row.appendChild(cell3);
+//						tbody.appendChild(row);
+//					}
+//				}else{
+//						var row = document.createElement("TR");
+//						var cell1 = document.createElement("TD");
+//						cell1.innerHTML = "<center>&nbsp;</center>"
+//						var cell2 = document.createElement("TD");
+//						cell2.innerHTML = "<center>&nbsp;</center>";
+//						var cell3 = document.createElement("TD");
+//						cell3.innerHTML = "<center>&nbsp;</center>";
+//						row.appendChild(cell1);
+//						row.appendChild(cell2);
+//						row.appendChild(cell3);
+//						tbody.appendChild(row);
+//				}
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+
+//-----------------------------------------------------------------------------------------------------	
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[3].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+				  context = context +  "<tr onclick='mostrarBitacora(this.rowIndex);' style='cursor:pointer;'>";
+				  if (x[i].getElementsByTagName("EQUIPO")[0].childNodes[0] != null){
+						 context = context +  "<td>"+  x[i].getElementsByTagName("EQUIPO")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+						 context = context +  "<td>&nbsp;</td>";
+			      }				 
+				  if (x[i].getElementsByTagName("VALOR")[0].childNodes[0] != null){
+						 context = context +  "<td>"+  x[i].getElementsByTagName("VALOR")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+						 context = context +  "<td>&nbsp;</td>";
+			      }				 
+				   if (x[i].getElementsByTagName("COLOR")[0].childNodes[0] != null){
+				  context = context +  "<td >"+  x[i].getElementsByTagName("COLOR")[0].childNodes[0].nodeValue + "</td>";
+				   }else{
+						 context = context +  "<td>&nbsp;</td>";
+				   }
+				  context = context +  "</tr>";
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[3].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[3].innerHTML = "<tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td></tr>";
+				}
+			}		
+		
+		
+		
+		
+  if (!res)
+		window.open(url);
+			  
+	url = "../xml/Informes.asp?RECURSO=CriticidadPie%26FAENA=" + emp;
+	url += "%26FECHA=" + document.getElementById('listFechas').value;
+	url += "%26SECCION=" + document.getElementById('listSecciones').value;	
+	url += "%26VTZ=" + Math.random();
+	
+	var chart = new FusionCharts("Pie3D.swf", "ChartId", "450", "400", "0", "0");
+		chart.setDataURL(url);		   
+		chart.render("chartdiv3");
+		// window.open(url);
+		   	  
+		setTimeout("color();",800); 
+		
+}
+
+function criticidadHist(){
+
+		url = "../xml/Informes.asp?RECURSO=listEqCriticidadHist";
+		url += "&FAENA=" + emp;
+		url += "&FECHA=" + document.getElementById('listFechas').value;
+		url += "&VTZ=" + Math.random();
+		
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+  		var xmlDso = xmlTemp.XMLDocument;
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+
+  if (!res)
+		window.open(url);
+			  
+	
+	url = "../xml/Informes.asp?RECURSO=CriticidadPie%26FAENA=" + emp;
+	url += "%26FECHA=" + document.getElementById('listFechas').value;
+	url += "%26VTZ=" + Math.random();
+	
+	var chart = new FusionCharts("Pie3D.swf", "ChartId", "450", "400", "0", "0");
+		chart.setDataURL(url);		   
+		chart.render("chartdiv3");
+		   //window.open(url);
+		   	  
+		setTimeout("color();",800); 
+		
+}
+
+function buscar(){
+		  url = "../xml/Graphics.asp?RECURSO=Criticidad_LINE";
+		  url += "%26FAENA=" + emp;
+		  url += "%26INICIO=" + document.getElementById('txtFechaIni').value;
+		  url += "%26TERMINO=" + document.getElementById('txtFechaFin').value;
+		// window.open(url);
+		   var chart = new FusionCharts("MSLine.swf", "ChartId", "350", "300", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv2");
+		   
+
+		   
+		   	url = "../xml/Graphics.asp?RECURSO=Criticidad_BAR%26FAENA=" + emp;
+		    url += "%26INICIO=" + document.getElementById('txtFechaIni').value;
+		    url += "%26TERMINO=" + document.getElementById('txtFechaFin').value;
+		   
+		   var chart = new FusionCharts("StackedBar3D.swf", "ChartId", "750", "600", "0", "0");
+		   chart.setDataURL(url);		   
+		   chart.render("chartdiv");
+		   
+		setTimeout("color();",1500);   
+}
+
+function color(){
+var tbl = document.getElementById('tabEquipos');
+
+	if (id_br == "IE"){
+		for (i=1; i<tbl.rows.length; i++){
+			if(trim(tbl.rows[i].children[2].innerText)=='ALTA')
+				tbl.rows[i].children[2].bgColor="#FF0000";
+				
+			if(trim(tbl.rows[i].children[2].innerText)=="MEDIA")
+				tbl.rows[i].children[2].bgColor="#FFFF00";
+			
+			if(trim(tbl.rows[i].children[2].innerText)=="BAJA")
+				tbl.rows[i].children[2].bgColor="#3366FF";
+				
+			if(trim(tbl.rows[i].children[2].innerText)=="")
+				tbl.rows[i].children[2].bgColor="#3366FF";
+		 }//end for
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		for (i=1; i<tbl.rows.length; i++){
+			if(tbl.rows[i].children[2].innerText =='ALTA')
+				tbl.rows[i].children[2].bgColor="#FF0000";
+				
+			if(tbl.rows[i].children[2].innerText =="MEDIA")
+				tbl.rows[i].children[2].bgColor="#FFFF00";
+			
+			if(tbl.rows[i].children[2].innerText =="BAJA")
+				tbl.rows[i].children[2].bgColor="#3366FF";
+				
+			if(tbl.rows[i].children[2].innerText =="")
+				tbl.rows[i].children[2].bgColor="#3366FF";
+		 }//end for		
+	}
+
+}
+function loadrisk(subEquipo){
+//    jQuery(document).ready(function($) {
+//	   $(".det_comp_riesgo").fadeIn("slow");
+//    })
+
+//	alwaysOnTop.init({
+//		targetid: 'ajaxdiv',
+//		orientation: 2,
+//		position: [20, 100],
+//		hideafter: 10000,
+//		externalsource: 'bc.htm'
+//	})
+	$("#chartdiv3").hide();
+	var fech = document.getElementById('listFechas').value;
+	var url ="detalleInspecciones2.asp?EQUIPO='" + subEquipo + "'&FECHA='" + fech + "'&VTZ=" + Math.random();
+	//window.open(url);
+//	var url = "/sgm/detalleInspecciones2.html?EQUIPO=40-CV-008&DT=1&SUB_EQUIPO=35CV001-PCAR&VTZ=0.7181835407363142"
+	alwaysOnTop.init({
+		targetid: 'ajaxdiv',
+		orientation: 1,
+		position: [10, 100],
+		fadeduration: [1000, 1000],
+		frequency: 0.95
+		//,hideafter: 60000
+	})
+        //$(document).ready(function() {
+//			$("#ajaxdiv").load(url, function(response, status, xhr) {
+//			  if (status == "error") {
+//				var msg = "Sorry but there was an error: ";
+//				$("#error").html(msg + xhr.status + " " + xhr.statusText);
+//			  }
+//			});
+			jQuery.get(url, {}, function(data){
+				jQuery('#ajaxdiv').html(data);
+			});
+        //});  	 alert(data);
+//	$.get(url, function(data){
+//                  $('#ajaxdiv').html(data);
+//     });
+}
+
+
+</script>
+<body onload="setFecha();">
+<div id="divCalendar" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 10; z-index: 999999; 
+    left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+	<iframe frameBorder="0" height="185" name="FrameCalendar" 
+                scrolling="no" src="../DTPicker.htm" width="180"></iframe>
+</div>
+    
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br/><br/><br />
+<form name="formulario" id="formulario">
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+<tr>
+  <td height="20" colspan="2" align="left" valign="top" class="calibri_16">Grafico de Criticidades </td>
+</tr>
+<tr> 
+    <td width="39%" height="39" align="left" valign="top" class="text">
+               Fecha de Consulta :
+                  <select name="listFechas" id="listFechas" class="input" onchange="criticidad()"></select></td>
+    <td width="61%" align="left" valign="top" class="text">Seccion :
+		      <select name="listSecciones" id="listSecciones" class="input"  onchange="criticidad()"></select></td>
+  </tr>
+  </table>
+
+<table align="left" cellspacing="5" border="0">
+  <!--DWLayoutTable-->
+  <tr>
+   <td width="457"  rowspan="2" align="left" valign="top" class="text">
+   <table width="429" border="1" cellpadding="2" cellspacing="0" datasrc=#xmlTemp id="tabEquipos">
+   <thead>
+     <tr class="txtVineta">
+       <td width="43%"><strong>EQUIPO</strong></td>
+       <td width="35%"><strong>VALOR CRITICIDAD</strong></td>
+       <td width="22%"><strong>CRITICIDAD</strong></td>
+     </tr>
+     </thead>
+     <tr onMouseOver="mOvr(this,'#dee6eb')"	onMouseOut="mOut(this,'#FFFFFF')" 
+     					onclick="mostrarBitacora(this.rowIndex);">
+       <td><span DATAFLD='EQUIPO'></span></td>
+       <td><span DATAFLD='VALOR'></span></td>
+       <td><span DATAFLD='COLOR'></span></td>
+     </tr>
+   </table>   </td>
+    <td width="165"  height="100%" valign="top">
+      <div align="center" class="text" id="chartdiv3" style="z-index:1;">Grafica de Pie.. </div></td>
+  </tr>
+  <tr>
+    <td height="113"><!--DWLayoutEmptyCell-->&nbsp;</td>
+  </tr>
+  <tr> 
+    <td height="14" colspan="2" align="center" valign="top" class="text"><!--DWLayoutEmptyCell-->&nbsp;</td>
+  </tr>
+</table>
+<br />
+<div id="ajaxdiv" style="width:750px; height:500px; overflow:auto; border:1px solid black; padding: 10px; background:#D9FAFF; visibility:hidden; z-index:1;"></div>
+
+</form>
+</body>
+</html>

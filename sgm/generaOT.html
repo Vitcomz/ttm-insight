@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>OT</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlDoc></xml>
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style></HEAD>
+
+<script>
+var divBox = new Object();
+var codeobj;
+var nameobj;
+var tipo;
+var functionName;
+
+function mostrarVentana(_codeobj, _nameobj, _tipo, _divBox, _function)
+{
+  codeobj = _codeobj;
+  nameobj = _nameobj;
+  tipo = _tipo;
+  formulario.TxtCodEquipo.value = nameobj.value;
+  divBox = _divBox;
+  functionName = _function
+  var point = fGetXY(codeobj)
+  
+  with (divBox.style){
+  	visibility = "visible";
+//	left = point.x+200;
+//	top  = point.y-130;
+	} 
+}
+
+function Point(iX, iY){
+	this.x = iX;
+	this.y = iY;
+}
+
+function fGetXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.ListResponsables.value==false){
+	  if (res){
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 0; i < tree.childNodes.length; i++){
+    	        var node = tree.childNodes.item(i);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.ListResponsables.options[i] = opcion; }
+	            opcion = new Option("Seleccionar" ,"");
+				if (opcion.value == "0") opcion.selected = true;
+	            formulario.ListResponsables.options[i] = opcion; 
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+function GeneraOT(Index){
+
+	if (!formulario.ListResponsables.value){
+				alert("Ingrese un Responsable!");
+				return;
+				}
+				
+	if (!formulario.TxtFecha.value){
+				alert("Ingrese Fecha!");
+				return;
+				}
+				
+	if (!formulario.ListTurnos.value){
+				alert("Ingrese Turno!");
+				return;
+				}
+				
+					
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/OT.asp?RECURSO=NewOT";
+		url += "&ESTADO=PRO";
+		url += "&EQUIPO=" + formulario.TxtCodEquipo.value;
+ 	 	url += "&RESPONSABLE=" + formulario.ListResponsables.value;
+		url += "&FECHA=" + formulario.TxtFecha.value;
+ 	 	url += "&TURNO=" + formulario.ListTurnos.value;
+		url += "&TIPO=" + tipo;		
+ 	   xmlestado = xmlDso.load(url);		
+	   
+		  if (xmlestado){
+			  	 if(tipo=="COR")
+					guardarIncidenteOT(xmlDso.documentElement.childNodes.item(0).text,codeobj.innerText);
+				 else
+				 	guardarGestionHorometro(xmlDso.documentElement.childNodes.item(0).text,
+								formulario.TxtCodEquipo.value);
+				 }
+			else
+				window.open(url);
+
+divBox.style.visibility = 'hidden';
+eval("parent." + functionName);
+}
+
+function guardarGestionHorometro(FolioOT, EQUIPO){
+
+xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/EQUIPOS.asp?RECURSO=InsertHorometroGestion";
+		url += "&CODIGO=" + EQUIPO;
+ 	 	url += "&FOLIO_OT=" + FolioOT
+		   xmlestado = xmlDso.load(url);		
+	   
+		  if (!xmlestado)
+				window.open(url);
+
+}
+
+function guardarIncidenteOT(FolioOT, ID){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	url = "xml/OT.asp?RECURSO=InsertIncidenteOT"
+	url += "&FOLIO_OT=" + FolioOT;
+	url += "&ID_INCIDENTE=" + ID;
+	xmlestado = xmlDso.load(url);		
+		  if (!xmlestado)
+				window.open(url);
+
+		
+}
+
+
+
+function verOT(Index){
+var tabla = parent.document.getElementById('tabPlanifica');
+Folio = tabla.rows[Index].children[7].children[0].value;
+window.location.href="OT.html?Folio=" + Folio;
+
+}
+
+
+
+//window.onLoad = _inicio();
+
+</script>
+	<body onLoad="ListResponsables();">
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 5; top: 8; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+		<form name="formulario">
+		<table><tr><td width="50"></td><td>
+			<input type="hidden" size="0" name="txtIni">
+		</td></tr></table>
+			
+			<table border="0">
+						  <tr class="titulo">
+						    <td width="84" height="26" align="center">Generar OT</td>
+						    <td width="200" height="26" align="center"></td>
+						    <td width="16" height="26" align="center">
+							<img src="images/close.gif" width="16" height="14"
+								 onClick="divBox.style.visibility = 'hidden';"></td>
+				    </tr>
+		  </table>  
+			<table width="273" align="center" cellpadding="0" cellspacing="3" class="texto" id="tabPlanifica"  datasrc=#xmlIncidentesOT>
+				<thead>
+				<tr class="HeaderLista">
+				  <td width="132">Equipo</td>
+				  <td width="130">Fecha Programada </td>
+			    </thead>
+			    <tr bgcolor="#dee6eb">
+			      <td align="center" height="27">
+				  <input name="TxtCodEquipo" type="text" class="textArea"/></td>
+			      <td align="center"><input class="inputT" type="text" size="8" name="TxtFecha"/>
+                    <img style='CURSOR: hand'  src='images/calendar.jpg' align='top'
+						  onClick="FrameCalendar.fPopCalendar(txtIni, TxtFecha,
+								  divCalendar,this.parentElement.parentElement.rowIndex);return false;"> </td>
+		      </tr>
+		        <tr bgcolor="#EEEEEE">
+		          <td height="13" onClick="return;">&nbsp;</td>
+		          <td align="center">&nbsp;</td>
+	          </tr>
+		        <tr bgcolor="#dee6eb" class="HeaderLista">
+		          <td onClick="return;">Turno</td>
+		          <td align="center">Responsable&nbsp;OT</td>
+	          </tr>
+	          <tr bgcolor="#dee6eb">
+				<td height="27" align="center" onClick="return;">
+					<select name="ListTurnos" class="input">
+                  <option value="" selected>Sel.</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select></td>
+				<td align="center">
+				<select name="ListResponsables" class="Input" datafld="RESPONSABLE">
+                </select></td>
+			  </tr>
+</table>
+	      </div><br>
+		  <div align="center">
+	      <input name="button" type="button" class="BotonBlanco" 
+		  	onClick="GeneraOT();" value="Generar">
+	  	  </div>
+		</form>
+
+	</body>
+</HTML>

@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Valorizaci&oacute;n</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<LINK REL="stylesheet" HREF="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT TYPE="text/javascript" SRC="standard/Tabber/tabber.js"></SCRIPT>
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+		<!-- MENU -->
+		<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+		<!-- MENU -->
+        <STYLE TYPE="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </STYLE>
+</HEAD>
+
+<SCRIPT>
+function inicio(){
+//ListSolicitudes();
+listMes();
+valorizacion();
+}
+
+
+function listMes(){
+
+  mydate = new Date();
+  month     = mydate.getMonth()+1;
+  if (month<10)
+			month = "0" + month;
+	
+       for(var i = 1; i < 13; i++){
+	   			if (i<10)
+						mes = "0" + i;
+					else
+						mes = i;
+						
+        	    opcion = new Option(i ,i);
+				if (opcion.value == month) opcion.selected = true;
+	            formulario.listMes.options[i-1] = opcion;
+				}
+	
+ } 
+  
+function saldos(){
+
+var tabla = document.getElementById('tabOC');
+
+		for (i=1; i< tabla.rows.length-1; i++){
+			Folio = tabla.rows[i].children[0].children[0].value;
+			FolioMov= tabla.rows[i].children[0].children[1].value;
+			ID = tabla.rows[i].children[1].innerText;
+			Valor= tabla.rows[i].children[9].children[0].value;
+			if(Valor)
+				updateValor(Folio, FolioMov, Valor.replace(',',''), ID);
+			}
+			
+alert("Saldos Actualizados.");
+}
+
+function updateValor(Folio, FolioMov, Valor, ID){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=UpdateValorizacion";
+		url += "&FOLIO=" + Folio;
+		url += "&FOLIO_MOV=" + FolioMov;
+		url += "&VALOR=" + Valor.replace(",",".");
+		url += "&ID=" + ID;
+		
+		//alert(url);
+	   xmlestado = xmlDso.load(url);		
+	   
+		  if (!xmlestado)
+				window.open(url);
+				
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=CalcularSaldos";
+		url += "&ID=" + ID;
+		url += "&MES=" + formulario.listMes.value;
+		url += "&ANHO=" + formulario.listAnos.value;
+		
+		//alert(url);
+	   xmlestado = xmlDso.load(url);		
+	   
+		 if (!xmlestado)
+				window.open(url);
+				 
+				 
+				// window.open(url);
+		
+}
+
+
+function verIngreso(Index){
+var tabla = parent.document.getElementById('tabOC');
+Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="Ingreso.html?Folio=" + Folio;
+
+}
+
+function Recepcionar(Index){
+
+var tabla = parent.document.getElementById('tabOC');
+var imgUrl =tabla.rows[Index].children[8].children[0].src;
+
+if (imgUrl.substr(imgUrl.length-10,10)=="nerado.gif"){
+				alert("OC ya fue recepcionada!.");
+				return;
+				}		
+				
+	if(!tabla.rows[Index].children[7].children[0].value&&!tabla.rows[Index].children[6].children[0].value){
+				alert("Debe Ingresar Nro de Factura o Boleta.");
+				return;
+				}		
+				
+	
+	
+xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=SetRecepcion&FOLIO=" + tabla.rows[Index].children[0].children[0].innerText;
+	    var res =xmlDso.load(url);
+		
+		if(res)
+				alert("O.C. Actualizada.");
+		else
+			window.open(url);
+ListOC();
+	
+}
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+
+function valorizacion(){
+	 
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/Articulos.asp?RECURSO=Valorizacion";
+		url += "&MES=" + formulario.listMes.value;
+		url += "&ANHO=" + formulario.listAnos.value;
+		
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+ 
+function GetInsumo(){
+}
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</SCRIPT>
+	<BODY>
+		<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+	</DIV>
+	
+<DIV ID="DivInsumos" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameInsumos" SRC="ArticulosOT.html" frameBorder="0" WIDTH="560" SCROLLING="no" HEIGHT="270">
+</IFRAME>
+</DIV>
+
+
+<DIV ID="DivOT" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameOT" SRC="generaOT.html" frameBorder="0" WIDTH="320" SCROLLING="no" HEIGHT="200"></IFRAME>
+</DIV>
+		
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+	<BR>
+	<BR>
+		<FORM NAME="formulario">
+		  <INPUT NAME="TxtCodigo" TYPE="hidden" CLASS="input" />
+				 
+		  <TABLE>
+		  <TR>
+          <TD CLASS="Campo">Valorizaci�n de Art�culos.			
+			</TD></TR>
+			<TR><TD CLASS="input">
+					   A�o :
+                        <SELECT NAME="listAnos" CLASS="input" onChange="valorizacion();">
+						 	<OPTION VALUE="2007">2007</OPTION>
+						 	<OPTION VALUE="2008">2008</OPTION>
+						 	<OPTION VALUE="2009" selected="selected">2009</OPTION>
+						 	<OPTION VALUE="2010">2010</OPTION>
+						 	<OPTION VALUE="2011">2011</OPTION>
+						  	<OPTION VALUE="2012">2012</OPTION>
+                         </SELECT></TD>
+					   <TD CLASS="input">
+					   Mes de Proceso :
+					   <SELECT NAME="listMes" CLASS="input" onChange="valorizacion();">
+					   </SELECT>
+								
+			</TD></TR></TABLE>
+			 						
+			<TABLE WIDTH="938" BORDER="0" CELLPADDING="0" CELLSPACING="1" DATAPAGESIZE="20" 
+				 id="tabOC" DATASRC="#xmlOC" CLASS="tablaBordesTitle">
+				<THEAD>
+				<TR CLASS="tablaBordesTitle">
+				  <TD WIDTH="52">FOLIO</TD>
+				  <TD WIDTH="41">CODIGO</TD>
+				  <TD WIDTH="267">ARTICULO</TD>
+				  <TD WIDTH="106">FECHA INGRESO </TD>
+				  <TD WIDTH="80">TIPO DOCUMENTO</TD>
+				  <TD WIDTH="81">NRO DOCUMENTO</TD>
+				  <TD WIDTH="66">CANTIDAD</TD>
+				  <TD WIDTH="50">VALOR O.C.</TD>
+				  <TD WIDTH="23">PPM</TD>
+				  <TD WIDTH="95">VALORIZACION MES $USD</TD>
+				  <TD WIDTH="63">Ver Ingreso </TD>
+				  </TR>
+				</THEAD>
+			
+			<TR BGCOLOR="#dee6eb" CLASS="tablaBordes">
+				<TD ><INPUT TYPE="text" DATAFLD="FOLIO" CLASS="texto" SIZE="2"/>
+					<INPUT TYPE="text" DATAFLD="FOLIO_MOV"  class="hidden" SIZE="2"/>
+				</TD>
+				<TD ><SPAN   datafld="CODIGO"/></TD>
+				<TD  align="left"><SPAN   datafld="DESCRIPCION"/></TD>
+				<TD ><SPAN   datafld="FECHA"/></TD>
+				<TD ><SPAN  datafld="TIPO_DOC"></SPAN></TD>
+				<TD ><SPAN  datafld="NRO_DOC"></SPAN></TD>
+			    <TD><SPAN  datafld="ENTRADAS"></SPAN></TD>
+		      <TD ALIGN="right"><SPAN  datafld="VALOR"></SPAN></TD>
+			   <TD ALIGN="right" ><SPAN  datafld="PPM"></SPAN></TD>
+				<TD ALIGN="center">
+				 <INPUT  class="tituloBoxNum" DATAFLD="VALORIZACION" SIZE="10"></TD>
+				<TD ALIGN="center">
+				 <IMG STYLE="CURSOR: hand" 
+							onclick="verIngreso(this.parentElement.parentElement.rowIndex);"
+							src="images/table.png" ALIGN="middle"></TD>
+
+			</TR>
+			
+			<TFOOT>
+			<TR ALIGN="left">
+					   <TD CLASS="input" COLSPAN="30">
+					   <INPUT  class="littleButton" TYPE="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" VALUE=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <SPAN ID="IDCantReg"></SPAN>
+					&nbsp;| Vista: <SPAN ID="IDFraccionReg"></SPAN>
+			</TD></TR>
+			</TFOOT>
+</TABLE>
+<DIV CLASS="texto">La valorizaci&oacute;n del articulo es unitario.</DIV><BR>
+<INPUT TYPE="button"  class="botonBlancoLargo" VALUE="Actualizar PPM" onClick="saldos();"/>
+
+</FORM>
+
+</BODY>
+</HTML>

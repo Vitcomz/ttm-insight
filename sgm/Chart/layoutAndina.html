@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>SGM TTM - LAYOUT DE CONFIABILIDAD</title>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+<link rel="stylesheet" href="../sci.css" type="text/css">
+<link rel="stylesheet" href="layout2.css" type="text/css">
+<link rel="stylesheet" href="../standard/menu.css" type="text/css">
+
+
+
+
+
+
+
+<script language="JavaScript1.2" src="../standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="../standard/vitcomz.js"></script>
+<script language="JavaScript1.2" src="../standard/mootools.js"></script>
+<!------------------------------------------------------------------>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<script type="text/javascript" src="../standard/jquery.min.js"></script>
+<!------------------------------------------------------------------>
+<script language="JavaScript1.2" src="mapevents.js"></script>
+<!------------------------------------------------------------------>
+<script type="text/javascript" src="/Scripts/stayontop.js"></script>
+<xml id=xmlTemp></xml>
+<xml id=xmlTemp2></xml>
+</head>
+<script>
+<!--
+var _i;
+var t;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+var layout = new Array();
+/**********************************************************************/
+if (id_br == 'IE'){
+	var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+	var emp = getEmpresaMoz();
+}
+/**********************************************************************/
+function boxOT(_folio){
+	var url = "boxOT.html";
+		url += "?FOLIO=" + _folio;
+		url += "&VTZ=" + Math.random();
+	winCfg = "width=380px,height=150px,left=" + 150 + "px,top=" + 150 +"px,resize=1,scrolling=0";	
+	showModalDialog(url,window,"status:no;help:no;dialogWidth:450px;dialogHeight:150px;scroll:yes");
+}
+/**********************************************************************/
+function listEquipos(){
+	var EQUIPO = getParametro("EQUIPO");
+	if (id_br == "IE") {
+		var xmlTemp2 = document.getElementById("xmlTemp2");
+		xmlTemp2.async = false;
+	}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp2 = document.implementation.createDocument("", "", null);
+	}
+	var xmlDso =  xmlTemp2.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL&USUARIO="+Usuario;
+		url += "&FAENA="+emp
+		url +="&VTZ="+Math.random();
+	if (id_br == "FF" || id_br == "OP" || id_br == "SF") {
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
+		else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.open("GET",url,false);
+		xmlhttp.send();
+		xmlDoc=xmlhttp.responseText;
+		parser = new DOMParser();
+		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+		xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+	} else if (id_br == "IE") {
+			xmlestado = xmlDso.load(url);
+	}
+	if (xmlestado) {
+		var tree = xmlDso.documentElement;				
+		for(var i = 0; i < tree.childNodes.length; i++){
+			var node = tree.childNodes.item(i);
+			opcion = new Option(getChildNodeValue(node,"CODIGO") + " " 
+					+ getChildNodeValue(node,"DESCRIPCION") ,getChildNodeValue(node,"CODIGO"));
+			document.getElementById("listEquipos").options[i] = opcion;
+			if (EQUIPO.indexOf(getChildNodeValue(node,"CODIGO"))>=0){
+				document.getElementById("listEquipos").options[i].selected=true;
+			}
+			layout[i]=getChildNodeValue(node,"LAYOUT");
+		}
+	} else
+		window.open(url);
+} 
+/**********************************************************************/
+function getBitacora(){
+	_i = document.getElementById("listEquipos").selectedIndex;
+	document.getElementById("idMap").style.background="url(ly/" + layout[document.getElementById("listEquipos").selectedIndex] + ") no-repeat";
+	if (getParametro("EQUIPO").indexOf("-M",0)>0)
+		document.getElementById("idMap").style.background="url(ly/ESTACION.png) no-repeat";
+	var element = document.getElementById("idMap");
+	while (element.firstChild) {
+		element.removeChild(element.firstChild);
+	}
+	if (id_br == "IE") {
+		var xmlTemp2 = document.getElementById("xmlTemp2");
+		xmlTemp2.async = false;
+	} else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+		var xmlTemp2 = document.implementation.createDocument("", "", null);
+	}
+	var xmlDso = xmlTemp2.XMLDocument;
+	var url = "../xml/Bitacoras.asp?RECURSO=getLayout2";
+	 	url += "&FAENA=" + emp;
+		if (getParametro("EQUIPO").indexOf("-M",0)>0)
+			url += "&EQUIPO_PRIN=" +  getParametro("EQUIPO")
+		else
+			url += "&EQUIPO_PRIN=" + document.getElementById("listEquipos").value;
+		url += "&EQUIPO=TOD";
+		url += "&CRITICIDAD=TOD";
+		url += "&FECHA_INI=01/01/2009";
+		url += "&FECHA_FIN=01/12/2020";
+		url += "&USUARIO=" + Usuario;
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&VTZ=" + Math.random();
+		//window.open(url);
+	
+	if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR") {
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		} else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.open("GET",url,false);
+		xmlhttp.send();
+		xmlDoc=xmlhttp.responseText;
+		parser = new DOMParser();
+		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+		xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+	} else if (id_br == "IE") {
+			xmlestado = xmlDso.load(url);
+	}
+	if (xmlestado){
+		var tree = xmlDso.documentElement;	
+		var _largo = tree.childNodes.length;
+		for(var i = 0; i < _largo; i++){
+			var node = tree.childNodes.item(i);
+			equipo=getChildNodeValue(node,"EQUIPO");
+			imagen = getChildNodeValue(node,"COLOR")+'-'+getChildNodeValue(node,"LAYOUT");
+			folio = getChildNodeValue(node,"FOLIO")
+			NIVEL = getChildNodeValue(node,"NIVEL")
+			var idMap = document.getElementById("idMap");
+			var miDt = new Element('dt', {'id': equipo+i+'dt'}).injectInside(idMap);
+			if(getChildNodeValue(node,"LAYOUT")=="")
+				imagen = "null.png";
+			var miIMG = new Element('img', {
+				'src' : "ly/"+imagen, 
+				'class': 'polLnk',
+				'title': getChildNodeValue(node,"GCODE") + " CRITICIDAD:" + getChildNodeValue(node,"COLOR"),
+				'id': equipo+i,
+				'name': NIVEL,
+				'alt': equipo,
+				styles: {
+					left: getChildNodeValue(node,"X") + 'px',
+					top : getChildNodeValue(node,"Y") + 'px',
+					color: 'FFFF00'
+				},
+				events: {
+					click: function(){
+							//here for layer images
+							document.getElementById('ajaxdiv').innerHTML = "";
+							//alert(this.style.left);
+							loadrisk(this.alt,this.name,this.style.left,0);
+					},
+					mouseover: function(){ 
+						this.style.opacity=1;
+						if (id_br == "IE"){
+							this.filters.alpha.opacity=100;
+						}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+							this.filters = 'alpha(opacity=100)';
+						}
+					},
+					mouseout: function(){
+						this.style.opacity=0.65;
+						if (id_br == "IE"){
+							this.filters.alpha.opacity=65;
+						}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+							this.filters = 'alpha(opacity=65)';
+						}
+					}
+				}
+			}).injectInside(equipo+i+'dt');
+			var miDd = new Element('dd', {
+				'id': equipo+i+'Title',
+				html: equipo +"    CRITICIDAD :" + getChildNodeValue(node,"COLOR")
+			}).injectInside(idMap);
+ 		}//end for
+		equipo=null;
+	}//end If
+	else
+		window.open(url);
+}
+/**********************************************************************/
+function loadPage(url,i){
+	window.document.location = url;
+}
+/**********************************************************************/
+function inicio(){
+	listEquipos();
+	if (getParametro("CHECK")=='true'){
+		_i = parseInt(getParametro("INDEX"));
+		_i=_i+1;
+		formulario.chkAuto.checked = true;
+		if (_i==document.getElementById("listEquipos").options.length){
+				_i=0;
+		}
+	document.getElementById("listEquipos").value = document.getElementById("listEquipos").options[_i].value;
+	url = 'layoutAndina.html?INDEX='+ _i + "&CHECK=" + formulario.chkAuto.checked;
+	t=setTimeout("loadPage("+url+ "," + _i + ")",10000);
+	}
+	getBitacora();
+}
+/**********************************************************************/
+function loadrisk(subEquipo,NIVEL,valX, valZ){
+	if((NIVEL % 2)==1){
+		var url ="detalleInspecciones2.asp?EQUIPO='" + document.getElementById("listEquipos").value + "'&DT=1&SUB_EQUIPO='" + subEquipo + "'&VTZ=" + Math.random();}
+	else 
+		var url ="layoutSecAndina.asp?EQUIPO=" + subEquipo + "&Z="+ valZ + "&X="+ valX.substring(0,valX.length-2) +  "&VTZ=" + Math.random();
+		
+		//window.open(url);
+	alwaysOnTop.init({
+		targetid: 'ajaxdiv',
+		orientation: 1,
+		position: [10, 100],
+		fadeduration: [1000, 1000],
+		frequency: 0.95,
+		hideafter: 30000
+	})
+	jQuery.get(url, {}, function(data){
+	jQuery('#ajaxdiv').html(data);
+	});
+}
+//-->
+</script>
+<body onload="inicio();">
+<script language="JavaScript1.2" src="../standard/menudata.js"></script>
+<br/><br/>
+<form name="formulario">	
+<br/>
+<h1>DIAGRAMA LAYOUT DE CRITICIDADES&nbsp;&nbsp;&nbsp;
+EQUIPO: <select id="listEquipos" name="listEquipos"  class="Campo" onChange="getBitacora();"></select>
+</h1>
+<div id="holder" align="left">
+<div>
+<dl class="map" id="idMap">
+	<dt><a class="polLnk" id="semilla" target="_blank"></a></dt>
+	<dd id="pol1Title"></dd>
+</dl>
+</div>
+</div>
+<!--Drop Down content element -->
+<div id="ajaxdiv" style="width:750px; height:500px; overflow:auto; border:1px solid black; padding: 10px; background:#D9FAFF; visibility:hidden; z-index:50;"></div>
+</form>
+</body>
+</html>

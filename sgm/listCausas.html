@@ -1,0 +1,203 @@
+<html  lang="es" >
+ 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta HTTP-EQUIV='Expires' CONTENT='Tue, 01 Jan 1980 1:00:00 GMT'>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<meta HTTP-EQUIV='Cache-Control' CONTENT='no-cache, must-revalidate'>
+<title>Tipo Equipo</title>
+
+<link rel="stylesheet" href="css/style.css" type="text/css">
+
+
+
+
+
+
+<script language="Javascript1.2" src="js/jquery.js"></script>
+<script language="JavaScript1.2" src="js/main.js"></script>
+</head>
+
+<style>
+body{background-color:#f4fafe;
+font-family:Verdana, Arial, Helvetica, sans-serif;}
+</style>
+
+<script type="text/javascript">
+
+var _tipo;
+var _cod;
+  
+ function set(_obj){
+ parent.setCausa(_obj); 
+ salir();
+}
+ 
+
+ function showLabel(tip){
+ 
+  with (divLabel.style){visibility = "visible";}
+  if(tip=="Guardar"){
+  	document.getElementById("idID").value ="";
+	document.getElementById("idDescripcion").value="";
+  		
+	}
+	 
+	document.getElementById("idID").focus();  
+	document.getElementById("btnLabel").value= tip;
+
+}
+ 
+ function upLabel(){
+ 
+ 	tip = document.getElementById("btnLabel").value;
+ 	if(tip=="Actualizar"){
+ 		updateTipo();
+		}else{ 
+		newTipo();
+		 }
+ }
+ 
+ 
+ function newTipo(){            
+            
+           var url = "js/bodegas.asp?RECURSO=newBodega";
+		   		url += "&CODIGO="+document.getElementById("idID").value;
+		   		url += "&NOMBRE="+document.getElementById("idDescripcion").value;
+				url += "&TIPO="+_tipo;
+			   	url += "&EMPRESA="+getEmpresa();
+			   	url += "&VTZ=" + Math.random();
+				
+				//window.open(url);
+	var tbl = document.getElementById('tbl');
+	var j=0;
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			 
+				
+		}), alert("Registro Ingresado.");hiddLabel();//End each
+	});//end $.get
+		
+}
+
+function updateTipo(){            
+            
+           var url = "js/bodegas.asp?RECURSO=updateBodega";
+		   		url += "&CODIGO="+document.getElementById("idID").value;
+		   		url += "&NOMBRE="+document.getElementById("idDescripcion").value;
+				url += "&TIPO="+_tipo;
+			   	url += "&EMPRESA="+getEmpresa();
+			   	url += "&VTZ=" + Math.random();
+				
+				//window.open(url);
+	var tbl = document.getElementById('tbl');
+	var j=0;
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+		}), alert("Registro Actualizado.");hiddLabel();//End each
+	});//end $.get
+		
+}
+
+function hiddLabel(){
+ with (divLabel.style){ visibility = "hidden";  } 
+ listTipos();
+ 
+ }
+ 
+
+function listTipos(){            
+            
+         var url = "xml/Checklist.asp?RECURSO=listCausas";
+			 url += "&TIPO_EQUIPO=" + _tipo;
+			 url += "&COD_FALLA=" + _cod;
+			 url += "&VTZ=" + Math.random();
+				
+				//window.open(url);
+	var tbl = document.getElementById('tbl');
+	limpiarTabla2(tbl);
+	
+	var j=0;
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			var desc = $(this).find("DESCRIPCION").text();
+			var row = tbl.insertRow(-1);
+				row.className = "titulo"
+				row.style.cursor = "pointer";
+				row.onclick = function (){set(desc)};
+												 			 
+			if (j==1){row.bgColor= "#ffffff";j=2;}
+					 else{row.bgColor= "#ecf2f6";j=1;}
+			
+			var cell = row.insertCell(0);
+				cell.innerHTML =  "<span>" + $(this).find("ID").text() + "</span>";
+						
+			var cell = row.insertCell(1);
+				cell.innerHTML = "<span>" + desc +"</span>";
+					
+			 
+				
+		})//End each
+	});//end $.get
+	
+			
+}
+
+function edit(obj){
+
+var cod= obj.children[0].children[0].innerText;
+var des = obj.children[1].children[0].innerText;
+
+document.getElementById("idDescripcion").value = des;
+document.getElementById("idID").value = cod;
+showLabel('Actualizar');
+
+}
+
+function inicio(){
+
+_tipo = getParametro("TIPO");
+_cod = getParametro("COD");
+
+listTipos();
+
+}
+
+function salir(){
+parent.document.getElementById('boxTipos').close();
+
+}
+
+
+</script>
+
+<body onLoad="inicio();" leftmargin="0" rightmargin="0" topmargin="0">
+<DIV id="divLabel" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 65px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px; background-color:#cccccc;"
+onclick="event.cancelBubble=true">
+<table>
+	<tr>
+    	<td>ID :</td><td><input type="text" id="idID" size="15" /></td>
+    	<td  align="left"><img src="mg/close.gif" style="cursor:pointer;" onClick="hiddLabel();" /></td></tr>
+		<tr><td>Descripci&oacute;n :</td><td><input type="text" id="idDescripcion" size="30" /></td></tr>
+    	<tr><td colspan="2" align="center">
+        <input  type="button"  id="btnLabel"  value="Aceptar" onClick="upLabel();" /></td></tr>
+</table>
+
+</DIV>
+ 
+<table>
+<tr><td width="100%">
+ <!--input type="button" value="Nuevo " onClick="showLabel('Guardar');"--></td></tr>
+</table>
+
+
+<table width="100%"  border=0 cellpadding=2 id="tbl" cellspacing=0 bordercolor="#6587a3">
+</table>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<TITLE>Recepci&oacute;n de Ordenes de Compra</TITLE>
+		<META CONTENT="Microsoft Visual Studio .NET 7.1" NAME="GENERATOR">
+		<META CONTENT="Visual Basic .NET 7.1" NAME="CODE_LANGUAGE">
+		<META CONTENT="JavaScript" NAME="vs_defaultClientScript">
+		<META CONTENT="http://schemas.microsoft.com/intellisense/ie5" NAME="vs_targetSchema">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlTemp></xml>
+		<LINK REL="stylesheet" HREF="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" >
+
+
+
+
+
+
+		<SCRIPT TYPE="text/javascript" SRC="standard/Tabber/tabber.js"></SCRIPT>
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+		<!-- MENU -->
+		<LINK REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+		<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></SCRIPT>
+		<!-- MENU -->
+        <STYLE TYPE="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </STYLE>
+</HEAD>
+
+<SCRIPT>
+function inicio(){
+//ListSolicitudes();
+formulario.txtFechaIni.value = '01/01/' + _hoy().substring(6,12);
+
+dt = parseInt(_hoy().substring(0,2));
+//if (dt> buscar dateadd
+formulario.txtFechaFin.value = (+1) + _hoy().substring(2,12);
+	
+ListOC();
+}
+
+
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsablesInc.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsablesInc.options[0] = opcion; 
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsablesInc.options[i] = opcion;
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+function guardar(){
+
+var tabla = document.getElementById('tabOC');
+
+		for (i=2; i< tabla.rows.length; i++){
+			OC = tabla.rows[i].children[0].innerText;
+			Guia = tabla.rows[i].children[5].children[0].value;
+			Boleta = tabla.rows[i].children[6].children[0].value;
+			Factura = tabla.rows[i].children[7].children[0].value;
+						
+			if (Guia)
+				IngDocumento(OC, 'GUI',  Guia);
+				 
+			if (Boleta)
+				IngDocumento(OC, 'BOL',  Boleta);
+				
+			if (Factura)	
+				IngDocumento(OC, 'FAC',  Factura);
+		}
+}
+
+function IngDocumento(OC, Tipo, NroDocumento){
+
+	xmlDoc.async = false;
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Ingresos.asp?RECURSO=InsertNroDocumento";
+		url += "&ORDEN_COMPRA=" + OC;
+		url += "&EMPRESA=" + getEmpresa();
+		url += "&TIPO=" + Tipo;
+		url += "&RESPONSABLE=" + Usuario;
+		url += "&NRO_DOCUMENTO=" + NroDocumento;
+		
+		//alert(url);
+	   xmlestado = xmlDso.load(url);		
+	    
+		/*if (!xmlestado)
+				window.open(url);*/
+		
+}
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabOC');
+Folio = tabla.rows[Index].children[0].innerText;
+//Empresa = tabla.rows[Index].children[1].innerText;
+Empresa = 'ATI';
+
+if (Empresa=='ATI')
+	var url = "ImprOC.html?OC=" + Folio;
+else
+	if (Empresa=='MATI')
+		var url = "ImprOC_MATI.html?OC=" + Folio;
+	else
+		var url = "ImprOC_LOA.html?OC=" + Folio;
+			
+	window.open(url);
+
+}
+
+function Recepcionar(Index){
+
+guardar();
+
+var tabla = parent.document.getElementById('tabOC');
+var imgUrl =tabla.rows[Index].children[9].children[0].src;
+
+if (imgUrl.substr(imgUrl.length-10,10)=="nerado.gif"){
+				alert("OC ya fue recepcionada!.");
+				return;
+				}		
+				
+	if(!tabla.rows[Index].children[7].children[0].value&&!tabla.rows[Index].children[6].children[0].value){
+				alert("Debe Ingresar Nro de Factura o Boleta.");
+				return;
+				}		
+				
+		if(!tabla.rows[Index].children[8].children[0].value){
+				alert("Debe Ingresar Fecha Recepci�n.");
+				return;
+				}
+				
+	
+	xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=SetRecepcion&FOLIO=" + tabla.rows[Index].children[0].children[0].innerText;
+		url += "&FECHA_RECEPCION=" + tabla.rows[Index].children[8].children[0].value;
+		url += "&EMPRESA=" + getEmpresa();
+	    var res =xmlDso.load(url);
+		
+		if(res)
+				alert("O.C. Actualizada.");
+		else
+			window.open(url);
+
+	tabla.rows[Index].children[9].children[0].src = "images/generado.gif";
+	
+}
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+
+function ListOC(){
+	 
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=ListOCPendientes";
+		url += "&ESTADOS=" + formulario.listEstados.value;
+		url += "&FECHA_INI="+formulario.txtFechaIni.value;
+	    url += "&FECHA_FIN="+formulario.txtFechaFin.value;
+		url += "&EMPRESA=" + getEmpresa();
+			
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/10);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+ 
+function GetInsumo(){
+}
+
+function toExcel(){
+
+	  xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=ListOCPendientes";
+		url += "&ESTADOS=" + formulario.listEstados.value;
+		url += "&FECHA_INI="+formulario.txtFechaIni.value;
+	    url += "&FECHA_FIN="+formulario.txtFechaFin.value;
+	  	url += "&EXCEL=YES";
+		url += "&EMPRESA=" + getEmpresa();
+
+	 // alert(Url);
+		window.open(url);
+      }
+	  
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</SCRIPT>
+	<BODY>
+		<DIV ID="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<IFRAME frameBorder="0" HEIGHT="185" NAME="FrameCalendar" SCROLLING="no" SRC="DTPicker.htm" WIDTH="180"></IFRAME>
+	</DIV>
+	
+<DIV ID="DivInsumos" STYLE="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameInsumos" SRC="ArticulosOT.html" frameBorder="0" WIDTH="560" SCROLLING="no" HEIGHT="270">
+</IFRAME>
+</DIV>
+
+
+<DIV ID="DivOT" STYLE="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME NAME="FrameOT" SRC="generaOT.html" frameBorder="0" WIDTH="320" SCROLLING="no" HEIGHT="200"></IFRAME>
+</DIV>
+		
+	<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/menudata.js"></SCRIPT>
+	<BR>
+	<BR>
+		<FORM NAME="formulario">
+		  <INPUT NAME="TxtCodigo" TYPE="hidden" CLASS="input" />
+				  <H2 CLASS="titulo2">Recepci&oacute;n de Orden de Compras .</H2>
+			      <TABLE>
+				   <TR ALIGN="center">
+    			<TD COLSPAN="2" ALIGN="left" CLASS="texto" STYLE="color:#000000; font-weight:bold;">
+				ORDENES DE COMPRA DESDE: 
+				 <INPUT NAME="txtFechaIni" SIZE="12" CLASS="input"  
+				  			onKeyPress="">
+				 <IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaIni,
+							  txtFechaIni,divCalendar);return false">
+				HASTA :
+				  <INPUT CLASS="input" NAME="txtFechaFin" TYPE="text"
+				  			  size="12" >
+				 <IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top"
+							  onClick="FrameCalendar.fPopCalendar(txtFechaFin,
+							  txtFechaFin,divCalendar);return false">
+							  
+				<INPUT  type="button" VALUE="Buscar" onClick="ListOC();"  class="botonBlanco">
+	   		</TD><TR><TD><INPUT TYPE="button" onClick="toExcel()" VALUE="Exportar a Excel." CLASS="botonBlancoLargo"></TD></TR>
+  				</tr>
+  <TR>
+					   <TD CLASS="input">
+					   <INPUT  class="littleButton" TYPE="button" 
+					   				value=" << " onClick="irInicioV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button"
+									 value="  <  " onClick="irAtrasV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" 
+								value="  >  " onClick="irAdelanteV('tabOC');">
+						<INPUT  class="littleButton" TYPE="button" VALUE=" >> " 
+									onClick="irFinalV('tabOC');">&nbsp;&nbsp;
+				Registros: <SPAN ID="IDCantReg"></SPAN>
+					&nbsp;| Vista: <SPAN ID="IDFraccionReg"></SPAN>
+			</TD></TR></TABLE>
+						
+			<TABLE CELLPADDING="0" CELLSPACING="3" CLASS="texto"
+				 id="tabOC" datasrc=#xmlOC DATAPAGESIZE="10">
+				<THEAD>
+				<TR CLASS="tituloLista">
+				  <TD WIDTH="56">Orden Compra</TD>
+				  <TD WIDTH="55">Fecha</TD>
+				  <TD WIDTH="68">Estado</TD>
+				  <TD WIDTH="100">Proveedor</TD>
+				  <TD WIDTH="50">Total Neto</TD>
+   				  <TD WIDTH="40">Guia</TD>
+   				  <TD WIDTH="40">Boleta</TD>
+				  <TD WIDTH="40">Factura</TD>
+  				  <TD WIDTH="40">Fecha Recepci&oacute;n </TD>
+  				  <TD WIDTH="40">Recepcionar</TD>
+   				  <TD WIDTH="58">Ver</TD>
+				<TD WIDTH="1"></th>
+				<TR CLASS="HeaderLista">
+				  <TD></TD>
+				  <TD></TD>
+				 <TD>
+				 	<SELECT NAME="listEstados" CLASS="campo" onChange="ListOC();">
+						<OPTION VALUE="ENV" selected="selected">ENVIADA A PROV.</OPTION>
+						<OPTION VALUE="REC">RECEPCIONADA</OPTION>
+						<OPTION VALUE="PEN">EXISTENCIAS PENDIENTES</OPTION>
+			  	  	</SELECT>				  </TD>
+				  <TD></TD>
+				  <TD></TD>
+				<TD> </TD>
+				 <TD>				 </TD>
+ 				 <TD></TD>
+ 				 <TD></TD>
+ 				 <TD></TD>
+ 				 <TD></TD>		  
+				 </TR>
+				</THEAD>
+			<TR  class="itemLista2">
+				<TD >
+					<SPAN  datafld="ORDEN_COMPRA"/></TD>
+				<TD>	
+					<SPAN   datafld="FECHA"/></TD>
+				<TD ALIGN="left">
+					<SPAN  datafld="ESTADO"></SPAN></TD>
+				<TD ALIGN="left">
+					<SPAN  datafld="PROVEEDOR"></SPAN></TD>
+				<TD ALIGN="right">
+					<SPAN   datafld="TOTAL_NETO"></SPAN></TD>
+				<TD>
+				 <INPUT  class="campoNum" DATAFLD="GUIA" SIZE="10"/></TD>
+				<TD>
+				 <INPUT  class="campoNum" DATAFLD="BOLETA" SIZE="10"></TD>
+				<TD ALIGN="center">
+					<INPUT  class="campoNum" DATAFLD="FACTURA" SIZE="10"></TD>
+				<TD ALIGN="center">
+						<INPUT  class="campoNum" DATAFLD="FECHA_RECEPCION" SIZE="12"  disabled="disabled">
+						 <IMG STYLE="CURSOR: hand"  src="images/calendar.jpg" ALIGN="top"
+							  onClick="FrameCalendar.fPopCalendar(this.parentElement.children(0),
+							  this.parentElement.children(0),divCalendar);return false">
+							</TD>
+				<TD ALIGN="center"><IMG STYLE="CURSOR:hand"  datafld="IMAGE"
+							onclick="Recepcionar(this.parentElement.parentElement.rowIndex);"
+							src="" ALIGN="middle">							</TD>
+				<TD ALIGN="center">
+				 <IMG STYLE="CURSOR: hand" 
+							onclick="verOC(this.parentElement.parentElement.rowIndex);"
+							src="images/table.png" ALIGN="middle"></TD>
+			</TR>
+</TABLE>
+<BR>
+<INPUT TYPE="button" onClick="guardar();" CLASS="botonBlancoLargo"  value="Guardar N� Documento"/>
+
+</FORM>
+
+	</BODY>
+</HTML>

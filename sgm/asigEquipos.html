@@ -1,0 +1,478 @@
+<!--<%@LANGUAGE="JAVASCRIPT" CODEPAGE="1252"%>
+--><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Equipos x Usuario</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlEquipos></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlSecciones></xml>
+
+<LINK rel="stylesheet" href="standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT>
+
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+ 
+function listEquipos(){
+
+document.getElementById('chkAll').checked=false;
+	
+		if (id_br == "IE")
+		{
+			var xmlEquipos = document.getElementById("xmlEquipos");
+			xmlEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipos = document.implementation.createDocument("", "", null);
+		}
+  var xmlDso =   xmlEquipos.XMLDocument;
+  var url = "xml/equipos.asp?RECURSO=ListEquiposxUsuario";
+	  url+= "&USUARIO=" + document.getElementById('txtUsuario').value;
+	  url+= "&SECCION=" + document.getElementById('listSecciones').value;	
+	  url+= "&FAENA=" + emp; 
+	  url += "&VTZ=" + Math.random();
+
+	  if (document.getElementById('txtUsuario').value != '' && document.getElementById('listSecciones').value != ''){
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+//window.open(url);
+	  if (res) {
+	  //BLOQUE DE NAVEGACION
+			total_registros_lista = xmlDso.documentElement.childNodes.length;
+			document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+			bloque_listado = 1;
+			total_bloque_listado = Math.ceil(total_registros_lista/40);
+			var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+			objLabelReg.innerText = "1/" + total_bloque_listado;
+				if (id_br == "IE")
+				{
+					
+					var tbody = document.getElementById("tabEquipos").getElementsByTagName("tbody")[0];
+					var ttr = tbody.getElementsByTagName('tr');
+					if (ttr.length > 1){
+						for(i=ttr.length-1;ttr.length > 0;i--){
+							ttr[i].parentNode.removeChild(ttr[i]);
+						}
+					}		
+					total_registros_lista = xmlDso.documentElement.childNodes.length;
+					//var tbody = document.getElementById("tabEquipos").getElementsByTagName("tbody")[0];
+					if (total_registros_lista > 0){
+						var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+						for (i=0; i<x.length; i++) {
+							var row = document.createElement("TR");
+							row.onMouseOver="mOvr(this,'#ABCCE5')";
+							row.onMouseOut="mOut(this,'#ffffff')"; 
+							row.style.cursor = "hand";  
+							row.style.height = "20";
+							
+							var cell1 = document.createElement("TD");
+							cell1.style.borderBottom = "solid 1px #6587a3";
+							cell1.innerHTML =   "<center><SPAN CLASS='text'>" + x[i].getElementsByTagName("CODIGO")[0].childNodes[0].nodeValue + "</span></center>";
+							
+							var cell2 = document.createElement("TD");
+							cell2.style.borderBottom = "solid 1px #6587a3";
+							cell2.innerHTML =   "<SPAN CLASS='text'>" + x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</span>";
+							
+							var cell3 = document.createElement("TD");
+							cell3.style.borderBottom = "solid 1px #6587a3";		
+							if (x[i].getElementsByTagName("IND")[0].childNodes[0] != null){
+								cell3.innerHTML =   "<center><INPUT type='checkbox' checked name='chk' class='input' /></center>";
+							}else{
+								cell3.innerHTML =   "<center><INPUT type='checkbox' name='chk' class='input' /></center>";
+							}
+				
+							
+							row.appendChild(cell1);
+							row.appendChild(cell2);
+							row.appendChild(cell3);
+							tbody.appendChild(row);
+						}
+					}else{
+							var row = document.createElement("TR");
+							var cell1 = document.createElement("TD");
+							cell1.innerHTML = "<center>&nbsp;</center>"
+							var cell2 = document.createElement("TD");
+							cell2.innerHTML = "<center>&nbsp;</center>";
+							var cell3 = document.createElement("TD");
+							cell3.innerHTML = "<center>&nbsp;</center>";
+							row.appendChild(cell1);
+							row.appendChild(cell2);
+							row.appendChild(cell3);
+							tbody.appendChild(row);
+					}
+				}
+				else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+				{
+	
+	//-----------------------------------------------------------------------------------------------------	
+					total_registros_lista = xmlDso.documentElement.childNodes.length;
+					document.getElementsByTagName('tbody')[4].innerHTML = "";
+					var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+					var context = "";
+					for (i=0; i<x.length; i++) {
+					  context = context +  "<TR  BGCOLOR='#dde3eb'>";
+					  context = context +  "<TD height='20'><SPAN CLASS='text'>"+  x[i].getElementsByTagName("CODIGO")[0].childNodes[0].nodeValue + "</SPAN></td>";
+						if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+							  context = context +  "<TD><SPAN CLASS='text'>"+  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue + "</SPAN></td>";
+						}else{
+							  context = context +  "<TD STYLE='border-bottom:solid 1px #6587a3;'><SPAN CLASS='text'>&nbsp;</td>";
+						}
+						if (x[i].getElementsByTagName("IND")[0].childNodes[0] != null){
+							  context = context +  "<TD align='center'><INPUT type='checkbox' checked name='chk'  class='input' /></TD>";
+						}else{
+							  context = context +  "<TD align='center'><INPUT type='checkbox'  name='chk'  class='input' /></TD>";
+						}
+					  context = context +  "</tr>";
+					}
+					if (context != ""){
+						document.getElementsByTagName('tbody')[4].innerHTML = context;
+					}else{
+						document.getElementsByTagName('tbody')[4].innerHTML = "<tr><td  STYLE='border-bottom:solid 1px #6587a3;'>&nbsp;</td><td  STYLE='border-bottom:solid 1px #6587a3;'>&nbsp;</td><td  STYLE='border-bottom:solid 1px #6587a3;'>&nbsp;</td><tr>";
+					}
+				}
+	
+			}
+		else
+		  window.open(url);
+	}else{
+		alert('Ingrese un usuario y seleccione seccion')
+	}
+ } 
+
+ function checkAll(){
+
+ var tbl = document.getElementById('tabEquipos');
+ var chk = document.getElementById('chkAll');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=2; i<lastRow; i++){
+	 if (chk.checked){
+		tbl.rows[i].children[2].children[0].checked=true;
+	 }else{
+		tbl.rows[i].children[2].children[0].checked=false;
+	}
+ }
+	 
+} 
+
+function guardar(){
+
+
+	var Usuario = document.getElementById('txtUsuario').value;
+	var seccion = document.getElementById('listSecciones').options[document.getElementById('listSecciones').selectedIndex].value;
+	
+	if(!Usuario){
+			alert("Ingrese un Usuario");
+			return;
+	}else if(seccion == "-1"){
+			alert("Seleccione Seccion");
+			return;
+	}else{
+			
+				//var tipoHorometro = formulario.tipoHorometro.value
+			
+				tabla = document.getElementById('tabEquipos');
+				 
+				if (id_br == "IE")
+				{
+					var xmlTemp = document.getElementById("xmlTemp");
+					xmlTemp.async = false;
+				}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+					var xmlTemp = document.implementation.createDocument("", "", null);
+				}
+		
+				for (i=2; i< tabla.rows.length; i++){
+		
+					
+					if (id_br == "IE")
+					{
+						Codigo = tabla.rows[i].children[0].children[0].innerText;
+					}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+						Codigo = tabla.rows[i].children[0].children[0].innerHTML;
+					}
+					
+					var xmlDso = 	xmlTemp.XMLDocument;
+					var url = "xml/equipos.asp?RECURSO=DelEquipoUsuario";
+						url +="&USUARIO=" + Usuario;
+						url +="&SECCION=" +  document.getElementById('listSecciones').value;	
+						url +="&CODIGO=" + Codigo;	
+						
+						if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+						{
+									if (window.XMLHttpRequest)
+									  {// code for IE7+, Firefox, Chrome, Opera, Safari
+									  xmlhttp=new XMLHttpRequest();
+									  }
+									else
+									  {// code for IE6, IE5
+									  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+									  }
+									xmlhttp.open("GET",url,false);
+									xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+									xmlhttp.send();	
+									xmlDoc=xmlhttp.responseText;
+									parser = new DOMParser();
+									xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+									xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+									//alert(xmlDso);
+									//window.open(url);
+						}
+						else if (id_br == "IE")
+						{
+							xmlestado = xmlDso.load(url);
+						}
+						//alert(url);
+					if (!xmlestado)
+						window.open(url);
+					if(tabla.rows[i].children[2].children[0].checked){
+						InsertEquipoUsuario(Codigo, Usuario, document.getElementById('listSecciones').value);
+					}
+				}
+			
+		listEquipos();
+	}
+}
+
+function InsertEquipoUsuario(_codigo, _usuario, _seccion){
+
+		if (id_br == "IE")
+		{
+			var xmlTemp = document.getElementById("xmlTemp");
+			xmlTemp.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlTemp = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/equipos.asp?RECURSO=NewEquipoUsuario"
+			url += "&CODIGO=" + _codigo;
+			url += "&USUARIO=" + _usuario;
+			url += "&SECCION=" + _seccion;	
+	
+//	alert(url);
+			if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+						if (window.XMLHttpRequest)
+						  {// code for IE7+, Firefox, Chrome, Opera, Safari
+						  xmlhttp=new XMLHttpRequest();
+						  }
+						else
+						  {// code for IE6, IE5
+						  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						  }
+						xmlhttp.open("GET",url,false);
+						xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+						xmlhttp.send();	
+						xmlDoc=xmlhttp.responseText;
+						parser = new DOMParser();
+						xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+						xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+						//alert(xmlDso);
+						//window.open(url);
+			}
+			else if (id_br == "IE")
+			{
+				xmlestado = xmlDso.load(url);
+			}
+	
+	if(!xmlestado)
+		window.open(url);
+}
+
+
+function inicio(){
+	listSecciones();
+	//listEquipos();
+}
+
+function Get(){
+	listEquipos();
+}
+
+function listSecciones(){
+		if (id_br == "IE")
+		{
+			var xmlSecciones = document.getElementById("xmlSecciones");
+			xmlSecciones.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSecciones = document.implementation.createDocument("", "", null);
+		}
+        var xmlDso =  xmlSecciones.XMLDocument;
+		var url = "xml/Secciones.asp?RECURSO=listSeccionesEquipos";
+			url += "&FAENA=" + emp;
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+        if (xmlestado){
+          var tree = xmlDso.documentElement;
+		  opcion = new Option("[--Seleccione--]","-1");
+		  document.getElementById("listSecciones").options[0] = opcion;  
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            //if (opcion.value == empresa) opcion.selected = true;
+          	document.getElementById("listSecciones").options[i+1] = opcion;   
+          }
+		}
+		 else
+		 	window.open(url); 
+}
+ 
+function Usuarios(){
+	document.getElementById("DivUsuarios").style.visibility = 'visible';
+	document.getElementById('ListFrame').contentWindow.popsearchbox(10, document.getElementById("formulario").txtUsuario, document.getElementById("formulario").txtUsuario, document.getElementById('DivUsuarios'));
+}
+ 
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM name="formulario" id="formulario">
+<DIV id="DivUsuarios" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 196px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 74px; width: 260px; height: 200px;"
+onclick="event.cancelBubble=true">
+<IFRAME id="ListFrame" name="ListFrame" src="ListUsuarios.html" frameBorder="0" width="260" scrolling="no"	height="200"></IFRAME>
+</DIV>
+<SCRIPT language="JavaScript1.2" src="standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE width="751">
+  <!--DWLayoutTable-->
+<TR>
+  <TD width="267" height="25" class="titulo">ASIGNACI&Oacute;N DE EQUIPOS</TD>
+  <TD width="219">&nbsp;</TD>
+  <TD width="249">&nbsp;</TD>
+</TR>
+<TR>
+  <TD height="24" align="left"  class="titulo">USUARIO :
+    <INPUT type="text" class="input" size="20" name="txtUsuario" id="txtUsuario">
+    <IMG src="images/lupa.jpg" align="absbottom" 
+				 style="cursor:hand" 
+				 onClick="Usuarios();"/></TD>
+  <TD class="titulo">SECCION :
+    <SELECT name="listSecciones" id="listSecciones" class="input" onChange="listEquipos();">
+    </SELECT></TD>
+  <TD class="titulo"><input type="button" class="botonBlanco" value="Buscar" onClick="listEquipos();"></TD>
+</TR>
+<TR>
+  <TD height="34" colspan="3" align="left" valign="top"  class="titulo"><TABLE>
+      <TR>
+        <TD class="input">
+				<INPUT name="button" type="button"  class="littleButton" onClick="irInicio('tabEquipos');" 
+					   				value=" << ">
+            <INPUT name="button" type="button"  class="littleButton" onClick="irAtras('tabEquipos');"
+									 value="  <  ">
+            <INPUT name="button" type="button"  class="littleButton" onClick="irAdelante('tabEquipos');" 
+								value="  >  ">
+            <INPUT name="button" type="button"  class="littleButton" 
+									onClick="irFinal('tabEquipos');" value=" >> ">
+          &nbsp;&nbsp;
+         &nbsp;&nbsp;
+				Registros: <SPAN id="ID_list_cant_reg"></SPAN>
+					&nbsp;| Vista: <SPAN id="ID_list_fraccion_reg"></SPAN>
+		   </TD>
+      </TR>
+    </TABLE></TD>
+    </TR>
+</TABLE>
+
+<TABLE width="710" border="0" cellpadding="5" cellspacing="5">
+  <TR><TD width="366" valign="top" class="td">
+	<TABLE width="589" cellpadding="0" cellspacing="4" class="texto" id="tabEquipos"  >
+			<THEAD>
+			<TR class="HeaderLista">
+			<TD height="13" colspan="3" valign="top">EQUIPOS</TD>
+			</TR>
+			<TR class="HeaderLista" >
+			  <TD width="127" height="13">CODIGO</TD>
+			  <TD width="382">NOMBRE</TD>
+  			  <TD width="62">ASIGNAR
+			  <INPUT type="checkbox"  id="chkAll" class="input" onClick="checkAll();"></TD>
+			  </TR>
+			</THEAD>
+            <tbody>
+          </tbody>
+	</TABLE>
+	</TD>
+	<TD width="22">&nbsp;&nbsp;</TD>
+  </TR></TABLE>
+</FORM>
+
+<DIV align="center" >
+  <INPUT type="button" onClick="guardar();" value="Guardar" class="botonBlanco"-->
+</DIV>
+</BODY>
+</HTML>

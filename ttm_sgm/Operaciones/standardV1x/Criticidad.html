@@ -1,0 +1,377 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="xmlTemp"></XML>
+<XML id="xmlNew"></XML>
+<XML id="xmlDel"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+<SCRIPT>
+var divBox = new Object();
+var Horometro = new Object();
+var valorHorometro = new Object();
+var fecha;
+var equipo;
+var tipo_equipo;
+var _Index;
+
+Array.prototype.max = function () {
+if (this.length == 0) return 0;
+var n = Number(this[0]);
+for (var i=1; i<this.length; i++) {n = Math.max(n, this[i])};
+return n;
+}
+
+function detenerError(){
+var tbl = document.getElementById('tabChecklist');
+			 switch (tbl.rows[1].children[1].children[0].value) {
+	   				 case "1" : parent.formulario.txtColor.value="BAJA";
+		 					  parent.formulario.txtColor.style.background="#00FF33";
+					 break;
+					 case "2" : parent.formulario.txtColor.value="MEDIA";
+		 					  parent.formulario.txtColor.style.background="#FFFF00";
+					 break;
+					 case "3" : parent.formulario.txtColor.value="ALTA";
+		 					  parent.formulario.txtColor.style.background="#3366FF";
+							  }
+			total =(1/3)*75*parseFloat(tbl.rows[1].children[1].children[0].value);
+		parent.formulario.txtCriticidad.value=(total+" ").substr(0,4);
+  		divBox.style.visibility = "hidden";
+return true
+}
+
+//window.onerror=detenerError
+
+function mostrarVentana(_id, _tipo_equipo, _divBox, _function){
+
+if (!_id.value){
+		alert("Guardar Bitacora Antes de continuar.");
+		return;
+		}
+			
+if (!_tipo_equipo.value){
+		alert("Ingrese Equipo.");
+		return;
+		}
+				
+  formulario.txtID.value = _id.value;
+  formulario.txtCodTipoEquipo.value = _tipo_equipo.value;
+  divBox = _divBox;
+  functionName = _function
+  with (divBox.style){visibility = "visible";} 
+
+mostrarCheckList();
+}
+
+
+function setcodeandname(code, name){
+ // codeobj.value = code;
+  valorHorometro.value = name;
+}
+
+function wClose(){
+
+var tbl = document.getElementById('tabChecklist');
+
+var lastRow = tbl.rows.length;
+ 
+ 
+ 	if (lastRow==2){
+			//alert(tbl.rows.length);
+			 switch (tbl.rows[1].children[1].children[0].value) {
+	   				 case "1" : parent.formulario.txtColor.value="BAJA";
+		 					  parent.formulario.txtColor.style.background="#3366FF";
+					 break;
+					 case "2" : parent.formulario.txtColor.value="MEDIA";
+		 					  parent.formulario.txtColor.style.background="#FFFF00";
+					 break;
+					 case "3" : parent.formulario.txtColor.value="ALTA";
+		 					  parent.formulario.txtColor.style.background="#3366FF";
+							  }
+			total =(1/3)*100.1*parseFloat(tbl.rows[1].children[1].children[0].value);
+		parent.formulario.txtCriticidad.value=(total+" ").substr(0,4);
+  		divBox.style.visibility = "hidden";
+  		return; }
+		
+	c1 = (1/3)*100.1*parseFloat(tbl.rows[1].children[1].children[0].value);
+	c2 = (1/3)*100.1*parseFloat(tbl.rows[2].children[1].children[0].value);
+	c3 = (1/3)*60.1*parseFloat(tbl.rows[3].children[1].children[0].value);
+	c4 = (1/3)*60.1*parseFloat(tbl.rows[4].children[1].children[0].value);
+	c5 = (1/3)*60.1*parseFloat(tbl.rows[5].children[1].children[0].value);
+	c6 = (1/3)*60.1*parseFloat(tbl.rows[6].children[1].children[0].value);
+	//c7 = (1/3)*42*parseFloat(tbl.rows[7].children[1].children[0].value);
+	
+	max1=[c1,c2,c3,c4,c5,c6].max();
+	
+	/*c8 = (1/3)*10*parseFloat(tbl.rows[8].children[1].children[0].value);
+	c9 = (1/3)*10*parseFloat(tbl.rows[9].children[1].children[0].value);	
+	c10 = (1/3)*2.5*parseFloat(tbl.rows[10].children[1].children[0].value);
+	c11 = (1/3)*2.5*parseFloat(tbl.rows[11].children[1].children[0].value);
+	c12 = (1/3)*2.5*parseFloat(tbl.rows[12].children[1].children[0].value);
+	c13 = (1/3)*2.5*parseFloat(tbl.rows[13].children[1].children[0].value);*/
+	
+	total = (max1);
+	
+  
+  
+  if (total>=70){
+	  	parent.formulario.txtColor.value="ALTA";
+		parent.formulario.txtCriticidad.value=(total+" ").substr(0,4);
+  		parent.formulario.txtColor.style.background="#FF0000";
+  		divBox.style.visibility = "hidden";
+  		return;  
+  		}
+  
+  	
+	if (total>33.4){
+	  	parent.formulario.txtColor.value="MEDIA";
+		parent.formulario.txtCriticidad.value=(total+" ").substr(0,4);
+  		parent.formulario.txtColor.style.background="#FFFF00";
+  		divBox.style.visibility = "hidden";
+  		return; }
+	
+	
+
+	parent.formulario.txtColor.value="BAJA";
+	parent.formulario.txtCriticidad.value=(total+" ").substr(0,4);
+  	parent.formulario.txtColor.style.background="#3366FF";
+  	divBox.style.visibility = "hidden";
+		
+  	return; 	
+
+}
+
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+function color(obj){
+
+ if (obj.value==1)
+  	obj.parentElement.bgColor='#3366FF' //blue
+ 
+ if (obj.value==2)
+  	obj.parentElement.bgColor='#FFFF00;' //yellow
+	
+ if (obj.value==3)
+  	obj.parentElement.bgColor='#FF0000;' //red
+
+ 
+}
+
+function mostrarCheckList(){
+
+var option;
+var tbl = document.getElementById('tabChecklist');
+			limpiarTablaCheck('tabChecklist');
+
+	var tbl = document.getElementById('tabChecklist');
+		
+    xmlTemp.async = false;
+    var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=ListCheck";
+		url += "&TIPO_EQUIPO=" + formulario.txtCodTipoEquipo.value;
+		url += "&FOLIO=" + formulario.txtID.value;
+		url += "&VTZ=" + Math.random();
+		
+    var res =xmlDso.load(url);
+	//window.open(url);
+	
+      if (res){
+        var tree = xmlDso.documentElement;
+        if (tree.childNodes.length > 0){
+		i=0;j=1;var row = tbl.insertRow(-1);
+		while (i< tree.childNodes.length){
+                
+				/*if  (j==5) {
+					row = tbl.insertRow(-1);
+					j=1;
+          		 }*/ 
+				row = tbl.insertRow(-1);
+				var node = tree.childNodes.item(i);
+				var cell = row.insertCell(0);
+				//alert(getChildNodeValue(node,"BITACORA"));
+				if(getChildNodeValue(node, "BITACORA")){
+						cell.innerHTML =  "<span class='LitleText' >" +
+										  " " + getChildNodeValue(node,"DESCRIPCION") + "</span>";
+										  
+						cell.width = 150;
+						//alert(getChildNodeValue(node,"VALOR"))
+						if (getChildNodeValue(node,"VALOR")=="0"){
+											option =  "<OPTION VALUE=0 SELECTED>SEL</OPTION>"+
+													  "<OPTION VALUE=1>1</OPTION>"+
+										 			  "<OPTION VALUE=2>2</OPTION>"+
+										 			  "<OPTION VALUE=3>3</OPTION>";
+											bgcolor="";
+													  }
+													  
+						if (getChildNodeValue(node,"VALOR")=="1"){
+											option =  "<OPTION VALUE=0>SEL</OPTION>"+
+											 		  "<OPTION VALUE=1 SELECTED>1</OPTION>"+
+										 			  "<OPTION VALUE=2>2</OPTION>"+
+										 			  "<OPTION VALUE=3>3</OPTION>";
+													  bgcolor="#3366FF";
+													  }
+						if (getChildNodeValue(node,"VALOR")=="2"){
+											option =  "<OPTION VALUE=0>SEL</OPTION>"+
+											  		  "<OPTION VALUE=1>1</OPTION>"+
+										 			  "<OPTION VALUE=2 SELECTED>2</OPTION>"+
+										 			  "<OPTION VALUE=3>3</OPTION>";
+													  bgcolor="#FFFF00;";
+													  }
+													  
+						if (getChildNodeValue(node,"VALOR")=="3"){
+											option =  "<OPTION VALUE=0>SEL</OPTION>"+
+											   		  "<OPTION VALUE=1>1</OPTION>"+
+										 			  "<OPTION VALUE=2>2</OPTION>"+
+										 			  "<OPTION VALUE=3 SELECTED>3</OPTION>";
+													  bgcolor="#FF0000;";
+													  }
+													  
+						var cell = row.insertCell(1);
+						cell.innerHTML = "<SELECT class='LitleText' onchange='color(this);'>"+
+										  option+
+										 "</SELECT>"+
+										 "<INPUT TYPE='HIDDEN' VALUE='" + getChildNodeValue(node,"ID") +"'/>";
+						cell.bgColor=bgcolor;
+								}
+					else{
+						cell.innerHTML =  	"<span class='LitleText' >" +
+											 getChildNodeValue(node,"DESCRIPCION") + "</span>";
+						cell.width = 150;
+					
+					var cell = row.insertCell(1);
+						cell.innerHTML = "<SELECT class='LitleText' onchange='color(this);'>"+
+										 "<OPTION VALUE=0>SEL</OPTION>"+
+										 "<OPTION VALUE=1>1</OPTION>"+
+										 "<OPTION VALUE=2>2</OPTION>"+
+										 "<OPTION VALUE=3>3</OPTION></SELECT>"+
+										 "<INPUT TYPE='HIDDEN' VALUE='" + getChildNodeValue(node,"ID") +"'/>";
+						}
+					
+				  
+				i=i+1;j=j+1;
+				
+			}//end while
+		}//end if mq 0
+	}// end if res
+}//end function
+
+function guardarCheckList(){
+
+xmlDel.async = false;
+	var xmlDso = xmlDel.XMLDocument;
+	url = "xml/Checklist.asp?RECURSO=DelCheckBitacora"
+	url += "&ID=" + formulario.txtID.value;
+	url += "&VTZ=" + Math.random();
+	
+	xmlestado = xmlDso.load(url);
+	
+var tbl = document.getElementById('tabCheckList');
+var lastRow = tbl.rows.length;
+ 
+for (i=0; i<lastRow; i++){
+	
+		if(tbl.rows[i].children[1])
+					guardarCheck(tbl.rows[i].children[1].children[1].value, tbl.rows[i].children[1].children[0].value);
+
+}
+
+}
+
+function guardarCheck(ID, VALOR){
+				
+	xmlNew.async = false;
+	var xmlDso = xmlNew.XMLDocument;
+	var url = "xml/Checklist.asp?RECURSO=NewCheckBitacora";
+		url += "&ID=" + ID;
+		url += "&FOLIO=" + formulario.txtID.value;
+		url += "&VALOR=" + VALOR;
+		url += "&VTZ=" + Math.random();
+		
+		//alert(ID + " " + VALOR);
+		
+		xmlestado = xmlDso.load(url);
+		
+		if (!xmlestado)
+				window.open(url);
+			
+}
+
+
+function limpiarTablaCheck(tabla){
+	var tbl = document.getElementById(tabla);
+	var lastRow = tbl.rows.length;
+	for (i=0; i<lastRow; i++){
+	  var row = tbl.deleteRow(0);
+	 }
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" BGCOLOR="#dee6eb" SCROLL="no"  
+onLoad="">
+<FORM NAME="formulario">
+<CENTER>
+<TABLE WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;Criticidad</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="divBox.style.visibility = 'hidden';">
+    </TD>
+  </TR>
+</TABLE>
+</CENTER>
+<INPUT TYPE="HIDDEN" NAME="txtCodTipoEquipo"/>
+<INPUT TYPE="HIDDEN" NAME="txtID"/>
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+<TABLE ID="tabCheckList" WIDTH="100%" CLASS="LitleText"></TABLE>
+</FORM>
+<CENTER>
+<INPUT TYPE="BUTTON" VALUE="Aceptar" 
+		CLASS="botonBlanco"  onClick="guardarCheckList();wClose();"/>
+</CENTER>
+</BODY>
+</HTML>

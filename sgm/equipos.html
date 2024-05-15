@@ -1,0 +1,1353 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Equipos</title>
+<link rel="stylesheet" href="/css/jquery-ui.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/style.css" type="text/css" />
+<link rel="stylesheet" href="windowfiles/dhtmlwindow.css" type="text/css" />
+<link rel='stylesheet' href='/css/swipebox.css' />
+<link REL="stylesheet" HREF="/sci/standard/menu.css" TYPE="text/css">
+</head>
+
+<style>
+
+body{margin-left:11px;}
+
+.listText{
+text-decoration:underline;
+font-family:Geneva, Arial, Helvetica, sans-serif;
+font-size:11px;
+
+}
+
+</style>
+
+<script   src='/js/jquery-1.9.1.js'></script>
+<script  src='/js/jquery.swipebox.js'></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+
+<script LANGUAGE="JavaScript1.2" SRC="standard/coolmenus4.js"></script>
+<script language="JavaScript1.2" src="/sgm/js/main.js"></script>
+<script language="Javascript1.2" src="windowfiles/dhtmlwindow.js"></script>
+   <script  src='/js/jquery-ui-1.9.2.custom.min.js'></script> 
+
+<style>
+body{
+	background-color:#FFFFFF;
+	opacity:0.96;
+	filter:alpha(opacity=96);
+	margin-left: 0px;
+	margin-right: 0px;
+}
+	
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab contentdisplay: none; */
+.tabcontent {
+  
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.hidden {
+  
+   display: none;
+   visibility: hidden;
+ 
+}
+
+	.tabcontent {
+  animation: fadeEffect 0.5s; /* Fading effect takes 1 second */
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+	
+</style>
+	
+
+<script>
+
+	
+var inlinewin6;
+var option = "New";
+var indCalculo = false;
+var rol;
+
+ 
+	
+function inicio(){
+
+parent._equipo = document.getElementById("idCodigo");
+parent._desc = document.getElementById("idDescripcion");
+	
+var parametro = getParametro("CODIGO");
+
+//ListGrupos();
+listTipos();
+listSectores();
+rol = getRol();
+
+if (rol!="ADMIN"){
+	document.getElementById("btnNewAviso").className='hidden';
+	document.getElementById("btnNewEquipo").className='hidden';
+	document.getElementById("btnGuardar").className='hidden';
+	document.getElementById("btnNewAct").className='hidden';
+}
+//formulario.TxtFecha.value=_hoy();
+document.getElementById("defaultOpen").click();
+	
+}
+	
+function setCodEquipo(_obj){
+	//alert(_obj.innerHTML);
+	document.getElementById("idCodigo").value	=  _obj; //alltrim(_obj.children[0].innerText);
+	document.getElementById("idCodigo").select();
+getEquipo();
+//alert(_obj.innerText);
+}
+
+function setEquipo(cod, nom){
+
+//_equipo.value = alltrim(_obj.innerText);
+document.getElementById("idCodEquipoPadre").value = cod;
+document.getElementById("idEquipoPadre").innerText = nom;
+
+
+}
+	
+
+function guardar(){
+
+		updateEquipo();
+		return;
+	
+	if(indCalculo==true){
+			x=confirm("Desea Actualizar la fecha de Vencimiento");
+			if(!x)
+				return;
+			}
+			
+	indCalculo=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=existeEquipo&CODIGO=" + formulario.TxtCodigo.value;
+    xmlestado = xmlDso.load(url);
+	if (xmlestado){
+			var tree = xmlDso.documentElement;
+    	    var node = tree.childNodes.item(0);
+			}
+	else
+		window.open(url);
+	    
+				
+if (getChildNodeValue(node,"RETURN")=="NOT")
+			NewEquipo();
+else
+	if (option=="Edit")
+					UpdateEquipo();
+			else
+					alert("Codigo de equipo existente!");
+			
+option = "New"
+formulario.TxtCodigo.focus();
+
+}
+
+
+function getEquipo(){
+//xmlEquipo.async=false;
+	
+		with (divWait.style){visibility = "visible";} 
+	
+		var url = "js/equipos.asp?RECURSO=getEquipo";
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	  
+	//alert(url);
+	//window.open(url);
+	 
+$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			document.getElementById("idCodigo").value 		=  $(this).find("CODIGO").text();
+			document.getElementById("idDescripcion").value 	=  $(this).find("DESCRIPCION").text();
+			document.getElementById("idCodEquipoPadre").value 	=  $(this).find("EQUIPO_PADRE").text();
+			document.getElementById("idFecha").value 		=  $(this).find("FECHA").text();
+			document.getElementById("idTipos").value 		=  $(this).find("TIPO_EQUIPO").text();
+			document.getElementById("idEstado").value 		=  $(this).find("ESTADO").text();
+			document.getElementById("idOrden").value 		=  $(this).find("ORDEN").text();
+			document.getElementById("idSector").value 		=  $(this).find("SECTOR").text();		
+			document.getElementById("idLargo").value 	=  $(this).find("MESAS").text();
+			document.getElementById("idLayout").value 	=  $(this).find("LAYOUT").text();
+			document.getElementById("idLayout2").value 	=  $(this).find("LAYOUT2").text();
+			document.getElementById("idGCode").value 	=  $(this).find("GCODE").text();		
+			document.getElementById("idPolR").checked =  $(this).find("POLINR").text();
+			document.getElementById("idAncho").value =  $(this).find("ANCHO").text();
+			document.getElementById("idX").value =  $(this).find("X").text();
+			document.getElementById("idY").value =  $(this).find("Y").text();
+			
+		}),listActividades();listAvisos();//End each
+	});//end $.get
+				
+}
+
+function color(){
+
+//return;
+var myDate = new Date();
+
+var difer = formulario.TxtHorometroVen.value-formulario.TxtHorometro.value;
+
+if (parseFloat(difer)<=0)
+		formulario.TxtHorometroVen.style.color='#FF0000';
+
+
+if (!formulario.TxtHorometroVen.value)
+			return;
+			
+if (formulario.listTipoHr.value=='CRO'){
+			formulario.TxtHorometro.value = _hoy();
+			myDate.setTime(formulario.TxtHorometroVen.value);
+			
+  		 	formulario.TxtHorometroVen.value= formatoFechaCorta(myDate);
+			//formulario.TxtHorometroVen.value= myDate;
+
+			switch(formulario.listEscala.value){
+				case 'H':
+					formulario.TxtHorometroMan.value = (formulario.TxtHorometroMan.value)/(1000*60*60);break;
+				case 'D':
+					formulario.TxtHorometroMan.value = (formulario.TxtHorometroMan.value)/(1000*60*60*24);break;
+				case 'M':
+					formulario.TxtHorometroMan.value = (formulario.TxtHorometroMan.value)/(1000*60*60*24*30.41666);break;
+				case 'A':
+					formulario.TxtHorometroMan.value = (formulario.TxtHorometroMan.value)/(1000*60*60*24*30.41666*12);break;
+			}
+			
+			
+			switch(formulario.listEscalaAlr.value) {
+				case 'H':
+					formulario.TxtHorometroAlarm.value = (formulario.TxtHorometroAlarm.value)/(1000*60*60);break;
+				case 'D':
+					formulario.TxtHorometroAlarm.value = (formulario.TxtHorometroAlarm.value)/(1000*60*60*24);break;
+				case 'M':
+					formulario.TxtHorometroAlarm.value = (formulario.TxtHorometroAlarm.value)/(1000*60*60*24*30.41666);
+					break;
+				case 'A':
+					formulario.TxtHorometroAlarm.value = (formulario.TxtHorometroAlarm.value)/(1000*60*60*24*30.41666*12);
+					 break;
+			}		
+  }//endif
+
+}
+
+
+function calcular(){
+	var myDate = new Date();
+	
+		switch (formulario.listEscala.value){
+		
+			case "H" :
+				HorometroMan = formulario.TxtHorometroMan.value*1000*60*60;
+				break;
+				
+			case "D" :
+				HorometroMan = formulario.TxtHorometroMan.value*1000*60*60*24;
+				break;
+				
+			case "M" :
+				HorometroMan = formulario.TxtHorometroMan.value*1000*60*60*24*30.41666;
+				break;
+				
+			case "A" :
+				HorometroMan = formulario.TxtHorometroMan.value*1000*60*60*24*30.41666*12;
+				break;
+			}
+			
+		if (confirm("Desea Calcular la fecha de Vencimiento desde la ultima mantenci�n")){
+				if(formulario.TxtFechaUltMan.value!=""){
+							var FechaUltMan = formulario.TxtFechaUltMan.value;
+							var myDate = new Date(FechaUltMan.substr(6,4), 
+								FechaUltMan.substr(3,2)-1,
+								FechaUltMan.substr(0,2))
+								}
+
+				}
+				
+		myDate.setTime(myDate.getTime() + HorometroMan);				
+		formulario.TxtHorometroVen.value = formatoFechaCorta(myDate);
+			
+		indCalculo = true;	
+}
+
+
+
+
+function delEquipo(){
+	
+	cod = document.getElementById("idCodigo").value;
+	
+	var url = "js/equipos.asp?RECURSO=delEquipo&CODIGO=" + cod;
+		url +="&UBICACION=" + getEmpresa();
+		url +="&EMPRESA=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+   // window.open(url);
+	
+	if(confirm("Desea Eliminar? "+cod)){
+		
+		$.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+			alert( $(this).find("RESP").text());
+				document.getElementById("idCodigo").value="";
+				document.getElementById("idDescripcion").value
+		})//End each
+	});//end $.get
+	}
+}
+
+	function newEquipo(){
+
+	 frameNew.show(divNew, document.getElementById("idCodigo").value );
+}
+
+	
+function NewEquipoOld(){
+
+	if(formulario.TxtRutProveedor.value=="")
+					{alert("Ingrese el Proveedor.");
+					return;}
+					
+	if(formulario.ListGrupo.value=="")
+					{alert("Ingrese el Grupo.");
+					return;}6
+																			
+	if (formulario.listTipoHr.value=='CRO'){
+		Horometro = (new Date()).getTime();
+		sHorometroVen =formulario.TxtHorometroVen.value;
+		HorometroVen = (new Date(sHorometroVen.substr(6,4), 
+								sHorometroVen.substr(3,2)-1,
+								sHorometroVen.substr(0,2))).getTime();
+																	
+		switch (formulario.listEscala.value){
+			case "D" :
+				HorometroMan 	= formulario.TxtHorometroMan.value*1000*60*60*24;	
+				break;
+			case "M" :
+				HorometroMan 	= formulario.TxtHorometroMan.value*1000*60*60*24*30.41666;
+				break;
+			case "A" :
+				HorometroMan 	= formulario.TxtHorometroMan.value*1000*60*60*24*30.41666*12;
+				break;
+			}
+
+		switch (formulario.listEscalaAlr.value){
+			case "D" :
+				HorometroAlarm 	= formulario.TxtHorometroAlarm.value*1000*60*60*24;			
+				break;
+			case "M" :
+				HorometroAlarm 	=  formulario.TxtHorometroAlarm.value*1000*60*60*24*30.41666;
+				break;
+			case "A" :
+				HorometroAlarm 	=  formulario.TxtHorometroAlarm.value*1000*60*60*24*30.41666*12;
+				break;
+			}
+	
+	/*	if (!formulario.TxtHorometroVen.value){
+				HorometroMan = '';
+				HorometroVen = '';
+				Horometro = '';
+				HorometroAlarm = '';
+			}*/
+		
+	}
+	else{
+		HorometroMan = formulario.TxtHorometroMan.value;
+		HorometroVen = formulario.TxtHorometroVen.value;
+		Horometro = formulario.TxtHorometro.value;
+		HorometroAlarm = formulario.TxtHorometroAlarm.value;
+		}
+		
+				
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=NewEquipo&CODIGO=" + formulario.TxtCodigo.value;
+		url += "&ESTADO=" + formulario.ListEstado.value;
+		url += "&DESCRIPCION=" + formulario.TxtDescripcion.value;
+		url += "&HOROMETRO=" + Horometro;
+ 	 	url += "&HOROMETRO_MAN=" + HorometroMan;
+ 	 	url += "&HOROMETRO_VEN=" + HorometroVen;
+		url += "&HOROMETRO_ALARM=" + HorometroAlarm; 
+		url += "&HOROMETRO_PADRE=" + formulario.ListHorometroPadre.value;
+		url += "&COD_EQUIPO_PADRE=" + formulario.TxtCodEquipoPadre.value;
+ 	    url += "&FECHA=" + formulario.TxtFecha.value;
+		url += "&TIPO_HOR=" + formulario.listTipoHr.value;
+		url += "&ESCALA=" + formulario.listEscala.value;
+		url += "&ESCALA_ALARM=" + formulario.listEscalaAlr.value;
+		url += "&GRUPO=" + formulario.ListGrupo.value;
+		url += "&RUT_PROVEEDOR=" + getNumberRut(formulario.TxtRutProveedor.value);
+		url += "&UBICACION=" + formulario.TxtUbicacion.value;				
+   		
+	    xmlestado = xmlDso.load(url);		
+		
+	    if (!xmlestado){
+				window.open(url);
+				return;}
+				
+		var url = "xml/equipos.asp?RECURSO=NewEquipoUsuario"
+			url += "&CODIGO=" + formulario.TxtCodigo.value;
+			url += "&USUARIO=" + GetSession();
+			url += "&TIPO_HOR=" + formulario.listTipoHr.value;	
+	
+		xmlestado = xmlDso.load(url);
+	
+	    if (!xmlestado)
+				window.open(url);
+		else{
+			alert("Equipo Ingresado.");
+			LimpiaF();
+			}
+}
+
+function updateEquipo(){
+
+	/*
+	if (formulario.listTipoHr.value=='CRO'){
+		Horometro = (new Date()).getTime();
+		sHorometroVen = formulario.TxtHorometroVen.value;
+		HorometroVen = (new Date(sHorometroVen.substr(6,4), 
+								sHorometroVen.substr(3,2)-1,
+								sHorometroVen.substr(0,2))).getTime();
+								
+		switch (formulario.listEscala.value){
+			case "D" : HorometroMan = formulario.TxtHorometroMan.value*1000*60*60*24;break;
+			case "M" : HorometroMan 	= formulario.TxtHorometroMan.value*1000*60*60*24*30.41666;break;
+			case "A" : HorometroMan 	= formulario.TxtHorometroMan.value*1000*60*60*24*30.41666*12;break;
+			}
+
+		switch (formulario.listEscalaAlr.value){
+			case "D" : HorometroAlarm 	= formulario.TxtHorometroAlarm.value*1000*60*60*24; break;
+			case "M" : HorometroAlarm 	=  formulario.TxtHorometroAlarm.value*1000*60*60*24*30.41666; break;
+			case "A" : HorometroAlarm 	=  formulario.TxtHorometroAlarm.value*1000*60*60*24*30.41666*12; break;
+			}
+			
+			
+		if (!formulario.TxtHorometroVen.value){
+				HorometroMan = '';
+				HorometroVen = '';
+				Horometro = '';
+				HorometroAlarm = '';
+			}
+		
+	}
+	else{
+		HorometroMan = formulario.TxtHorometroMan.value;
+		HorometroVen = formulario.TxtHorometroVen.value;
+		Horometro = formulario.TxtHorometro.value;
+		HorometroAlarm = formulario.TxtHorometroAlarm.value;
+		}
+*/
+	
+var url = "js/equipos.asp?RECURSO=updateEquipo";
+		
+		url += "&CODIGO=" + document.getElementById("idCodigo").value;
+		url += "&DESCRIPCION=" + scape(document.getElementById("idDescripcion").value);
+		url += "&COD_EQUIPO_PADRE=" + document.getElementById("idCodEquipoPadre").value;
+		url += "&FECHA=" + document.getElementById("idFecha").value;
+		url += "&SECTOR=" + document.getElementById("idSector").value;
+		url += "&ESTADO=" + document.getElementById("idEstado").value;
+		url += "&ORDEN=" + document.getElementById("idOrden").value;
+		url += "&LARGO=" + document.getElementById("idLargo").value;
+		url += "&ANCHO=" + document.getElementById("idAncho").value;
+		url += "&LAYOUT=" + document.getElementById("idLayout").value;
+		url += "&LAYOUT2=" + document.getElementById("idLayout2").value;
+		url += "&GCODE=" + document.getElementById("idGCode").value;
+		url += "&UBICACION=" + getEmpresa();
+		url += "&TIPO_EQUIPO=" + document.getElementById("idTipos").value;
+		url += "&X=" + document.getElementById("idX").value;
+		url += "&Y=" + document.getElementById("idY").value;
+		url += "&USERNAME=" + getSession();
+		url += "&VTZ=" + Math.random();
+//alert(url);
+	
+//	window.open(url);
+				
+	 $.get(url, function(theXML){
+				$('ROW',theXML).each(function(j){
+					alert("Actualización Realizada.");
+			}) //end each
+		})//end $get
+		
+		
+}
+
+	
+function listSectores(){
+
+  var url = "js/equipos.asp?RECURSO=explorer";
+  	  url += "&UBICACION=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	  
+	 // window.open(url);
+	  
+  var i=0;
+  
+	opcion = new Option("SELECCIONAR" ,"");
+		document.getElementById("idSector").options[i] = opcion;
+	
+ $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+				i=i+1;
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idSector").options[i] = opcion;
+				
+			}) //end each
+				
+				
+		})//end $get
+		
+ 
+    
+	
+ } 
+
+function listTipos(){
+
+  var i=0;
+ 
+ 
+  var url = "js/equipos.asp?RECURSO=listTipos";
+	url += "&UBICACION=" + getEmpresa();
+	url += "&EMPRESA=" + getEmpresa();
+	  url += "&VTZ=" + Math.random();
+	
+  $.get(url, function(theXML){
+				$('ROWS',theXML).each(function(j){
+					var codigo = $(this).find("CODIGO").text();
+					var descripcion = $(this).find("DESCRIPCION").text();
+				//alert(codigo);
+        	   	opcion = new Option(descripcion,codigo);
+	          	document.getElementById("idTipos").options[i] = opcion;
+				i=i+1;
+			}) //end each
+				opcion = new Option("SELECCIONAR" ,"");
+				document.getElementById("idTipos").options[i] = opcion;
+				
+		})//end $get
+	
+ } 
+	
+function ListGrupos(){
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=ListGrupos";
+		url += "&UBICACION=" + getEmpresa();
+		url += "&VTZ=" + Math.random();
+	
+   //window.open(url);
+	 xmlDso.async = false;
+	res = xmlDso.load(url);
+	if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            if (opcion.value == "0") opcion.selected = true;
+            formulario.ListGrupo.options[i] = opcion;   
+          }
+                 
+         }
+}
+
+
+ 
+function listHorometros(){
+
+	var xmlDso = xmlList.XMLDocument;
+	var url = "xml/Equipos.asp?RECURSO=ListHorometros";
+		url += "&GRUPO="+ formulario.ListGrupo.value;
+//   window.open(url);
+	formulario.ListHorometroPadre.options.length = 0;
+	xmlDso.async = false;
+	res = xmlDso.load(url);
+	if (res){
+          var tree = xmlDso.documentElement;
+          for(var i = 0; i < tree.childNodes.length; i++){
+            var node = tree.childNodes.item(i);
+            opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+            formulario.ListHorometroPadre.options[i] = opcion;   
+          }
+                 
+         }
+		 formulario.ListHorometroPadre.value = formulario.TxtCodHorometro.value;
+		 
+}
+
+
+
+
+function verHistorial(){
+var url = "informes/HistorialMan.html?EQUIPO=" + formulario.TxtCodigo.value;
+window.location.href=url;
+}
+
+function verSubEquipos(){
+var url = "TabEquipos.html?CodEquipo=" + formulario.TxtCodigo.value;
+window.location.href=url;
+}
+
+
+function listEquipos(){
+
+	var url = "explorer.html";
+	    url += "?VTZ=" + Math.random();
+		
+	//alert(url);
+	
+winCfg = "width=580px,height=380px,left=" + 450 + "px,top=" + 100 +"px,resize=1,scrolling=0";	
+	
+//if(inlinewin6) inlinewin6.show();
+//else 
+
+	inlinewin6 = parent.dhtmlwindow.open("explorerBox", "iframe", url , "BUSCAR EQUIPOS", winCfg);
+ 
+inlinewin6.onclose=function(){getEquipo()}
+
+}
+
+	
+	
+function verActividad(_obj){
+
+
+tbl1 = document.getElementById('tbl');
+
+	var id = tbl1.rows[_obj.rowIndex].children[0].innerText;
+
+	var url = "boxActividad.html";
+	    url += "?EQUIPO=" +document.getElementById("idCodigo").value;
+	    url += "&ID=" + id;
+		//url += "&GRUPO=" + document.getElementById("listGrupos").value;
+		//url += "&ULTIMA_MAN=" + formulario.TxtFechaUltMan.value;
+		url += "&UBICACION="+getEmpresa();
+		url += "&VTZ=" + Math.random();
+	//alert(url);
+	
+winCfg = "width=750px,height=380px,left=" + 120 + "px,top=" + 100 +"px,resize=1,scrolling=0";	
+var inlinewin2 = dhtmlwindow.open("activitiesBox", "iframe", url , ".::ACTIVIDAD::.", winCfg);
+	
+}
+
+function newActividad(){
+
+	var url = "boxActividad.html";
+	    url += "?EQUIPO=" + document.getElementById("idCodigo").value
+		//url += "&GRUPO=" + document.getElementById("listGrupos").value;
+		url += "&UBICACION="+getEmpresa();
+		url += "&VTZ=" + Math.random();
+	//alert(url);
+	
+winCfg = "width=750px,height=370px,left=" + 150 + "px,top=" + 50 +"px,resize=1,scrolling=0";	
+var inlinewin2 = dhtmlwindow.open("activitiesBox", "iframe", url , ".::ACTIVIDAD::.", winCfg);
+	
+}
+
+
+function cambiaSel(){
+
+if (formulario.listTipoHr.value=='SEC'){
+	formulario.listEscala.value='H';
+	formulario.listEscala.disabled=true;
+	formulario.listEscalaAlr.value='H';
+	formulario.listEscalaAlr.disabled=true;
+	}
+else{
+	formulario.listEscala.disabled=false;
+	formulario.listEscalaAlr.disabled=false;
+	}
+}
+
+function doClick(evt,x) {
+ alert('evt is: ' + typeof(evt)
+ + '\nx is: ' + typeof(x));
+ }
+ 
+ 
+
+function listActividades(_codigo){            
+            
+			
+           var url = "js/actividades.asp?RECURSO=listActividadesEquipo";
+			   url += "&COD_EQUIPO="+document.getElementById("idCodigo").value;
+			   url += "&UBICACION="+getEmpresa();
+			   url += "&VTZ=" + Math.random();
+				
+		//	window.open(url);
+	var tbl = document.getElementById('tbl');
+	//alert("hi")
+	limpiarTabla2(tbl);
+
+	var j=0;
+	
+     $.get(url, function(theXML){
+			$('ROW',theXML).each(function(i){
+	
+			var row = tbl.insertRow(-1);
+			
+			if (j==1){row.bgColor= "#f4fafe";j=2;}
+					 else{row.bgColor= "#d2f2ea";j=1;}
+					 
+				row.className = "rowtext";
+ 				row.onclick = function (){verActividad(this)};
+					 			 		
+			//alert($(this).find("CODIGO").text());
+			var cell = row.insertCell(0);
+				cell.innerHTML =  "<span>" + $(this).find("CODIGO").text() + "</span>";
+						
+			var cell = row.insertCell(1);
+				cell.innerHTML = "<span>" + $(this).find("NOMBRE").text() +"</span>";
+				
+					
+			var cell = row.insertCell(2);
+				cell.innerHTML = "<span>" + $(this).find("PERIODO").text() + "</span>";
+			
+			var cell = row.insertCell(3);
+				cell.innerHTML = "<span>" + $(this).find("HOROMETRO").text() + "</span>";
+				
+			var cell = row.insertCell(4);
+				cell.innerHTML = "<span>" + $(this).find("VENCIMIENTO").text() + "</span>";
+			
+			var cell = row.insertCell(5);
+				cell.innerHTML = "<span>" + $(this).find("ALARMA").text() + "</span>";
+					
+			var cell = row.insertCell(6);
+				cell.innerHTML = "<span>" + $(this).find("HOROMETRO_ASG").text() + "</span>";
+				
+			var cell = row.insertCell(7);
+				cell.innerHTML = "<span>" + $(this).find("TIPO_HOROMETRO").text() + "</span>";
+				
+			var cell = row.insertCell(8);
+				cell.innerHTML = "<span>" + $(this).find("SECTOR").text() + "</span>";	
+					
+			var cell = row.insertCell(9);
+				cell.innerHTML = "<span>" + $(this).find("TIPO").text() + "</span>";	
+				
+			var cell = row.insertCell(10);
+				cell.innerHTML = "<span>" + $(this).find("EJECUCION").text() + "</span>";	
+				cell.align ="center";
+			
+			var cell = row.insertCell(11);
+				cell.innerHTML = "<span>" + $(this).find("ESTADO_EQUIPO").text() + "</span>";		
+				
+				
+		}),hidWait();//End each
+	});//end $.get
+	
+			
+}
+
+function showEquipos(){
+
+var url = "buscarEquipos.html";
+	url += "?VTZ=" + Math.random();
+	//alert(url);		
+winCfg = "width=480px,height=360px,left=" + 210 + "px,top=" + 100 +"px,resize=1,scrolling=0";	
+var inlinewin6 = dhtmlwindow.open("explorerBox", "iframe", url , "EQUIPOS", winCfg);
+//inlinewin6.onclose=function(){getEquipo()}
+}
+	
+function showHorometros(){
+
+	equipo = document.getElementById("idCodigo").value;
+	id = getParametro("ID");
+
+var url = "horometros.html";
+	url += "?EQUIPO=" + equipo;
+	url += "&VTZ=" + Math.random();
+	
+	//alert(url);
+		
+winCfg = "width=580px,height=290px,left=" + 80 + "px,top=" + 120 +"px,resize=1,scrolling=0";	
+var inlinewin2=parent.dhtmlwindow.open("boxInsumos", "iframe", url , "HOROMETROS", winCfg, "recal");
+
+
+}
+	
+	function listAvisos(){
+
+	with (divWait.style){visibility = "visible";} 
+
+	var url = "js/avisos.asp?RECURSO=listAvisos";
+		url += "&FECHA_INI=01/11/2011";
+		url += "&FECHA_FIN=01/12/2022";
+		url += "&USUARIO=JROJAS";
+		url += "&UBICACION=" + getEmpresa();
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		//url += "&EQUIPO_PRIN="+document.getElementById('idCodigo').value;
+		url += "&EQUIPO=" + document.getElementById('idCodigo').value;
+		url += "&COMPONENTE=";
+		
+		/*
+		if(document.getElementById('selectEquipos').value=="TOD")
+				url += "&COMPONENTE=" + document.getElementById('selectTipos').value;
+		else 	url += "&COMP=" + document.getElementById('selectTipos').value;
+		*/
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false";
+		url += "&ESTADO=";
+		url += "&VTZ=" + Math.random();
+		
+		//alert(url);
+		
+   		var data = ""; var j;
+		var tbl = document.getElementById('tbAvisos');
+		
+		limpiarTabla2(tbl);
+		
+	//window.open(url);
+
+$.get(url, function(theXML){
+				$('ROW',theXML).each(function(i){
+				
+					//var title = $(this).find("firstname").attr("title");
+					var _item = i +1 ;
+					var _folio = $(this).find("FOLIO").text();
+					var fecha = $(this).find("FECHA").text();
+					
+					row = tbl.insertRow(-1);
+					//row.style.cursor = 'hand';
+													
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#d6d6d6";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					var cell = row.insertCell(1);
+					cell.innerHTML =  "Folio :";
+					cell.width = "90";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  $(this).find("ID").text();
+					cell.width = "150";
+					cell.className="ne";
+					
+				 					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					cell.width = "50";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "Observación :&nbsp;&nbsp;&nbsp;";
+					cell.width = "500";
+					
+					cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";	
+					
+					cell = row.insertCell(6);
+					cell.innerHTML = "<IMG BORDER='0' valing='bottom' aling='middle' src='" + $(this).find("IMG_EST").text()
+								 + "' />&nbsp;<SPAN valing='bottom'>" + $(this).find("IMG_TEXT").text() + "</SPAN>";
+									  	
+					cell.align="center";
+					cell.vAlign="bottom";
+					
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";
+								
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#D6D6D6";row.borderColor="#D6D6D6";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "Equipo :";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  $(this).find("EQUIPO_PRIN").text();
+					cell.className="ne";
+					 					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<span >" + $(this).find("DESCRIPCION").text() + "</span>";
+					cell.className="ne";
+					cell.rowSpan ="3";
+					
+					cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					cell.rowSpan ="5";
+					
+					cell = row.insertCell(6);
+					var id= $(this).find("FILE_ID").text();
+					var equipo = $(this).find("EQUIPO").text();
+					var desc = $(this).find("DESCRIPCION").text();
+					
+				 
+									 
+					cell.innerHTML =  "<a class='swipebox1'  title='" +   equipo + " " + desc + "' "
+									+ " href='javascript:visor(this)'>" 
+									+ "<img width='180px' onclick='visor(this)' class='foto_detalle' src='" + $(this).find("FILEPR").text()+ "' />"
+									+ "</a>";
+									
+									
+					cell.rowSpan ="5";
+					cell.vAlign="top"
+					
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";
+					
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#D6D6D6";}
+					
+					var cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "Componente :";
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("EQUIPO").text() + "</span>";
+					cell.className="ne";
+					
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "&nbsp;";
+															  
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#D6D6D6";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "Fecha :";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("FECHA").text() + "</span>";
+					cell.className="ne";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "&nbsp;";
+
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#D6D6D6";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(1);
+					cell.innerHTML =  "OT GSap:";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("GSAP").text() + "</span>";
+					cell.className="ne";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "Tratamiento Técnico :";					  					  
+					
+					var cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					
+					
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";}
+					else{row.bgColor= "#D6D6D6";}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					cell = row.insertCell(1);
+					cell.innerHTML =  " ";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span >" + $(this).find("TIPO_TURNO").text() + "</span>";
+					cell.className="ne";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+					
+					cell = row.insertCell(4);
+					cell.innerHTML =  "<span >" + $(this).find("TRATAMIENTO").text() + "</span>";
+					cell.className="ne";
+					
+					var cell = row.insertCell(5);
+					cell.innerHTML =  "&nbsp;";
+					
+					row = tbl.insertRow(-1);
+					if (j==1){row.bgColor= "#f4fafe";j=2;}
+					else{row.bgColor= "#D6D6D6";j=1;}
+					
+					cell = row.insertCell(0);
+					cell.innerHTML =  "&nbsp;";
+					cell = row.insertCell(1);
+					cell.innerHTML =  " ";					  					  
+					
+					cell = row.insertCell(2);
+					cell.innerHTML =  "<span > </span>";
+					cell.className="textosNormal";
+					
+					cell = row.insertCell(3);
+					cell.innerHTML =  "&nbsp;";
+
+					cell = row.insertCell(4);
+					cell.innerHTML =  ""
+			 		cell.className="ne";
+			 
+					cell = row.insertCell(5);
+					cell.innerHTML =  "<span > </span>";
+					 					
+					cell = row.insertCell(6);
+					cell.innerHTML =  "<span  style='cursor:pointer' onclick='verAviso(" + 
+										$(this).find("ID").text() + ")' > VER AVISO...</span>";	
+							cell.className="ne";			
+										
+					var cell = row.insertCell(7);
+					cell.innerHTML =  "&nbsp;";			
+
+					//$(cell).click(function(event) {verAviso(this);});
+									  										  					  
+					i=i+1;
+	
+			}),hidWait();//end each
+		})//end $get
+		
+	 
+		
+}
+
+function hidWait(){
+
+with (divWait.style){visibility = "hidden"}; 
+
+
+}
+	
+
+function setPolR(){
+
+var url="js/checklist.asp?RECURSO=setPolR";
+	url += "&CHK="+document.getElementById('idPolR').checked;
+	url += "&UBICACION=" + getEmpresa();
+	url += "&EQUIPO=" + document.getElementById('idCodigo').value;
+	url += "&EMPRESA=" + getEmpresa();
+	url += "&USUARIO=" + getSession();
+	url += "&VTZ=" + Math.random();
+ 
+	//with (divWait.style){visibility = "visible"}; 
+
+	//window.open(url);
+
+		$.get(url, function(theXML){
+		$('ROW',theXML).each(function(i){
+				alert("Equipo actualizado.")
+
+		})//End Each
+		});	//End $.get
+
+
+}
+	
+function verAviso(id){
+
+  var dispositivo = navigator.userAgent.toLowerCase();
+  
+  if( dispositivo.search(/iphone|ipod|ipad|android/) == -1 ){
+		var url ="boxAviso.html?ID=" + id ;
+	  		url += "&EQUIPO=" + document.getElementById('idCodigo').value;
+		url += "&VTZ=" + Math.random();
+	    }
+	else{
+	
+		if(!id){
+			var url ="m/list.html?ID=" + id ;
+				url += "&VTZ=" + Math.random();  
+			}else{
+				var url ="boxAviso.html?ID=" + id ;
+				//var url ="m/list.html?ID=" + id ;
+					url += "&VTZ=" + Math.random();
+				//alert(url)
+			}
+			
+		}
+	
+/*	var url ="m/list.html?ID=" + id ;
+		url += "&VTZ=" + Math.random();  
+		*/
+				
+winCfg = "width=950px,height=550px,left=" + 40 + "px,top=" + 50 +"px,resize=1,scrolling=0";	
+var inlinewin2= parent.dhtmlwindow.open("boxDetAvisos", "iframe", url , "DETALLE AVISOS", winCfg);
+
+inlinewin2.onclose=function(){listAvisos();}
+
+}
+
+function visor(obj){
+
+var left=60;
+var top=20;
+var width=950;
+var height=550;
+		
+var _obj = (obj.src).replace('pr_',''); //(obj.children[0].src).replace('pr_','');
+//alert(_obj);
+var URLStr ="visor.html?PATH="+_obj;
+
+window.open(_obj)
+
+  
+}
+	
+	
+	function listEqPadre(){
+		listFrameEquipo.popsearchbox(10, TxtCodEquipoPadre, TxtDesEquipoPadre, DivEquipo);
+	}
+
+	function hidWait(){
+with (divWait.style){visibility = "hidden"}; 
+}
+	
+	function openCity(evt, cityName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  	tabcontent = document.getElementsByClassName("tabcontent");
+  	for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+	}
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  	tablinks = document.getElementsByClassName("tablinks");
+  	for (i = 0; i < tablinks.length; i++) {
+    	tablinks[i].className = tablinks[i].className.replace(" active", "");
+  	}
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+	
+	
+	
+</script>
+
+
+
+
+<body onLoad="inicio();">
+
+ <div id="divWait" onClick="event.cancelBubble=true" 
+	style="position: absolute; visibility: hidden; width: 100; z-index: 100000; left: 166px; top: 50px; height: 130;">
+	<font class="calibri_16">CARGANDO...</font><img src="mg/cargando.gif" /></div>
+<DIV id="divNew" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 65px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="frameNew" src="boxNewEquipo.html?a=9" frameBorder="0" width="650" scrolling="no" height="300">
+</IFRAME>
+</DIV>
+<script LANGUAGE="JavaScript" type="text/javascript" SRC="standard/menudata.js"></script>
+<br/><br/><br/>
+<table>
+<tr>
+<td valign="top" width="400">
+	<IFRAME name="frameNew" src="explorer.html?a=10" frameBorder="0" width="400px"  height="600">
+	</IFRAME>
+</td>	 
+<td width="461" valign="top">
+	
+	<div class="tab">
+		<button class="tablinks" onclick="openCity(event, 'avisos')" id="defaultOpen">INSPECCIONES</button>
+  		<button class="tablinks" onclick="openCity(event, 'datos')" >DATOS</button>
+  		<button class="tablinks" onclick="openCity(event, 'actividades')" >ACTIVIDADES</button>
+		
+	</div>
+
+<div id="datos" class="tabcontent">
+<form action="#" method="post"  autocomplete="off">
+<table width="735"  border="0"  cellpadding="1" cellspacing="2">
+        <tr align="center" >
+          <td width="197" height="25">CODIGO</td>
+          <td colspan="2"  valign="top">DESCRIPCI&Oacute;N</td>
+          <td  valign="top"><span class="texto"><a onClick="showHorometros();">HOROMETROS</a></span></td>
+          
+        </tr>
+        <tr align="center">
+          <td>
+          <input class="inputSrc" type="text"  id="idCodigo" size="25" onDblClick="listEquipos();" 
+		  	  onKeyPress="if(event.keyCode==13)getEquipo();" /></td>
+          <td colspan="3" align="left">
+			  <input  type="text"   id="idDescripcion"  size="80" /></td>
+          </tr>
+        <tr align="center" class="boton">
+          <td  align="center">ESTADO</td>
+          <td align="center">FECHA</td>
+          <td  align="center">AREA/SECTOR</td>
+          <td  align="center">TIPO EQUIPO</td>
+		  <td></td>
+          </tr>
+        <tr align="center">
+          <td height="36" valign="top">
+          	<input name="TxtRutProveedor" type="text" class="hidden"  size="1" />
+          
+          	<select name="idEstado" id="idEstado"  >
+          	  <option value="ACT" selected>ACTIVO</option>
+          	  <option value="MAN" >EN MANTENCI&Oacute;N</option>
+          	  <option value="ASG" >ASIGNADO</option>
+        	  </select>
+           </td>
+          <td align="center">
+			<input name="TxtFecha" id="idFecha" type="text"   size="8" /></td>
+          <td><select name="idSector" id="idSector">
+          </select></td>
+          <td><select name="idTipos"  id="idTipos">
+          </select></td>
+		  <td></td>
+          </tr>
+        <tr align="center" class="boton">
+          <td>EQUIPO PADRE</td>
+          <td  align="center" >ANCHO</td>
+		  <td  align="center">N° ESTACIONES</td>
+          <td  align="center" >x/y</td>
+          <td  align="center" >SECUENCIA</td>
+		  <td  align="center" >POLIN REC/V</td>
+          </tr>
+        <tr align="center">
+          <td  align="left" >
+            <input id="idCodEquipoPadre" type="text"  onDblClick="showEquipos();" class="inputSrc"></td>
+			<td  align="left" >
+				<input id="idAncho" type="text"  size="3"></td>
+			<td   align="left">
+				<input id="idLargo" type="text"  size="3"></td>
+			<td>
+			 <input type="text" id='idX' size="2" >/<input type="text" id='idY' size="2" >
+		 </td>
+          <td  valign="top">
+			  <input type="hidden" name="TxtCodHorometro" >
+			  <input type="text"  id="idOrden" size="2" ></td>
+			  <td  valign="top">
+				<input type="checkbox"  id="idPolR"  onclick="setPolR()" >
+			</td>
+			</tr>
+			<tr align="center" class="boton">
+				<td>LAYOUT</td>
+				<td align="center">LAYOUT2</td>
+				<td align="center">GCODE</td>
+				<td align="center"></td>
+				<td align="center"></td>
+				<td align="center"></td>
+			</tr>
+			<tr align="center">
+				<td><input id="idLayout" type="text" /></td>
+				<td><input id="idLayout2" type="text" /></td>
+				<td><input id="idGCode" type="text" /></td>
+				<td></td>
+				<td valign="top"></td>
+				<td valign="top"></td>
+			</tr>
+          </table>
+		<p>
+		<input type="button" class="boton" onClick="newEquipo();" id="btnNewEquipo" value="Nuevo Equipo" />
+		<input name="btnGuardar" type="button" class="boton" onClick="guardar();" id="btnGuardar" value="Guardar">
+		</p>
+	</form>
+	
+	</div>
+	<div id="actividades" class="tabcontent">
+	<table>
+    <tr>
+      <td width="99%"><hr></td>
+    </tr>
+    <tr><td class="boton">
+		<div align="left">
+		<strong>ACTIVIDADES DE MANTENCI&Oacute;N</strong></div></td>
+    </tr>
+    <tr>
+      <td>
+      <table width="800" border=0 cellpadding=2 cellspacing=0 bordercolor="#6587a3" id="tbl">
+        <thead>
+          <tr bgcolor="#DDE3EB" class="rowText">
+            <td width="2%"><strong>ID</strong></td>
+            <td width="36%"><strong>NOMBRE</strong></td>
+            <td width="8%"><strong>PERIODO</strong></td>
+            <td width="8%"><strong>HOROMETRO</strong></td>
+            <td width="8%"><strong>VENCIMIENTO</strong></td>
+            <td width="8%"><strong>ALARMA</strong></td>
+            <td width="8%"><strong>HOROMETRO CONTROL</strong></td>
+            <td width="7%"><strong>TIPO HOR.</strong></td>
+            <td width="5%"><strong>SECTOR</strong></td>
+            <td width="6%"><strong>TIPO CONTROL</strong></td>
+            <td width="7%"><strong>EJECUCION (Hrs)</strong></td>
+            <td width="5%"><strong>ESTADO EQUIPO</strong></td>
+            </tr>
+        </thead>
+      </table></td>
+    </tr>
+    <tr>
+      <td height="30"  colspan="13"  align="center" valign="middle">&nbsp;
+	<input name="button" type="button" class="boton" onClick="newActividad();" id="btnNewAct" value="Nueva Actividad">
+        &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;</td>
+    </tr>
+  </table>
+	</div>
+	
+	<div id="avisos" class="tabcontent">
+		<input type="button" class="input" onClick="verAviso();" value="Nueva" id="btnNewAviso" />
+		<input type="hidden" value="" name="IdUsuario">
+		<input type="hidden" value="" name="txtId">
+		 <table width="800" id="tbAvisos" class="texto"   align="center" cellpadding="4" cellspacing="0">
+		</table>
+		
+	</div>
+	</td></tr>
+	</table>
+ 
+	
+	
+</body>
+</html>

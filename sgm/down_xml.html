@@ -1,0 +1,1173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Usuarios</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListRoles></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlMenu></xml>
+<xml id = xmlImages></xml>
+<script type="text/javascript" src="Scripts/jquery.min.js"></script>
+<SCRIPT language="JavaScript1.2" src="/Scripts/download.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT>
+<!--adding-->
+
+function getParametro(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  } 
+  //alert('Query Variable ' + variable + ' not found');
+  return false;
+}
+
+var xmlestado;
+var emp = getParametro('FAENA');
+  emp = emp.replace('%20',' ').replace('%20',' ').replace('%20',' ').replace('%20',' ');
+
+//var emp = 'LOS PELAMBRES CHANCADO~LOS PELAMBRES CONCENTRADORA~COLLAHUASI CHANCADO~COLLAHUASI CONCENTRADORA~COLLAHUASI LIXIVIACION';
+//alert(emp);
+var id_br = "FF";
+
+function GetUsuarios(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "../sci/xml/sync_Usuarios.asp?RECURSO=GetUsuario";
+	url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx1= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx1[b]=a.charCodeAt();
+			});
+			download(arrx1, "usuarios.xml", "text/xml");
+		}
+}
+
+function GetLayoutFaena(){ //
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Bitacoras.asp?RECURSO=LayoutFaena";
+	 	url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx2= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx2[b]=a.charCodeAt();
+			});
+			
+			download(arrx2, "layout_gral.xml", "text/xml");
+		}
+}
+
+function GetLayoutEQ(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Bitacoras.asp?RECURSO=getLayout";
+	 	url += "&FAENA=" + emp;  
+		url += "&EQUIPO=TOD";
+		url += "&CRITICIDAD=TOD";
+		url += "&FECHA_INI=01/01/2009"; 
+		url += "&FECHA_FIN=01/12/2020"; 
+		url += "&RESPONSABLE=TOD";
+		url += "&TURNO=TOD";
+		url += "&IND_DANO=TOD";
+		url += "&IND_SOLUCION=false"; 
+		url += "&VTZ=" + Math.random();
+
+
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx3= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx3[b]=a.charCodeAt();
+			});
+			
+			download(arrx3, "layout_eq.xml", "text/xml");
+		}
+}
+
+
+function GetList_Equipos(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx4= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx4[b]=a.charCodeAt();
+			});
+			
+			download(arrx4, "List_Equipos.xml", "text/xml");
+		}
+}
+
+function GetListBitacora(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Bitacoras.asp?RECURSO=ListBitacora&RESPONSABLE=TOD&EQUIPO=TOD&EQUIPO_PRIN=TOD&IND_DANO=TOD&IND_SOLUCION=TOD&CRITICIDAD=TOD";
+	 	url += "&FAENA=" + emp;
+		url += "&VTZ=" + Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/xml; charset=iso-8859-1");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx5= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx5[b]=a.charCodeAt();
+			});
+			download(arrx5, "List_bitacoras.xml", "text/xml");
+		}
+}
+
+function GetTipo(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=GetTipo&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx6= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx6[b]=a.charCodeAt();
+			});
+			
+			download(arrx6, "List_Equipos_gettipo.xml", "text/xml");
+		}
+}
+
+function GetTipoEST(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=GetTipoEST&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx6= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx6[b]=a.charCodeAt();
+			});
+			
+			download(arrx6, "List_Equipos_gettipo_EST.xml", "text/xml");
+		}
+}
+
+function GetTipoPCAR(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=GetTipoPCAR&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx6= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx6[b]=a.charCodeAt();
+			});
+			
+			download(arrx6, "List_Equipos_gettipo_PCAR.xml", "text/xml");
+		}
+}
+
+function GetTipoPRET(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=GetTipoPRET&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx6= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx6[b]=a.charCodeAt();
+			});
+			
+			download(arrx6, "List_Equipos_gettipo_PRET.xml", "text/xml");
+		}
+}
+
+function GetTipoZDI(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Equipos.asp?RECURSO=GetTipoZDI&CODIGO=NULL";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx6= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx6[b]=a.charCodeAt();
+			});
+			
+			download(arrx6, "List_Equipos_gettipo_ZDI.xml", "text/xml");
+		}
+}
+
+function GetHistorial(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Historial.asp?RECURSO=listHisBit";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx7= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx7[b]=a.charCodeAt();
+			});
+			
+			download(arrx7, "List_historial.xml", "text/xml");
+		}
+}
+
+function GetListCheckDesc(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Checklist_bkp.asp?RECURSO=ListCheckDesc";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx8= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx8[b]=a.charCodeAt();
+			});
+			
+			download(arrx8, "list_Checklist.xml", "text/xml");
+		}
+}
+
+function GetcheckFallas(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Checklist_bkp.asp?RECURSO=ListCheck";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx9= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx9[b]=a.charCodeAt();
+			});
+			
+			download(arrx9, "list_Checklist_fallas.xml", "text/xml");
+		}
+}
+
+function GetPlanData(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/sync_Bitacoras.asp?RECURSO=getPlanData";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx10= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx10[b]=a.charCodeAt();
+			});
+			
+			download(arrx10, "list_plandata.xml", "text/xml");
+		}
+}
+
+function GetArchivos(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/archivos_bkp.asp?RECURSO=listArchivos";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx11= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx11[b]=a.charCodeAt();
+			});
+			
+			download(arrx11, "list_archivos.xml", "text/xml");
+		}
+}
+
+function GetCheckBitacora(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Checklist_bkp.asp?RECURSO=ListCheckBitacora";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx12= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx12[b]=a.charCodeAt();
+			});
+			
+			download(arrx12, "list_check_bitacora.xml", "text/xml");
+		}
+}
+
+function GetEquiposGettipoDetails(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos_bkp.asp?RECURSO=GetEquipo";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx13= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx13[b]=a.charCodeAt();
+			});
+			
+			download(arrx13, "List_Equipos_gettipo_details.xml", "text/xml");
+		}
+}
+
+function GetEquiposGettipoESTACION(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos_bkp.asp?RECURSO=GetEquipoESTACION";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx13= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx13[b]=a.charCodeAt();
+			});
+			
+			download(arrx13, "List_Equipos_gettipo_details_EST.xml", "text/xml");
+		}
+}
+
+function GetEquiposGettipoPCAR(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos_bkp.asp?RECURSO=GetEquipoPCAR";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx13= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx13[b]=a.charCodeAt();
+			});
+			
+			download(arrx13, "List_Equipos_gettipo_details_PCAR.xml", "text/xml");
+		}
+}
+
+function GetEquiposGettipoPRET(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos_bkp.asp?RECURSO=GetEquipoPRET";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx13= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx13[b]=a.charCodeAt();
+			});
+			
+			download(arrx13, "List_Equipos_gettipo_details_PRET.xml", "text/xml");
+		}
+}
+		
+function GetEquiposGettipoZDI(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Equipos_bkp.asp?RECURSO=GetEquipoZDI";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx13= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx13[b]=a.charCodeAt();
+			});
+			
+			download(arrx13, "List_Equipos_gettipo_details_ZDI.xml", "text/xml");
+		}
+}
+		
+function GetFaena(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Usuarios_bkp.asp?RECURSO=listFaenas";
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx14= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx14[b]=a.charCodeAt();
+			});
+			
+			download(arrx14, "list_faenas.xml", "text/xml");
+		}
+}
+
+function GetMediciones(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/mediciones_bkp.asp?RECURSO=getMedicion";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx15= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx15[b]=a.charCodeAt();
+			});
+			
+			download(arrx15, "list_mediciones.xml", "text/xml");
+		}
+}
+
+function GetMedicionesValor(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/mediciones_bkp.asp?RECURSO=listMedValor";
+		url += "&FAENA=" + emp;
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx16= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx16[b]=a.charCodeAt();
+			});
+			
+			download(arrx16, "list_mediciones_valor.xml", "text/xml");
+		}
+}
+
+function GetSecciones(){
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "xml/Secciones_bkp.asp?RECURSO=listSecciones";
+		url +="&VTZ="+Math.random();
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.setRequestHeader("Content-Type",  "text/plain; charset=windows-1252");
+					xmlhttp.send();	
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					////window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+		//window.open(url);
+		if (!xmlestado){
+				//window.open(url);
+		}else{
+			var strx= xmlDoc,	arrx17= new Uint8Array(strx.length);
+			strx.split("").forEach(function(a,b){
+				arrx17[b]=a.charCodeAt();
+			});
+			
+			download(arrx17, "list_Secciones.xml", "text/xml");
+			//alert('Bajando Informaci�n.');
+		}
+}
+
+
+
+ 
+</SCRIPT>
+
+<BODY>
+Bajando archivos de Faenas Indicadas : <br><br><label id="faenasxx"></label> <br><br>
+<label id="msgxx"></label><br><br>
+<SCRIPT>
+	var out=document.getElementById("faenasxx");
+	out.innerText =emp.replace("%20"," ").replace("~", " Y ");
+	GetUsuarios();
+	document.getElementById("msgxx").innerHTML = "6%";
+	GetLayoutFaena();
+	document.getElementById("msgxx").innerHTML = "13%";
+	GetLayoutEQ();
+	GetList_Equipos();
+	document.getElementById("msgxx").innerHTML = "18%";
+	GetListBitacora();
+	GetTipo();
+	document.getElementById("msgxx").innerHTML = "25%";
+//	GetTipoEST();
+//	GetTipoPCAR();
+//	GetTipoPRET();
+//	GetTipoZDI();
+	
+	document.getElementById("msgxx").innerHTML = "32%";
+	GetHistorial();
+	GetListCheckDesc();
+	GetcheckFallas();
+	
+	document.getElementById("msgxx").innerHTML = "34%";
+//	document.getElementById("msgxx").innerHTML = "36%";
+//	document.getElementById("msgxx").innerHTML = "38%";
+//	document.getElementById("msgxx").innerHTML = "40%";
+//	document.getElementById("msgxx").innerHTML = "42%";
+	document.getElementById("msgxx").innerHTML = "36%";
+	GetPlanData();
+	GetArchivos();
+	GetCheckBitacora();
+	
+	document.getElementById("msgxx").innerHTML = "38%";
+	GetFaena();
+	GetMediciones();
+	GetMedicionesValor();
+	document.getElementById("msgxx").innerHTML = "42%";
+	GetSecciones();
+	GetEquiposGettipoDetails();
+	document.getElementById("msgxx").innerHTML = "50%";
+//	GetEquiposGettipoESTACION();
+//	GetEquiposGettipoPCAR();
+//	GetEquiposGettipoPRET();
+//	GetEquiposGettipoZDI();				
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "68%"; }, 10000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "75%"; }, 20000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "78%"; }, 30000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "80%"; }, 40000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "82%"; }, 50000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "85%"; }, 60000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "92%";  }, 70000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "97%"; }, 80000);
+	setTimeout(function(){ document.getElementById("msgxx").innerHTML = "Espere un momento ..."; setTimeout(function(){ window.close(); }, 3000);}, 90000);
+	
+	
+//	document.getElementById("msgxx").innerHTML = "90%";
+	
+	
+	
+</SCRIPT>
+</BODY>
+</HTML>

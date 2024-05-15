@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Untitled</TITLE>
+<XML id="XMLDoc"></XML>
+<LINK REL="stylesheet" HREF="sci.css" TYPE="text/css" MEDIA="screen">
+
+<SCRIPT>
+//<!-- 
+var popbox = new Object();
+var Horometro = new Object();
+var valorHorometro = new Object();
+var fecha;
+var equipo;
+var _Index;
+
+function popsearchbox(_valor, _equipo, _horometro, _popbox, Index, static){
+  parent.event.cancelBubble=true;
+  valorHorometro = _valor;
+   equipo = _equipo;
+  Horometro = _horometro;
+  	
+  popbox = _popbox;
+  _Index = Index;
+ 
+ if (!static) {
+	  var point = getXY(_horometro);
+	  with (popbox.style){
+		left = point.x+50;
+		top  = point.y+10;
+	    visibility = "visible";
+	  }
+	  }
+else{
+	  with (popbox.style){
+		left = 210;
+		top  = 20;
+	    visibility = "visible";
+	  }
+	}
+
+  popbox.focus();
+  search();
+}
+
+function setcodeandname(code, name){
+ // codeobj.value = code;
+  valorHorometro.value = name;
+}
+
+function close(){
+//  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(oTmp){
+
+  var pt = new Point(0,0);  
+  do {
+  	pt.x += oTmp.offsetLeft;
+  	pt.y += oTmp.offsetTop;
+  	oTmp = oTmp.offsetParent;
+  } while(oTmp.tagName!="BODY");
+  return pt;
+}
+
+//-->
+</SCRIPT>
+
+<SCRIPT>
+//<!-- 
+function search(){
+var strn;
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  var url = "xml/Equipos.asp?RECURSO=ListValorHorometro&HOROMETRO=MOT";//+Horometro.value;
+	  url += "&COD_EQUIPO="+equipo.value;
+  
+  
+  var res = xmlDso.load(url);
+ 
+// window.open(url);
+ 
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	 window.open(url);
+  }
+}
+
+function newHorometro(valor){
+ XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var cr = 0;
+  url = "xml/Equipos.asp?RECURSO=NewHorometroEquipo"
+  url +="&CODIGO="+codHorometro.value+"&FECHA="+fecha.value+"&HOROMETRO="+valor;
+
+  var x = confirm("Esta seguro de actualizar el horometro " + codHorometro.value + " a " + valor);
+
+/*	if (x){
+		var res = xmlDso.load(url);
+		if (!res)
+  			window.open(url);
+			}
+  */
+	valorHorometro.value = valor;
+	close();
+}
+
+function set(itr){
+  if (itr){
+	setcodeandname(itr.children[0].children[0].innerText, itr.children[1].children[0].innerText);
+	}
+  else setcodeandname("","");
+  close();
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+//-->
+</SCRIPT>
+
+<STYLE>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</STYLE>
+
+<BODY leftmargin=0 topmargin=0 STYLE="font:normal 100% tahoma;" BGCOLOR="#dee6eb" SCROLL="no"  
+onLoad="">
+
+<CENTER>
+
+<Table WIDTH="100%" border=0 cellpadding=0 cellspacing=0>
+  <TR BGCOLOR="#3399CC">
+    <TD CLASS="text" STYLE="color:#ffffff; font-weight:bold;">&nbsp;Lecturas</TD>
+    <TD ALIGN="right">
+      <IMG SRC="images/close.gif" WIDTH="16" HEIGHT="14" onClick="set();">
+    </TD>
+  </TR>
+</tablE>
+<!--
+   <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;" colspan="2">&nbsp;
+	<input type="text" class="input" name="strc" size="25">
+    <input type="button"  class="BotonBlanco" value="Aceptar" onClick="newHorometro(strc.value);">
+	</td>
+  </tr>
+</table-->
+
+<SPAN ID="msg" CLASS="text" STYLE="display:none;"></SPAN>
+<SPAN ID="cont" STYLE="height:130px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<TABLE WIDTH="100%" DATASRC="#XMLDoc" border=0 cellpadding=2 cellspacing=0 BORDERCOLOR="#6587a3">
+  <THEAD>
+   <TR CLASS="HeaderLista"><TD>Fecha</TD>
+   <TD>Horometro</TD>
+	</TR>
+  </THEAD>
+  <TR onClick="set(this);" STYLE="cursor:default;"
+  		onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dee6eb')" HEIGHT="9">
+    <TD STYLE="border-bottom:solid 1px #6587a3;">
+      <SPAN DATAFLD="FECHA" CLASS="text"></SPAN></TD>
+      <TD STYLE="border-bottom:solid 1px #6587a3;">
+	  <SPAN DATAFLD="VALOR" CLASS="text"></SPAN></TD>
+  </TR>
+</TABLE>
+</SPAN>
+
+</CENTER>
+
+
+
+
+
+
+</BODY>
+
+</HTML>

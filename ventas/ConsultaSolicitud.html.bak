@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Consulta Ordenes de Compra</title>
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<xml id=xmlResponsables></xml>
+		<xml id=xmlSolicitudes></xml>
+		<xml id=xmlOC></xml>
+		<xml id=xmlDoc></xml>
+		<xml id=xmlEquipos></xml>
+		<link rel="stylesheet" href="standard/Tabber/example.css" TYPE="text/css" MEDIA="screen">
+		<link rel="stylesheet" href="sci.css" TYPE="text/css" >
+		<script language="JavaScript1.2" src="standard/vitcomz.js"></script>
+		<!-- MENU -->
+		<link rel="stylesheet" href="/sci/standard/menu.css" type="text/css">
+		<script language="JavaScript1.2" src="standard/coolmenus4.js"></script>
+		<!-- MENU -->
+        <style type="text/css">
+<!--
+.Estilo1 {color: #669900}
+-->
+        </style>
+</HEAD>
+
+<script>
+function inicio(){
+ListSolicitudes();
+
+}
+
+function list(){
+ListIncidentes();
+ListIncidentesOT();
+}
+
+function ListResponsables(){
+
+  xmlResponsables.async = false;
+  var xmlDso = xmlResponsables.XMLDocument;
+  var url = "/sci/xml/usuarios.asp?RECURSO=ListUsuarios";
+  var res = xmlDso.load(url);
+
+ if (formulario.listResponsablesInc.value==false){
+	  if (res){
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsablesInc.options[0] = opcion; 
+			  opcion = new Option("TODOS" ,"TOD");
+				if (opcion.value == "TOD") opcion.selected = true;
+	            formulario.listResponsables.options[0] = opcion; 
+				
+    	      var tree = xmlDso.documentElement;
+	          for(var i = 1; i < tree.childNodes.length+1; i++){
+    	        var node = tree.childNodes.item(i-1);
+        	    opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsablesInc.options[i] = opcion;
+				opcion = new Option(getChildNodeValue(node,"ID") ,getChildNodeValue(node,"ID"));
+	            formulario.listResponsables.options[i] = opcion;
+				}
+    	     }
+		else
+			  window.open(url);
+	}
+ } 
+  
+
+
+
+
+function verSolicitud(Index){
+var tabla = parent.document.getElementById('tabSolicitudes');
+//alert(Index);
+Folio = tabla.rows[Index].children[0].innerText;
+
+	window.location.href="Solicitud.html?modo=1&Folio=" + Folio;
+
+}
+
+
+
+function verOC(Index){
+var tabla = parent.document.getElementById('tabSolicitudes');
+	Folio = tabla.rows[Index].children[0].innerText;
+	window.location.href="OrdenCompra.html?Folio=" + Folio + "&EMPRESA=" + getEmpresa();
+
+}
+
+
+
+function color(){
+
+var tabla = document.getElementById('tabAsignar');
+
+for (i=1; i< tabla.rows.length; i++){
+			if (tabla.rows[i].children[5].children[0].value>0)
+					tabla.rows[i].children[5].children[0].style.color='#FF0000';
+			else
+					tabla.rows[i].children[5].children[0].style.color='#CC9900';
+						}
+
+}
+
+function ListSolicitudes(){
+
+for (i=0;i<formulario.tipoSolicitud.length;i++)
+			if(formulario.tipoSolicitud[i].checked)
+					tipo=formulario.tipoSolicitud[i].value;	
+					
+	xmlSolicitudes.async = false;
+	var xmlDso =xmlSolicitudes.XMLDocument;
+	var url = "xml/Solicitud.asp?RECURSO=ConsultaSolicitudes";
+		url +="&USERNAME=" + GetSession();
+		url +="&TIPO=" + tipo;
+		url +="&EMPRESA=" + getEmpresa();
+
+	//alert(tipo);
+		//window.open(url);
+	var res = xmlDso.load(url);
+	if(res){
+		//BLOQUE DE NAVEGACION
+		total_registros_lista = xmlDso.documentElement.childNodes.length;
+		document.getElementById("ID_list_cant_reg").innerText = total_registros_lista;
+		bloque_listado = 1;
+		total_bloque_listado = Math.ceil(total_registros_lista/10);
+		var objLabelReg = document.getElementById("ID_list_fraccion_reg");
+		objLabelReg.innerText = "1/" + total_bloque_listado;
+		}
+	else
+		window.open(url);
+
+}
+
+function ListOC(){
+	 
+	xmlOC.async = false;
+    var xmlDso = xmlOC.XMLDocument;
+	var url = "xml/OrdenCompra.asp?RECURSO=ListOrdenCompra";
+		//url += "&ESTADOS=" + formulario.listEstados.value;
+
+		
+	var res = xmlDso.load(url);
+	if (res){
+	//BLOQUE DE NAVEGACION
+		totalRegistros = xmlDso.documentElement.childNodes.length;
+		document.getElementById("IDCantReg").innerText = totalRegistros;
+		bloque_listado2 = 1;
+		total_bloque_listado2 = Math.ceil(totalRegistros/20);
+		var objLabelReg = document.getElementById("IDFraccionReg");
+		objLabelReg.innerText = "1/" + total_bloque_listado2;
+		}
+	else
+		window.open(url);
+
+ }
+ 
+function GetInsumo(){
+}
+
+function _inicio(){
+setTimeout("inicio();",1000);
+return true;
+}
+
+window.onLoad = _inicio();
+
+</script>
+	<body>
+		<div id="divCalendar" onClick="event.cancelBubble=true" 
+				style="position: absolute; visibility: hidden; width: 10; z-index: 100; left: 95; top: 278; height: 23; border-style: ridge; border-width: 2px">
+				<iframe frameBorder="0" height="185" name="FrameCalendar" scrolling="no" src="DTPicker.htm" width="180"></iframe>
+	</div>
+	
+<DIV id="DivInsumos" style="VISIBILITY: hidden; BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 107px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 146px; width: 560px; height: 270px;"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameInsumos" src="ArticulosOT.html" frameBorder="0" width="560" scrolling="no" height="270">
+</IFRAME>
+</DIV>
+
+
+<DIV id="DivOT" style="VISIBILITY: hidden;BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-TOP: #dfdfdf 1px ridge; Z-INDEX: 145; LEFT: 265px; ; BORDER-LEFT: #dfdfdf 1px ridge; BORDER-BOTTOM: #dfdfdf 1px ridge; POSITION: absolute; TOP: 90px"
+onclick="event.cancelBubble=true">
+<IFRAME name="FrameOT" src="generaOT.html" frameBorder="0" width="320" scrolling="no" height="200"></IFRAME>
+</DIV>
+		
+	<script language="JavaScript1.2" src="standard/menudata.js"></script>
+	<BR>
+	<BR>
+		<form name="formulario">
+		  <input name="TxtCodigo" type="hidden" class="input" />
+				  <table border="0" id="tableTitulo">
+						  <tr class="titulo">
+						    <td width="315" colspan="2">Solicitudes de Compra.</td>
+						  </tr>
+				  </table>
+				  
+				  <table>
+					  <tr>
+					   <td class="input">
+					   <input  class="littleButton" type="button" 
+					   				value=" << " onClick="irInicio('tabSolicitudes');">
+						<input  class="littleButton" type="button"
+									 value="  <  " onClick="irAtras('tabSolicitudes');">
+						<input  class="littleButton" type="button" 
+								value="  >  " onClick="irAdelante('tabSolicitudes');">
+						<input  class="littleButton" type="button" value=" >> " 
+									onClick="irFinal('tabSolicitudes');">&nbsp;&nbsp;
+							Registros: <span id="ID_list_cant_reg"></span>
+							&nbsp;| Vista: <span id="ID_list_fraccion_reg"></span>
+						</td>
+						<td class="input">Solicitudes :
+								Pendientes<input type="radio" class="input" value="PENDIENTES"
+										  checked="checked"  name="tipoSolicitud" onClick="ListSolicitudes();">
+								Enviadas<input type="radio" class="input" value="ENVIADAS" 
+											name="tipoSolicitud" onClick="ListSolicitudes();">
+						</tr>
+					</table>
+			<table width="869"  border="0" cellpadding="1" cellspacing="2"
+					  		datapagesize="10" class="texto" id="tabSolicitudes"
+					  	 datasrc=#xmlSolicitudes>
+					 
+					<thead>
+					<tr class="HeaderLista">
+						  <td width="32" height="15">Folio</td>
+						  <td width="282" >Motivo/Proveedor</td>
+						  <td width="71" >Fecha </td>
+  						  <td width="202" >Area /  VB&ordm;</td>
+   						  <td width="93">Estado</td>
+   						  <td width="115">Solicita/Autoriza </td>
+						  <td width="42"></td>
+					</tr>
+					</thead>
+					<tr bgcolor="#dee6eb"  class="tituloLista"
+						onClick="verSolicitud(this.rowIndex);" style="cursor:hand">
+					  	<td  align="CENTER" >
+					 	 <span  datafld="FOLIO_ST"/></td>
+					    <td  align="LEFT"><span datafld="OBSERVACION"/></td>
+					  	<td  align="center">
+						<span datafld="FECHA_ST"/></td>
+						<td align="LEFT">
+						<span datafld="AREA"/></td>
+						<td align="center">
+							<span  datafld="ESTADO_ST"/></td>
+						<td align="center">
+						<span  datafld="RESPONSABLE"/></td>	
+						<td align="center"> </td>
+					</tr>
+					<tr bgcolor="#dee6eb" class="itemLista2" onClick="verOC(this.rowIndex);" style="cursor:hand">
+					  <td align="center">
+					  	<span  datafld="FOLIO_OC"/>	</td>
+					  	<td  align="center">
+						<span datafld="PROVEEDOR"/>	</td>
+						<td align="center">
+						<span datafld="FECHA_OC"/>
+						</td>
+						<td align="center">
+						<span  datafld="VB1"></span></td>
+						<td align="center">
+							<span  datafld="ESTADO_OC"/></td>	
+						<td align="center"><span  datafld="AUTORIZA"/></td>
+						<td align="center">
+						<!--IMG style="CURSOR: hand" 
+							onclick="verOC(this.parentElement.parentElement.rowIndex);"
+							src="images/table.png" align="middle"-->
+						</td>
+						</tr>
+				</table>
+	   
+				 			
+		</form>
+
+	</body>
+</HTML>

@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta  http-equiv="description" content="Login By Vitcomz" />
+<title>Autenticar</title>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+-->
+</style>
+
+<link rel="stylesheet" href="sci.css" type="text/css" />
+
+
+
+
+
+
+<script language="Javascript1.2" src="vitcomz_m.js"></script>
+<script language="Javascript1.2" src="jquery.js"></script>
+
+<script type="text/javascript">
+<!--
+
+var _url;
+
+function _close(){
+ this.location.href="/index.html";		
+}
+	
+
+   
+function validar(){ 
+var _url;
+
+  	_url = "/sci/xml/usuarios.asp?RECURSO=ValidaPass";
+	_url +='&ID=' + document.getElementById('txtID').value;
+	_url +="&PASSWORD=" + document.getElementById('txtPassword').value;
+	_url +="&TIPO=MOVIL";
+  
+ 
+	
+    $.get(_url, function(theXML){
+			$('REGISTROS',theXML).each(function(i){
+			var _value = $(this).find("ROW").text();
+			delSession(document.getElementById('txtID').value);
+						
+			if (_value=="True"){
+				crearSession(document.getElementById('txtID').value);
+				window.location.href="bitacora.html";
+				}
+			else{
+				alert("Usuario o Password Invalidos!");
+				formulario.txtID.focus();
+			}
+	  
+		});
+				
+	});				
+      
+}
+
+
+//-->
+</script>
+
+<body onload="formulario.txtID.focus();">
+<form action="javascript:validar();" name="formulario" >
+  <table width="292" border="0" align="center" class="texto">
+    <tr align="center">	
+	<td height="23" colspan="2" class="input">
+		INSIGHT MOVIL.<BR>Identificación de Usuario.</td>	
+    </tr>
+    <tr align="center">	
+	<td height="16" colspan="2">
+	  <P class="titulo">
+	  <script>
+	  	document.write("Session Actual <b>" + getSession() + "</b>");
+	  </script>
+	  </P>
+   </td>
+   </tr>
+       
+    
+    <tr>
+	<td  align="right">USUARIO :</td>
+      <td width="176">
+	  <input id="txtID"  class="tinyInput" type="text"  />
+      </td>
+	</tr>
+    <tr>
+      <td align="right">PASSWORD :</td>
+      <td>
+	  <input id="txtPassword"  class="tinyInput"  type="password" />
+	  </td>
+    </tr>
+    <tr valign="middle">
+      <td height="45" colspan="2"  align="center">
+		<input type="submit"   value="Aceptar" class="tinyInput" />
+		<input  type="button" onClick="_close();"  value="Cancelar" class="tinyInput" />
+      </td>
+	</table>
+	<div align="center"><img SRC="logo.jpg" border="0" /></div>
+</form>
+</body>
+</html>

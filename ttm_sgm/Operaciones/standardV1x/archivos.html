@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+
+
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript1.2" SRC="standard/vitcomz.js"></SCRIPT>
+</HEAD>
+<LINK REL="stylesheet" HREF="css/estiloWEB.css" TYPE="text/css">
+
+
+<SCRIPT LANGUAGE="javascript1.2">
+//var popbox = new Object();
+//var codeobj = new Object();
+//var nameobj = new Object();
+
+function Inicio3(){
+	var IDx = getParametro("IDx");
+	var FAMx = getParametro("FAMx");
+	if (IDx != false && FAMx != false){
+		document.getElementById("formulario_files").txtIdent.value = IDx;
+		document.getElementById("formulario_files").txtFamilia.value = FAMx;
+	    url = "xml/archivos.asp?recurso=SaveFile";
+	    url = url + "&FAMILIA="+document.getElementById("formulario_files").txtFamilia.value;;
+	    url = url + "&IDENTIFICADOR="+document.getElementById("formulario_files").txtIdent.value;
+	    document.getElementById("formulario_files").action=url;
+		document.getElementById("btn_submint").disabled="disabled";
+	}
+}
+
+function ocultar(r,d){
+	
+}
+
+function Checkfiles()
+{
+	var fup = document.getElementById('attach1');
+	var fileName = fup.value;
+	var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+	if(ext == "gif" || ext == "GIF" || ext == "JPEG" || ext == "jpeg" || ext == "jpg" || ext == "JPG" || ext == "doc" || ext == "DOC" || ext == "docx" || ext == "DOCX" || ext == "xls" || ext == "XLS" || ext == "xlsx" || ext == "XLSX" || ext == "pdf" || ext == "PDF"|| ext == "png"|| ext == "PNG" || ext == "ppt"|| ext == "PPT" || ext == "pptx"|| ext == "PPTX" || ext == "txt"|| ext == "TXT")
+	{
+		//return true;
+		document.getElementById("btn_submint").disabled = false;
+	}else{
+		alert("Archivo con extension no valida");
+		fup.value = ""; //.focus();
+		document.getElementById("btn_submint").disabled = true;
+		//return false;
+	}
+}
+
+function validate(){
+	var fup = document.getElementById('attach1');
+	var fileName = fup.value;
+	var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+	if(ext == "gif" || ext == "GIF" || ext == "JPEG" || ext == "jpeg" || ext == "jpg" || ext == "JPG" || ext == "doc" || ext == "DOC" || ext == "docx" || ext == "DOCX" || ext == "xls" || ext == "XLS" || ext == "xlsx" || ext == "XLSX" || ext == "pdf" || ext == "PDF"|| ext == "png"|| ext == "PNG" || ext == "ppt"|| ext == "PPT" || ext == "pptx"|| ext == "PPTX" || ext == "txt"|| ext == "TXT")
+	{
+		var logic =  true;
+	}else{
+		alert("Archivo con extension no valida");
+		//fup.focus();
+		var logic = false;
+	}
+	return logic;
+}
+
+</SCRIPT>
+
+<BODY >
+<DIV  class="titulo" STYLE="border-bottom: #A91905 2px solid;font-size:16">Adjuntar Archivo</DIV>
+<DIV style='margin-left:5'>
+<FORM NAME="formulario_files" id="formulario_files" METHOD="POST" enctype="multipart/form-data" onSubmit="javascript:return validate();">
+ <TABLE WIDTH="401" BORDER="0">
+ <TR>
+      <TD WIDTH="81"><FONT CLASS="texto">Identificaci�n:</FONT></TD>
+      <TD WIDTH="324"><INPUT NAME="txtIdent" CLASS="input" SIZE="12" id="txtIdent" readonly /><BR> </TD></TR>
+ <TR>
+      <TD WIDTH="81"><FONT CLASS="texto">Categoria:</FONT></TD>
+      <TD WIDTH="324"><INPUT NAME="txtFamilia" CLASS="input" SIZE="12" id="txtFamilia" readonly /><BR> </TD></TR>
+ <TR>
+      <TD><FONT CLASS="texto">Archivo:</FONT></TD>
+      <TD>
+		<FONT CLASS="texto">
+		<INPUT NAME="attach1" TYPE="file" CLASS="input" SIZE="40" id="attach1" onChange='Checkfiles()'>
+		 </FONT> </TD></TR></TABLE><BR>
+<INPUT type=submit CLASS="botonBlanco" VALUE="Adjuntar" onClick="formulario_files.submit();" id="btn_submint">
+</FORM>
+<script language="JavaScript1.2" >Inicio3();</script>
+<BR></DIV>
+
+</BODY>
+</HTML>

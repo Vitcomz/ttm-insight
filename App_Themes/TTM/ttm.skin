@@ -1,0 +1,91 @@
+﻿<%--
+Plantilla de máscara predeterminada. Las siguientes máscaras se proporcionan sólo como ejemplos.
+
+1. Máscara de control con nombre. SkinId debería definirse de forma única porque
+no se permite que haya varios SkinId por tipo de control en el mismo tema.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Máscara predeterminada. Skinid no está definido Sólo se permite 
+   una máscara de control por tipo de control en el mismo tema.
+
+<asp:Image runat="server" ImageUrl="~/ttm_skins/Images/image1.jpg" />
+--%>
+
+<asp:LoginStatus runat="server" LogoutImageUrl="~/ttm_skins/Images/45g875e/Skin/001216.jpg" style="width:122px; height:16px" SkinID="IBtnLogout" />
+
+<asp:TextBox SkinID="TextBoxlargo" runat="server" BorderColor="#F1F1F1" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="250px"></asp:TextBox>
+<asp:TextBox SkinID="TextBoxCorto" runat="server" BorderColor="#F1F1F1" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="120px"></asp:TextBox>           
+<asp:TextBox SkinID="TextBoxBuscar" runat="server" BorderColor="#F1F1F1" Font-Names="Verdana" Font-Size="10px" ForeColor="#404040" Width="180px"></asp:TextBox>
+<asp:TextBox SkinID="TextBoxDetalles" runat="server" BorderColor="#F1F1F1" Font-Names="Verdana" Font-Size="10px" ForeColor="#404040" Width="310px"></asp:TextBox>
+                                     
+<asp:DropDownList SkinID="listalargo" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="250px"></asp:DropDownList>
+<asp:DropDownList SkinID="listacorto" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="35px"></asp:DropDownList>
+<asp:DropDownList SkinID="listamediano" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="125px"></asp:DropDownList>
+
+<asp:CheckBox SkinID="CheckBox1" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="35px"></asp:CheckBox>
+
+<asp:Label SkinID="Labellargo" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="250px"></asp:Label>
+<asp:Label SkinID="TituloGrid" runat="server" Font-Names="Verdana" Font-Size="9px" ForeColor="#404040"></asp:Label>
+<asp:Label SkinID="Labelcorto" runat="server" Font-Names="Verdana" Font-Size="11px" ForeColor="#404040" Width="35px"></asp:Label>
+
+<asp:Image runat="server"  SkinId="Logo" ImageUrl="~/ttm_skins/Images/_header/LogoTtm.png" />
+<asp:Image SkinID="ImgAyuda" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-ayuda.png" />
+<asp:Image SkinID="ImgAlertGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/BtnGrid/mensaje-alerta.jpg" />
+<asp:Image SkinID="ImgLeyendaGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/varias/leyenda.jpg" />
+<asp:Image SkinID="ALTA" runat="server" ImageUrl="~/ttm_skins/Images/_center/altaicon15x15.png" style="width:15px; height:15px" />
+<asp:Image SkinID="MEDIA" runat="server" ImageUrl="~/ttm_skins/Images/_center/mediaicon15x15.png" style="width:15px; height:15px" />
+<asp:Image SkinID="BAJA" runat="server" ImageUrl="~/ttm_skins/Images/_center/bajaicon15x15.png" style="width:15px; height:15px" />
+
+<asp:ImageButton SkinID="IBtnHome" runat="server" ImageUrl="~/ttm_skins/Images/45g875e/Skin/001215.jpg" style="width:123px; height:16px" />
+
+<asp:ImageButton SkinID="IBtnVolver" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton7.png" />
+<asp:ImageButton SkinID="IBtnGrabar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton2.png" />
+<asp:ImageButton SkinID="IBtnBorrar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton3.png" />
+<asp:ImageButton SkinID="IBtnEliminar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton4.png" />
+<asp:ImageButton SkinID="IBtnModificar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton5.png" />
+<asp:ImageButton SkinID="IBtnSalir" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton8.png" />
+<asp:ImageButton SkinID="IBtnNuevo" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton1.png" />
+<asp:ImageButton SkinID="IBtnEstado" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/boton6.png" />
+
+<asp:ImageButton SkinID="IBtnEnviarEmail" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-enviar.png" />
+<asp:ImageButton SkinID="IBtnAyuda" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-ayuda.png" />
+<asp:ImageButton SkinID="IBtnDelfoto" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-elim-foto.png" />
+<asp:ImageButton SkinID="IBtnHistorial" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-historial.png" />
+<asp:ImageButton SkinID="IBtnMantencion" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-mantencion.png" />
+<asp:ImageButton SkinID="IBtnSubirfoto" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-sub-foto.png" />
+<asp:ImageButton SkinID="IBtnUbicacion" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-ubicacion.png" />
+
+<asp:ImageButton SkinID="IBtnActualizarGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/BtnGrid/Edit.gif" />
+<asp:ImageButton SkinID="IBtnEliminarGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/BtnGrid/Delete.gif" />
+<asp:ImageButton SkinID="IBtnNuevoGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/BtnGrid/AddRecord.gif" />
+<asp:ImageButton SkinID="IBtnRefrescarGrid" runat="server" ImageUrl="~/ttm_skins/Images/Skin/BtnGrid/Refresh.gif" />
+
+<asp:ImageButton SkinID="IBtnActivarFilto" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/maximizar.png" />
+<asp:ImageButton SkinID="IBtnDesactivarFiltro" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/minimizar.png" />
+
+<asp:ImageButton SkinID="IBtnBuscar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/buscar.png"  style="width:40px; height:40px"/>
+<asp:ImageButton SkinID="IBtnNuevoF" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/NUEVO01.png"  style="width:40px; height:40px"/>
+
+<asp:ImageButton SkinID="IBtnBorrarBuacar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/limpiar.png"  style="width:40px; height:40px"/>
+<asp:ImageButton SkinID="IBtnPdf" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/export_pdf.png"  style="width:40px; height:40px"/>
+<asp:ImageButton SkinID="IBtnExcel" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/export_excel.png"  style="width:40px; height:40px"/>
+<asp:ImageButton SkinID="IBtnExpExcel" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-excel.png" />
+<asp:ImageButton SkinID="IBtnExpImprimir" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-imprimir.png" />
+
+
+<asp:LinkButton SkinId="LBtnNuevoRegistro" runat="server" Style="font-family:Verdana, Arial, Helvetica, sans-serif;font-size:11px;color:#424242;text-decoration:none;" />
+<asp:Button SkinID="BOTON" runat="server" BackColor="Silver" Font-Names="Verdana" ForeColor="DimGray" Width="150px" />
+
+<asp:ImageButton SkinID="btnlectrura1" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/lupa.jpg" />
+<asp:ImageButton SkinID="btnlectrura2" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/graphIcon.png" />
+<asp:ImageButton SkinID="btnlectrura3" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/addGraph.png" />
+<asp:ImageButton SkinID="btnlectrura4" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/saveIcon.png" />
+<asp:ImageButton SkinID="btnlectrura5" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/printIcon.png" />
+
+<asp:ImageButton SkinID="btnvisualizar" runat="server" ImageUrl="~/ttm_skins/Images/Skin/botones/btn-graficar.png" />
+
+
+

@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Untitled</title>
+<XML id="XMLDoc"></XML>
+<link rel="stylesheet" href="sci.css" TYPE="text/css" MEDIA="screen">
+
+
+
+
+
+
+
+<script>
+//<!-- 
+var popbox = new Object();
+var Horometro = new Object();
+var nave = new Object();
+var fecha;
+var grupo;
+var _Index;
+
+function mostrarVentana(_nave, _grupo, _horometro, _popbox, Index){
+
+  nave = _nave;
+  grupo = _grupo;
+  Horometro = _horometro;
+  	
+  popbox = _popbox;
+  _Index = Index;
+  
+// var point = getXY(_valor);
+  with (popbox.style){
+    //left = point.x + 2;
+	//top  = point.y+3;
+//	top  = 10;
+    visibility = "visible";
+	strc.focus();
+  }
+
+//  strc.focus();
+  
+}
+
+function setcodeandname(code, name){
+ // codeobj.value = code;
+  nave.value = name;
+}
+
+function close(){
+//  nameobj.focus();
+  popbox.style.visibility = "hidden";
+}
+
+function Point(iX, iY){
+  this.x = iX;
+  this.y = iY;
+}
+
+function getXY(tag){
+  var tmp = tag;
+  var pt = new Point(0,0);
+//	if(!tmp.tagName){
+    	pt.x = 5;
+	  	pt.y = 5;
+		oTmp = Horometro;
+		gdCtrl = oTmp;
+	  //	pt.x += horometro.offsetLeft;
+	 // 	pt.y += horometro.offsetTop;		
+		return pt;
+/*	}
+		
+  do{
+    pt.x += tmp.offsetLeft;
+    pt.y += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  while(tmp.tagName!="BODY");
+  return pt;*/
+}
+//-->
+</script>
+
+<script>
+//<!-- 
+function search(strc){
+
+  XMLDoc.async = false;
+  var xmlDso = XMLDoc.XMLDocument;
+  var url = "xml/Bitacoras.asp?RECURSO=ListNaves";
+	  url += "&STR="+strc;
+  
+  var res = xmlDso.load(url);
+ 
+  if (res){
+    cr = Math.ceil(xmlDso.documentElement.childNodes.length);
+    if (cr==0) {
+      msg.style.display = "block";
+      cont.style.display = "none";
+      msg.innerText = "No se encontraron registros";
+    }else{
+      msg.style.display = "none";
+      cont.style.display = "block";
+    }
+  }else{
+    msg.style.display = "block";
+    cont.style.display = "none";
+    msg.innerText = "No se puede cargar la informaci�n";
+	 window.open(url);
+  }
+}
+
+function set(itr){
+  if (itr){
+	setcodeandname(itr.children[0].children[0].innerText, itr.children[1].children[0].innerText);
+	}
+  else setcodeandname("","");
+  close();
+}
+
+function clear(el){
+  setcodeandname("", "");
+  close();
+}
+
+function mOvr(src,clrOver) { if (!src.contains(event.fromElement)) { src.style.cursor = 'hand'; src.bgColor = clrOver; }}
+function mOut(src,clrIn) { if (!src.contains(event.toElement)) { src.style.cursor = 'default'; src.bgColor = clrIn; } }
+
+//-->
+</script>
+
+<style>
+  .input0 {
+    width:140px;
+    height:18px;
+    font-size:75%;
+  }
+  .input1 {
+    width:50px;
+    height:18px;
+    font-size:75%;
+  }
+  .buttom {
+    height:18px;
+    font-size:75%;
+  }
+  .text {
+    font-size:75%;
+  }
+</style>
+
+<body leftmargin=0 topmargin=0 style="font:normal 100% tahoma;" bgcolor="#dee6eb" scroll="no"  
+onLoad="">
+
+<center>
+
+<Table width="100%" border=0 cellpadding=0 cellspacing=0>
+  <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;">Naves</td>
+    <td align="right">
+      <img src="images/close.gif" width="16" height="14" onClick="set();">
+    </td>
+  </tr>
+</tablE>
+  <tr bgcolor="#3399CC">
+    <td class="text" style="color:#ffffff; font-weight:bold;" colspan="2">&nbsp;
+	<input type="text" class="input" name="strc"
+		 size="25" onKeyPress="if(event.keyCode==13)search(strc.value);" >
+    <input type="button"  class="BotonBlanco" value="Aceptar" onClick="search(strc.value);">
+	</td>
+  </tr>
+</table>
+
+<span id="msg" class="text" style="display:none;"></span>
+<span id="cont" style="height:130px; overflow-y:auto; display:none; border:solid 1px #6587a3;">
+<table width="100%" datasrc="#XMLDoc" border=0 cellpadding=2 cellspacing=0 bordercolor="#6587a3">
+  <thead>
+   <tr class="HeaderLista"><td>Codigo</td>
+   <td>Descripcion</td>
+	</tr>
+  </thead>
+  <tr onClick="set(this);" style="cursor:default;"
+  		onMouseOver="mOvr(this,'#6587a3')" onMouseOut="mOut(this,'#dee6eb')" height="9">
+    <td style="border-bottom:solid 1px #6587a3;">
+      <span datafld="NOMBRE" class="text"></span></td>
+      <td style="border-bottom:solid 1px #6587a3;">
+	  <span datafld="DESCRIPCION" class="text"></span></td>
+  </tr>
+</table>
+</span>
+
+</center>
+</body>
+
+</html>

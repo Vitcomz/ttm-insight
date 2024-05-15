@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Equipos Moviles</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlEquipos></xml>
+<xml id = xmlDesc></xml>
+<xml id = xmlTemp></xml>
+
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+
+<SCRIPT>
+
+xmlTemp.async = false;
+
+ 
+function ListEquipos(){
+
+  xmlEquipos.async = false;
+  var xmlDso =   xmlEquipos.XMLDocument;
+  var url = "../xml/equipos.asp?RECURSO=ListEquiposMoviles";	
+	  url+= "&FAENA=" + getEmpresa(); 
+	  url += "&VTZ=" + Math.random();
+	
+  var res = xmlDso.load(url);
+
+  if (!res) 
+	  window.open(url);
+	
+} 
+
+function checkAll(){
+
+ var tbl = document.getElementById('tabEquipos');
+ var chk = document.getElementById('chkAll');
+
+
+ var lastRow = tbl.rows.length;
+ for (i=2; i<lastRow; i++){
+	 if (chk.checked)
+		tbl.rows[i].children[2].children[0].checked=true;
+	else
+		tbl.rows[i].children[2].children[0].checked=false;
+	}
+	 
+} 
+
+function check(obj){
+
+// alert(obj.children[2].children[0].checked);
+ 
+	if (obj.children[2].children[0].checked)
+		obj.children[2].children[0].checked=false;
+	else
+		obj.children[2].children[0].checked=true;
+	 
+} 
+
+function guardar(){
+
+	
+var str;
+str = "";
+tabla = document.getElementById('tabEquipos');
+		 
+for (i=2; i< tabla.rows.length; i++){
+
+		Codigo = tabla.rows[i].children[0].innerText;	
+		if(tabla.rows[i].children[2].children[0].checked){
+		str = str + "'" + Codigo + "',";
+		}
+	}
+str = str + "''";
+
+	xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "../xml/Informes.asp?RECURSO=infMoviles"
+		url += "&EQUIPOS=" + str;
+		url += "&INICIO=" + formulario.txtFechaIni.value;
+		url += "&TERMINO=" + formulario.txtFechaFin.value;
+		url += "&FAENA="+getEmpresa();
+		url += "&NUM=" + formulario.txtNumero.value;
+		url += "&FOLIO_OT=" + formulario.txtOT.value;
+
+ window.open(url);
+			
+}
+
+function InsertEquipoUsuario(_codigo, _usuario, _tipo){
+
+	xmlTemp.async=false;
+	var xmlDso = xmlTemp.XMLDocument;
+	var url = "xml/equipos.asp?RECURSO=NewEquipoUsuario"
+			url += "&CODIGO=" + _codigo;
+			url += "&USUARIO=" + _usuario;
+			url += "&TIPO_HOR=" + _tipo;	
+	
+//	alert(url);
+	xmlestado = xmlDso.load(url);
+	
+	if(!xmlestado)
+		window.open(url);
+}
+
+
+function inicio(){
+ListEquipos();
+}
+
+function Get(){
+ListEquipos();
+}
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();" >
+<FORM name="formulario">
+
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+<BR>
+<BR>
+<BR>
+<TABLE width="733">
+  <!--DWLayoutTable-->
+<TR>
+  <TD width="527" height="25" class="titulo">INFORME DE  EQUIPOS</TD>
+  <TD width="33">&nbsp;</TD>
+  <TD width="157">&nbsp;</TD>
+</TR>
+<tr>
+  <td height="29" valign="middle" class="titulo"><span class="text">Desde :
+    <input type="text" class="input" name="txtFechaIni" size="15" value="01/01/2008" />
+        <img  src='../images/calendar.jpg' alt="Calendario" align='middle' style='CURSOR: hand'
+						  onclick="FrameCalendar.fPopCalendar(txtFechaIni, txtFechaIni,divCalendar,'ListBitacora();');return false;" /> &nbsp;&nbsp;&nbsp;Hasta :
+    <input type="text" class="input" name="txtFechaFin" size="15" value="01/01/2008" />
+        <img  src='../images/calendar.jpg' alt="Calendario" align='middle' style='CURSOR: hand'
+						  onclick="FrameCalendar.fPopCalendar(txtFechaFin, txtFechaFin,divCalendar,'ListBitacora();');return false;" /> &nbsp;
+        <input type="button" class="botonBlanco" value="Buscar" onclick="ListBitacora();" />
+  </span></td>
+  <td class="titulo">&nbsp;&nbsp;
+      <!--input type="button" class="botonBlanco" value="Exportar a Word" 
+                    onclick="excel();" /-->  </td>
+  <td >&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+  <td height="29" valign="middle" class="titulo">    Numero Informe : <span class="text">
+      <input type="text" class="input" name="txtNumero" size="10"  />
+    OT : 
+    <input type="text" class="input" name="txtOT" size="10" id="txtOT"  />
+</span></td>
+  <td class="titulo"><!--DWLayoutEmptyCell-->&nbsp;</td>
+  <td ><!--DWLayoutEmptyCell-->&nbsp;</td>
+</tr>
+<TR>
+  <TD height="25" class="titulo"><!--DWLayoutEmptyCell-->&nbsp;</TD>
+  <TD>&nbsp;</TD>
+  <TD>&nbsp;</TD>
+</TR>
+</TABLE>
+
+<TABLE width="728" border="0" cellpadding="5" cellspacing="5">
+  <TR><TD width="653" valign="top" class="td">
+	<TABLE width="620" cellpadding="0" cellspacing="4" class="texto"
+				id="tabEquipos"  DATASRC="#xmlEquipos" >
+		  <THEAD>
+			<TR class="HeaderLista" >
+			<TD height="13" colspan="3" valign="top">EQUIPOS</TD>
+			</TR>
+			<TR class="HeaderLista" >
+			  <TD width="124" height="13">CODIGO</TD>
+			  <TD width="385">NOMBRE</TD>
+  			  <TD width="62">ASIGNAR
+			  <INPUT type="checkbox"  id="chkAll" class="input" onClick="checkAll();"></TD>
+		    </TR>
+			</THEAD>
+		<TR onMouseOver="mOvr(this,'#ABCCE5')" onMouseOut="mOut(this,'#ffffff')" 
+			onClick="check(this)"  >
+			<TD height="20"><SPAN name="TxtCodigo" datafld="CODIGO"/></TD>
+			<TD><SPAN name="TxtNombre" datafld="DESCRIPCION"/></TD>
+			<TD align="center"><INPUT type="checkbox" datafld="IND"  class="input" /></TD>
+	      </TR>
+	</TABLE>
+	</TD>
+	<TD width="40">&nbsp;&nbsp;</TD>
+  </TR></TABLE>
+</FORM>
+
+<DIV align="center" >
+  <INPUT type="button" onClick="guardar();" value="Imprimir" class="botonBlanco"-->&nbsp;</DIV>
+</BODY>
+</HTML>

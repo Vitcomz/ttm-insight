@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang="en">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<TITLE>Equipos</TITLE>
+<LINK rel="stylesheet" href="../sci.css" type="text/css">
+<STYLE type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</STYLE>
+
+<LINK rel="stylesheet" href="../standard/menu.css" type="text/css">
+<STYLE TYPE="text/css">
+<!--
+.style4 {color: #FF0000}
+-->
+</STYLE>
+
+
+
+
+
+
+</HEAD>
+<xml id = xmlDoc></xml>
+<xml id = xmlTemp></xml>
+<xml id = xmlList></xml>
+<xml id = xmlListFaenas></xml>
+<xml id = xmlSubEquipos></xml>
+<xml id = xmlEquipo></xml>
+<xml id = xmlImages></xml>
+
+<SCRIPT language="JavaScript1.2" src="../standard/coolmenus4.js"></SCRIPT>
+<SCRIPT language="JavaScript1.2" src="../standard/vitcomz.js"></SCRIPT>
+<script type="text/javascript" src="/Scripts/cookie.js"></script>
+<script type="text/javascript" src="/Scripts/deteccion.js"></script>
+<SCRIPT language="JavaScript1.2" >
+
+var newEvent = false;
+var browser =  DetectBrowser();
+var id_br = browser.substring(0,2);
+if (id_br == 'IE'){
+			var emp = getEmpresa();
+}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var emp = getEmpresaMoz();
+}
+
+function inicio(){
+//document.getElementById("listEquipos").value="35-CV-001";
+document.getElementById("idFaena").innerText = emp;
+ListEquipos();
+setTimeout("GetEquipo();",200);
+
+}
+
+function GetEquipo(){
+
+		if (id_br == "IE")
+		{
+			var xmlDoc = document.getElementById("xmlDoc");
+			xmlDoc.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlDoc = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlDoc.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=GetEquipo&CODIGO=" + document.getElementById("listEquipos").value;
+	 	url += "&FAENA=" + emp;
+		
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlestado = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlestado = xmlDso.load(url);
+		}
+	//window.open(url);
+		if (xmlestado){
+			total_registros_lista = xmlDso.documentElement.childNodes.length;
+			var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+			var context = "";
+			for (i=0; i<x.length; i++) {	
+						
+				if (x[i].getElementsByTagName("UBICACION")[0].childNodes[0] != null){
+					document.getElementById("idFaena").innerHTML =  x[i].getElementsByTagName("UBICACION")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("CODIGO")[0].childNodes[0] != null){
+					document.getElementById("CODIGO").innerHTML =  x[i].getElementsByTagName("CODIGO")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0] != null){
+					document.getElementById("DESCRIPCION").innerHTML =  x[i].getElementsByTagName("DESCRIPCION")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("SECCION")[0].childNodes[0] != null){
+					document.getElementById("SECCION").innerHTML =  x[i].getElementsByTagName("SECCION")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("SECCION")[0].childNodes[0] != null){
+					document.getElementById("AREA").innerHTML =  x[i].getElementsByTagName("SECCION")[0].childNodes[0].nodeValue;
+				}
+//				if (x[i].getElementsByTagName("SERIE")[0].childNodes[0] != null){
+//					document.getElementById("SERIE").innerHTML =  x[i].getElementsByTagName("SERIE")[0].childNodes[0].nodeValue;
+//				}
+				if (x[i].getElementsByTagName("MARCA")[0].childNodes[0] != null){
+					document.getElementById("MARCA").innerHTML =  x[i].getElementsByTagName("MARCA")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("MODELO")[0].childNodes[0] != null){
+					document.getElementById("MODELO").innerHTML =  x[i].getElementsByTagName("MODELO")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("DIMENSIONES")[0].childNodes[0] != null){
+					document.getElementById("DIMENSIONES").innerHTML =  x[i].getElementsByTagName("DIMENSIONES")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("CAPACIDAD")[0].childNodes[0] != null){
+					document.getElementById("CAPACIDAD").innerHTML =  x[i].getElementsByTagName("CAPACIDAD")[0].childNodes[0].nodeValue;
+				}
+				if (x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0] != null){
+					document.getElementById("OBSERVACION").innerHTML =  x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0].nodeValue;					
+				}
+				
+//				
+			}
+		}
+	//window.open(url);
+	if (!xmlestado)
+				window.open(url);
+
+
+setTimeout("listSubEquipos();",100);
+setTimeout("ListArchivos();",100);
+
+}
+
+function ListArchivos(){
+		if (id_br == "IE")
+		{
+			var xmlImages = document.getElementById("xmlImages");
+			xmlImages.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlImages = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlImages.XMLDocument;
+	var url = "../xml/archivos.asp?RECURSO=listArchivosDS";
+		url += "&FAMILIA=EQUIPOS"; 
+		url += "&IDENTIFICADOR="+document.getElementById("listEquipos").value;
+    
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlImages = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlImages = xmlDso.load(url);
+		}
+	//window.open(url);
+	if (xmlImages){
+			var x = xmlDso.getElementsByTagName("ROW"); // mostramos los registros
+			var context = "";
+			for (i=0; i<x.length; i++) {	
+				if (x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0] != null){
+					document.getElementById("FILEIMAGE").src =  x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue;
+					document.getElementById("FILEIMAGELINK").src =  x[i].getElementsByTagName("FILEIMAGE")[0].childNodes[0].nodeValue;
+					
+				}
+			}
+		
+	}
+	if(!xmlImages){
+			window.open(url);}
+	
+
+//document.frameFiles.src ="archivos.html";
+}
+
+function listSubEquipos(){
+		if (id_br == "IE")
+		{
+			var xmlSubEquipos = document.getElementById("xmlSubEquipos");
+			xmlSubEquipos.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlSubEquipos = document.implementation.createDocument("", "", null);
+		}
+	var xmlDso = xmlSubEquipos.XMLDocument;
+	var url = "../xml/Equipos.asp?RECURSO=ListSubEquiposDS";
+		url += "&CODIGO="+document.getElementById("listEquipos").value; 
+
+ 	//window.open(url);
+   
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					xmlSubEquipos = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			xmlSubEquipos = xmlDso.load(url);
+		}
+		//window.open(url);
+	if (xmlSubEquipos){
+			if (id_br == "IE")
+			{
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+			}
+			else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+			{
+				total_registros_lista = xmlDso.documentElement.childNodes.length;
+				document.getElementsByTagName('tbody')[4].innerHTML = "";
+				var x = xmlDso.getElementsByTagName("ROWS"); // mostramos los registros
+				var context = "";
+				for (i=0; i<x.length; i++) {
+					
+				  context = context +  "<tr>";
+				  if (x[i].getElementsByTagName("DESCRIPCION_DS")[0].childNodes[0] != null){
+					  context = context +  "<td style='BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-BOTTOM:#dfdfdf 1px ridge;' width='237' ROWSPAN='3' VALIGN='TOP' CLASS='titulo'>"+  x[i].getElementsByTagName("DESCRIPCION_DS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td style='BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-BOTTOM:#dfdfdf 1px ridge;' width='237' ROWSPAN='3' VALIGN='TOP' CLASS='titulo'>&nbsp;</td>";
+			      }				 
+				  context = context +  "<TD WIDTH='120' CLASS='normal'>MARCA</TD>";
+				  if (x[i].getElementsByTagName("MARCA_DS")[0].childNodes[0] != null){
+					  context = context +  "<td WIDTH='149' ALIGN='LEFT' CLASS='normal'>"+  x[i].getElementsByTagName("MARCA_DS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td WIDTH='149' ALIGN='LEFT' CLASS='normal'>&nbsp;</td>";
+			      }				 
+				  context = context +  "<TD WIDTH='101' CLASS='normal'>MODELO</TD>";
+				  if (x[i].getElementsByTagName("MODELO_DS")[0].childNodes[0] != null){
+					  context = context +  "<td WIDTH='347' ALIGN='LEFT' CLASS='normal'>"+  x[i].getElementsByTagName("MODELO_DS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td WIDTH='347' ALIGN='LEFT' CLASS='normal'>&nbsp;</td>";
+			      }				 
+				  context = context +  "</tr>";
+				  context = context +  "<tr>";
+				  context = context +  "<TD CLASS='normal'>DIMENSIONES</TD>";
+				  if (x[i].getElementsByTagName("DIMENSIONES_DS")[0].childNodes[0] != null){
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal'>"+  x[i].getElementsByTagName("DIMENSIONES_DS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal'>&nbsp;</td>";
+			      }				 
+				  context = context +  "<TD CLASS='normal'>NUMERO SERIE</TD>";
+				  if (x[i].getElementsByTagName("SERIE_DS")[0].childNodes[0] != null){
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal'>"+  x[i].getElementsByTagName("SERIE_DS")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal'>&nbsp;</td>";
+			      }				 				  
+				  context = context +  "</tr>";
+				  context = context +  "<tr>";
+				  context = context +  "<TD CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>CODIGO GSAP</TD>";
+				  if (x[i].getElementsByTagName("GSAP")[0].childNodes[0] != null){
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>"+  x[i].getElementsByTagName("GSAP")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>&nbsp;</td>";
+			      }				 
+				  context = context +  "<TD CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>OTROS</TD>";
+				  if (x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0] != null){
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>"+  x[i].getElementsByTagName("OBSERVACION")[0].childNodes[0].nodeValue + "</td>";
+				  }else{
+					  context = context +  "<td ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>&nbsp;</td>";
+			      }				 
+				  
+				  context = context +  "</tr>";
+				  
+				}
+				if (context != ""){
+					document.getElementsByTagName('tbody')[4].innerHTML = context;
+				}else{
+					document.getElementsByTagName('tbody')[4].innerHTML = "<TR><TD STYLE='BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-BOTTOM:#dfdfdf 1px ridge;' WIDTH='237' ROWSPAN='3' VALIGN='TOP' CLASS='titulo'><SPAN DATAFLD='DESCRIPCION_DS' id='DESCRIPCION_DS'></SPAN></TD><TD WIDTH='120' CLASS='normal'>MARCA</TD><TD WIDTH='149' ALIGN='LEFT' CLASS='normal'><SPAN DATAFLD='MARCA_DS' id='MARCA_DS'></SPAN></TD><TD WIDTH='101' CLASS='normal'>MODELO</TD><TD WIDTH='347' ALIGN='LEFT' CLASS='normal'><SPAN DATAFLD='MODELO_DS' id='MODELO_DS'></SPAN></TD></TR><TR><TD CLASS='normal'>DIMENSIONES</TD><TD ALIGN='LEFT' CLASS='normal'><SPAN DATAFLD='DIMENSIONES_DS' id='DIMENSIONES_DS'></SPAN></TD><TD CLASS='normal'>NUMERO SERIE</TD><TD ALIGN='LEFT' CLASS='normal'><SPAN DATAFLD='SERIE_DS' id='SERIE_DS'></SPAN></TD></TR><TR><TD CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>CODIGO GSAP</TD><TD ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'><SPAN DATAFLD='GSAP' id='GSAP'></SPAN></TD><TD CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'>OTROS</TD><TD ALIGN='LEFT' CLASS='normal' STYLE='BORDER-BOTTOM:#dfdfdf 1px ridge'><SPAN DATAFLD='OBSERVACION' id='OBSERVACION'></SPAN></TD></TR>";
+				}
+			}
+	}		
+	if(!xmlSubEquipos){
+			window.open(url);}
+	
+
+//document.frameFiles.src ="archivos.html";
+}
+
+function ListEquipos(){
+		if (id_br == "IE")
+		{
+			var xmlEquipo = document.getElementById("xmlEquipo");
+			xmlEquipo.async = false;
+		}else if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR"){
+			var xmlEquipo = document.implementation.createDocument("", "", null);
+		}
+
+  //xmlEquipo.async = false;
+  var xmlDso =  xmlEquipo.XMLDocument;
+  var url = "../xml/Equipos.asp?RECURSO=ListEquiposPadres&CODIGO=NULL";
+	  url += "&USUARIO="+GetSession();
+	  url += "&FAENA="+emp;
+	  
+	//window.open(url);
+		if (id_br == "FF" || id_br == "OP" || id_br == "SF"  || id_br == "CR")
+		{
+					if (window.XMLHttpRequest)
+					  {// code for IE7+, Firefox, Chrome, Opera, Safari
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else
+					  {// code for IE6, IE5
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.open("GET",url,false);
+					xmlhttp.send();
+					xmlDoc=xmlhttp.responseText;
+                    parser = new DOMParser();
+            		xmlDso = parser.parseFromString(xmlDoc, "text/xml"); 
+					res = parser.parseFromString(xmlDoc, "text/xml"); 
+					//alert(xmlDso);
+					//window.open(url);
+		}
+		else if (id_br == "IE")
+		{
+			res = xmlDso.load(url);
+		}
+		//window.open(url);
+	  	if (res){
+			  var tree = xmlDso.documentElement;
+			  for(var i = 0; i < tree.childNodes.length; i++){
+				var node = tree.childNodes.item(i);
+				opcion = new Option(getChildNodeValue(node,"DESCRIPCION"),getChildNodeValue(node,"CODIGO"));
+				document.getElementById('listEquipos').options[i] = opcion;   
+			  }
+    	}
+	
+	 // window.open(url);
+
+ } 
+ 
+function _print(){
+	var prtContent = document.getElementById("tabSheet").innerHTML;
+	var WinPrint = window.open('','','left=0,top=0,width=1,height=1, toolbar=0,scrollbars=0,status=0');
+    WinPrint.document.write('<'+'html'+'><'+'head'+'>');
+    WinPrint.document.write('<'+'/'+'head'+'><'+'body'+'>');
+	WinPrint.document.write("<LINK rel='stylesheet' href='../sci.css' type='text/css'>");
+	WinPrint.document.write("<table width='1145' BORDER='1' CELLPADDING='1' CELLSPACING='0' CLASS='calibri' ID='tabEquipos'>");
+	WinPrint.document.write(prtContent);
+	WinPrint.document.write("</table>");
+    WinPrint.document.write('<'+'/'+'body'+'><'+'/'+'html'+'>');	
+	WinPrint.document.close();
+	WinPrint.focus();
+	WinPrint.print();
+	WinPrint.close();
+
+}
+
+
+
+</SCRIPT>
+
+
+<BODY onLoad="inicio();">
+<FORM name="formulario">
+<SCRIPT language="JavaScript1.2" src="../standard/menudata.js"></SCRIPT>
+
+
+<BR><BR><BR>
+
+
+<TABLE width="1070" cellpadding="10" cellspacing="5">
+<TR>
+  <TD WIDTH="977" height="23" CLASS="titulo" ><font class="titulo">INFORME DATASHEET<br>
+    <br>
+  </font>EQUIPO :
+ 		<SELECT name="listEquipos" id="listEquipos"  class="Campo" onChange="GetEquipo();">
+	  	</SELECT>
+ 		<input type="button" id="print" class="botonBlanco" onClick="_print();" value="Imprimir"></TD>
+</TR>
+<TR>
+  <TD height="568" valign="top" >
+  
+    <TABLE width="1037"  border="1" cellpadding="0" cellspacing="0" 
+    			DATASRC="#xmlDoc" BORDERCOLOR="#000000" BORDERCOLORDARK="#FFFFFF" id="tabSheet">
+      <!--DWLayoutTable-->
+      <TR align="center" CLASS="titulo"  width="872" >
+        <TD COLSPAN="2" ROWSPAN="3" align="center" valign="MIDDLE">
+          <H1><SPAN ID="idFaena"></SPAN></H1>
+          </TD>
+            <TD HEIGHT="16" colspan="2" ALIGN="CENTER" valign="top"><STRONG>DATA SHEET EQUIPOS PLANTA MINERA </STRONG></TD>
+            <TD WIDTH="168" ALIGN="LEFT" valign="top">Area</TD>
+            <TD WIDTH="222" ALIGN="LEFT" valign="top" CLASS="normal"><SPAN datafld="SECCION" id="SECCION" ></SPAN></TD>
+          </TR>
+      <TR align="center"  width="872" >
+        <TD colspan="2" ROWSPAN="2" align="center" valign="TOP" CLASS="titulo">
+          <INPUT TYPE="hidden" NAME="TxtCodigo" id="TxtCodigo" />
+          <SPAN datafld="CODIGO" id="CODIGO" ></SPAN> <BR />
+          <SPAN datafld="DESCRIPCION" id="DESCRIPCION"></SPAN></TD>
+          <TD HEIGHT="21" ALIGN="LEFT" valign="TOP" CLASS="titulo">C&oacute;digo Area</TD>
+          <TD ALIGN="LEFT" CLASS="normal"><SPAN datafld="SECCION" id="AREA"></SPAN></TD>
+          </TR>
+      <TR align="center"  width="872" >
+        <TD HEIGHT="21" ALIGN="LEFT" valign="TOP" CLASS="titulo">Numero de Serie</TD>
+          <TD ALIGN="LEFT" CLASS="normal"><SPAN datafld="SERIE" id="SERIE"></SPAN></TD>
+          </TR>
+      
+      <TR align="center" CLASS="rotulo">
+        <TD HEIGHT="21" colspan="3" align="CENTER" >                      
+          DATOS PRINCIPALES</TD>
+            <TD colspan="3" align="CENTER" >
+            LAYOUT</TD>
+          </TR>
+      
+      <TR align="center" VALIGN="MIDDLE" >
+        <TD WIDTH="140" HEIGHT="21" align="left"  CLASS="titulo" >MARCA</TD>
+            <TD colspan="2"  align="left"  CLASS="normal" ><SPAN datafld="MARCA" id="MARCA"></SPAN> </TD>
+            <TD colspan="3" ROWSPAN="5"  align="CENTER" valign="TOP" >
+              <TABLE  border="0" cellpadding="5" cellspacing="0" datapagesize="1"
+                  id="tabImages" DATASRC="#xmlImages">
+                <!--DWLayoutTable-->
+                <TR>
+                  <TD width="219" height="201"  align="center" valign="top"> 
+                  <A datafld="FILEIMAGE" target="_blank" id="FILEIMAGELINK">
+                  <IMG src="images/noDisponible.png" name="FILEIMAGE" width="680" border="0" align="middle" id="FILEIMAGE" datafld="FILEIMAGE"
+                                	 onerror="this.src='../images/noDisponible.png';"></A><BR>
+                    </TD>
+                </TR>
+                </TABLE>
+  </TD>
+	      </TR>
+      <TR align="left" >
+        <TD HEIGHT="21" align="left" valign="top" class="titulo">MODELO</TD>
+            <TD colspan="2" class="normal"><SPAN datafld="MODELO" id="MODELO"></SPAN></TD>
+          </TR>
+      
+      <TR align="center" >
+        <TD HEIGHT="21" align="left" CLASS="titulo">DIMENSIONES </TD>
+   	        <TD COLSPAN="2"  align="left" class="normal"><SPAN datafld="DIMENSIONES" id="DIMENSIONES"></SPAN></TD>
+   	            </TR>
+      <TR align="center">
+        <TD HEIGHT="24" align="left" CLASS="titulo">CAPACIDAD</TD>
+          <TD COLSPAN="2" align="left" CLASS="normal"><SPAN datafld="CAPACIDAD" id="CAPACIDAD"></SPAN>&nbsp;</TD>
+      </TR>
+      <TR align="center">
+        <TD HEIGHT="131" COLSPAN="3" ALIGN="LEFT" valign="TOP" CLASS="normal" >
+   			<SPAN datafld="OBSERVACION" id="OBSERVACION"></SPAN></TD>
+          </TR>
+      
+      
+      <TR align="center">
+        <TD HEIGHT="254" COLSPAN="6" VALIGN="TOP" ALIGN="LEFT" >
+           <!-- ************ SUB EQUIPOS ******************* -->
+        	<TABLE WIDTH="100%" BORDERCOLOR="#000000"  CELLPADDING="0" CELLSPACING="0"
+            		BORDERCOLORDARK="#FFFFFF" DATASRC="#xmlSubEquipos" id="xmlSubEquipos">
+            	<tbody>
+                    <TR>
+                        <TD STYLE="BORDER-RIGHT: #dfdfdf 1px ridge; BORDER-BOTTOM:#dfdfdf 1px ridge;"
+                            WIDTH="237" ROWSPAN="3" VALIGN="TOP" CLASS="titulo"><SPAN DATAFLD="DESCRIPCION_DS" id="DESCRIPCION_DS"></SPAN></TD>
+                        <TD WIDTH="120" CLASS="normal">MARCA</TD>
+                        <TD WIDTH="149" ALIGN="LEFT" CLASS="normal">
+                                  <SPAN DATAFLD="MARCA_DS" id="MARCA_DS"></SPAN></TD>
+                        <TD WIDTH="101" CLASS="normal">MODELO</TD>
+                        <TD WIDTH="347" ALIGN="LEFT" CLASS="normal">
+                                     <SPAN DATAFLD="MODELO_DS" id="MODELO_DS"></SPAN></TD>
+                    </TR>
+                    <TR>
+                        <TD CLASS="normal">DIMENSIONES</TD>
+                        <TD ALIGN="LEFT" CLASS="normal"><SPAN DATAFLD="DIMENSIONES_DS" id="DIMENSIONES_DS"></SPAN></TD>
+                        <TD CLASS="normal">NUMERO SERIE</TD>
+                        <TD ALIGN="LEFT" CLASS="normal"><SPAN DATAFLD="SERIE_DS" id="SERIE_DS"></SPAN></TD>
+                    </TR>
+                    <TR>
+                        <TD CLASS="normal" STYLE="BORDER-BOTTOM:#dfdfdf 1px ridge">CODIGO GSAP</TD>
+                        <TD ALIGN="LEFT" CLASS="normal" STYLE="BORDER-BOTTOM:#dfdfdf 1px ridge"><SPAN DATAFLD="GSAP" id="GSAP"></SPAN></TD>
+                        <TD CLASS="normal" STYLE="BORDER-BOTTOM:#dfdfdf 1px ridge">OTROS</TD>
+                        <TD ALIGN="LEFT" CLASS="normal" STYLE="BORDER-BOTTOM:#dfdfdf 1px ridge">
+                                <SPAN DATAFLD="OBSERVACION" id="OBSERVACION"></SPAN></TD>
+                    </TR>
+	            </tbody>
+            </TABLE>
+            
+            <!-- ************ SUB EQUIPOS ******************* -->
+        </TD>
+      </TR>
+    </TABLE>
+  </TD>
+</TR>
+</TABLE>
+</td></tr>
+</table>
+
+</FORM>
+</BODY>
+</HTML>
