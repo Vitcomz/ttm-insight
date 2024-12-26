@@ -7,7 +7,7 @@ Private Sub Class_Initialize()
 	Dim RemotePath
     Set Conexion = Server.CreateObject("ADODB.Connection")
 
-	DSNName ="Provider=SQLOLEDB;Initial Catalog=SCI_TBR;Data Source=CLOUD-8JOI1VTRC\SQLEXPRESS;User Id=jrojas;Password=calama.;"
+	DSNName ="Provider=SQLOLEDB;Initial Catalog=SCI_TBR;Data Source=CLOUD-8JOI1VTRC\SQLEXPRESS;User Id=user;Password=pass;"
    	Conexion.Open DSNName
 	
 	'******************************'
